@@ -78,7 +78,7 @@ an \immut object can not also be \muty: i.e. an object reachable from an \Q!imm!
 \SS\begin{Assumption}[Imm Consistency]\rm\ \\
 \indent If $\VS(\s, e)$ and $\immut(\s, e, l)$, then not $\muty(\s, \h, e, l)$.
 
-\noindent Note that this does not prevent \emph{promotion} from a \Q!mut! to an \Q!imm!: a reduction step may change the type of an $l$ from \Q!mut! to \Q!imm!, provided that in the new state, there are no longer and \Q!mut! references to the $l$'s $\rog$.
+\noindent Note that this does not prevent \emph{promotion} from a \Q!mut! to an \Q!imm!: a reduction step may change the type of an $l$ from \Q!mut! to \Q!imm!, provided that in the new state there are no longer any \Q!mut! references to the $l$'s $\rog$.
 \end{Assumption}
 
 We require that if something was not \muty, that it remains that way; this prevents, for example, runtime promotions from \Q!read! to \Q!mut!, as well as field accesses returning a \Q!mut! from a receiver that was not \Q!mut!:%
@@ -118,7 +118,7 @@ Finally we assume strong exception safety: the memory preserved by each \Q@try@-
 If $\VS(\s', \E[\Kw{try}^{\s_0}\oC e_0\cC\ \Kw{catch}\ \oC e_1\cC])$, then\\
 \indent $\forall l \in \dom(\s_0)$, not $\muty(\s, \E[\Kw{try}^{\s_0}\oC \h\cC\ \Kw{catch}\ \oC e_1\cC], e_0, l)$.
 \end{Assumption}
-Note that this \emph{only} needs to hold because our \Q@try@--\Q@catch@ can catch invariant failures: if we added other forms of exceptions we could introduce a different \Q@try@--\Q@catch@ that does not enforce this.
+Note that this \emph{only} needs to hold because our \Q@try@--\Q@catch@ can catch invariant failures: in L42, \Q@try@--\Q@catch@'s that catch \emph{checked} exceptions doe not this restriction.
 
 We use strong exception safety to prove that locations preserved by \Q@try@ blocks are never monitored (this is important as it means that a \Q!catch! that catches a monitor failure will not be able to see the responsible object),%
 \SS\begin{Lemma}[Unmonitored Try]\rm
@@ -199,9 +199,9 @@ If $\VS(\s, e)$ then $\forall l$, if $\reach(\s, e, l)$, then:\\
 \end{iitemize}
 \end{theorem}\SS
 \begin{proof}
-By $\VS$ we have $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^+ \s|e$, so we proceed by induction on the number of ``$\rightarrow$''s. The base case where is trivial, since \Q!Cap! has no \Q!capsule! fields and the initial main expression $e_0$ cannot contain monitors.
+By $\VS$ we have $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^+ \s|e$, so we proceed by induction on the number of ``$\rightarrow$''s. The base case is trivial, since \Q!Cap! has no \Q!capsule! fields and the initial main expression $e_0$ cannot contain monitors.
 
-In the inductive case, we assume our theorem hods for a $\VS$ and prove it for the next $\VS$. We then proceed by cases on the non-\textsc{ctxv} reduction rule applied:
+In the inductive case, we assume our theorem holds for a $\VS$ and prove it for the next $\VS$. We then proceed by cases on the non-\textsc{ctxv} reduction rule applied:
 
 % \CNC: No other reduction rule modifies memory, so they trivially preserve \CNC for all $l$s.
 % \HNO: No other rules remove monitors or field accesses, or make something \reach that wasn't before; thus they preserve \HNO for all $l$s.
@@ -257,14 +257,14 @@ In the inductive case, we assume our theorem hods for a $\VS$ and prove it for t
 		\item Now consider any $f' \in \cf(\s, l')$, with $l'.f' \neq l.f$; by the above, $l$ is \CNC and so $l \notin \rog(\s, \s[l'.f'])$. If $f$ was a \Q!mut! or \Q!capsule! field, by \thm{Type Consistency} and \thm{Capsule Consistency}, $v$ was \Q!mut!, so by \WE, $v \notin \rog(\s, \s[l'.f'])$; thus we can't have made $\rog(\s, \s[l'.f'])$ \muty through $l.f$; so $l'.f'$ can't now be \muty through $l$. By \thm{Mut Consitency}, we couldn't have have made $l'.f'$ \muty some other way, so $l'$ is still \WE.
 		\item As in the above cases, \NCM is preserved as we haven't introduced any monitor expressions or field accesses.
 	\end{itemize}
-	\item By the inductive hypothesis, any $l'$ was was not \WE and \NCM was \HNO, but we haven't removed any monitor expression or field-accesses, nor have we made anything \reach that wasn't before, so each such $l'$ is still \HNO.
+	\item By the inductive hypothesis, any $l'$ which was not \WE and \NCM, was \HNO; we haven't removed any monitor expression or field-accesses, nor have we made anything \reach that wasn't before, so each such $l'$ is still \HNO.
 \end{enumerate}
 
 \item (\textsc{monitor exit}) $\s|\EV[\M{l}{v}{\Kw{true}}]\rightarrow \s|\EV[v]$:
 \begin{enumerate}
 	\item As this rule doesn't mutate memory, by the inductive hypothesis, every $l'$ must be \CNC.
-	\item Any $l'$ that was \WE still is by \thm{Mut Consistency}, since we haven't modified memory; and as with the above cases, if $l'$ was \NCM it still is we haven't introduced any monitor expressions or field accesses.
-	\item Now consider any $l'$ that was ot \WE and \NCM, then by the inductive hypothesis it was \HNO:
+	\item Any $l'$ that was \WE, still is by \thm{Mut Consistency}, since we haven't modified memory; and as with the above cases, if $l'$ was \NCM it still is we haven't introduced any monitor expressions or field accesses.
+	\item Now consider any $l'$ that was not \WE and \NCM, then by the inductive hypothesis it was \HNO:
 	\begin{itemize}		
 		\item If $l' \neq l$, then as with the \textsc{access} case above, we can't have broken \HNO.
 		\item Otherwise, suppose $l' = l$. If this monitor was introduced by \textsc{new} or \textsc{update}, then $v = l$. And so \HNO can't have held for $l$ since $l = v$, and $v$ was not the receiver of a field access.
@@ -288,8 +288,7 @@ In the inductive case, we assume our theorem hods for a $\VS$ and prove it for t
 	\item As above, since we didn't modify memory, or introduce any monitor expressions or field accesses, any $l'$ that was \WE and \NCM is still \WE and \NCM.
 	\item Consider any $l'$ that was not \WE and \NCM, by the inductive hypothesis it must have been \HNO:
 	\begin{itemize}
-		\item If $l' \neq l$. If $l'$ was in $\s_0$, then by \thm{Strong Exception Safety} we haven't modified memory, and so \HNO is preserved. Otherwise, by \thm{Strong Exception Safety}, $l'$ is no longer \reach, and so this theorem imposes no requirements on it,
-		then since nothing in $\s_0$ has been modified, it is still 
+		\item If $l' \neq l$. If $l'$ was in $\s_0$, then by \thm{Strong Exception Safety} we haven't modified $\s_0$, and so \HNO is preserved. Otherwise, by \thm{Strong Exception Safety}, $l'$ is no longer \reach, and so this theorem imposes no requirements on it.
 		\item If $l' = l$, then by our reduction rules, we were previously in state $\s_0|\EV[\Kw{try}\ \oC e_0\cC\ \Kw{catch}\ \oC e \cC]$. By \thm{Unmonitored Try}, $l \notin \dom(\s_0)$, and so $l$ was not \reach from $\EV[\Kw{try}\ \oC e_0\cC\ \Kw{catch}\ \oC e \cC]$. By \thm{Strong Exception Safety}, we have that nothing in $\s_0$  has changed, so we must still have that $l$ is not \reach from $\EV[e]$: thus it's status is irrelevant.
 	\end{itemize}
 \end{enumerate}
@@ -306,7 +305,7 @@ In the inductive case, we assume our theorem hods for a $\VS$ and prove it for t
 		\end{itemize}
 		\item Otherwise, suppose $l' = l$, $e = \M{l}{e'}{l.\invariant}$. By our rules for capsule mutators, $m$ must be a \Q!mut! method with only \Q!imm! and \Q!capsule! parameters, thus by \thm{Type Consistency}, $l$ must have been \Q!mut!, and each $v_i$ must be \Q!imm! or \Q!capsule!. By \thm{Imm Consistency} and \thm{Capsule Consistency}, $l$ can't be reachable from any $v_i$. Since capsule mutators use \Q!this! only once, to access a \Q!capsule! field, $e' = \E[l.f]$, for some $f \in \cf(\s, l)$. Since $l$ is not \reach from any $v_i$, $l \notin \E$, and by our well-formedness rules for method bodies, $l$ is not \reach from any $l' \in \E$, thus \HNO now holds for $l$.
 		\item If $l' = l$ then we haven't introduced a monitor expression, and as above, we haven't introduce a field access on it either, we can't have broken \WE.
-		\item Finally, since we didn't modify memory, $l'$ is still \NCM
+		\item Finally, since we didn't modify memory, $l'$ is still \NCM.
 	\end{itemize}
 	\item As above since we haven't removed any monitor expression or field-accesses, nor have we made anything \reach, by the inductive hypothesis, every other $l'$ is still \HNO.
 \end{enumerate}
