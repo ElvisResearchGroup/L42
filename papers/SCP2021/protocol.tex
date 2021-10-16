@@ -98,20 +98,16 @@ their only parameter (the receiver) is \Q!read!.
 \subheading{Capsule Fields}
 %As we discussed before, while most approaches agree on the exact properties of a capsule reference,
 %capsule fields are handled in different ways in different approaches. 
-Section 7 `ownership' of \cite{GIANNINI2019145}%Flexible recovery of uniqueness and immutability
-describes how in L42
-``depending on how we expose the owned data, we can closely model
-[...]owners-as-dominators[...]owners-as-qualifiers[...]a third variant''.
+In L42 ``depending on how we expose the owned data, we can closely model both \emph{owners-as-dominators}[...] and \emph{owners-as-qualifiers}[...]''\cite{GIANNINI2019145}, it also supports ``\Q!lent! getter[s], a third variant''\cite{GIANNINI2019145}%Flexible recovery of uniqueness and immutability
 Those informal considerations have then influenced the L42 language design,
 bringing to the creation of syntactic sugar and programming patterns to represent various kinds of \Q@capsule@ fields aimed to model various forms of ownership. Under the hood, all those forms of \Q@capsule@ fields are just private \Q@mut@ fields with some extra restrictions. Describing in the details those restrictions would be outside of the scope of this paper.
 
 Here we present a novel kind of \Q!capsule! field\footnote{As for the other kinds of \Q@capsule@ fields, our new kind is also just 
-a private \Q@mut@ fields with extra restrictions.},
- that can coexists with those other kinds of \Q!capsule! fields,
+a private \Q@mut@ fields with extra restrictions.} (which can coexist with other kinds of \Q!capsule! fields),
 enforcing the following key property:
 the ROG of a capsule field $o.f$ can only be mutated under the control of a \Q@mut@ method of $o$, and during such mutation, $o$ itself cannot be seen.
-This is similar of owner-as-modifier~\cite{Dietl05universes:lightweight,10.1007/978-3-540-92188-2_4}, 
-where we could consider an object to be the `owner' of all the mutable objects in the ROG of its \Q!capsule! fields; but with the extra restriction that the owner is unobservable during the mutation process.
+This is similar to owner-as-modifier~\cite{Dietl05universes:lightweight,10.1007/978-3-540-92188-2_4}, 
+where we could consider an object to be the `owner' of all the mutable objects in the ROG of its \Q!capsule! fields; but with the extra restriction that the owner is unobservable during mutation of this ROG.
 
 More preciselly, if a reference to an object in the ROG of a capsule field $o.f$ is involved in execution as \Q!mut!, then:
 (1) no reference to $o$ is involved in execution,
@@ -132,7 +128,7 @@ The following rules define our novel \Q!capsule! fields:
 \item \Q!mut! reference, when accessed on \Q!this! within a capsule mutator,
 \item \Q!read! reference, when accessed on any other \Q!mut! receiver,
 \item \Q!imm! if the receiver is \Q!imm!, \Q!read! if the receiver is \Q!read!, or \Q@capsule@ if the receiver is
-\Q!capsule!. This last case is safe since a \Q@capsule@ receiver object will then be garbage collectable, so do not need to preserve its invariant.
+\Q!capsule!. This last case is safe since a \Q@capsule@ receiver object will then be garbage collectable, so we do not need to preserve its invariant.
 \end{itemize}
 \item A capsule mutator must:
 \begin{itemize}
@@ -144,8 +140,8 @@ The following rules define our novel \Q!capsule! fields:
 \end{itemize}	
 
 	
-\noindent The above rules ensures that capsule mutators controls the mutation of the ROG of capsule fields, and 
- ensure our points (1), (2), and (3):
+\noindent The above rules ensure that capsule mutators control the mutation of the ROG of capsule fields, and 
+ ensures our points (1), (2), and (3):
 $o$ will not be in the ROG of $o.f$ and
 only a capsule mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way to mutate the ROG of $o.f$ is through such methods. 
 %When a capsule mutator is not executing, no object in the ROG of $o.f$ can be seen as \Q!mut! or \Q!capsule!. 

@@ -75,7 +75,7 @@ With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is acc
 \subheading{Contributions}
 Invariant protocols allow for objects to make necessary changes that might make their invariant temporarily broken.
 In visible state semantics any object that has an active method call anywhere on the call stacks is potentially invalid;
-arguably not a sufficent guarantee as observed by
+arguably not a very useful guarantee as observed by
 Gopinathan \etal's.~\cite{Gopinathan:2008:RMO:1483018.1483028}
 Approaches such as \textit{pack/unpack}~\cite{DBLP:journals/jot/BarnettDFLS04} 
 represent potentially invalid objects in the type system; this
@@ -83,7 +83,7 @@ encumbers the type system and the syntax with features whose only purpose is to 
 %, while (at least in the case of Spec\#) still not soundly supporting I/O and exceptions.
 The core insight behind our work 
 is that we can use a small number of decorator-like design patterns to avoid exposing those potentially invalid objects 
-in the first place, thus avoiding the need of representing them at the type level.
+in the first place, thus avoiding the need for representing them at the type level.
 
 %In this paper we present  
 %a general purpose language
@@ -121,9 +121,9 @@ We describe our case studies in Section~\ref{s:case-studyAll}.
 Our approach may seem very restrictive;
 the programming patterns in Section~\ref{s:patterns} show how our approach does not hamper expressiveness; in particular we show how batch mutation operations can be performed with a single invariant check, and how the state of a `broken' object can be safely passed around.
 
-We proposed our approach for integration in the L42 language, and after minor reworking it has been accepted, and the current version of L42 integrated our 
-invariant checking protocol in a cohesive way with the support for caching and parallelism.
-Section ~\ref{s:integration} discusses the details of this integration.
+%We proposed our approach for integration in the L42 language, and after minor reworking it has been accepted, and the current version of L42 integrated our 
+%invariant checking protocol in a cohesive way with the support for caching and parallelism.
+%Section ~\ref{s:integration} discusses the details of this integration.
 
 % In Appendix \ref{s:runtime-verification}, we discuss more related work on runtime verification.
 

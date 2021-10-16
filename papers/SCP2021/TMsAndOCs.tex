@@ -48,7 +48,7 @@ Immutable objects in the ROG of a capsule reference are not constrained, and can
 \noindent RCs are different to field or variable qualifiers like Java's \Q@final@: RCs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
 On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@A* const@ (like \Q@final@) and \Q@const A*@ (like \Q@read@), where \Q@const A* const@ is like \Q@final read@.}
 
-As you can see, RC are applied to all types. This of course includes types in method parameters and the method receiver.
+As you can see, RCs are applied to all types. This of course includes types in method parameters and the method receiver.
 A \Q!mut! method is a method where \Q@this@ is typed \Q!mut!;
 An \Q!imm! method is a method where \Q@this@ is typed \Q!imm!, and so on for all the other RCs.
 
@@ -78,10 +78,10 @@ Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus
 %  \item no \emph{down}-casting is allowed between different type modifiers.
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
-A common misconception of this line of work is that a \Q!mut! field would always refer to a mutable object.
-Classes declares RCs for their methods and fields types, but  what kinds of objects are stored in an object fields depend also on the kind of the object: a \Q!mut! field of a mutable object will contain a mutable object; but a \Q!mut! field of an immutable object will contain an immutable object.
+A common misconception of this line of work is that a \Q!mut! field will always refer to a mutable object.
+Classes declare RCs for their methods and field types, but  what kinds of object is stored in a field also depends on the kind of the object: a \Q!mut! field of a mutable object will contain a mutable object; but a \Q!mut! field of an immutable object will contain an immutable object.
 This is different with respect to many other approaches, where the
-declarations determine what to expect, and any information from the context must be explicit passed to the type using, for example, a generic reference capability parameter.
+declaration fully determines what values can be stored; any contextual information must be explicitly passed through the type system, for example, with a generic RC parameter.
 
 
 Another common misconception is the belief that \Q!capsule! fields and \Q!capsule! local variables always hold \Q!capsule! references.
@@ -96,7 +96,7 @@ Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
 In contrast, 
 Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference at all times, as it provides non-destructive reads.
-L42 is even more radical: an L42 \Q@capsule@ field never contains a \Q!capsule! reference; it is simply initialized with one.~\cite{ServettoEtAl13a,GIANNINI2019145}
+L42 is even more radical: an L42 \Q@capsule@ field never contains a \Q!capsule! reference; it is simply initialised with one.~\cite{ServettoEtAl13a,GIANNINI2019145}
 %Pony does not guarantee that \Q@capsule@ fields %contain a \Q!capsule! reference, as Pony provides non-%destructive reads.
 %Pony's \Q!capsule! fields are still useful for safe %parallelism, as destructive reads of a \Q!capsule! %field return a \Q!capsule! reference (which can then %be sent to other actors), however the ROG of a \Q!%capsule! field can be mutated by the same actor, even %within methods of unrelated objects.
 %L42 supports another variation of \Q!capsule! fields %similar to Pony's, but does not support destructive %reads~\cite{ServettoEtAl13a,GIANNINI2019145}.
@@ -104,9 +104,9 @@ Pony and L42's \Q!capsule! fields
 % do not prevent representation exposure.
 %These forms of \Q!capsule! fields
  are useful for safe parallelism but not invariant checking. \footnote{It may seem surprising that 
-those weaker forms of encapsulation are still suffcient to ensure safe parallelism. 
+those weaker forms of encapsulation are still sufficient to ensure safe parallelism. 
 The detailed way L42 parallelism works is unrelated to the presented work.
-Please refer to \url{L42.is/tutorial.xhtml} (sections 5 and 6) for more information on parallelism in L42.
+Please see \url{L42.is/tutorial.xhtml} (specifically, section 5 and 6) for more information on parallelism in L42.
 }
 
 %; while Gordon \etal's cannot be read non-destructively.
