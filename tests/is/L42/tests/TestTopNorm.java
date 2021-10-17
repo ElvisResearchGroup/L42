@@ -1243,6 +1243,19 @@ public class TestTopNorm{
       }    }
     """,hole
     );}
+
+@Test public void hardRename(){top("""
+  {C = { method Void isC() = void }
+  A={
+    class method Library code() = {
+      C = {class method Void foo(This3.C that) = that.isC()
+        #norm{typeDep=This3.C usedMethods=This3.C.isC()} }
+      #norm{}
+      }
+    }
+  //Ok =A.code()
+  Is ={ Broken= A.code() }}
+  """);}
 @Test public void wasAssertErrorOnBadPathDept(){top("""
   {AA={}
   WasAssertError = (_={method AA foo() = this.bar()} {})}

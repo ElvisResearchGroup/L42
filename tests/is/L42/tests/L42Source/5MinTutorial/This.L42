@@ -1,14 +1,86 @@
 reuse [L42.is/AdamsTowel]
+Point = Data:{...}
+Main = (
+  Debug(S"Hello world %Point(x=1Num,y=2Num)")
+  )
+  
+  
+/*A= Load:{...}
+Foo=(
+  f=MyFilter"""
+  | foo.txt R
+  | bar.txt RW
+  """(FS.#$())
+  A(f)
+  )
+Pos=Data:{ Num inner 
+  @Cache.Now class method Void invariant(Num inner) = X[inner>=0Num]
+  method Pos + (Pos that)=\(inner=this.inner()+that.inner())
+  method Pos - (Pos that, Pos orElse)={
+    res=this.inner()-that.inner()
+    if res>0N return orElse
+    return \(inner=this.inner()-that.inner())
+    }
+  }*/
+/*
+Coq/Agda/Lean - provare quello che vuoi e' se compila fuziona
+  -serve un PhD +10 anni esperianze per un hello world
+  -compunque e' limitato
+  -tempi di sviluppo lentissimi
+  
+Haskell
+  -se compila e lo usi bene, gli errori difficili da testare sono risolti
+  -serve un PhD,
+  -tempi di sviluppo medi/lungi e e' mezzo limitato
+  
+  
+  
+L42
+  -se compila non fa mai la cosa sbagliata (quasi COQ)
+  -sicuro nel senso che non ti installa trojans come sviluppatore
+  -usabile quanto Java nuovo
+  -veloce quando Java con speranza di miglioramento
+  -ogniuno ha il suo stile incompitibile
+  -caching meglio di tutti
+  -parallelismo safe meglio di tutti
+  -customizing standard library
+  
+Java
+ Il ts auita un po
+ ci sono tante librerie
+ velocita decente e mantiliby curve
+ parallelism facile con stream
+ List<Person> ps
+ ps.parallelStream().map(p->foo(p)).filter(c->c.lenght()>3).toList()
 
+Javasript
+  -Se anche lo testi non si sa mai
+  -sviluppo breve
+  -ogniuno ha il suo stile incompitibile
+  -lento da paura
+  -funziona in tutti broser, e si 'autoaggiorna'
+  -sicuro nel senso che non ti installa trojans
+
+
+
+*/
+/*
+Main={
+  pos=Pos(inner=Num"-5")
+  
+  mut Person bob=
+  imm Person alice=
+  read Person student=bob //or alice
+  }
 Point = Data:{...}
 
 Main2=(
-Cache.#$stopCacheEager()
+  //Cache.#$stopCacheEager()
   p = Point(x=12\,y=42\)
   Debug(S"Hello world again %p")
   p2 = p.with(x=34\)
   Debug(S"p=%p,   p2=%p2  sumP2= %p2.sumXY()")
-  )
+  )*/
 /*  
 
 -show make new file

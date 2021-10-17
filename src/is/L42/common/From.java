@@ -17,17 +17,20 @@ public class From extends CloneVisitor{
   public From(Program program, P.NCs source, int j) {
     this.program=program; this.source=source; this.j=j; 
     }
-  Program program; P.NCs source; int j;
-  
+  Program program;
+  P.NCs source;
+  int j;  
   public int j(){return j;}
   public Program program(){return program;}
   @Override public Full.L visitL(Full.L l){throw bug();}
   public CoreL superVisitL(CoreL l){return super.visitL(l);}//Needed for code reuse
+  public Program programInL(CoreL l){return program;}//Needed for code reuse
+  public Program programInNC(NC nc){return program;}//Needed for code reuse
   @Override public CoreL visitL(CoreL l){
     int oldJ=j;
     Program oldP=program;
     j+=1;
-    program=program.push(l);
+    program=programInL(l);
     var res=super.visitL(l);
     j=oldJ;
     program=oldP;
@@ -38,7 +41,7 @@ public class From extends CloneVisitor{
     int oldJ=j;
     Program oldP=program;
     j+=1;
-    program=program.push(nc.key(),nc.l());
+    program=programInNC(nc);
     var res=super.visitL(nc.l());
     j=oldJ;
     program=oldP;

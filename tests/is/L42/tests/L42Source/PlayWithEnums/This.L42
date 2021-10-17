@@ -1,0 +1,16 @@
+reuse [L42.is/AdamsTowel]
+//A=Trait:{ Bool = {class method This2.Bool foo(This2.Bool that) = that || that} }
+C = { method Void isC() = void }
+A={
+  class method Library code() = {
+    C = {class method Void foo(This3.C that) = that.isC()
+      #norm{typeDep=This3.C usedMethods=This3.C.isC()} }
+    #norm{}
+    }
+  }
+//Ok =A.code()
+Is ={ Broken= A.code() }
+//Json = Organize:{ $ = Class.Relax:JsonBase }
+
+Main = Debug(S"Hi")
+//Main0 = Debug(Is.Broken.Bool.foo(Bool.true()))

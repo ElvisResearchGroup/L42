@@ -15,13 +15,20 @@ Note: interfaces can be watched if they have private nested classes that are wat
 PLUS::=PLUS[p;C;topLeft;topRight;Cs;Cs1->Pz1..Czn->Pzn]
 iMWT::=interface?MWT
 _______
-#define p;C|- CORE.L1 + CORE.L2 = CORE.L3
+#define p;C|- CORE.L1 + CORE.L2 = CORE.L3    extraPz(L,Csz) = Pz
 * p;C|- L1 + L2 = L  //note: implicitly requires well formedness of the resulting L
-    Cs1->Csz1 .. Csn->Cszn =transitiveMap(L1,L2) 
+    Cs1->Csz1 .. Csn->Cszn =transitiveMap(L1,L2)
     forall Cs in allHiddenSupertypes(L1): L2(Cs)>L1(Cs) does not hold
     forall Cs in allHiddenSupertypes(L2): L1(Cs)>L2(Cs) does not hold
-    PLUS=PLUS[p;C;topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
+    Pzi = extraPz(L1,Cszi),extraPz(L2,Cszi) //a set, thus avoids duplicates
+    PLUS = PLUS[p;C;topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
     L = L1 PLUS L2
+
+* This0.Csi in extraPz(L,Cs1..Csn)
+* P in extraPz(L,Cs1..Csn) if P in extraPz(L,Csi) 
+* This(k-n).Cs in extraPz(L,C1..Cn) //thus is empty if L(Cs) is undefined
+    Thisk.Cs in L(C1..Cn).Ts.Ps
+    k>n //not k>=n, thus k-n>=1
 _______
 #define singleMap(L1,L2)=Cs->Csz    transitiveMap(L1,L2)=Cs->Csz
 * Cs' in singleMap(L1,L2)(Cs)
@@ -50,7 +57,7 @@ _______
 * L1 PLUS L2 = L3
   PLUS.map(PLUS.Cs)=Cs1..Csn //empty if map undefined for Cs
   Li={Hi MWTsi NCsi Doci Infoi}
-  H3=(H1 PLUS H2) H1.Ts + H2.Ts+PLUS.Cs/Cs1+..+PLUS.Cs/Csn 
+  H3=(H1 PLUS H2) H1.Ts + H2.Ts + PLUS.Cs/Cs1+..+PLUS.Cs/Csn 
   LDoms=empty if L1.interface?=L2.interface?
   LDoms={LDom | i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
   iMWTs=implemented(PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
@@ -75,7 +82,7 @@ _______
 
 *  Ts1 + Ts2= Ts1,Ts2\Ts1 //using T.P for set minus removal
 _______
-#define NCs1 PLUS NCs2 = NCs3    PLUS(L)=L'    paths(L)=Ps
+#define NCs1 PLUS NCs2 = NCs3    PLUS(L)=L'    paths(L)=Ps    PLUS(L,NCs)=NCs'
 * (Docs C=L NCs1) PLUS NCs2 = Docs C=PLUS[Cs=PLUS.Cs,C](PLUS.topLeft,L) (NCs1 PLUS NCs2)
     C not in dom(NCs2)
 * empty PLUS NC1..NCn =NC1'..NCn' 
@@ -84,7 +91,7 @@ _______
 
 * PLUS(L0,L) = L
     PLUS.Cs notin dom(PLUS.map)
-* PLUS(L0,L) = L[Ts=Ts,MWTs=PLUS(iMWTs) info.typeDep+=Ps]
+* PLUS(L0,L) = L1[info=info0]
     PLUS.map(PLUS.Cs)=Cs1..Csn
     p=either PLUS.p.push(PLUS.C,PLUS.topLeft).navigate(Cs) or PLUS.p.push(PLUS.C,PLUS.topRight).navigate(Cs)
     //at least one of the two is defined, and they would both from identically 
@@ -95,10 +102,15 @@ _______
     iMWTs=implemented(L0,PLUS.Cs)[L.MWTs] U MWTs1 U MWTs'1 U..U MWTsn U MWTs'n
     MWTsi=PLUS.topLeft(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs
     MWTs'i=PLUS.topRight(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs
+    L1=L[Ts=Ts,MWTs=PLUS(iMWTs),NCs=PLUS(L0,L.NCs)]
+    info0=L0.info[typeDep+=Ps, refined+=dom(L0.mwts)/dom(L.mwts)]
 * P in paths(L) if P in L.Ts.Ps
 * P in paths(L) if P in (T0..Tn,Ts).Ps and mdf method T0 m(T1 x1..Tn xn)[Ts] in L//and docs
 //TODO: what happens for interfaces with both private and public methods?
-_______
+
+* PLUS(L0,C1=L1 .. Cn=Ln) = 
+    C1 = PLUS[Cs=PLUS.Cs,C1](L0,L1) .. Cn = PLUS[Cs=PLUS.Cs,Cn](L0,Ln)
+    _______
 #define interface?[MWTs]=iMWTs
 * interface?[MWT1..MWTn] = interface? MWT1 .. interface? MWTn
 _______

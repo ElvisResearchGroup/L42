@@ -1,4 +1,13 @@
 class method S (This string)
+@This1.Public method This subString(I that,I to) = (
+  res = this._subString(that to=to)
+  catch error Message m ( 
+    error Collection$OutOfBounds(m.text())
+    ) 
+  res
+  )
+method This _subString(I that,I to)
+
 @Public Map=Collection$.map(key=S,val=S)
 @Public Set=Collection$.set(S)
 @Public @Cache.Lazy class method S$List allUpLow()=S$List[
@@ -9,7 +18,7 @@ class method S underscores(S that)=(
   var rest=that
   var res=S""
   while rest.startsWith(S"_") (
-    rest:=rest.subString(1\ to=\size)
+    rest:=rest._subString(1\ to=\size)
     res++=S"_"
     )
   res
@@ -17,16 +26,16 @@ class method S underscores(S that)=(
 @Public @Cache.Lazy class method Map lowToUp()=(
   map=Map[]
   for lu in this.allUpLow() (map.put(
-    key=lu.subString(1\ to=2\)
-    val=lu.subString(0\ to=1\)
+    key=lu._subString(1\ to=2\)
+    val=lu._subString(0\ to=1\)
     ))
   map
   )
 @Public @Cache.Lazy class method Map upToLow()=(
   map=Map[]
   for lu in this.allUpLow() (map.put(
-    key=lu.subString(0\ to=1\)
-    val=lu.subString(1\ to=2\)
+    key=lu._subString(0\ to=1\)
+    val=lu._subString(1\ to=2\)
     ))
   map
   )
@@ -35,8 +44,8 @@ method S$List identifierParts()={
   us=This.underscores(tot)
   usSize=us.size()
   if tot.size()==usSize return S$List[us;S"";S""]<:S$List
-  s1=tot.subString(usSize to=usSize+1\)
-  tail=tot.subString(usSize+1\ to=\size)
+  s1=tot._subString(usSize to=usSize+1\)
+  tail=tot._subString(usSize+1\ to=\size)
   return S$List[us;s1;tail]<:S$List
   } 
 @Public method S toStartLow()=(
@@ -57,20 +66,20 @@ method S$List identifierParts()={
   )
 class method S toCamelLow(S that)={
   if that==S"" return that
-  s1=that.subString(0\ to=1\)
-  res=that.subString(1\ to=\size)
+  s1=that._subString(0\ to=1\)
+  res=that._subString(1\ to=\size)
   if res==S"" return this.low1(char=s1)
   if s1==S"_" (
-    s2=res.subString(0\ to=1\)
-    res2=res.subString(1\ to=\size)
+    s2=res._subString(0\ to=1\)
+    res2=res._subString(1\ to=\size)
     return S"_"++s2++this.toCamelLow(res2)
     )
   return this.low1(char=s1)++this.toCamelLow(res)
   }
 class method S low1(S that)={
   if that==S"" return that
-  s1=that.subString(0\ to=1\)
-  res=that.subString(1\ to=\size)
+  s1=that._subString(0\ to=1\)
+  res=that._subString(1\ to=\size)
   return this.low1(char=s1)++res
   }
 class method S low1(S char)={

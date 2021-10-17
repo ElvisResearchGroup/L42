@@ -189,8 +189,9 @@ public class General {
   public static boolean checkNoException(Supplier<Boolean> s){
     try {return s.get();}
     catch(Throwable t){
-        throw new AssertionError("",t);}
-    } 
+      t.printStackTrace();
+      throw new AssertionError("",t);}
+      } 
   @SuppressWarnings("unchecked")
   public static <T> boolean eq(T o1,Object o2,BiPredicate<T,T>t){
     if(o1==o2){return true;}

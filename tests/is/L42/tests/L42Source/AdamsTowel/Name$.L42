@@ -12,7 +12,7 @@ method Name self()
 Times = {
   class method mut S$List xs(S s)={
     i=s.indexOf(S"(")
-    var pars=s.subString(i+1\ to=\size-1\)
+    var pars=s._subString(i+1\ to=\size-1\)
     res=S$List()
     loop (
       c=pars.indexOf(S",")
@@ -20,9 +20,9 @@ Times = {
         res.add(right=pars)
         return res
         )
-      x=pars.subString(0\ to=c)
+      x=pars._subString(0\ to=c)
       res.add(right=x)
-      pars:=pars.subString(c+1\ to=\size)
+      pars:=pars._subString(c+1\ to=\size)
       )
     }
   class method Introspection.Nested (Name that,Introspection.Nested n)[_]={
@@ -55,7 +55,7 @@ Times = {
   if x!=S"" && x!=S"this" && !(x in xs) error S$ParseError(
     S"in with(xs=%xs), removing the selected x from %this")
   i=s.indexOf(S"(")
-  m=s.subString(0I to=i)
+  m=s._subString(0I to=i)
   if xs.isEmpty() return this.self().with(selector=m++S"()")
   var pars=xs.left()
   for xi in xs.withoutLeft() (pars++=S", "++xi)

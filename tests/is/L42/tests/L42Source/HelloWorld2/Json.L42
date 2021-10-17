@@ -1,0 +1,39 @@
+$ = Class.Relax:JsonBase:JsonSeal:{ Value = { method S toJson() } }
+
+String = { method S toJson() = (
+  @Json S inner = this.toS()
+  S.dq()++inner++S.dq() 
+  )} 
+Number = { method S toJson() = (
+  @Json S inner = this.toS()
+  inner
+  )}
+Bool = {
+  True =  { method S toJson() = S"true"  }
+  False = { method S toJson() = S"false" }
+  }
+Null = { method S toJson() = S"null" }
+Object = { method S toJson() = (
+  @Json $.Object self = this
+  res = S.StringBuilder()
+  res.append(S"{")
+  for (key,val) in self (
+    res.append(key.toJson())
+    res.append(S" : ")
+    res.append(val.toJson())
+    res.append(S", ")
+    )
+  res.append(S"}")
+  res.toS()
+  )}
+Array = { method S toJson() = (
+  @Json $.Array self=this
+  var res=S.StringBuilder()
+  res.append(S"[")
+  for val in self (
+    res.append(val.toJson())
+    res.append(S", ")
+    )
+  res.append(S"]")
+  res.toS()
+  )}

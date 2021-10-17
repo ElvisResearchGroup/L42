@@ -130,3 +130,9 @@ class method mut This of(mut Hi hi,mut Hm hm)
 
 //--- mapping
 @Public mut  method mut This (Void that)=this
+
+@Public method This immNorm() = (
+  var imm r=This()(for (key,val) in this \put(key=key,val=val)) 
+  if This x = System.immNorm(r) ( r:=x )
+  r
+  )

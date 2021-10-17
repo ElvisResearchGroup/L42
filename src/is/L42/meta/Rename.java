@@ -118,7 +118,7 @@ public class Rename {
     Sum.openImplements(p.navigate(cs),
       s->err(errFail,errFail.intro(cs,false)+"The implementation can not be removed; "+s));
     }
-  private boolean deepCheckInfo(Program p,CoreL l){
+  public static boolean deepCheckInfo(Program p,CoreL l){
     l.visitInnerL((li,csi)->{
       assert checkNoException(()->WellFormedness.checkInfo(p.navigate(csi),li)): ""+li;
       });
@@ -495,6 +495,8 @@ public class Rename {
     }
   static CoreL fromAndPushThis0Out(Program prg,CoreL l,P.NCs src){
     return new From(prg,src,0){//0+start since p is placed in the new l position
+      @Override public Program programInL(CoreL l){ return program().push(l); }
+      @Override public Program programInNC(NC nc){ return program().push(nc.key(),nc.l()); }
       CoreL start(CoreL l){return superVisitL(l);}
       Program forAssert(){
         Program res=forcedNavigate(program().pop(j()+src.n()),src.cs());

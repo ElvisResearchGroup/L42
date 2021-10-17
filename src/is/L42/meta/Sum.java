@@ -29,6 +29,7 @@ import is.L42.generated.Core.MH;
 import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.NC;
 import is.L42.generated.Core.T;
+import is.L42.generated.Core;
 import is.L42.generated.LL;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -43,7 +44,8 @@ import is.L42.visitors.WellFormedness;
 public class Sum {
   MetaError errC;
   MetaError errM;
-  LinkedHashMap<List<C>,LinkedHashSet<List<C>>> map=new LinkedHashMap<>();
+  LinkedHashMap<List<C>,LinkedHashSet<List<C>>> innerMap=new LinkedHashMap<>();
+  LinkedHashMap<List<C>,LinkedHashSet<P.NCs>> map=new LinkedHashMap<>();
   boolean inRename;
   LinkedHashSet<List<C>> allWatchedRight;
   LinkedHashSet<List<C>> allRequiredCoherentRight;
@@ -60,6 +62,8 @@ public class Sum {
     MetaError errC=new MetaError(wrapC);
     MetaError errM=new MetaError(wrapM);
     
+    //Not working in all the cases assert Rename.deepCheckInfo(pOut.push(cOut,l1),l1);
+    //Not working in all the cases assert Rename.deepCheckInfo(pOut.push(cOut,l2),l2);
     assert checkNoException(()->l1.wf());
     assert checkNoException(()->l2.wf());
     assert checkNoException(()->WellFormedness.checkInfo(pOut.push(cOut,l1),l1)): " "+l1+"\n\n"+l2;
@@ -67,6 +71,7 @@ public class Sum {
     var res=compose(false,pOut,cOut,l1,l2,errC,errM);
     assert checkNoException(()->res.wf());
     assert checkNoException(()->WellFormedness.checkInfo(pOut.push(cOut,res),res));
+    //Not working in all the cases assert Rename.deepCheckInfo(pOut.push(cOut,res),res);
     return res;
     }
   public CoreL compose(boolean inRename,Program pOut,C cOut,CoreL l1, CoreL l2,MetaError errC,MetaError errM){
@@ -80,6 +85,7 @@ public class Sum {
     if(!inRename){fillMaps(l1, l2);}    
     singleMap(topLeft,topRight);
     transitiveMap();
+    for(var e:innerMap.entrySet()){ map.put(e.getKey(),extraPz(e.getValue())); }
     if(!inRename){
       for(var cs:allHiddenSupertypesLeft){growHiddenError(l1,l2,cs);}
       for(var cs:allHiddenSupertypesRight){growHiddenError(l2,l1,cs);}
@@ -237,15 +243,30 @@ public class Sum {
       });
     return wasIn[0];
     }
+  public LinkedHashSet<P.NCs> extraPz(LinkedHashSet<List<C>>csz){
+    var res = new LinkedHashSet<P.NCs>();
+    for(var cs:csz){ fillExtraPz(res,topLeft,cs); fillExtraPz(res,topRight,cs); }
+    return res;
+    }
+  void fillExtraPz(LinkedHashSet<P.NCs> res,CoreL l,List<C> cs){
+    res.add(P.NCs.of(0, cs));
+    var li=l._cs(cs);
+    if(li==null){ return; }
+    for(T t:li.ts()){
+      P.NCs p=t.p().toNCs();
+      if(p.n()<=cs.size()){ continue; }
+      res.add(p.withN(p.n()-cs.size()));
+      }
+    }
   public void singleMap(CoreL l1,CoreL l2){
     l1.visitInnerLNoPrivate((li,csi)->singleMapOne(li,l1,l2,csi));
     l2.visitInnerLNoPrivate((li,csi)->singleMapOne(li,l2,l1,csi));
     }
-  void transitiveMap(){for(var e:map.values()){fixPoint(e);}}
+  void transitiveMap(){for(var e:innerMap.values()){fixPoint(e);}}
   private void fixPoint(LinkedHashSet<List<C>> e) {
     int size=e.size();
     for(var cs:new ArrayList<>(e)){
-      var mapped=map.get(cs);
+      var mapped=innerMap.get(cs);
       if(mapped!=null){e.addAll(mapped);}
       }
     if(size!=e.size()){fixPoint(e);}
@@ -257,7 +278,11 @@ public class Sum {
     if(pi.hasUniqueNum()){return null;}
     return pi.cs();
     }
-  public static P miniFrom(List<C> into,List<C> that){
+  public static P miniFrom(List<C> into,P.NCs that){
+    if(that.n()==0){ return miniFromCs(into,that.cs()); }
+    return that.withN(that.n()+into.size());
+    }
+  public static P miniFromCs(List<C> into,List<C> that){
     for(int i:range(into)){
       if(that.size()<=i){return P.of(into.size()-i,L());}
       if(that.get(i).equals(into.get(i))){continue;}
@@ -266,7 +291,7 @@ public class Sum {
     return P.of(0,L(that.stream().skip(into.size())));
     }
   public void singleMapOne(CoreL lInner,CoreL lTopThis,CoreL lTopOther,List<C>cs){
-    LinkedHashSet<List<C>> res=map.get(cs);
+    LinkedHashSet<List<C>> res=innerMap.get(cs);
     boolean inMap=res!=null;
     if(!inMap){res=new LinkedHashSet<>();}
     for(T t:lInner.ts()){
@@ -288,7 +313,7 @@ public class Sum {
           }
         }//we could cache growing interfaces
       }
-    if(!inMap && !res.isEmpty()){map.put(cs, res);}
+    if(!inMap && !res.isEmpty()){innerMap.put(cs, res);}
     }
   public static void paths(ArrayList<P.NCs> c,CoreL l,Program p0,P.NCs source){
     //Can be false when called under rename, since emptyLs are added 
@@ -360,8 +385,8 @@ public class Sum {
       Info info3=info1.sumInfo(info2);
       LinkedHashSet<S> refineds=new LinkedHashSet<>(info3.refined());
       ArrayList<P.NCs> typeDep=new ArrayList<>(info3.typeDep());
-      var mapped=map.get(cs);
-      if(mapped!=null){useMapped(ts3,refineds, imwts, typeDep, mapped);}
+      var mapped=innerMap.get(cs);
+      if(mapped!=null){useMapped(ts3,refineds, imwts, typeDep, mapped,map.get(cs));}
       info3=info3.withTypeDep(LL(typeDep)).withRefined(L(refineds.stream()));
       List<MWT>mwts3=plusIMWTs(imwts,l1,l2);
       List<NC> ncs3=plusNCs(ncs1, ncs2);
@@ -369,12 +394,15 @@ public class Sum {
       List<Pos> pos=mergeU(l1.poss(),l2.poss());
       return new CoreL(pos, isInterface3, LL(ts3), mwts3, ncs3, info3, doc3);
       }
-    private void useMapped(ArrayList<T> ts3,LinkedHashSet<S> refineds, ArrayList<IMWT> imwts, ArrayList<P.NCs> typeDep,LinkedHashSet<List<C>> mapped){
+    private void useMapped(ArrayList<T> ts3,LinkedHashSet<S> refineds, ArrayList<IMWT> imwts, ArrayList<P.NCs> typeDep,LinkedHashSet<List<C>> mapped,LinkedHashSet<P.NCs> fullMapped){
+      assert fullMapped!=null;
       Program p;
       if(!topLeft.inDom(cs)){p=pOut.push(cOut,topRight).navigate(cs);}
       else{p=pOut.push(cOut,topLeft).navigate(cs);}
+      for(var pi:fullMapped){
+        plusEqualTs(ts3,P.coreThis0.withP(miniFrom(cs,pi))); 
+        }
       for(var csi:mapped){
-        plusEqualTs(ts3,P.coreThis0.withP(miniFrom(cs,csi)));
         P.NCs path=p.minimize(P.of(cs.size(),csi)).toNCs();
         var left=topLeft._cs(csi);
         if(left!=null){
@@ -500,44 +528,35 @@ public class Sum {
         for(var mi:a){
           var other=_elem(b,mi.key());
           if(other==null){
-            c.add(mi.withL(addC(mi.key()).plusOnlyMap(topRight,mi.l())));}//topLeft
+            c.add(mi.withL(addC(mi.key()).plusOnlyMap(topLeft,mi.l())));}//topLeft or topRight? it does not change any tests!
           else{c.add(plus(mi,other));}
           }
         for(var mi:b){
           var other=_elem(a,mi.key());
-          if(other==null){c.add(mi.withL(addC(mi.key()).plusOnlyMap(topLeft,mi.l())));}//topRight
+          if(other==null){c.add(mi.withL(addC(mi.key()).plusOnlyMap(topRight,mi.l())));}//topRight or topLeft?
           }
         });    
       }
     private CoreL plusOnlyMap(CoreL top, CoreL l) {
-      var mapped=map.get(cs);
-      if(mapped==null){return l;}
+      var mapped=innerMap.get(cs);
+      if(mapped==null){return l.withNcs(plusOnlyMap(top,l.ncs()));}
+      var fullMapped=map.get(cs);
+      assert fullMapped!=null;
       ArrayList<T> ts=new ArrayList<>(l.ts());
       boolean i=Sum.implemented(top,cs);
       ArrayList<IMWT> imwts=new ArrayList<>();
       for(var m:l.mwts()){imwts.add(new IMWT(i,m));}
       LinkedHashSet<S> refineds=new LinkedHashSet<>(l.info().refined());
       ArrayList<P.NCs> typeDep=new ArrayList<>(l.info().typeDep());
-      useMapped(ts,refineds,imwts,typeDep,mapped);
-      useMappedExternalInterfaces(top, mapped, ts);
+      useMapped(ts,refineds,imwts,typeDep,mapped,fullMapped);
       List<MWT>mwts=plusIMWTs(imwts,l,l);
-      Info info=l.info().withTypeDep(LL(typeDep)).withRefined(L(refineds.stream()));
-      return l.withTs(ts).withMwts(mwts).withInfo(info);
+      Info info0=l.info().withTypeDep(LL(typeDep)).withRefined(L(refineds.stream()));
+      return l.withTs(ts).withMwts(mwts).withNcs(plusOnlyMap(top,l.ncs())).withInfo(info0);
       }
-    private void useMappedExternalInterfaces(CoreL top, LinkedHashSet<List<C>> mapped, ArrayList<T> ts) {
-      for(var csi:mapped){
-        CoreL li=top._cs(csi);
-        assert li!=null;
-        Program p;
-        if(!topLeft.inDom(csi)){p=pOut.push(cOut,topRight).navigate(csi);}
-        else{p=pOut.push(cOut,topLeft).navigate(csi);}        
-        for(T ti:li.ts()){
-          P.NCs out=p.from(ti.p().toNCs(),csi);
-          if(out.n()==0){ continue; }
-          out=out.withN(out.n()+cs.size());
-          plusEqualTs(ts,P.coreThis0.withP(out));
-          }
-        }
+    private List<Core.NC> plusOnlyMap(CoreL top, List<Core.NC> ncs){
+      return L(ncs,(c,nci)->{
+        c.add(nci.withL(addC(nci.key()).plusOnlyMap(top,nci.l())));
+        });
       }
     List<MWT> plusIMWTs(ArrayList<IMWT> that,CoreL l1,CoreL l2){return L(c->plusIMWTs(c,that,l1,l2));}
     void plusIMWTs(ArrayList<MWT> c,ArrayList<IMWT> that,CoreL l1,CoreL l2){

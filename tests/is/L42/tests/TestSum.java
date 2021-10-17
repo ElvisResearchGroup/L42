@@ -189,8 +189,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      E::1={interface #norm{}}
      I1={interface [This1.E::1] method Any m() #norm{close typeDep=This1.E::1 This1, watched=This1}}
    #norm{}}""",/*second lib after this line*/"""
-     R::1={interface #norm{}}
-     I1={interface [This1.R::1] method Any m() #norm{close typeDep=This1.R::1 This1, watched=This1}}
+     R::2={interface #norm{}}
+     I1={interface [This1.R::2] method Any m() 
+       #norm{close typeDep=This1.R::2 This1, 
+             watched=This1}}
    #norm{}}""",/*expected lib after this line*/"""
    nested class I1={interface m() }
    nested class I1={interface m() }
@@ -483,10 +485,48 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*expected lib after this line*/"""
      A={interface #norm{}}
      I={interface [This2.OutI,This1.A] #norm{typeDep=This2.OutI,This1.A}}
-     B={[This1.I,This1.A,This2.OutI] #norm{typeDep=This1.I,This2.OutI,This1.A}}
+     B={[This1.I,This2.OutI,This1.A] #norm{typeDep=This1.I,This2.OutI,This1.A}}
    #norm{}}"""/*next test after this line*/)
-   ));}
+   ),new AtomicTest(()->pass(
+   """
+     OutI={interface #norm{}}
+   ""","""
+     A={interface #norm{}}
+     I={interface [This2.OutI,This1.A] #norm{typeDep=This2.OutI,This1.A}}
+     B={ #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={interface #norm{}}
+     B={[This1.I] #norm{typeDep=This1.I}}
+   #norm{}}""",/*expected lib after this line*/"""
+     A={interface #norm{}}
+     I={interface [This2.OutI,This1.A] #norm{typeDep=This2.OutI,This1.A}}
+     B={[This1.I,This2.OutI,This1.A] #norm{typeDep=This1.I,This2.OutI,This1.A}}
+  #norm{}}"""/*next test after this line*/)
+  //Yes, the next test/bug was fully minimized.. :-/
+  ),new AtomicTest(()->pass("""
+    I = {interface #norm{}}
+    A = {
+      AA={[This2.I]
+        method Void sealed::0()=void
+        method Void m()=void
+        #norm{typeDep=This2.I close}}
+      #norm{}}
+  #norm{}}""",/*second lib after this line*/"""
+    I = { method Void m() #norm{}}
+  #norm{}}""",/*expected lib after this line*/"""
+    I={interface method Void m()#norm{}}
+    A={
+      AA={[This2.I]
+        method Void sealed::0()=void
+        method Void m()=void
+        #norm{typeDep=This2.I refined=m() close}
+        }
+      #norm{}
+      }
+  #norm{}}"""/*next test after this line*/)
+  ));}
    
+
    @Test public void test2(){
      miniFrom("A.B","A.B.C","This.C");
      miniFrom("A.B.D.E","A.B.C","This2.C");
@@ -496,7 +536,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      P pThat=P.parse("This."+that);
      P pInto=P.parse("This."+into);
      P pRes=P.parse(res);
-     assertEquals(pRes,Sum.miniFrom(pInto.toNCs().cs(),pThat.toNCs().cs()));
+     assertEquals(pRes,Sum.miniFromCs(pInto.toNCs().cs(),pThat.toNCs().cs()));
      }
 public static void pass(String sl1,String sl2,String sl3){
   pass("",sl1,sl2,sl3);

@@ -1,0 +1,131 @@
+@Public Fail = Message:{[Message.Guard]}
+
+S text
+var I index
+class method mut This(S text,I index)
+
+read method S pos() = (
+  var line = 1I
+  var lastNl = 0I
+  (text,index) = this
+  lastNl := text.indexOf(S.nl() from=lastNl)
+  while lastNl!=I"-1" && lastNl<index (
+    line+=1I
+    lastNl := text.indexOf(S.nl() from=lastNl)
+    )
+  S"Error in line %line"
+  )
+read method S more() = (
+  (text,index) = this
+  max = text.size().min(index+15\)
+  text.subString(index to=max).replace(S.nl() with=S" ")
+  )
+read method Fail err(S that) = Fail"""%
+  |%this.pos()
+  |%that
+  |<<%this.more()>>
+  """
+
+read method Bool *(S that) = this.text().startsWith(that, leftOffSet=this.index())
+
+read method Bool over() = this.index()>=this.text().size()
+
+mut method Void next() = this.index(\index+1\)
+
+mut method Void skipWs() = while this*S" " || this*S.nl() || this*S.tab() ( this.next() )
+@Public class method Json.Value (S that) = {
+  self = This(text=that, index=0I)
+  (value, skipWs, over) = self
+  if over return value
+  error self.err(S"The input has some left over")
+  }
+mut method Json.Value valueWs() = ( (skipWs1,value,skipWs2) = this value )
+mut method Json.Value value() = {
+  this.skipWs()
+  if this*S"null" ( this.index(\index+4\) return Json.Null() )
+  if this*S"true" ( this.index(\index+4\)return Json.Bool.True() )
+  if this*S"false" ( this.index(\index+5\) return Json.Bool.False() )
+  if this*S.dq() return this.string()
+  if this*S"{" return this.object()
+  if this*S"[" return this.array()
+  return this.number()
+  }
+mut method Json.String stringWs() = ( (skipWs1,string,skipWs2) = this string )
+mut method Json.String string() = (
+  X.Pre[this*S.dq()]
+  start = this.index()+1I
+  this.next()//skip "
+  while !this.over() && !(this*S.dq()) (
+    if this.nextChar()==S"\" this.escape()
+    )
+  res = this.text().subString(start to=this.index())
+  if this.nextChar()!=S.dq() error Fail"invalid string literal <<%res>>"//report position too
+  \(string=res).norm()
+  )
+mut method Void escape() = {
+  (next,nextChar) = this
+  ok = Match.Some()( for h in This.goodEscape() \add(nextChar==h) )
+  if ok return void
+  if nextChar!=S"u" error Fail"Invalid escape character"
+  (next0,hex1 hex2 hex3 hex4) = this
+  return void
+  }
+@Cache.Lazy class method S.List goodEscape() =
+  \[S.dq();S"\";S"/";S"n";S"r";S"t";S"b";S"f"]
+@Cache.Lazy class method S.List goodHex() =
+  \[S"A";S"B";S"C";S"D";S"E";S"F";
+    S"a";S"b";S"c";S"d";S"e";S"f";
+    S"0";S"1";S"2";S"3";S"4";S"5";S"6";S"7";S"8";S"9"]
+@Cache.Lazy class method S.List oneNine() =
+  \[S"1";S"2";S"3";S"4";S"5";S"6";S"7";S"8";S"9"]
+mut method Void hex()=(
+  (next,nextChar) = this
+  ok = Match.Some()( for h in This.goodHex() \add(nextChar==h) )
+  if !ok error this.err(S"Invalid hex")
+  )
+mut method S nextChar() = (
+  res = this.text().subString(this.index() to=this.index()+1\)
+  this.next()
+  res
+  )
+mut method Json.Number number() = {
+  isLess = this*S"-"
+  var S txt = ( if !isLess S"" else this.nextChar() )
+  if this*S"0" ( this.next() return \(txt++S"0") )
+  ok = Match.Some()( for h in This.oneNine() \add(this*h) )
+  if !ok error this.err(S"Not a number")
+  txt ++= this.nextChar()
+  while this*S"0" || Match.Some()( for h in This.oneNine() \add(this*h) ) (
+    txt ++= this.nextChar()
+    )
+  return \(txt).norm()
+  }
+mut method Json.Object object() = (
+  X.Pre[this*S"{"]
+  this.next()
+  imm res = \()((
+    s = this.stringWs()
+    if this.nextChar()!=S":" error this.err(S"Missing ':'")
+    v = this.valueWs()
+    \put(key=s,val=v)
+    while this*S"," (
+      this.next()
+      si = this.stringWs()
+      if this.nextChar()!=S":" error this.err(S"Missing ':'")
+      vi = this.valueWs()
+      \put(key=si,val=vi)
+      )
+    ))
+  if this.nextChar()!=S"}" error this.err(S"Missing '}'")
+  res.immNorm()
+  )
+mut method Json.Array array() = (
+  X.Pre[this*S"["]
+  this.next()
+  imm res = \()((
+    \add(this.valueWs())
+    while this*S"," ( this.next() \add(this.valueWs()) )
+    ))
+  if this.nextChar()!=S"]" error this.err(S"Missing ']'")
+  res.immNorm()
+  )

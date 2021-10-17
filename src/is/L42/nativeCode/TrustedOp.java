@@ -478,7 +478,7 @@ public enum TrustedOp {
     try{return %1$s.substring(%2$s,%3$s);}
     catch(StringIndexOutOfBoundsException nfe){
       throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
-        "SubString out of bound: start="+%2$s+", end="+%2$s+", size="+%1$s.length()
+        "SubString out of bound: start="+%2$s+", end="+%3$s+", size="+%1$s.length()
         )));
       }
     """,sigI(String,Int,Int)

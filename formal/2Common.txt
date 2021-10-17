@@ -42,11 +42,11 @@ _______
     where P'[from P;p] as defined above
 
 * {H MWTs NCs}[from P;p;j] = 
-    {H[Ts=H.Ts[from P;p';j+1] MWTs[from P;p';j+1] NCs[from P;p';j+1]}
-      p'=p.push({H MWTs NCs})
+    {H[Ts=H.Ts[from P;p;j+1] MWTs[from P;p;j+1] NCs[from P;p;j+1]}//p' in rename
+      //p'=p.push({H MWTs NCs}) From in Rename uses p' above
 * (C={H MWTs NCs})[from P;p;j]=
-    C={H[Ts=H.Ts[from P;p';j+1] MWTs[from P;p';j+1] NCs[from P;p';j+1]}
-      p'=p.push(C,{H MWTs NCs})
+    C={H[Ts=H.Ts[from P;p;j+1] MWTs[from P;p;j+1] NCs[from P;p;j+1]}//p' in rename
+      //p'=p.push(C,{H MWTs NCs})
 * This(j+n).Cs0[from P;p;j] = This(j+k).Cs1
     Thisn.Cs0[from P;p] = Thisk.Cs1
 * Thisn.Cs[from P;p;j] = Thisn.Cs with n<j
