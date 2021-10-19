@@ -64,11 +64,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{method Void (Void that,Void foo)=foo.bar(\\x)}")
    ),new AtomicTest(()->
-   fail("{method Void (Void that,Void foo)=\\x.foo()}","term \\x can only be used inside parameters")
+   pass("{method Void (Void that,Void foo)=\\x.foo()}"/*,"term \\x can only be used inside parameters"*/)
    ),new AtomicTest(()->
-   fail("{method (that,foo)=foo+\\x.foo()}","term \\x can only be used inside parameters")
+   pass("{method (that,foo)=foo+\\x.foo()}"/*,"term \\x can only be used inside parameters"*/)
    ),new AtomicTest(()->
-   fail("{C=\\x}","term \\x can only be used inside parameters")
+   fail("{C=\\x}","term \\x can only be used inside parameters or method bodies")
    ),new AtomicTest(()->
    pass("{method Void (Void that,Void foo)=(var y=foo, void.foo(y+=void) void)}")
    ),new AtomicTest(()->

@@ -182,7 +182,6 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       || e instanceof Core.EVoid
       || e instanceof LL
       || e instanceof Full.Slash
-      || e instanceof Full.SlashX
       || e instanceof Full.EPathSel
       || e instanceof Full.Cast;
     }
@@ -430,7 +429,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     declared.addAll(pars);    
     super.visitMI(mi);
     declared.removeAll(pars);
-    checkTopE(mi.e().visitable(),pars);
+    checkTopE(true,mi.e().visitable(),pars);
     FV.of(mi.e().visitable());
     var l=new ContainsFullL()._of(mi.e().visitable());
     if(l==null){return;}
@@ -440,7 +439,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   @Override public void visitNC(Full.L.NC nc){
     lastPos=nc.poss();
     super.visitNC(nc);
-    checkTopE(nc.e().visitable(),L());
+    checkTopE(false,nc.e().visitable(),L());
     FV.of(nc.e().visitable());
     }
   @Override public void visitMWT(Full.L.MWT mwt){
@@ -453,7 +452,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitMWT(mwt);
     declared.removeAll(pars);
     if(mwt._e()==null){return;}
-    checkTopE(mwt._e().visitable(),pars);
+    checkTopE(true,mwt._e().visitable(),pars);
     checkCapsulesUsedOnlyOnce(mwt._e().visitable(),pars,
       mwt.mh().parsWithThis().stream().map(t->t._mdf()));
     var l=new ContainsFullL()._of(mwt._e().visitable());
@@ -475,7 +474,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitMWT(mwt);
     declared.removeAll(pars);
     if(mwt._e()==null){return;}
-    checkTopE(mwt._e().visitable(),pars);
+    checkTopE(true,mwt._e().visitable(),pars);
     checkCapsulesUsedOnlyOnce(mwt._e().visitable(),pars,
       mwt.mh().parsWithThis().stream().map(t->t.mdf()));
     }
@@ -491,7 +490,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       err(ErrMsg.capsuleBindingUsedOnce(xi));
       });
     }
-  private void checkTopE(Visitable<?> v,List<X>pars) {
+  private void checkTopE(boolean slashOk,Visitable<?> v,List<X>pars) {
     assert declared.isEmpty():
       declared;
     assert declaredHidden.isEmpty();
@@ -501,8 +500,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     declared.addAll(pars);
     v.accept(this);
     declared.removeAll(pars);
+    if(slashOk){ return; }
     var sx=new ContainsSlashXOut()._of(v);
-    if(sx==null){return;}
+    if(sx==null){ return; }
     lastPos=sx.poss();
     throw err(ErrMsg.slashOut(sx));
     }

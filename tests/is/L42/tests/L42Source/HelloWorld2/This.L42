@@ -1,15 +1,23 @@
 reuse [AdamsTowel]
-JsonBase=Trait:{...}
-JsonSeal=Trait:{...}
-Json = Class:Trait(Organize:{...})[hide='Value.sealed()]
-Parse = Public:{...}
+Parse = Trait:{...}
+JsonBase = Trait:{...}
+JsonSeal = Trait:{...}
+ToJson =(JsonSeal:Organize:{...})[hide='Value.sealed()]
+Json = Organize:{
+  $ = Class:ToJson
+  ParseJson = Public:Class:Parse:{...}
+  class method $.Value #from(S.StringBuilder stringLiteral) = ParseJson(stringLiteral.toS())
+  }
 
 Mah = (
-  Json.Value v=Parse(S"""
+  Json.Value v=Json"""
     |[{ "a":12, "b":true, "c":["a","k"] },
-    |" hello "
+    |" hello ",
+    | 123456,
+    |-123456,
+    |" \n foo \uAABB hi! "
     |]
-    """)
+    """
   Debug(S"second|%v|")
   Debug(S"second|%v.toJson()|")
   )

@@ -1,0 +1,40 @@
+$ = Class.Relax:JsonBase:{ Value = { method S toJson() } }
+
+String = { method S toJson() = (
+  @ToJson S inner = this.toS()
+  S.dq()++inner++S.dq() 
+  )} 
+Number = { method S toJson() = (
+  @ToJson S inner = this.toS()
+  inner
+  )}
+Bool = {
+  True =  { method S toJson() = S"true"  }
+  False = { method S toJson() = S"false" }
+  }
+Null = { method S toJson() = S"null" }
+Object = { method S toJson() = S.StringBuilder()((
+  \append(S"{")
+  var first=This2.Bool.true()
+  @ToJson $.Object self = this
+  for (key,val) in self (
+    if first ( first:=!first )
+    else ( \append(S", ") )
+    \append(key.toJson())
+    \append(S" : ")
+    \append(val.toJson())
+    )
+  \append(S"}")
+  )).toS()
+  }
+Array = { method S toJson() = S.StringBuilder()((
+  \append(S"[")
+  @ToJson $.Array self=this
+  \append(self.left().toJson())
+  for val in self.vals(1\ to=\size) (
+    \append(S", ")
+    \append(val.toJson())
+    )
+  \append(S"]")
+  )).toS()
+  }

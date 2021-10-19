@@ -179,7 +179,7 @@ _______
     if T.mdf in {fwd imm,fwd mut} then exists i: Ti.mdf in {fwd imm, fwd mut}
 //If we allow lent/read return type and a fwd parameter, we may return a fwd%mut as an usable lent/read
 * FULL.match of form T?0(T?1 x0..T?n xn) = e; at least one T?i is not empty
-* FULL.e: \x only appear in a method parameter expression
+* FULL.e: \x only appear in a method parameter expression or a method body
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty 
 * CORE [Ts]: forall mdf in Ts.mdfs, mdf= imm //empty in the concrete syntax
 * FULL [INFER?Ts]: forall mdf? in Ts.mdfs, mdf?= imm //empty in the concrete syntax

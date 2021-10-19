@@ -58,9 +58,9 @@ _______
 * Y!xP OP3 e = Y!(
       x = xP.#shortCircut'OP3'()  //see name mangling
       if x xP.#shortResult'OP3'(x)
-      else xP.#shortProcess'OP3'(x,other=e)
-      )
-    x fresh  
+      else (y=e xP.#shortProcess'OP3'(x,other=y) ) // or xP.#shortProcess'OP3'(x,other=e) if e of form XP 
+      )//y is needed, otherwise the \x would not work
+    x,y fresh
 //    T && X= if !T F else X//shortResult&& is false, shortCircut&& is !this
 //    T || X= if T T else X//shortResult|| is true, shortCircut|| is this
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this

@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 import is.L42.constraints.FreshNames;
 import is.L42.constraints.ToHalf;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.T;
@@ -151,8 +152,9 @@ public class CTz{
     }
   public Half.E _add(FreshNames fresh,Program p, Core.MH mh, Full.E _e){
     if(_e==null){return null;}
-    Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
-    var res= new ToHalf(y,this,fresh).compute(_e);
+    Half.XP self=new Core.EX(_e.pos(),X.thisX);
+    Y y=new Y(p,GX.of(mh),L(mh.t()),self,L(mh.t()));
+    var res= new ToHalf(y,this,fresh).compute(_e);    
     this.plusAcc(p, res.resSTz,L(mh.t()));
     assert res.retSTz.isEmpty();//may be not?
     return res.e;

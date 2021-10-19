@@ -305,7 +305,7 @@ _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
 * CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
-    Y = Y[p=p;GX=MH.G;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
+    Y = Y[p=p;GX=MH.G;onSlash=MH.T;onSlashX=this;expectedT=MH.T;CTz]
     Y!e = Half.e; STz; _; CTz'
 _______
 #define CTz <+p STz<=STz' = CTz'    CTz <+p ST<=STz = CTz'

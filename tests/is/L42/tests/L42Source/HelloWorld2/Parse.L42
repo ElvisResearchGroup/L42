@@ -11,7 +11,7 @@ read method S pos() = (
   lastNl := text.indexOf(S.nl() from=lastNl)
   while lastNl!=I"-1" && lastNl<index (
     line+=1I
-    lastNl := text.indexOf(S.nl() from=lastNl)
+    lastNl := text.indexOf(S.nl() from=lastNl+1\)
     )
   S"Error in line %line"
   )
@@ -26,106 +26,30 @@ read method Fail err(S that) = Fail"""%
   |<<%this.more()>>
   """
 
-read method Bool *(S that) = this.text().startsWith(that, leftOffSet=this.index())
+read method S top() = \text.subString(this.index() to=this.index()+1\)
+read method Bool top(S that) = \text.startsWith(that, leftOffSet=this.index())
+read method Void topErr(S that) = if !\top(that) error \err(S"Missing '%that'")
 
-read method Bool over() = this.index()>=this.text().size()
+mut method S pop() = (
+  (index0,drop,index1) = this
+  \text.subString(index0 to=index1)
+  )
+mut method Bool pop(S that) = {
+  if !\top(that) return \.false()
+  \index(\index+that.size())
+  return \.true()
+  }
+//popErr makes no sense
+mut method Void drop() = \index(\index+1\)
+mut method Bool drop(S that) = {
+  if !\top(that) return \.false()
+  return \.true()
+  }
+mut method Void dropErr(S that) = (
+  if !\top(that) error \err(S"Missing '%that'")
+  \index(\index+that.size())
+  )
 
-mut method Void next() = this.index(\index+1\)
+read method Bool over() = \index>=\text.size()
 
-mut method Void skipWs() = while this*S" " || this*S.nl() || this*S.tab() ( this.next() )
-@Public class method Json.Value (S that) = {
-  self = This(text=that, index=0I)
-  (value, skipWs, over) = self
-  if over return value
-  error self.err(S"The input has some left over")
-  }
-mut method Json.Value valueWs() = ( (skipWs1,value,skipWs2) = this value )
-mut method Json.Value value() = {
-  this.skipWs()
-  if this*S"null" ( this.index(\index+4\) return Json.Null() )
-  if this*S"true" ( this.index(\index+4\)return Json.Bool.True() )
-  if this*S"false" ( this.index(\index+5\) return Json.Bool.False() )
-  if this*S.dq() return this.string()
-  if this*S"{" return this.object()
-  if this*S"[" return this.array()
-  return this.number()
-  }
-mut method Json.String stringWs() = ( (skipWs1,string,skipWs2) = this string )
-mut method Json.String string() = (
-  X.Pre[this*S.dq()]
-  start = this.index()+1I
-  this.next()//skip "
-  while !this.over() && !(this*S.dq()) (
-    if this.nextChar()==S"\" this.escape()
-    )
-  res = this.text().subString(start to=this.index())
-  if this.nextChar()!=S.dq() error Fail"invalid string literal <<%res>>"//report position too
-  \(string=res).norm()
-  )
-mut method Void escape() = {
-  (next,nextChar) = this
-  ok = Match.Some()( for h in This.goodEscape() \add(nextChar==h) )
-  if ok return void
-  if nextChar!=S"u" error Fail"Invalid escape character"
-  (next0,hex1 hex2 hex3 hex4) = this
-  return void
-  }
-@Cache.Lazy class method S.List goodEscape() =
-  \[S.dq();S"\";S"/";S"n";S"r";S"t";S"b";S"f"]
-@Cache.Lazy class method S.List goodHex() =
-  \[S"A";S"B";S"C";S"D";S"E";S"F";
-    S"a";S"b";S"c";S"d";S"e";S"f";
-    S"0";S"1";S"2";S"3";S"4";S"5";S"6";S"7";S"8";S"9"]
-@Cache.Lazy class method S.List oneNine() =
-  \[S"1";S"2";S"3";S"4";S"5";S"6";S"7";S"8";S"9"]
-mut method Void hex()=(
-  (next,nextChar) = this
-  ok = Match.Some()( for h in This.goodHex() \add(nextChar==h) )
-  if !ok error this.err(S"Invalid hex")
-  )
-mut method S nextChar() = (
-  res = this.text().subString(this.index() to=this.index()+1\)
-  this.next()
-  res
-  )
-mut method Json.Number number() = {
-  isLess = this*S"-"
-  var S txt = ( if !isLess S"" else this.nextChar() )
-  if this*S"0" ( this.next() return \(txt++S"0") )
-  ok = Match.Some()( for h in This.oneNine() \add(this*h) )
-  if !ok error this.err(S"Not a number")
-  txt ++= this.nextChar()
-  while this*S"0" || Match.Some()( for h in This.oneNine() \add(this*h) ) (
-    txt ++= this.nextChar()
-    )
-  return \(txt).norm()
-  }
-mut method Json.Object object() = (
-  X.Pre[this*S"{"]
-  this.next()
-  imm res = \()((
-    s = this.stringWs()
-    if this.nextChar()!=S":" error this.err(S"Missing ':'")
-    v = this.valueWs()
-    \put(key=s,val=v)
-    while this*S"," (
-      this.next()
-      si = this.stringWs()
-      if this.nextChar()!=S":" error this.err(S"Missing ':'")
-      vi = this.valueWs()
-      \put(key=si,val=vi)
-      )
-    ))
-  if this.nextChar()!=S"}" error this.err(S"Missing '}'")
-  res.immNorm()
-  )
-mut method Json.Array array() = (
-  X.Pre[this*S"["]
-  this.next()
-  imm res = \()((
-    \add(this.valueWs())
-    while this*S"," ( this.next() \add(this.valueWs()) )
-    ))
-  if this.nextChar()!=S"]" error this.err(S"Missing ']'")
-  res.immNorm()
-  )
+mut method Void skipWs() = while \top(S" ") || \top(S.nl()) || \top(S.tab()) ( \drop )

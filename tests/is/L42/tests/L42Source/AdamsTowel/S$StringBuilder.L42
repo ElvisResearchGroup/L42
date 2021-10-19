@@ -105,6 +105,7 @@ mut method Void #stringAddExpr(read This1.HasToS that)=this.append(that=that.toS
 mut method Void append(This1.S that)=native{trusted:addAll}error void
 
 class method mut This #apply()
+mut  method mut This #apply(Void that)=this//mapping
 class method mut This #stringLiteralBuilder()=this.#apply()
 read method This1.S toS()=
   native{trusted:toS} error void

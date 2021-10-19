@@ -128,7 +128,7 @@ public class ErrMsg {
   ;}public static String nameUsedNotInScope(Object _1){return
   "Used name is not in scope: "+_1
   ;}public static String slashOut(Object _1){return
-  "term "+_1+" can only be used inside parameters"
+  "term "+_1+" can only be used inside parameters or method bodies"
   ;}public static String methodTypeMdfNoFwd(){return  
   "method modifier can not be fwd imm or fwd mut"
   ;}public static String methodTypeNoFwdPar(Object _1){return    

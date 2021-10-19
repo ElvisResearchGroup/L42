@@ -806,57 +806,54 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      ""","""
      method Void v(This as)=(
        This fresh0_xIt=as.#varIterator()
-       var This fresh1_xIndex=as.#startIndex(),,,,(
-         Void fresh2_underscore=loop(
+       var This fresh1_xIndex=as.#startIndex()
+       ( Void fresh2_underscore=loop (
            This fresh3_cond=(
              This fresh4_op3=fresh0_xIt.#hasElem(that=fresh1_xIndex)
-             (
-               This fresh5_op3=fresh4_op3.#shortCircut#andand()
-               (
-                 Void fresh6_underscore=(
-                   This fresh7_receiver=fresh5_op3.#if()
-                   fresh7_receiver.#checkTrue()
-                   )
-                 catch exception Void fresh8_underscore
-                   fresh4_op3.#shortProcess#andand(that=fresh5_op3,
-                     other=fresh0_xIt.#incomplete(that=fresh1_xIndex)
-                     )
-                 fresh4_op3.#shortResult#andand(that=fresh5_op3)
-                 )
-               )
-             ),,,,(
-               Void fresh9_underscore=(
-                 This fresh10_receiver=fresh3_cond.#if()
-                 fresh10_receiver.#checkTrue()
-                 )
-               catch exception Void fresh11_underscore(
-                 Void fresh12_underscore=fresh0_xIt.#close(that=fresh1_xIndex)
-                 exception void
-                 )
-               (
-                 var This a=fresh0_xIt.#elem#imm(that=fresh1_xIndex)
-                 Void fresh13_underscore=(
-                   a:=fresh0_xIt.#update#imm(that=fresh1_xIndex, val=a)
-                   )
-                 Void fresh14_underscore=fresh1_xIndex:=fresh1_xIndex.#succ()
-                 void
-                 )
-               )
-             )
-           catch exception Void fresh15_underscore void
-           error void
-           )
-         )
-     method This #varIterator()
-     method This #startIndex()
-     method This #hasElem(This that)
-     method This #elem#imm(This that)
-     mut method Void #update#imm(This that, This val)
-     method This #if()
-     method This #shortCircut#andand()
-     method This #shortResult#andand()
-     method This #shortProcess#andand(This that, This other)
-     """)
+             (  This fresh5_op3=fresh4_op3.#shortCircut#andand()
+               (  Void fresh7_underscore=
+                 (  This fresh8_receiver=fresh5_op3.#if()
+                    fresh8_receiver.#checkTrue()
+                    )
+                  catch exception Void fresh9_underscore (
+                    This fresh6_op3=fresh0_xIt.#incomplete(that=fresh1_xIndex)
+                    fresh4_op3.#shortProcess#andand(that=fresh5_op3, other=fresh6_op3)
+                    )
+                  fresh4_op3.#shortResult#andand(that=fresh5_op3)
+                  )
+                )
+              )
+            ( Void fresh10_underscore=
+              ( This fresh11_receiver=fresh3_cond.#if()
+                fresh11_receiver.#checkTrue()
+                )
+              catch exception Void fresh12_underscore (
+                Void fresh13_underscore=fresh0_xIt.#close(that=fresh1_xIndex)
+                exception void
+                )
+              ( var This a=fresh0_xIt.#elem#imm(that=fresh1_xIndex)
+                Void fresh14_underscore=(
+                  a:=fresh0_xIt.#update#imm(that=fresh1_xIndex, val=a)
+                  )
+                Void fresh15_underscore=fresh1_xIndex:=fresh1_xIndex.#succ()
+                void
+                )
+              )
+            )
+          catch exception Void fresh16_underscore void
+          error void
+          )
+        )
+      method This #varIterator()
+      method This #startIndex()
+      method This #hasElem(This that)
+      method This #elem#imm(This that)
+      mut method Void #update#imm(This that, This val)
+      method This #if()
+      method This #shortCircut#andand()
+      method This #shortResult#andand()
+      method This #shortProcess#andand(This that, This other)         
+      """)
 ),new AtomicTest(()->pass("""
   method class Any v()={ imm Any a={ return void } return Void}
   ""","""
@@ -898,7 +895,7 @@ public static void chooseSpecificT(String in,String out){
 public static void pass(String l,String out){
   CoreL cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool usedMethods=This.Bool.k(),This.Bool.#checkTrue()}}").topCore();
   var ces=processIn(l);
-  assertEquals(ces,cl.mwts());
+  assertEquals(cl.mwts(),ces);
   }
 public static void fail(Class<?> kind,String l,String ...err){
   checkFail(()->processIn(l),err, kind);

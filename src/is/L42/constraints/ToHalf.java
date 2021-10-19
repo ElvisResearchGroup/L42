@@ -84,7 +84,8 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }  
   private void commitMCall(Y oldY,Pos pos,S s,List<Full.E>es){
     Half.XP xp=this.y._onSlashX();
-    assert xp!=null;
+    assert xp!=null:
+      "";
     List<ST> stz=expectedRes(xp);
     ArrayList<Half.E> esRes=new ArrayList<>();
     ArrayList<ST> retST=new ArrayList<>();
@@ -503,9 +504,17 @@ public class ToHalf extends UndefinedCollectorVisitor{
     Par par2=new Par(ex,L(other),L(e1));
     var scCall=new Full.Call(p,e0,sc,false,Par.emptys);
     var srCall=new Full.Call(p,e0,sr,false,L(par1));
-    var spCall=new Full.Call(p,e0,sp,false,L(par2));
+    Full.E elseBody;
+    if(isFullXP(e1)){elseBody=new Full.Call(p,e0,sp,false,L(par2));}
+    else{
+      X y=freshX("op3");
+      var dy=makeDec(null,y,e1);
+      Par par2y=new Par(ex,L(other),L(new Core.EX(e1.pos(),y)));
+      var spCally=new Full.Call(p,e0,sp,false,L(par2y));
+      elseBody=makeBlock(p, L(dy),spCally);
+      }
     var dx=makeDec(null,x,scCall);
-    var ifElse=new Full.If(p, ex,L(), srCall,spCall);
+    var ifElse=new Full.If(p, ex,L(), srCall,elseBody);
     visitBlock(makeBlock(p, L(dx),ifElse));
     }
   private Full.BinOp visitBinOpCsp(Full.BinOp b){

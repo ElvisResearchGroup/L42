@@ -1,0 +1,98 @@
+Fail = {}
+S text
+var I index
+class method mut This(S text,I index)
+read method Fail err(S that)
+read method S top()
+read method Bool top(S that)
+read method Void topErr(S that)
+mut method S pop()
+mut method Bool pop(S that)
+mut method Void drop()
+mut method Bool drop(S that)
+mut method Void dropErr(S that)
+read method Bool over()
+mut method Void skipWs()
+
+@Cache.Lazy class method S.List goodEscape() =
+  \[S.dq();S"\";S"/";S"n";S"r";S"t";S"b";S"f"]
+@Cache.Lazy class method S.List goodHex() =
+  \[S"A";S"B";S"C";S"D";S"E";S"F";
+    S"a";S"b";S"c";S"d";S"e";S"f";
+    S"0";S"1";S"2";S"3";S"4";S"5";S"6";S"7";S"8";S"9"]
+@Cache.Lazy class method S.List oneNine() =
+  \[S"1";S"2";S"3";S"4";S"5";S"6";S"7";S"8";S"9"]
+@Cache.Lazy class method S.List zeroNine() =
+  \[S"0";S"1";S"2";S"3";S"4";S"5";S"6";S"7";S"8";S"9"]
+
+@Public class method $.Value (S that) = This(text=that, index=0I).topValue()
+mut method $.Value topValue() = {
+  (valueWs) = this
+  if \over return valueWs
+  error \err(S"The input has some left over")
+  }
+mut method $.Value valueWs() = ( (skipWs1,value,skipWs2) = this value )
+mut method $.Value value() = {
+  if \pop(S"null") return $.Null()
+  if \pop(S"true") return $.Bool.True()
+  if \pop(S"false") return $.Bool.False()
+  if \top(S.dq()) return \string.norm()
+  if \top(S"{") return \object.immNorm()
+  if \top(S"[") return \array.immNorm()
+  return \number.norm()
+  }
+mut method $.String stringWs() = ( (skipWs1,string,skipWs2) = this string )
+mut method $.String string() = (
+  \dropErr(S.dq())
+  (index0)=this
+  while !\over && !\top(S.dq()) && !\top(S.nl()) (
+    if \pop==S"\" \escape
+    )
+  res = \text.subString(index0 to=this.index())
+  \dropErr(S.dq())
+  \(string=res)
+  )
+mut method Void escape() = {
+  (pop) = this
+  ok = Match.Some()( for h in This.goodEscape() \add(pop==h) )
+  if ok return void
+  if pop!=S"u" error \err(S"Invalid escape character")
+  return (\hex, \hex, \hex, \hex)
+  }
+mut method Void hex() = (
+  (pop) = this
+  ok = Match.Some()( for h in This.goodHex() \add(pop==h) )
+  if !ok error \err(S"Invalid hex")
+  )
+mut method $.Number number() = {
+  isLess = \pop(S"-")
+  var S txt = ( if !isLess S"" else S"-" )
+  if \pop(S"0") return \(txt++S"0")
+  ok = Match.Some()( for h in This.oneNine() \add(this.top(h)) )
+  if !ok error \err(S"Not a number")
+  txt ++= \pop
+  while Match.Some()( for h in This.zeroNine() \add(this.top(h)) ) (
+    txt ++= \pop
+    )
+  return \(txt)
+  }
+mut method $.Object object() = \()((
+  this.dropErr(S"{")
+  s = this.stringWs()
+  this.dropErr(S":")
+  \put(key=s, val=this.valueWs())
+  while this.pop(S",") (
+    si = this.stringWs()
+    this.dropErr(S":")
+    \put(key=si, val=this.valueWs())
+    )
+  this.dropErr(S"}")
+  ))
+mut method $.Array array() = \()((
+  this.dropErr(S"[")
+  \add(this.valueWs())
+  while this.pop(S",") (
+    \add(this.valueWs())
+    )
+  this.dropErr(S"]")
+  ))

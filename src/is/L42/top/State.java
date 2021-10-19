@@ -92,7 +92,8 @@ public class State implements Serializable{
       }
     private void ctzAdd(CTz ctz0, Program p, MH mh, Full.E _e) {
       if(_e==null){e1n.add(null);return;}
-      Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
+      Half.XP self=new Core.EX(_e.pos(),X.thisX);
+      Y y=new Y(p,GX.of(mh),L(mh.t()),self,L(mh.t()));
       var hq=new ToHalf(y, ctz0, freshNames).compute(_e);
       ctz0.plusAcc(p,hq.resSTz, L(mh.t()));
       e1n.add(hq.e);

@@ -114,12 +114,13 @@ Client={[HasToS]
     @Top I privkey = this.privateKey()
     mut @Top MetaData m=msg.#metaData()
     @Top Bool nonZero = privkey != 0I
-    if nonZero (
-      @Top Bool valid = m.isEncrypted() && This.isKeyPairValid(publicKey=m.encryptionKey(), privateKey=privkey)
-      if valid ( //high context, only assignments to high
-        m.isEncrypted(Bool.false())
-        m.encryptionKey(0I)
-        )
+    @Top Bool encripted = m.isEncrypted()
+    @Top Bool keyOk = This.isKeyPairValid(publicKey=m.encryptionKey(), privateKey=privkey)
+    @Top Bool valid = nonZero.and(encripted).and(keyOk)
+    if valid (
+      //high context, only assignments to high
+      m.isEncrypted(Bool.false())
+      m.encryptionKey(0I)
       )
     this.incomingWrappeeVerify(msg=msg)
     void
@@ -209,7 +210,7 @@ Client={[HasToS]
   mut method Void verify(mut Email msg)=( //receiver of message
     mut @Top MetaData metaData=msg.#metaData()
     I pubkey = this.getKeyringPublicKey(client=msg.#from())
-    @Top Bool keyValid = pubkey != 0I && This.isKeyPairValid(publicKey=pubkey, privateKey=metaData.signKey())
+    @Top Bool keyValid = (pubkey != 0I).and( This.isKeyPairValid(publicKey=pubkey, privateKey=metaData.signKey()) )
     if keyValid metaData.isSignatureVerified(Bool.true()) 
     )
   mut method Void forward(mut Email msg)=(
