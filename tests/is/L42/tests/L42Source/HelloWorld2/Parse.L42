@@ -41,14 +41,8 @@ mut method Bool pop(S that) = {
   }
 //popErr makes no sense
 mut method Void drop() = \index(\index+1\)
-mut method Bool drop(S that) = {
-  if !\top(that) return \.false()
-  return \.true()
-  }
-mut method Void dropErr(S that) = (
-  if !\top(that) error \err(S"Missing '%that'")
-  \index(\index+that.size())
-  )
+mut method Bool drop(S that) = this.pop(that)
+mut method Void dropErr(S that) = if !\drop(that) error \err(S"Missing '%that'")
 
 read method Bool over() = \index>=\text.size()
 

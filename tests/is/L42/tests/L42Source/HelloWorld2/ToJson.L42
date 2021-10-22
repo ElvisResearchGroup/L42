@@ -18,10 +18,10 @@ Object = { method S toJson() = S.StringBuilder()((
   var first=This2.Bool.true()
   @ToJson $.Object self = this
   for (key,val) in self (
-    if first ( first:=!first )
+    if first ( first:=This2.Bool.false() )
     else ( \append(S", ") )
     \append(key.toJson())
-    \append(S" : ")
+    \append(S": ")
     \append(val.toJson())
     )
   \append(S"}")
