@@ -112,6 +112,15 @@ public class InMemoryJavaCompiler {
   	}
   public static final boolean JITIsEnabled = true;
   public static ClassLoader compile(ClassLoader env,List<SourceFile> files, JavaCodeStore newBytecode) throws CompilationError {
+    //Activate to help debugging jdk errors
+    //for(var f:files){
+    //  System.out.println(f.className);
+    //  var name="src/"+f.className.replace(".","/")+".java";
+    //  var content=f.contents;
+    //  try {java.nio.file.Files.write(
+    //    java.nio.file.Paths.get(name), content.getBytes());}
+    //  catch (IOException e) {throw new Error(e);}
+    //  }    
     if(PerfCounters.isEnabled()) {
       perfCountClassContents(files, "compile", false);
       }

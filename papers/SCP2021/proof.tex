@@ -10,7 +10,7 @@ To express our type system assumptions, we first need some auxiliary definitions
 \indent $\reach(\s, e, l)$ iff $\exists l' \in e$ such that $l \in \rog(\s, l')$,\\
 \indent $\reach(\s, \E, l)$ iff $\exists l' \in \E$ such that $l \in \rog(\s, l')$.
 
-\noindent We now define what it means for an object to be \immut: it is in the \rog of an \Q!imm! reference or a \reach \Q!imm! field:\IOComm{minor quibble, but the colour of keywords in the math and text is different, can we fix that?}\\*
+\noindent We now define what it means for an object to be \immut: it is in the \rog of an \Q!imm! reference or a \reach \Q!imm! field:\\*
 \indent $\immut(\s, e, l)$ iff $\exists \E, l'$ such that:
 \begin{iitemize}
 \item $e = \E[l']$, \tyr{l'}{\Kw{imm}\,\_}, and $l \in \rog(\s, l')$, or
