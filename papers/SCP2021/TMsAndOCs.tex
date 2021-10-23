@@ -81,7 +81,7 @@ Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus
 A common misconception of this line of work is that a \Q!mut! field will always refer to a mutable object.
 Classes declare RCs for their methods and field types, but  what kinds of object is stored in a field also depends on the kind of the object: a \Q!mut! field of a mutable object will contain a mutable object; but a \Q!mut! field of an immutable object will contain an immutable object.
 This is different with respect to many other approaches, where the
-declaration fully determines what values can be stored; In those other approaches any contextual information must be explicitly passed through the type system, for example, with a generic RC parameter.
+declaration fully determines what values can be stored; in those other approaches, any contextual information must be explicitly passed through the type system, for example, with a generic RC parameter.
 
 
 Another common misconception is the belief that \Q!capsule! fields and \Q!capsule! local variables always hold \Q!capsule! references.
