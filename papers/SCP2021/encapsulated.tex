@@ -6,13 +6,16 @@ Consider managing the shipment of items, where there is a maximum combined weigh
 \begin{lstlisting}
 class ShippingList {
   capsule Items items;
-  read method Bool invariant(){return this.items.weight()<=300;}
+  read method Bool invariant(){ return this.items.weight()<=300; }
   ShippingList(capsule Items items) {
     this.items = items;
-    if (!this.invariant()){throw Error(...);}}//injected check
+    if (!this.invariant()){ throw Error(...); }//injected check
+  }
   mut method Void addItem(Item item) {
     this.items.add(item);
-    if (!this.invariant()){throw Error(...);}}}//injected check
+    if (!this.invariant()){ throw Error(...); }//injected check
+  }
+}
 \end{lstlisting}
 We inject calls to \Q@invariant()@ at the end of the constructor and the \Q@addItem(item)@ method.
 This is safe since the \Q@items@ field is declared \Q@capsule@.

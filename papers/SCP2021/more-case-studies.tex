@@ -107,12 +107,13 @@ class Person {
   final Int birthday;
   Person(String name, Int daysLived, Int birthday) { .. }
   mut method Void processDay(Int dayOfYear) {
-  	this.daysLived += 1;
-    if (this.birthday == dayOfYear) {
-    	Console.print("Happy birthday " + this.name + "!"); }}
+    this.daysLived += 1;
+    if(this.birthday==dayOfYear){Console.print("Happy birthday "+this.name + "!");}
+  }
   read method Bool invariant() {
-    return !this.name.equals("") && this.daysLived >= 0 &&
-      this.birthday >= 0 && this.birthday < 365; }
+    return !this.name.equals("") && this.daysLived >= 0 
+        && this.birthday >= 0 && this.birthday < 365;
+  }
 }
 class Family { 
   static class Box { 
@@ -121,21 +122,21 @@ class Family {
     Box(mut List<Person> parents, mut List<Person> children){..}
     mut method Void processDay(Int dayOfYear) {
       for(Person c : this.children) { c.processDay(dayOfYear); }
-      for(Person p : this.parents) { p.processDay(dayOfYear); }}
+      for(Person p : this.parents) { p.processDay(dayOfYear); }
+    }
   }
   capsule Box box;
-  Family(capsule List<Person> ps,capsule List<Person> cs) {
-    this.box = new Box(ps, cs); }
-  mut method Void processDay(Int dayOfYear) { 
-    this.box.processDay(dayOfYear); }
-  mut method Void addChild(capsule Person child) { 
-    this.box.children.add(child); }
+  Family(capsule List<Person> ps,capsule List<Person> cs){this.box=new Box(ps,cs);}
+  mut method Void processDay(Int dayOfYear) { this.box.processDay(dayOfYear); }
+  mut method Void addChild(capsule Person child) { this.box.children.add(child); }
   read method Bool invariant() {
     for (Person p : this.box.parents) {
       for (Person c : this.box.children) {
-        if (p.daysLived <= c.daysLived) { 
-          return false; }}}
-    return true; }
+        if (p.daysLived <= c.daysLived) { return false; }
+      }
+    }
+    return true;
+  }
 }
 \end{lstlisting}
 Note how we created a \Q!Box! class to hold the \Q!parents! and \Q!children!.
@@ -152,18 +153,15 @@ We have a simple test case that calls \Q!processDay(dayOfYear)! on a \Q!Family! 
 var fam = new Family(List.of(new Person("Bob", 11720, 40),
     new Person("Alice", 12497, 87)), List.of());
     
-for (Int day = 0; day < 365; day++) { // Run for 1 year
-  fam.processDay(day);
-}
+for (Int day = 0; day < 365; day++) { fam.processDay(day); } // Run for 1 year
 for (Int day = 0; day < 365; day++) { // The next year
   fam.processDay(day);
-  if (day == 45) {
-    fam.addChild(new Person("Tim", 0, day)); }}
-
+  if (day == 45) { fam.addChild(new Person("Tim", 0, day)); }
+}
 for (Int day = 0; day < 365; day++) { // The 3rd year
   fam.processDay(day);
-  if (day == 340) {
-    fam.addChild(new Person("Diana", 0, day)); }}
+  if (day == 340) { fam.addChild(new Person("Diana", 0, day)); }
+}
 \end{lstlisting}
 % The counts (including the invariant keyword, and read on the invariant method)
 % Spec# 14 family, 2 main   = 16

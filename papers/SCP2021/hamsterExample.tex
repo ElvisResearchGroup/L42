@@ -12,21 +12,23 @@ This example is interesting since it relies on \Q@List@s and \Q@Point@s that are
 \begin{lstlisting}
 class Point { Double x; Double y; Point(Double x, Double y) {..}
   @Override read method Bool equals(read Object that) {
-    return that instanceof Point &&
-      this.x == ((Point)that).x && this.y == ((Point)that).y; }}
-class Hamster {Point pos; //pos is imm by default
-  Hamster(Point pos) {..}}
+    if (!(that instanceof Point)) { return false; }
+    Point p = (Point)that;
+    return this.x == p.x && this.y == p.y;
+  }
+}
+class Hamster { Point pos; Hamster(Point pos) {..} }//pos is imm by default
 class Cage {
   capsule Hamster h;
   List<Point> path; //path is imm by default
   Cage(capsule Hamster h, List<Point> path) {..}
-  read method Bool invariant() {
-    return this.path.contains(this.h.pos); }
+  read method Bool invariant() { return this.path.contains(this.h.pos); }
   mut method Void move() {
     Int index = 1 + this.path.indexOf(this.pos()));
     this.moveTo(this.path.get(index % this.path.size())); }
   read method Point pos() { return this.h.pos; }
-  mut method Void moveTo(Point p) { this.h.pos = p; }}
+  mut method Void moveTo(Point p) { this.h.pos = p; }
+}
 \end{lstlisting}
 
 The \Q@invariant()@ method on \Q@Cage@ simply verifies that the \Q@pos@ of \Q@this.h@ is within the \Q@this.path@ list. This is accepted by our invariant protocol since \Q@path@ is an \Q@imm@ field (hence deeply immutable) and \Q@h@ is a \Q@capsule@ field (hence fully encapsulated). The \Q@path.contains@ call is accepted by our type system as it only needs \Q@read@ access: it merely needs to be able to access each element of the list and call \Q@Point@'s equal method, which takes a \Q@read@ receiver and parameter.
@@ -70,10 +72,8 @@ We now show our hamster example in Spec\#; the system most similar to ours:
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
 // Note: assume everything is `public'
 class Point { double x; double y; Point(double x, double y) {..}
-  [Pure] bool Equal(double x, double y) {
-    return x == this.x && y == this.y; }}
-class Hamster{[Peer] Point pos; 
-  Hamster([Captured] Point pos){..}}
+  [Pure] bool Equal(double x, double y) { return x == this.x && y == this.y; } }
+class Hamster{[Peer] Point pos; Hamster([Captured] Point pos){..} }
 class Cage {
   [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
   Cage([Captured] Hamster h, [Captured] List<Point> path)
@@ -83,8 +83,10 @@ class Cage {
     this.path[i].Equal(this.h.pos.x, this.h.pos.y) };
   void Move() {
     int i = 0;
-    while(i<path.Count && !path[i].Equal(h.pos.x,h.pos.y)){i++;}
-    expose(this) {this.h.pos = this.path[i%this.path.Count];}}}
+    while(i<path.Count && !path[i].Equal(h.pos.x,h.pos.y)){ i++; }
+    expose(this) { this.h.pos = this.path[i%this.path.Count]; }
+  }
+}
 \end{lstlisting}
 
 In both this and our original version, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant: thus \Q@Point@ is not an immutable class.
@@ -124,8 +126,7 @@ Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 \noindent In Spec\# objects start their life as un-owned, so each \Q@new@ instruction above returns an unowned object; however when the \Q@Point@s are placed inside the \Q@pl@ list, Spec\# loses track of this. Thus the \Q@AssignSame@ call is needed to mark the elements of \Q@pl@ as still being unowned (since \Q@pl@ itself is unowned).
 Contrast this with our system which requires no such operation; we can simply write:
 \begin{lstlisting}
-Cage c = new Cage(new Hamster(new Point(0, 0)),
-  List.of(new Point(0, 0), new Point(0, 1)));
+Cage c=new Cage(new Hamster(new Point(0,0)),List.of(new Point(0,0),new Point(0,1)));
 \end{lstlisting}
 
 %3 read 2 capsule 3 mut extra method moveTo

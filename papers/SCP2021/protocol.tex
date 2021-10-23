@@ -98,7 +98,7 @@ their only parameter (the receiver) is \Q!read!.
 \subheading{Capsule Fields}
 %As we discussed before, while most approaches agree on the exact properties of a capsule reference,
 %capsule fields are handled in different ways in different approaches. 
-In L42 ``depending on how we expose the owned data, we can closely model both \emph{owners-as-dominators}[...] and \emph{owners-as-qualifiers}[...]''\cite{GIANNINI2019145}, it also supports ``\Q!lent! getter[s], a third variant''\cite{GIANNINI2019145}%Flexible recovery of uniqueness and immutability
+Former work on L42 discusses ``depending on how we expose the owned data, we can closely model both \emph{owners-as-dominators}[...] and \emph{owners-as-qualifiers}[...]''\cite{GIANNINI2019145}, and  ``\Q!lent! getter[s], a third variant''\cite{GIANNINI2019145}%Flexible recovery of uniqueness and immutability
 Those informal considerations have then influenced the L42 language design,
 bringing to the creation of syntactic sugar and programming patterns to represent various kinds of \Q@capsule@ fields aimed to model various forms of ownership. Under the hood, all those forms of \Q@capsule@ fields are just private \Q@mut@ fields with some extra restrictions. Describing in the details those restrictions would be outside of the scope of this paper.
 

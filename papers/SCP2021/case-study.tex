@@ -29,18 +29,22 @@ class SafeMovable implements Widget {
   @Override read method Int height() { return this.height; }
   @Override read method read Widgets children() { return this.box.c; }
   @Override mut method Void dispatch(Event e) {
-    for (Widget w:this.box.c) { w.dispatch(e); }}
+    for (Widget w:this.box.c) { w.dispatch(e); }
+  }
   read method Bool invariant() {..}
   SafeMovable(capsule Widgets c) { this.box = makeBox(c); }
   static method capsule Box makeBox(capsule Widgets c) {
     mut Box b = new Box(5, 5, c);
     b.c.add(new Button(0, 0, 10, 10, new MoveAction(b));
-    return b; }} // mut b is soundly promoted to capsule
-class Box { Int l; Int t; mut Widgets c;
-  Box(Int l, Int t, mut Widgets c) {..}}
-class MoveAction implements Action { mut Box outer;
+    return b;// mut b is soundly promoted to capsule
+  }
+}
+class Box { Int l; Int t; mut Widgets c; Box(Int l, Int t, mut Widgets c) {..} }
+class MoveAction implements Action {
+  mut Box outer;
   MoveAction(mut Box outer) { this.outer = outer; }
-  mut method Void process(Event e) { this.outer.l += 1; }}
+  mut method Void process(Event e) { this.outer.l += 1; }
+}
 ... //main expression
 //#$\$$ is a capability operation making a Gui object
 Gui.#$\$$().display(new SafeMovable(...));
@@ -61,8 +65,11 @@ read method Bool invariant() {
   for(Widget w1 : this.box.c) {
     if(!this.inside(w1)) { return false; }
     for(Widget w2 : this.box.c) {
-      if(w1!=w2 && SafeMovable.overlap(w1, w2)){return false;}}}
-  return true;}
+      if(w1!=w2 && SafeMovable.overlap(w1, w2)){ return false; } 
+    }
+  }
+  return true;
+}
 \end{lstlisting}
 
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!capsule! fields.

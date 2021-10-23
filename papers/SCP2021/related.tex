@@ -23,7 +23,7 @@ ShippingList = Data:{
     items.add(item)
 }
 \end{lstlisting}
-In this example, the \Q@Data@ decorator generates a factory method, a method \Q@addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string.
+In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string.
 The \Q!@$$Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@$$Cache.Clear! method is called.
 Please refer to \url{L42.is/tutorial.xhtml} for more information.
 \vspace{-1ex}

@@ -28,12 +28,15 @@ Consider the iconic example of a \Q@Range@ class, with a \Q@min@ and \Q@max@
 value, where the invariant requires that \Q@min<=max@:
 % ISAAC: I changed the example to not use getters and setters as our latter examples often don't and it dosn't add anything extra; in addition, this may fall foul of some visibile state semantics of the setters are considered public.
 \begin{lstlisting}
-class Range{ private field min; private field max;
-  method invariant(){return min<max;}
+class Range{ 
+  private field min; private field max;
+  method invariant(){ return min<max; }
   method set(min, max){
-    if(min>=max){throw new Error(/**/);}
+    if(min>=max){ throw new Error(/**/); }
     this.min = min;
-    this.max = max; }}
+    this.max = max;
+  }
+}
 \end{lstlisting}
 In this example we omit types to focus on the runtime semantics.
 The code of \Q@set@ does not violate visible state semantics:
@@ -50,14 +53,15 @@ class BoxRange{//no invariant in BoxRange
   field min; field max;
   BoxRange(min, max){ this.set(min, max); }
   method Void set(min, max){
-    if(min>=max){throw new Error(/**/);}
+    if(min>=max){ throw new Error(/**/); }
     this.min = min; this.max = max;
-    }  }
+  }
+}
 class Range{ private field box; //box contains a BoxRange
   Range(min, max){ this.box = new BoxRange(min, max); }
   method invariant(){ return this.box.min < this.box.max; }
   method set(min, max){ return this.box.set(min,max); }
-  }
+}
 \end{lstlisting}
 The code of \Q@Range.set(min,max)@ does not violate our protocol.
 % since \Q@this@ is not in the ROG of \Q@this.box@, \Q!min!, or \Q!max!. 

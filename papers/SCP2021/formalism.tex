@@ -236,11 +236,12 @@ To allow the \Q!invariant()! method to be called on an invalid object, and acces
 \indent $\trusted(\ER[l])$ iff, either:
 \begin{iitemize}
 \item $\ER=\EV[\M{l}{v}{\hole.\invariant}]$, or
-\item $\ER=\EV[\M{l}{v}{\EV'[\hole\singleDot f]}]$, and this $\hole\singleDot f$ expression came from the body of the $\invariant$ method itself.
+\item $\ER=\EV[\M{l}{v}{\EV'[\hole\singleDot f]}]$.
 \end{iitemize}
-\IOComm{bassically this has $\EV, r_L$ before, I've simplified it greatly now}
+%\IOComm{bassically this has $\EV, r_L$ before, I've simplified it greatly now}
 %\loseSpace
 Note that $\trusted(\ER[l])$ only holds when the very next reduction we are about to perform is $l.\invariant$ or $l\singleDot f$.
+Thanks to our other contraints, we are also sure that such $l\singleDot f$ expression came from the body of the $\invariant$ method itself.
 
 \noindent We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:\\
 \indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^+ \s|e$, for some $e_0$ with:

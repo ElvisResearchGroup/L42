@@ -15,7 +15,8 @@ class Person {
   private String name;//the default RC imm is applied here
   read method String name() { return this.name; }
   mut method Void name(String name) { this.name = name; }
-  Person(String name) { this.name = name; }  }
+  Person(String name) { this.name = name; }
+}
 \end{lstlisting}
 The \Q@name@ field is not final: \Q@Person@s can change state during their lifetime. The ROGs of all of a \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
 We enforce \Q@Person@'s invariant by generating checks on the result of calling \Q@this.invariant()@: immediately after each field update, and at the end of the constructor.
@@ -24,10 +25,13 @@ Such checks are generated/injected, and not directly written by the programmer.
 class Person { .. // Same as before
   mut method String name(String name) {
     this.name = name; // check after field update
-    if (!this.invariant()) { throw new Error(...); }}
+    if (!this.invariant()) { throw new Error(...); }
+  }
   Person(String name) {
     this.name = name; // check at end of constructor
-    if (!this.invariant()) { throw new Error(...); }}  }
+    if (!this.invariant()) { throw new Error(...); }
+    }
+}
 \end{lstlisting}
 %Programmers often manually check for invariants by placing assertions in the same places we did in this example. % ISAAC: Deleted because unnecesary, and makes the next sentence misunderstandable
 We now show how if we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs, RCs, or strong exception safety, the above checks would not be sufficient to enforce our invariant protocol.
@@ -36,8 +40,8 @@ We now show how if we were to relax (as in Rust), or even eliminate (as in Java)
 Consider this use of person; where \Q@myPerson.invariant()@ may randomly return \Q!false!:
 \begin{lstlisting}[morekeywords={assert}]
 class EvilString extends String {//INVALID EXAMPLE
-  @Override read method Bool isEmpty() {//Creates a new
-    return new Random().bool(); }}//capability out of thin air
+  @Override read method Bool isEmpty() { return new Random().bool(); }
+}//Creates a new capability out of thin air
 ...
 method mut Person createPersons(String name) {
   // we can not be sure that name is not an EvilString
@@ -148,14 +152,14 @@ If instead we were to not enforce strong exception safety, an invalid object cou
 The following code is ill-typed since we try to mutate \Q@bob@ in a \Q@try-catch@ block that captures all unchecked exceptions; thus also including invariant failures:
 %\saveSpace
 \begin{lstlisting}[morekeywords={assert}]
-mut Person bob = new Person("bob");//INVALID EXAMPLE
+mut Person bob = new Person("Bob");//INVALID EXAMPLE
 // Catch and ignore invariant failure:
 try { bob.name(""); } catch (Error t) { }// bob mutated
 assert bob.invariant(); // fails!
 \end{lstlisting}
-The following variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@, it is guaranteed to be garbage collectable after the \Q@try@ is completed.
+The following variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@ and it is guaranteed to be garbage collectable after the \Q@try@ is completed.
 \begin{lstlisting}[morekeywords={assert}]
-try {mut Person bob = new Person("bob");    bob.name("");} 
+try { mut Person bob = new Person("Bob");    bob.name(""); } 
 catch (Error t) { }
 \end{lstlisting}
 
