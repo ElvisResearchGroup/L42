@@ -241,9 +241,10 @@ To allow the \Q!invariant()! method to be called on an invalid object, and acces
 %\IOComm{bassically this has $\EV, r_L$ before, I've simplified it greatly now}
 %\loseSpace
 Note that $\trusted(\ER[l])$ only holds when the very next reduction we are about to perform is $l.\invariant$ or $l\singleDot f$.
-Thanks to our other constraints, we are also sure that any such $l\singleDot f$ expression came from the body of the $\invariant$ method itself.
+As we discuss in our proof of $\thm{Soundness}$,
+any such $l\singleDot f$ expression came from the body of the $\invariant$ method itself, since $l$ can not occur in the $\rog$ of any of its fields mentioned in the $\invariant$ method.
 
-\noindent We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:\\
+We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:\\
 \indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^+ \s|e$, for some $e_0$ with:
 \begin{iitemize}
 \item[] ${}_{}$\quad${}_{}$ $c:\Kw{Cap};\emptyset; \h \vdash e_0: 	T$, $\M{\_}{\_}{\_} \notin e_0$, and if $l \in e_0$ then $l = c$.
