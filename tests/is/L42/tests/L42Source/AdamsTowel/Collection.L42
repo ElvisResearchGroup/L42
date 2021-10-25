@@ -1,3 +1,64 @@
+IteratorComposeAux={class method IteratorCompose itAddAux(IteratorCompose a, IteratorCompose b)=(
+  IteratorCompose z=IteratorCompose.zero()
+  IteratorCompose a2=a.#times0(a)
+  IteratorCompose b2=b.#times0(b)
+  IteratorCompose s1=a2.#minus0(b2)<:IteratorCompose.signum()
+  Bool err0=a.#bangequal0(b)
+  Bool err1=s1.#equalequal0(z)
+  if err0.and(err1) error Collection$IterationIncomplete"""
+    |While iterating on multiple collections, iteration terminated abruptly.
+    |The size of the collections may have not been the same.
+    """
+  if s1.#gt0(z)<:Bool a else b  
+  )}
+@Public IteratorCompose = {
+  class method This zero()
+  class method This mustStop()=(
+    This zero=This<:class This.zero()
+    This one = zero.#succ()
+    one.#succ()
+    )
+  class method This mustContinue()=(
+    This zero=This<:class This.zero()
+    This mone = zero.#pred()
+    mone.#pred()
+    )
+  class method This likeToContinue()=(
+    This zero=This<:class This.zero()
+    zero.#succ()
+    )
+  class method This canContinue()=This<:class This.zero()
+  class method This #apply(This2.Bool that)=(
+    Void u = that.#checkTrue()
+    catch exception Void v ( This<:class This.mustStop() )
+    This<:class This.mustContinue()
+    )
+  method This signum()=native{trusted:signum} error void
+  method This #times0(This that)=native{trusted:OP*} error void
+  method This #minus0(This that)=native{trusted:OP-} error void
+  method This2.Bool #lt0(This that)=native{trusted:OP<} error void
+  method This2.Bool #gt0(This that)=that.#lt0(that=this)
+  read method This2.Bool readEquality(read This that)=native{trusted:OP==} error void
+  method This2.Bool #equalequal0(This that)=this.readEquality(that=that)
+  method This2.Bool #bangequal0(This that)=(This2.Bool tmp=this.#equalequal0(that=that) tmp.not())
+  method This #succ()=native{trusted:succ} error void
+  method This #pred()=native{trusted:pred} error void
+  method This2.Bool isZero()=(
+    This zero = This<:class This.zero()
+    this.readEquality(that=zero)
+    )
+  method This2.Bool #if()=(
+    This zero = This<:class This.zero()
+    zero.#gt0(that=this)
+    )
+  method This #itAdd(This that)=
+    This1.IteratorComposeAux<:class This1.IteratorComposeAux.itAddAux(a=this,b=that)
+  #norm{nativeKind=Int
+    typeDep=This,This2.Bool,This1.IteratorComposeAux
+    coherentDep=This,This2.Bool,This1.IteratorComposeAux
+    usedMethods=This2.Bool.not(),This2.Bool.#checkTrue(),This1.IteratorComposeAux.itAddAux(a,b)
+    }
+  }  
 @Public AnyToS={class method S (read Any that)={
   if read HasToS.Raw s=that return this.escape(s.toS())  
   if read HasToS s=that return s.toS()

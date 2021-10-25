@@ -3,18 +3,14 @@ $ = Organize:{...}
 
 Iterator2D = {
   class method This ()
-  method Void #close(I that) = void
-  method Bool #incomplete(I that) = that < $.Margin.layerSize()
   method $.Cell2D #elem#default(I that) = \(x=$.Coords.x2(that), y=$.Coords.y2(that))
-  method Bool #hasElem(I that) = that < $.Margin.layerSize()
+  method Collection.IteratorCompose #hasElem(I that)=\(that < $.Margin.layerSize())
   method I #startIndex() = 0I
   }
 Iterator3D = {
   class method This ()
-  method Void #close(I that) = void
-  method Bool #incomplete(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
   method $.Cell3D #elem#default(I that) = \(x=$.Coords.x3(that), y=$.Coords.y3(that), z=$.Coords.z3(that))
-  method Bool #hasElem(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
+  method Collection.IteratorCompose #hasElem(I that)=\(that < $.Margin.layerSize() * $.Margin.maxZ())
   }
 
 Map2DTrait = Trait : {...}

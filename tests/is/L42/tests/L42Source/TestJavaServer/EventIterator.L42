@@ -4,8 +4,9 @@ class method mut This(mut This1 that, mut S.List streams)
 mut method mut This #iterator()=this
 mut method mut This #varIterator()=this
 read method I #startIndex()=0I
-read method Bool #hasElem(I that)=Bool.true()
-read method Bool #incomplete(I that)=!this.streams().isEmpty()
+read method Collection.IteratorCompose #hasElem(I that)=
+  if this.streams().isEmpty() \.canContinue()
+  else \.likeToContinue()
 mut method Event from(S.Opt oRes)=(
   if !oRes.isPresent() error X"unexpected Event with null string"
   this.from(res=oRes.val())
@@ -39,4 +40,3 @@ read method S keys()=(
   )
 mut method Event #elem#default(I that)=this.#elem#imm(that)
 mut method Event #elem#read(I that)=this.#elem#imm(that)
-read method Void #close(I that)=void

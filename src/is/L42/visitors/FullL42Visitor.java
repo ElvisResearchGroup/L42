@@ -299,7 +299,11 @@ public class FullL42Visitor implements L42Visitor<Object>{
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     Core.Info info=opt(ctx.info(),null,this::visitInfo);
     Full.L res=new Full.L(pos, isDots, reuseUrl, isInterface, ts, ms, docs);
-    if(info!=null){return new InjectionToCore(errors,eVoid)._inject(res,info);}
+    if(info!=null){
+      CoreL res0=new InjectionToCore(errors,eVoid)._inject(res,info);
+      res0.wf();
+      return res0;
+      }
     return res; 
     }
   private String parseReuseNative(String s,String starts,String ends) { 

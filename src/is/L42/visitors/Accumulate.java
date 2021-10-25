@@ -49,7 +49,8 @@ public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
       }
     public Core.T g(X x){
       Core.T res=g.get(x);
-      assert res!=null:x;
+      assert res!=null:
+        x;
       return res;
       }
     public void commitG(X x,Core.T t){

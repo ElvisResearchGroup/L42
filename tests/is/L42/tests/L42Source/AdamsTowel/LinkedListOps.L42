@@ -47,9 +47,7 @@ Cons = {[L]
   }
 
 @Public Iterator = {
-  class method This () 
-  @Public method Void #close(read L that) = if !that.isEmpty() error X"Incomplete iteration for Linked List"
-  @Public method Bool #incomplete(read L that) = !that.isEmpty()
+  class method This ()
   @Public method read Elem #elem#default(read L that) = that.top()
-  @Public method Bool #hasElem(read L that) = !that.isEmpty()
+  @Public read method Collection.IteratorCompose #hasElem(read L that)=\(!that.isEmpty())
   }

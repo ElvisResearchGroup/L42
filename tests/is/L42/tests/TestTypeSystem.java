@@ -560,25 +560,21 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   A={
     class method This()
     method A #iterator()=this
-    method Void #close(N that)=void
-    method B #incomplete(N that)=B()
     method N #startIndex()=N()
-    method B #hasElem(N that)=B()
+    method N #hasElem(N that)=N()
     method E #elem#default(N that)=E()
     method E #elem#imm(N that)=E()
     }
   N={
     class method This ()
     method This #succ()=this
+    method B #if()=B()
     }
   E={
     class method This ()
     }
   B={
     class method This ()
-    method This #shortProcess#andand(This that,This other)=this
-    method This #shortResult#andand(This that)=this
-    method This #shortCircut#andand()=this
     method This #if()=this
     method Void #checkTrue()[Void]=void
     }

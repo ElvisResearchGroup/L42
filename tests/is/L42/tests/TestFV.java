@@ -34,11 +34,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("if Void x=void x")
    
    ),new AtomicTest(()->
-   passC("(capsule This0 a=c catch error This0 x a a)")
+   passC("(capsule This0 a=void catch error This0 x void void)")
    ),new AtomicTest(()->
-   failC("(capsule This0 a=c imm Void g=a catch error This0 x a a)")
+   failC("(capsule This0 a=void imm Void g=a catch error This0 x void void)")
    ),new AtomicTest(()->
-   passC("(imm This0 a=c imm Void g=a catch error This0 x a a)")
+   passC("(imm This0 a=void imm Void g=a catch error This0 x void void)")
 
 
   ));}

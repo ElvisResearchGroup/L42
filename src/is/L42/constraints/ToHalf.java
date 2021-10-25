@@ -691,6 +691,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitWhile(Full.While sWhile){
     Pos p=sWhile.pos();
     Full.E e0=sWhile.condition();
+    e0=new Full.Call(p,e0,ifS,false,Par.emptys);
     e0=new Full.Call(p,e0,checkTrueS,false,Par.emptys);
     var k=new Full.K(ThrowKind.Exception,immVoid_._t(),null,new Core.EVoid(p)); 
     var l=new Full.Loop(p,makeBlock(p,L(makeDec(e0)),sWhile.body()));
@@ -722,7 +723,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var xie=new Core.EX(p,xi);
     var x1ie=new Core.EX(p,x1i);
     return new Full.Call(p,xie,s,false,L(new Par(x1ie,L(),L())));    
-    }
+    }  
   private boolean useVarIterator(D d){
     if(d._varTx()!=null && useVarIterator(d._varTx())){return true;}
     for(var v:d.varTxs()){if(useVarIterator(v)){return true;}}
@@ -760,22 +761,15 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   private Full.Block forMain(Full.For sFor){
     Pos p=sFor.pos();
-    Full.E ev=new Core.EVoid(p);
     var xIts=new ArrayList<X>();
     var xIndexs=new ArrayList<X>();
     List<Full.D> dsIts=L(sFor.ds().stream().map(d->//x1=xP1.#iterator()..xn=xPn.#iterator()
       dsElem(p,"xIt",d._e(),false,useVarIterator(d)?varIteratorS:iteratorS,xIts)));//need to turn to list so that xIts is filled, same below
     List<Full.D> dsStartIndexs=L(sFor.ds().stream().map(d->//var x'1 = xP1.#startIndex() .. var x'n = xPn.#startIndex()
       dsElem(p,"xIndex",d._e(),true,startIndexS,xIndexs)));
-    List<Full.D> dsCloses=L(xIts,xIndexs,(c,xi,x1i)->//x1.#close(x'1) .. xn.#close(x'n)
-      c.add(makeDec(binMeth(p,xi,x1i,closeS))));        
-    List<Full.E> orsEs=L(xIts,xIndexs,(c,xi,x1i)->//( x1.#incomplete(x'1) || .. || xn.#incomplete(x'n)
-      c.add(binMeth(p,xi,x1i,incompleteS)));
-    Full.E ors=orsEs.get(0);
-    if(orsEs.size()>1){ors=new Full.BinOp(p,Op.OrOr,orsEs);}
-    List<Full.E> andsEs=pushL(L(xIts,xIndexs,(c,xi,x1i)->//x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ors
-      c.add(binMeth(p,xi,x1i,hasElemS))),ors);
-    var cond=new Full.BinOp(p,Op.AndAnd,andsEs);
+    //List<Full.D> dsCloses=L(xIts,xIndexs,(c,xi,x1i)->//x1.#close(x'1) .. xn.#close(x'n)
+    //  c.add(makeDec(binMeth(p,xi,x1i,closeS))));        
+    Full.E cond = computeCond(p, xIts, xIndexs);
     Full.E[] e={sFor.body()};
     List<Full.D> dsElems=L(sFor.ds(),xIts,xIndexs,(c,di,xi,x1i)->{//DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)
       var v=di._varTx();
@@ -792,18 +786,42 @@ public class ToHalf extends UndefinedCollectorVisitor{
       var op=new Full.OpUpdate(p,xi,Op.ColonEqual,call);
       c.add(makeDec(op));
       });
+    var dsSuccsLast=dsSuccs.get(dsSuccs.size()-1)._e();
+    assert dsSuccsLast!=null;
     Stream<Full.D> allWhileDecs=Stream.concat(
       dsElems.stream(),Stream.concat(Stream.of(makeDec(e[0])),
-      dsSuccs.stream()));
-    Full.E ifThen=makeBlock(p,L(allWhileDecs),ev);
-    Full.E ifElse=makeBlock(p,dsCloses,new Full.Throw(p, ThrowKind.Exception,ev));
-    Full.If ifThenElse=new Full.If(p, cond,L(),ifThen,ifElse);
-    Full.K  k=new Full.K(ThrowKind.Exception,P.fullVoid,null, ev);
-    Full.D  loopDec=makeDec(new Full.Loop(p, ifThenElse));
-    Full.Block loopBlock=new Full.Block(p,false,L(loopDec),1,L(k),L(),null);
+      dsSuccs.subList(0,dsSuccs.size()-1).stream()));
+    Full.E whileBody=makeBlock(p,L(allWhileDecs),dsSuccsLast);
+    //Core.EVoid ev=new Core.EVoid(p);
+    //Full.E ifElse=makeBlock(p,dsCloses,new Full.Throw(p, ThrowKind.Exception,ev));
+    Full.While whileE=new Full.While(p, cond,whileBody);
+    //Full.K  k=new Full.K(ThrowKind.Exception,P.fullVoid,null, ev);
+    //Full.D  loopDec=makeDec(new Full.Loop(p, ifThenElse));
+    //Full.Block loopBlock=new Full.Block(p,false,L(loopDec),1,L(k),L(),null);
     Stream<Full.D> allTopDecs=Stream.concat(dsIts.stream(),dsStartIndexs.stream());
-    var res= makeBlock(p,L(allTopDecs),loopBlock);
-    return res;
+    return makeBlock(p,L(allTopDecs),whileE);
+    }
+  //Old, with both hasElem and incomplete
+  /*private Full.E computeCond(Pos p, ArrayList<X> xIts, ArrayList<X> xIndexs) {
+    List<Full.E> orsEs=L(xIts,xIndexs,(c,xi,x1i)->//( x1.#incomplete(x'1) || .. || xn.#incomplete(x'n)
+      c.add(binMeth(p,xi,x1i,incompleteS)));
+    Full.E ors=orsEs.get(0);
+    if(orsEs.size()>1){ors=new Full.BinOp(p,Op.OrOr,orsEs);}
+    List<Full.E> andsEs=pushL(L(xIts,xIndexs,(c,xi,x1i)->//x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ors
+      c.add(binMeth(p,xi,x1i,hasElemS))),ors);
+    return new Full.BinOp(p,Op.AndAnd,andsEs);
+    }*/
+  //New, with just hasElem
+  private Full.E computeCond(Pos p, ArrayList<X> xIts, ArrayList<X> xIndexs) {
+    List<Full.E> es=L(xIts,xIndexs,(c,xi,x1i)->
+      c.add(binMeth(p,xi,x1i,hasElemS)));
+    Full.E e=es.get(0);
+    if(es.size()>1){
+      for(var ei:es.subList(1,es.size())){
+        e = new Full.Call(p,e,itAddS,false,L(new Par(ei,L(),L())));
+        }
+      }
+    return e;
     }
   private E replaceOnUpdate(Full.E e,Mdf _mdf, X x2, X x, X x1) {
     S s=NameMangling.methName("update",_mdf);
@@ -821,10 +839,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S checkTrueS=S.parse("#checkTrue()");
   private static final S iteratorS=S.parse("#iterator()");
   private static final S varIteratorS=S.parse("#varIterator()");
-  private static final S closeS=S.parse("#close()");
   private static final S succS=S.parse("#succ()");
-  private static final S incompleteS=S.parse("#incomplete()");
   private static final S hasElemS=S.parse("#hasElem()");
+  private static final S itAddS=S.parse("#itAdd()");
   private static final S startIndexS=S.parse("#startIndex()");
   //private static final S applyThat=S.parse("#apply(that)");
   private static final S applyZero=S.parse("#apply()");

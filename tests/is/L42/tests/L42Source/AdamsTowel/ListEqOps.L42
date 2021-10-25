@@ -12,8 +12,7 @@ mut method mut This #vals()
 read method read This #iterator()
 mut method mut This #varIterator()
 read method I #startIndex()
-read method Bool #hasElem(I that)
-read method Bool #incomplete(I that)
+read method IteratorCompose #hasElem(I that)
 read method Elem #elem#imm(I that)
 mut method mut Elem #elem#mut(I that)
 read method Elem #elem#default(I that)
@@ -21,7 +20,6 @@ read method read Elem #elem#read(I that)
 mut method mut Elem #update#mut(I that, mut Elem val)
 mut method Elem #update#imm(I that, Elem val)
 mut method Elem #update#default(I that, Elem val)
-read method Void #close(I that)
 class method mut This ()
 class method mut This (I capacity)
 mut  method mut This (Void that)
@@ -204,16 +202,13 @@ mut method mut This #vals()=this
 read method read This #iterator()=this
 mut method mut This #varIterator()=this
 read method I #startIndex()=0I
-read method Bool #hasElem(I that)=that<this.size()
-read method Bool #incomplete(I that)=that!=this.size()
+read method I #hasElem(I that)=if that<this.size() 0I else I"-1"
 read method Elem #elem#imm(I that)=this.val(that)
 mut method mut Elem #elem#mut(I that)=this.#val(that)
 read method Elem #elem#default(I that)=this.#elem#imm(that)
 mut method mut Elem #update#mut(I that, mut Elem val)=(this(that,mutVal=val) val)
 mut method Elem #update#imm(I that, Elem val)=(this(that,val=val) val)
 mut method Elem #update#default(I that, Elem val)=this.#update#imm(that,val=val)
-read method Void #close(I that)=
-  if this.#incomplete(that) error S"multi for skipped some elements"
 mut method Void add(Elem that)=this.add(right=that)
 
 class method mut This ()

@@ -31,9 +31,7 @@ class method mut This of(mut Set set)
 @Public read method read This #iterator()=this
 //@Public mut method mut This #varIterator()=this//NO varIterators on sets:immkeys+no way to update them
 @Public read method I #startIndex()=0I
-@Public read method Bool #hasElem(I that)=that<this.size()
-@Public read method Bool #incomplete(I that)=that!=this.size()
-
+@Public read method Collection.IteratorCompose #hasElem(I that)=\(that<this.size())
 @Public read method Key #elem#imm(I that)=this.val(that)
 @Public read method Key #elem#default(I that)=this.#elem#imm(that)
 @Public read method Key #elem#read(I that)=this.#elem#imm(that)
@@ -42,8 +40,6 @@ class method mut This of(mut Set set)
 //mut method mut Entry #update#mut(I that, mut Entry val)=(this.#set(that,val=val) val)
 //mut method Entry #update#imm(I that, Entry val)=(this.set(that,val=val) val)
 //mut method Entry #update#default(I that, Entry val)=this.#update#imm(that,val=val)
-@Public read method Void #close(I that)=
-  if this.#incomplete(that) error X"multi-for skipped some elements"
 @Public method toS()=(
   var i=0I
   var res=S"{"

@@ -8,6 +8,7 @@ method This #times0(This that)=native{trusted:OP*} error void
 method This #divide0(This that)=native{trusted:OP/} error void
 method This #minus0(This that)=native{trusted:OP-} error void
 method This mod(This that)=native{trusted:mod} error void
+method This signum()=native{trusted:signum} error void
 
 method This1.Bool #lt0(This that)=native{trusted:OP<} error void
 method This1.Bool #gt0(This that)=that.#lt0(that=this)
@@ -37,12 +38,21 @@ method This1.Num toNum()=(
   This one = zero.#succ()
   This1.S<:class This1.S.sizeToNum(that=this,denominator=one)
   )
-
+/*method This1.Bool isZero()=(
+  This zero = This<:class This.zero()
+  this.readEquality(that=zero)
+  )
+method This min(This that)=(
+  This1.Bool lt=that.#lt0(that=this)
+  Void v=lt.#checkTrue()
+  catch exception Void vv ( this )
+  that
+  )*/
 
 #norm{nativeKind=Int
   typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double,This1.Long
   coherentDep=This,This1.Num,This1.Bool,This1.S,This1.Double,This1.Long
-  usedMethods=This1.S.toI(),This1.S.sizeToNum(that,denominator), This1.Bool.not(), This1.S$StringBuilder.toS()
+  usedMethods=This1.S.toI(),This1.Bool.#checkTrue(), This1.S.sizeToNum(that,denominator), This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()
   }
 @This1.AbstractTowel{size}

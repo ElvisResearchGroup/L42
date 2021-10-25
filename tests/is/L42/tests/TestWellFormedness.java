@@ -278,10 +278,6 @@ public static void pass(String input){
   assertTrue(r.res.wf());
   }
 public static void fail(String input,String ...output){
-  var r=Parse.e(Constants.dummy,input);
-  assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  TestHelpers.checkFail(()->r.res.wf(), output, EndError.NotWellFormed.class);
-  //for(var s:output){if(!msg.contains(s)){throw nwf;}}
-  //for(var s:output){assertTrue(msg.contains(s));}
+  TestHelpers.checkFail(()->Parse.e(Constants.dummy,input).res.wf(), output, EndError.NotWellFormed.class);
   }
 }

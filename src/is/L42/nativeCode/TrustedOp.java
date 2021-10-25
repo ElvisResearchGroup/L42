@@ -532,6 +532,10 @@ public enum TrustedOp {
       Int,use("return %s %% %s;",sigI(Int,Int)),
       Long,use("return %s %% %s;",sigI(Long,Long))
       )),
+  Signum("signum",Map.of(
+      Int,use("return Integer.signum(%s);",sigI(Int)),
+      Long,use("return Long.signum(%s);",sigI(Int))
+      )),
   MathPow("mathPow",Map.of(Double,use("return Math.pow(%s,%s);",sigI(Double,Double)))),
   MathSin("mathSin",Map.of(Double,use("return Math.sin(%s);",sigI(Double)))),
   MathCos("mathCos",Map.of(Double,use("return Math.cos(%s);",sigI(Double)))),

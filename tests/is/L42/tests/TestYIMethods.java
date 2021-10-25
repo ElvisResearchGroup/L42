@@ -774,25 +774,27 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      """)
      ),new AtomicTest(()->pass("""
      method Void v(This a,This b)=while a!=b void
-     method Bool #bangequal0(This that)=Bool.k()
-     Bool={}
+     method This #bangequal0(This that)=This.k()
+     method This #if()
      ""","""
      method Void v(This a, This b)=(
        Void fresh0_underscore=loop(
          Void fresh1_underscore=(
-           This.Bool fresh2_receiver=a.#bangequal0(that=b)
+           This fresh2_receiver=(
+             This fresh3_receiver=a.#bangequal0(that=b)
+             fresh3_receiver.#if()
+             )
            fresh2_receiver.#checkTrue()
            )
          void
          )
-       catch exception Void fresh3_underscore void error
-       void
+       catch exception Void fresh4_underscore void
+       error void
        )
-     method This.Bool #bangequal0(This that)=
-       This.Bool<:class This.Bool.k()
-     Bool={#norm{}}
+     method This #bangequal0(This that)=This<:class This.k()
+     method This #if()
      """)
-          ),new AtomicTest(()->pass("""
+   ),new AtomicTest(()->pass("""
      method Void v(This as)=for var imm a in as (a:=a)
      method This #varIterator()
      method This #startIndex()
@@ -800,60 +802,36 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #elem#imm(This that)
      mut method Void #update#imm(This that, This val)
      method This #if()
-     method This #shortCircut#andand()
-     method This #shortResult#andand()
-     method This #shortProcess#andand(This that,This other)
      ""","""
      method Void v(This as)=(
        This fresh0_xIt=as.#varIterator()
        var This fresh1_xIndex=as.#startIndex()
-       ( Void fresh2_underscore=loop (
-           This fresh3_cond=(
-             This fresh4_op3=fresh0_xIt.#hasElem(that=fresh1_xIndex)
-             (  This fresh5_op3=fresh4_op3.#shortCircut#andand()
-               (  Void fresh7_underscore=
-                 (  This fresh8_receiver=fresh5_op3.#if()
-                    fresh8_receiver.#checkTrue()
-                    )
-                  catch exception Void fresh9_underscore (
-                    This fresh6_op3=fresh0_xIt.#incomplete(that=fresh1_xIndex)
-                    fresh4_op3.#shortProcess#andand(that=fresh5_op3, other=fresh6_op3)
-                    )
-                  fresh4_op3.#shortResult#andand(that=fresh5_op3)
-                  )
-                )
-              )
-            ( Void fresh10_underscore=
-              ( This fresh11_receiver=fresh3_cond.#if()
-                fresh11_receiver.#checkTrue()
-                )
-              catch exception Void fresh12_underscore (
-                Void fresh13_underscore=fresh0_xIt.#close(that=fresh1_xIndex)
-                exception void
-                )
-              ( var This a=fresh0_xIt.#elem#imm(that=fresh1_xIndex)
-                Void fresh14_underscore=(
-                  a:=fresh0_xIt.#update#imm(that=fresh1_xIndex, val=a)
-                  )
-                Void fresh15_underscore=fresh1_xIndex:=fresh1_xIndex.#succ()
-                void
-                )
-              )
-            )
-          catch exception Void fresh16_underscore void
-          error void
-          )
-        )
-      method This #varIterator()
-      method This #startIndex()
-      method This #hasElem(This that)
-      method This #elem#imm(This that)
-      mut method Void #update#imm(This that, This val)
-      method This #if()
-      method This #shortCircut#andand()
-      method This #shortResult#andand()
-      method This #shortProcess#andand(This that, This other)         
-      """)
+       ( Void fresh2_underscore=loop(
+           Void fresh3_underscore=(
+             This fresh4_receiver=(
+               This fresh5_receiver=fresh0_xIt.#hasElem(that=fresh1_xIndex)
+               fresh5_receiver.#if()
+               )
+             fresh4_receiver.#checkTrue()
+             )
+           ( var This a=fresh0_xIt.#elem#imm(that=fresh1_xIndex)
+             Void fresh6_underscore=(
+               a:=fresh0_xIt.#update#imm(that=fresh1_xIndex, val=a)
+               )
+             fresh1_xIndex:=fresh1_xIndex.#succ()
+             )
+           )
+         catch exception Void fresh7_underscore void
+         error void
+         )
+       )
+     method This #varIterator()
+     method This #startIndex()
+     method This #hasElem(This that)
+     method This #elem#imm(This that)
+     mut method Void #update#imm(This that, This val)
+     method This #if()         
+     """)
 ),new AtomicTest(()->pass("""
   method class Any v()={ imm Any a={ return void } return Void}
   ""","""

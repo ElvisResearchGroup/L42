@@ -443,7 +443,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     """))
   ),new AtomicTest(()->  
   pass(testMeth("""
-  read method Void #checkTrue()[Void]=void                                          
+  read method Void #checkTrue()[Void]=void
+  read method read This #if()=this                                         
   imm @Left method @Left A main(@Left A that, @Left B b)=(
       while b (
         void
@@ -453,6 +454,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()->
   fail(testMeth("""
   mut method Void #checkTrue()
+  mut method mut This #if()=this
   class method @Left A getLeft(@Left A a)=(a)                                      
   class method @Left A main(@Left A that, mut B b)=(
       while b (_=this.getLeft(a=that) void)
@@ -461,6 +463,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()->
   pass(testMeth("""
   mut method Void #checkTrue()
+  mut method mut This #if()=this
   imm @Left method @Left A getLeft(@Left A a)=(a)                                      
   imm @Left method @Left A main(@Left A that, mut @Left B b)=(
       while b (_=this.getLeft(a=that) void)
@@ -469,6 +472,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()-> //example where the guard is low
   pass(testMeth("""
   read method Void #checkTrue()
+  read method read This #if()=this
   imm @Left method @Left A getLeft(@Left A a)=(a)                                      
   imm @Left method @Left A main(@Left A that, B b)=(
       while b (_=this.getLeft(a=that) void)
@@ -477,6 +481,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()->
   fail(testMeth("""
   read method Void #checkTrue()
+  read method read This #if()=this
   class method @Left A main(@Left A that, mut B b)=(
       while b (_=this.main(that, b=b) void)
       that)
@@ -485,21 +490,24 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   //  in this case it must fail or be unsound (b could count rounds and that could chose to throw or not)
   ),new AtomicTest(()->
   pass(testMeth("""
-  read method Void #checkTrue()                                    
+  read method Void #checkTrue()
+  read method read This #if()=this                                    
   imm @Left method @Left A main(A that, mut @Left B b)=(
       while b (_=this.main(that, b=b) void)
       that)
     """))
   ),new AtomicTest(()->
   pass(testMeth("""
-  read method Void #checkTrue()                                    
+  read method Void #checkTrue()
+  read method read This #if()=this                                    
   class method @Left A main(A that, mut @Left B b)=(
       while b (_=this.main(that, b=b) void)
       that)
     """))
   ),new AtomicTest(()->
   pass(testMeth("""
-  mut method Void #checkTrue()                                          
+  mut method Void #checkTrue()
+  mut method mut This #if()=this                                          
   class method @Left A main(@Left A that, mut @Left B b)=(
       var @Left A a = that
       while b (a:=that void)
@@ -507,7 +515,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     """))
   ),new AtomicTest(()->
   fail(testMeth("""
-  mut method Void #checkTrue()                                          
+  mut method Void #checkTrue()
+  mut method mut This #if()=this                                          
   class method @Left A main(A that, mut @Left B b)=(
       var A a = that
       while b (a:=that void)

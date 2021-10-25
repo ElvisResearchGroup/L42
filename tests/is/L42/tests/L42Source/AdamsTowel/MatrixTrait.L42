@@ -72,8 +72,7 @@ read method S toS()=(
 @Public mut method mut This #varIterator()=this
 //--those below may even become a reusable trait
 @Public read method I #startIndex()=this.inner::0().#startIndex()
-@Public read method Bool #hasElem(I that)=this.inner::0().#hasElem(that)
-@Public read method Bool #incomplete(I that)=this.inner::0().#incomplete(that)
+@Public read method Collection.IteratorCompose #hasElem(I that)=this.inner::0().#hasElem(that)
 @Public read method Elem #elem#imm(I that)=this.inner::0().#elem#imm(that)
 @Public mut method mut Elem #elem#mut(I that)=this.#inner::0().#elem#mut(that)
 @Public read method Elem #elem#default(I that)=this.inner::0().#elem#default(that)
@@ -81,7 +80,6 @@ read method S toS()=(
 @Public mut method mut Elem #update#mut(I that, mut Elem val)=this.#inner::0().#update#mut(that,val=val)
 @Public mut method Elem #update#imm(I that, Elem val)=this.#inner::0().#update#imm(that,val=val)
 @Public mut method Elem #update#default(I that, Elem val)=this.#inner::0().#update#default(that,val=val)
-@Public read method Void #close(I that)=this.inner::0().#close(that)
 //--------
 @Public Coord = Data:{
   I row, I col
@@ -102,10 +100,8 @@ read method S toS()=(
 @Public Iterator = {
   class method This ()
   method Iterator #iterator() = this
-  method Void #close(I that) = void
-  method Bool #incomplete(I that) = that < This1.dimensions().tot()
   method Coord #elem#default(I that) = \(index=that)
-  method Bool #hasElem(I that) = that < This1.dimensions().tot()
+  method Collection.IteratorCompose #hasElem(I that)=\(that<This1.dimensions().tot())
   method I #startIndex() = 0I
   }
 /*

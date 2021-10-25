@@ -216,17 +216,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{typeDep=This.A, This2.B, This1.C}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{coherentDep=This1.C}})")
+   pass("({interface #norm{typeDep=This1.C coherentDep=This1.C}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{watched=This1.C}})")
+   pass("({interface #norm{typeDep=This1.C watched=This1.C}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{usedMethods=This1.C.foo(x,y)}})")
+   pass("({interface #norm{typeDep=This1.C usedMethods=This1.C.foo(x,y)}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{hiddenSupertypes=This1.C}})")
+   pass("({interface #norm{typeDep=This1.C hiddenSupertypes=This1.C}})")
    ),new AtomicTest(()->
    pass("({interface #norm{refined=bar(x,y)}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{watched=This1.C}})")
+   pass("({interface #norm{typeDep=This1.C watched=This1.C}})")
    ),new AtomicTest(()->
    pass("({interface #norm{}})")
 
@@ -240,7 +240,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("({C={} #norm{}})",ErrMsg.malformedCoreNC(Err.hole))
 
    ),new AtomicTest(()->
-   pass("{method Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x)#norm{}}")
+   pass("{method Any m(capsule Any x)=Any<:class Any.meth(a=x, b=void)#norm{}}")
    ),new AtomicTest(()->
    fail("{ method Any m(capsule Any x)=Any.meth(a=x, b=x) #norm{}}",ErrMsg.malformedCoreMWT(Err.hole,Err.hole))
    ),new AtomicTest(()->
