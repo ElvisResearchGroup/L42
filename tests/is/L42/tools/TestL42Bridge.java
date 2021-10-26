@@ -4,6 +4,10 @@ import static is.L42.tools.General.L;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -12,13 +16,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import is.L42.common.PerfCounted;
+import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.tools.TestL42Bridge.L42Test;
 
 public class TestL42Bridge extends PerfCounted {
   static final String separator = "<<<<STRCMP>>>>";
   @MethodSource
   @ParameterizedTest(name = "{index}: {0}")
   public void test(L42Test input) {input.checkPass();}
-  public static Stream<L42Test> fromString(String s) { 
+  public static Stream<L42Test> fromString(String s) {
     List<String> strings = L(s.lines());
     List<L42Test> tests = new ArrayList<>(); 
     for(String t : strings){
@@ -59,13 +65,29 @@ public class TestL42Bridge extends PerfCounted {
       }
     return tests.stream();
     }
-  
+  public static String name(Path name)throws IOException, URISyntaxException{
+    Resources.clearResKeepReuse();
+    is.L42.main.Main.main(name.toString());
+    return Resources.tests();
+    }
+  public static Stream<L42Test> fromStream(Stream<String> ss){
+    return ss.flatMap(s->{
+      if(!s.isEmpty()){ return fromString(s); }
+      return Stream.of(new TestL42Bridge.L42TestNoTests(s));      
+      });
+    }
   private static boolean isSep(String str) {
     for(char c : str.toCharArray()) { 
       if(c != '#' && c != ' ' && c != '\n') { return false; }
       }
     return true;
-    }  
+    } 
+  public static class L42TestNoTests extends L42Test{
+    public L42TestNoTests(String fileName){
+      this.testName="No Tests executed in file "+fileName;
+      this.fileName=fileName;
+      }
+    }
   public static class L42Test{
     int lineNumber;
     String type;
