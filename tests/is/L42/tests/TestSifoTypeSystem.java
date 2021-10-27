@@ -463,7 +463,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()->
   pass(testMeth("""
   mut method Void #checkTrue()
-  mut method mut This #if()=this
+  mut @Left method mut @Left This #if()=this
   imm @Left method @Left A getLeft(@Left A a)=(a)                                      
   imm @Left method @Left A main(@Left A that, mut @Left B b)=(
       while b (_=this.getLeft(a=that) void)
@@ -491,7 +491,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()->
   pass(testMeth("""
   read method Void #checkTrue()
-  read method read This #if()=this                                    
+  read @Left method read @Left This #if()=this                                    
   imm @Left method @Left A main(A that, mut @Left B b)=(
       while b (_=this.main(that, b=b) void)
       that)
@@ -499,7 +499,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()->
   pass(testMeth("""
   read method Void #checkTrue()
-  read method read This #if()=this                                    
+  read @Left method read @Left This #if()=this                                    
   class method @Left A main(A that, mut @Left B b)=(
       while b (_=this.main(that, b=b) void)
       that)
@@ -507,7 +507,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   ),new AtomicTest(()->
   pass(testMeth("""
   mut method Void #checkTrue()
-  mut method mut This #if()=this                                          
+  mut @Left method mut @Left This #if()=this                                          
   class method @Left A main(@Left A that, mut @Left B b)=(
       var @Left A a = that
       while b (a:=that void)
