@@ -18,7 +18,10 @@ public class Err {
     return ls.stream().map(c->c.toString()).collect(Collectors.joining("."));
     }
   public static boolean strCmp(String cmp1, String cmp2){
-    if (!ErrMsg.strCmpAux(cmp1.trim(), cmp2.trim(),Err.hole)){ throw unreachable(); }
+    if (!ErrMsg.strCmpAux(cmp1.trim(), cmp2.trim(),Err.hole)){
+      if (!cmp2.equals(cmp1)){ throw new AssertionError(String.format("\"%s\" does not equal \"%s\"", cmp2, cmp1)); }
+      throw unreachable();
+      }
     return true;
     }  
  }

@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
 
-import org.opentest4j.AssertionFailedError;
-
 import is.L42.common.Err;
 import is.L42.tools.AtomicTest;
 
@@ -63,7 +61,7 @@ public class TestHoleComparator extends AtomicTest.Tester
     }
   
   private static void fail(String cmp1, String cmp2) {
-    assertThrows(AssertionFailedError.class, () -> { Err.strCmp(cmp1, cmp2); });
+    assertThrows(AssertionError.class, () -> { Err.strCmp(cmp1, cmp2); });
     }
   
 }
