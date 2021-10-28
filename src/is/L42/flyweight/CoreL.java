@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,8 +55,13 @@ public final class CoreL implements LL, Leaf, Half.Leaf, Visitable<CoreL> {
     return this.withNcs(Collections.unmodifiableList(newNCs));
   }
   //Strangely, having this lambda live inside the method was causing millions of allocs 
-  final Function<C, Boolean> inDomFun;//TODO: we could instead having a LinkedHashSet of ncs
-  HashMap<C, Boolean> inDomCache = new HashMap<>();
+  transient Function<C, Boolean> inDomFun;//TODO: we could instead having a LinkedHashSet of ncs
+  transient HashMap<C, Boolean> inDomCache = new HashMap<>();
+  Object readResolve() throws ObjectStreamException {
+    this.inDomCache = new HashMap<>();
+    this.inDomFun =makeInDomFun();
+    return this;
+    }
   @Override public boolean inDom(C c) {
     if(PerfCounters.isEnabled()){ PerfCounters.inc("invoke.L.inDom(C).total"); }
     return inDomCache.computeIfAbsent(c, inDomFun);
@@ -116,9 +122,12 @@ public final class CoreL implements LL, Leaf, Half.Leaf, Visitable<CoreL> {
     this.ncs = ncs;
     this.info = info;
     this.docs = docs;
-    @SuppressWarnings("unchecked")
-    var fun=(Function<C, Boolean>&Serializable)c2->this.ncs.stream().anyMatch(m -> c2 == m.key());
-    this.inDomFun = fun;
+    this.inDomFun = makeInDomFun();
+    }
+
+  @SuppressWarnings("unchecked")
+  private Function<C, Boolean> makeInDomFun() {
+    return (Function<C, Boolean>&Serializable)c2->this.ncs.stream().anyMatch(m -> c2 == m.key());
     }  
   public List<Pos> poss(){ return this.poss; }
   public boolean isInterface(){ return this.isInterface; }
