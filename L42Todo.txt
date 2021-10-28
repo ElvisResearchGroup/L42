@@ -1,3 +1,18 @@
+Bug in Data.Close A=Data:{capsule S.List ss @Cache.Clear class method Void ss(mut S.List ss) = (void)}
+
+Make all the css stuff again into the jar/side folder? should we have also an adamsTowel?
+
+Make Collection.View(List/Set/Map/Enum?) and fix canStop and other names. Test Guis work again
+
+Fix FS library:
+  1)a name for a datatype can can be either an URI (including file://) or a local path with '/' slashes.
+  2)The FS type need to take that as input, and when given a path
+  it either starts with file:// or another whitelisted protocol
+  or starts with a valid portable fileName (prevent <, >,:,,",/,\,|,?,* and the convention on portable filenames)
+  and divides by "/" in other valid portable filenames
+  3) update adams towel and guide
+
+
 =#$//should this be required to unlock #$ in its transivite main
 multi line escape syntax is now confusing.
   A better one would be """n where n is the number of % to mean 'escape' and the default is 1
