@@ -1,13 +1,9 @@
 package is.L42.common;
 
 import static is.L42.tools.General.unreachable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.opentest4j.AssertionFailedError;
 
 import is.L42.flyweight.C;
 
@@ -22,13 +18,7 @@ public class Err {
     return ls.stream().map(c->c.toString()).collect(Collectors.joining("."));
     }
   public static boolean strCmp(String cmp1, String cmp2){
-    cmp1 = cmp1.trim();
-    cmp2 = cmp2.trim();
-    try{assertTrue(ErrMsg.strCmpAux(cmp1, cmp2,Err.hole));}
-    catch(AssertionFailedError e){
-      assertEquals(cmp2,cmp1);
-      throw unreachable();
-      }
+    if (!ErrMsg.strCmpAux(cmp1.trim(), cmp2.trim(),Err.hole)){ throw unreachable(); }
     return true;
     }  
  }
