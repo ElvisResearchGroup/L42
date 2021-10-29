@@ -1,7 +1,7 @@
 package is.L42.perftests;
 
 import static is.L42.tools.General.L;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileDescriptor;

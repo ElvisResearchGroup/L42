@@ -4,13 +4,7 @@ import static is.L42.tools.General.unreachable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.opentest4j.AssertionFailedError;
-
-import is.L42.flyweight.C;
-
 
 
 public class Err {
