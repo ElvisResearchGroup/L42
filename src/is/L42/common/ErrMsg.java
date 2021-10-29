@@ -11,12 +11,19 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import is.L42.flyweight.C;
 import is.L42.flyweight.X;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.Core.MWT;
 
 public class ErrMsg {
+  public static String pathToS(Object o){
+    if (!(o instanceof List<?>ls)){ return o.toString(); }
+    if(ls.isEmpty()){ return o.toString(); }
+    if(!(ls.get(0) instanceof C)){ return o.toString();}
+    return ls.stream().map(c->c.toString()).collect(Collectors.joining("."));
+    }
   public static String trimExpression(String e){
     if(e.length()<50){return e;}
     String start=e.substring(0,24);
@@ -209,7 +216,7 @@ public class ErrMsg {
   ;}public static String thisNumberOutOfScope(Object _1){return
   "Path "+_1+" this number is out of the scope of the program"  
   ;}public static String pathNotExistant(Object _1, Object others){return
-  "Path "+Err.pathToS(_1)+" not existant."+others  
+  "Path "+pathToS(_1)+" not existant."+others  
   ;}public static String urlNotExistant(Object _1){return
   "Url "+_1+" not existant."
   ;}public static String interfaceImplementsItself(Object ts){return
