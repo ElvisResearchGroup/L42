@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.stream.Stream;
 
+import org.opentest4j.AssertionFailedError;
+
 import is.L42.common.Err;
 import is.L42.tools.AtomicTest;
-import org.opentest4j.AssertionFailedError;
 
 public class TestHoleComparator extends AtomicTest.Tester
 {  
