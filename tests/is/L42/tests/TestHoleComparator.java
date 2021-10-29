@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import is.L42.common.Err;
 import is.L42.tools.AtomicTest;
+import org.opentest4j.AssertionFailedError;
 
 public class TestHoleComparator extends AtomicTest.Tester
 {  
@@ -61,7 +62,7 @@ public class TestHoleComparator extends AtomicTest.Tester
     }
   
   private static void fail(String cmp1, String cmp2) {
-    assertThrows(AssertionError.class, () -> { Err.strCmp(cmp1, cmp2); });
+    assertThrows(AssertionFailedError.class, () -> { Err.strCmp(cmp1, cmp2); });
     }
   
 }
