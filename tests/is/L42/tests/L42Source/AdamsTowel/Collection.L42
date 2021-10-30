@@ -2,35 +2,50 @@ IteratorComposeAux={class method IteratorCompose itAddAux(IteratorCompose a, Ite
   IteratorCompose z=IteratorCompose.zero()
   IteratorCompose a2=a.#times0(a)
   IteratorCompose b2=b.#times0(b)
-  IteratorCompose s1=a2.#minus0(b2)<:IteratorCompose.signum()
   Bool err0=a.#bangequal0(b)
-  Bool err1=s1.#equalequal0(z)
+  Bool err1=a2.#equalequal0(b2)
   if err0.and(err1) error Collection$IterationIncomplete"""
     |While iterating on multiple collections, iteration terminated abruptly.
     |The size of the collections may have not been the same.
     """
-  if s1.#gt0(z)<:Bool a else b  
+  if a2.#gt0(b2)<:Bool a else b
   )}
 @Public IteratorCompose = {
   class method This zero()
-  class method This mustStop()=(
+  class method This mustContinue()=(
     This zero=This<:class This.zero()
     This one = zero.#succ()
     one.#succ()
     )
-  class method This mustContinue()=(
+  class method This mustStop()=(
     This zero=This<:class This.zero()
     This mone = zero.#pred()
     mone.#pred()
     )
-  class method This likeToContinue()=(
+  class method This canContinue()=(
     This zero=This<:class This.zero()
     zero.#succ()
     )
-  class method This canContinue()=This<:class This.zero()
+  class method This canStop()=This<:class This.zero()
+  
   class method This #apply(This2.Bool that)=(
     Void u = that.#checkTrue()
     catch exception Void v ( This<:class This.mustStop() )
+    This<:class This.mustContinue()
+    )
+  class method This cut(This2.Bool that)=(
+    Void u = that.#checkTrue()
+    catch exception Void v ( This<:class This.mustStop() )
+    This<:class This.canContinue()
+    )
+  class method This cutDefault(This2.Bool that)=(
+    Void u = that.#checkTrue()
+    catch exception Void v ( This<:class This.canStop() )
+    This<:class This.canContinue()
+    )
+  class method This default(This2.Bool that)=(
+    Void u = that.#checkTrue()
+    catch exception Void v ( This<:class This.canStop() )
     This<:class This.mustContinue()
     )
   method This signum()=native{trusted:signum} error void
@@ -49,7 +64,7 @@ IteratorComposeAux={class method IteratorCompose itAddAux(IteratorCompose a, Ite
     )
   method This2.Bool #if()=(
     This zero = This<:class This.zero()
-    zero.#gt0(that=this)
+    this.#gt0(that=zero)
     )
   method This #itAdd(This that)=
     This1.IteratorComposeAux<:class This1.IteratorComposeAux.itAddAux(a=this,b=that)

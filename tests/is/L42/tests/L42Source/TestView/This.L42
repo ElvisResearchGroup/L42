@@ -1,0 +1,302 @@
+reuse [L42.is/AdamsTowel]
+View=Public:Data:{
+  @Public class method Trait trait()=ViewTrait()
+  
+  @Public class method Trait traitNoMore()=ViewTraitNoMore()
+  @Public class method Trait traitMoreImm()=ViewTraitMoreImm()
+  @Public class method Trait traitMoreMut()=ViewTraitMoreMut()
+  
+  @Public class method Trait traitAll()=ViewTraitAll()
+  @Public class method Trait traitCut()=ViewTraitCut()
+  @Public class method Trait traitAllMore()=ViewTraitAllMore()
+  @Public class method Trait traitCutMore()=ViewTraitCutMore()
+  
+  @Public class method Trait traitInDefaultRead()=ViewTraitInDefaultRead()
+  @Public class method Trait traitInDefaultImm()=ViewTraitInDefaultImm()
+  @Public class method Trait traitInDefaultMut()=ViewTraitInDefaultMut()
+  @Public class method Trait traitOutDefaultRead()=ViewTraitOutDefaultImm()
+  @Public class method Trait traitOutDefaultImm()=ViewTraitOutDefaultImm()
+  @Public class method Trait traitOutDefaultMut()=ViewTraitOutDefaultMut()
+  
+  @Public class method Trait traitHasElemMut()=ViewTraitHasElemMut()
+  @Public class method Trait traitHasUpdateMut()=ViewTraitHasUpdateMut()
+  @Public class method Trait traitHasUpdateImm()=ViewTraitHasUpdateImm()
+  
+  class Any that
+  Bool cutF
+  Bool moreF
+  Trait moreTrait
+  Trait defaultIn
+  Trait defaultOut
+  @Public method This cut()=this.with(cutF=Bool.true())
+  @Public method This more()=this.with(moreF=Bool.true())<:This.with(moreTrait=This.traitMoreImm())
+  @Public method This moreMut()=this.with(moreF=Bool.true())<:This.with(moreTrait=This.traitMoreMut())
+  @Public method This defaultRead()=
+    this.with(defaultIn=This.traitInDefaultRead())<:This.with(defaultOut=This.traitOutDefaultRead())
+  @Public method This defaultMut()=
+    this.with(defaultIn=This.traitInDefaultMut())<:This.with(defaultOut=This.traitOutDefaultMut())
+  @Public class method This(class Any that)=\(
+    that
+    cutF=Bool.false()
+    moreF=Bool.false()
+    moreTrait=This.traitNoMore()
+    defaultIn=This.traitInDefaultImm()
+    defaultOut=This.traitOutDefaultImm()
+    )
+  @Public method Library #toLibrary()[_]= Class:Data:This.manual(
+    this.that()
+    stop={
+      (cutF,moreF) = this
+      if !cutF && !moreF return \traitAll
+      if cutF && !moreF  return \traitCut
+      if !cutF && moreF  return \traitAllMore
+      X[cutF && moreF]   return \traitCutMore
+      }
+    defaultInMdf=this.defaultIn()
+    defaultOutMdf=this.defaultOut()
+    more=this.moreTrait()
+    )
+  @Public class method Trait manual(class Any that,Trait stop,Trait defaultInMdf,Trait defaultOutMdf,Trait more)[_]=(
+    coll = that
+    elem = coll*Name"#elem#imm(that)"
+    var res=(more:\trait:stop:defaultInMdf)['Coll=>coll;'Elem=>elem]
+    res:=this.tryAdd(res,coll=coll,elem=elem,t=this.traitHasElemMut())
+    res:=this.tryAdd(res,coll=coll,elem=elem,t=defaultOutMdf)
+    res:=this.tryAdd(res,coll=coll,elem=elem,t=this.traitHasUpdateMut())
+    res:=this.tryAdd(res,coll=coll,elem=elem,t=this.traitHasUpdateImm())
+    res
+    )
+  class method Trait tryAdd(Trait that, class Any coll, class Any elem,Trait t)={
+    return that:t['Coll=>coll;'Elem=>elem]
+    catch exception Message.Guard _ return that
+    }
+  ViewTraitInDefaultRead=Trait:{
+    Elem = {}
+    read method read Elem #elem#read(I that)
+    read method read Elem #elem#default(I that) = this.#elem#read(that)
+    }
+  ViewTraitInDefaultImm=Trait:{
+    Elem = {}
+    read method Elem #elem#imm(I that)
+    read method Elem #elem#default(I that) = this.#elem#imm(that)
+    }
+  ViewTraitInDefaultMut=Trait:{
+    Elem = {}
+    mut method mut Elem #elem#mut(I that)
+    mut method mut Elem #elem#default(I that) = this.#elem#mut(that)
+    }
+  ViewTraitOutDefaultImm=Trait:{
+    Elem = {}//Coll to ensure we never add it to a View whose Call has no update imm
+    Coll = { mut method Elem #update#imm(I that, Elem val) }
+    mut method Elem #update#imm(I that, Elem val)
+    mut method Elem #update#default(I that, Elem val) = this.#update#imm(that,val=val)
+    }
+  ViewTraitOutDefaultMut=Trait:{
+    Elem = {}//Coll to ensure we never add it to a View whose Call has no update mut
+    Coll = { mut method Elem #update#mut(I that, Elem val) }
+    mut method mut Elem #update#mut(I that, mut Elem val)  
+    mut method mut Elem #update#default(I that, mut Elem val) = this.#update#mut(that,val=val)
+    }
+  ViewTraitNoMore=Trait:{
+    Elem = {}
+    Coll = {
+      read method Elem #elem#imm(I that)
+      read method read Elem #elem#read(I that)  
+      }
+    mut Coll collection
+    I start
+    read method Elem #elem#imm(I that)       = this.collection() .#elem#imm(that)
+    read method read Elem #elem#read(I that) = this.collection() .#elem#read(that)
+    
+    class method mut This(fwd mut Coll collection, I start, I maxEnd)
+    class method mut This(fwd mut Coll that, I from, I to)=\(collection=that,start=from,maxEnd=to)
+    class method mut This(fwd mut Coll that, I to)=\(collection=that,start=0I,maxEnd=to)
+    class method mut This(fwd mut Coll that, I from)=\(collection=that,start=from,maxEnd=Collection.maxSize())
+    class method mut This(fwd mut Coll that)=\(collection=that,start=0I,maxEnd=Collection.maxSize())
+    read method read This vals(I that, I to)=\(collection=this.collection(),start=that+this.start(),maxEnd=to+this.start())
+    mut method mut This #vals(I that, I to)=\(collection=this.#collection(),start=that+this.start(),maxEnd=to+this.start())
+    }
+  ViewTraitMoreImm=Trait:{
+    Elem = {}
+    Coll = {
+      read method I size()
+      read method Elem #elem#imm(I that)
+      read method read Elem #elem#read(I that)  
+      }
+    mut Coll collection
+    I start
+    Elem more
+    read method Bool out(I that) = that>\collection.size()
+    read method Elem #elem#imm(I that) =
+      if \out(that) \more else this.collection() .#elem#imm(that)
+    read method read Elem #elem#read(I that) =
+      if \out(that) \more else this.collection() .#elem#read(that)
+      
+    class method mut This(fwd mut Coll collection, I start, I maxEnd, fwd imm Elem more)
+    class method mut This(fwd mut Coll that, I from, I to, fwd imm Elem more)=\(collection=that,start=from,maxEnd=to,more=more)
+    class method mut This(fwd mut Coll that, I to, fwd imm Elem more)=\(collection=that,start=0I,maxEnd=to,more=more)
+    class method mut This(fwd mut Coll that, I from, fwd imm Elem more)=\(collection=that,start=from,maxEnd=Collection.maxSize(),more=more)
+    class method mut This(fwd mut Coll that, fwd imm Elem more)=\(collection=that,start=0I,maxEnd=Collection.maxSize(),more=more)
+    read method read This vals(I that, I to)=\(collection=this.collection(),start=that+this.start(),maxEnd=to+this.start(),more=this.more())
+    mut method mut This #vals(I that, I to)=\(collection=this.#collection(),start=that+this.start(),maxEnd=to+this.start(),more=this.more())
+    }
+  ViewTraitMoreMut=Trait:{
+    Elem = {}
+    Coll = {
+      read method I size()
+      read method Elem #elem#imm(I that)
+      mut method mut Elem #elem#mut(I that)
+      read method read Elem #elem#read(I that)  
+      }
+    mut Coll collection
+    I start
+    mut Elem more
+    read method Bool out(I that) = that>\collection.size()
+    read method Elem #elem#imm(I that) =
+      this.collection() .#elem#imm(that)
+    mut  method mut Elem #elem#mut(I that) =
+      if \out(that) this.#more() else this.#collection().#elem#mut(that)
+    read method read Elem #elem#read(I that) =
+      if \out(that) \more else this.collection() .#elem#read(that)  
+
+    class method mut This(fwd mut Coll collection, I start, I maxEnd, fwd mut Elem more)
+    class method mut This(fwd mut Coll that, I from, I to, fwd mut Elem more)=\(collection=that,start=from,maxEnd=to,more=more)
+    class method mut This(fwd mut Coll that, I to, fwd mut Elem more)=\(collection=that,start=0I,maxEnd=to,more=more)
+    class method mut This(fwd mut Coll that, I from, fwd mut Elem more)=\(collection=that,start=from,maxEnd=Collection.maxSize(),more=more)
+    class method mut This(fwd mut Coll that, fwd mut Elem more)=\(collection=that,start=0I,maxEnd=Collection.maxSize(),more=more)
+    read method read This vals(I that, I to)=\(collection=this.collection(),start=that+this.start(),maxEnd=to+this.start(),more=this.more())
+    mut method mut This #vals(I that, I to)=\(collection=this.#collection(),start=that+this.start(),maxEnd=to+this.start(),more=this.#more())
+    }
+  ViewTraitHasElemMut=Trait:{
+    Elem = {}
+    Coll = { mut method mut Elem #elem#mut(I that) }
+    mut Coll collection
+    read method Void checkRange(I that)
+    I start
+    I end
+    mut  method mut Elem #elem#mut(I that) = this.#collection().#elem#mut(that)
+    mut  method mut Elem #val(I that)      = (\checkRange(that) this.#elem#mut(that+\start) )
+    mut method  mut Elem #left()    = this.#val(0I)
+    mut method mut Elem #right()   = this.#val(\end.#pred())
+    }
+  ViewTraitHasUpdateMut=Trait:{
+    Elem = {}
+    Coll = { mut method mut Elem #update#mut(I that, mut Elem val) }
+    mut Coll collection
+    I start
+    I end
+    mut  method mut Elem #update#mut(I that, mut Elem val) = this.#collection().#update#mut(that,val=val)
+    mut  method Void #set(I that,mut Elem val) =  (_=this.#update#mut(that,val=val) void)
+    mut  method Void #left(mut Elem that)  = this.#set(\start,val=that)
+    mut  method Void #right(mut Elem that) = this.#set(\end.#pred(),val=that)
+    }
+  ViewTraitHasUpdateImm=Trait:{
+    Elem = {}
+    Coll = { mut method Elem #update#imm(I that, Elem val) }
+    mut Coll collection
+    I start
+    I end
+    mut  method Elem #update#imm(I that, Elem val) = this.#collection().#update#imm(that,val=val)
+    mut  method Void set(I that,Elem val)      =  (_=this.#update#imm(that,val=val) void)
+    mut  method Void left(Elem that)       = this.set(\start,val=that)
+    mut  method Void right(Elem that)      = this.set(\end.#pred(),val=that)
+    }
+  ViewTrait=Trait:{
+    Elem = {}
+    Coll = { read method I size() }
+    mut Coll collection
+    I start
+    I maxEnd
+    //parametric
+    read method Collection.IteratorCompose #hasElem(I that)
+    read method Elem #elem#imm(I that)
+    read method read Elem #elem#read(I that)
+    read method read This vals(I that, I to)
+    mut  method mut  This #vals(I that, I to)
+    //constant
+    read method read This vals(I that)       = \vals(that,to=this.maxEnd()-this.start())
+    read method read This vals(I to)         = \vals(0I,to=to)
+    mut  method mut  This #vals(I that)      = this.#vals(that,to=this.maxEnd()-this.start())
+    mut  method mut  This #vals(I to)        = this.#vals(0I,to=to)
+    read method I end()        = \maxEnd.min(this.collection().size())
+    read method I size()       = \end-\start
+    read method Bool isEmpty() = \size==0I
+    read method read This #iterator()   = this
+    mut  method mut This #varIterator() = this
+    read method I #startIndex() = this.start()
+    read method read Elem readVal(I that) = (\checkRange(that) this.#elem#read(that+\start) )
+    read method imm  Elem val(I that)     = (\checkRange(that) this.#elem#imm(that+\start) )
+    read method imm  Elem left()    = this.val(0I)
+    read method imm  Elem right()   = this.val(\end.#pred())
+    read method Void checkRange(I that)= (
+      if that<0I (_=this.#elem#read(that) void)//will throw out of bound
+      if that>=\size (_=this.#elem#read(this.collection().size()) void)//will throw out of bound
+      )
+    }
+  ViewTraitAll=Trait:{
+    read method I end()
+    read method Collection.IteratorCompose #hasElem(I that) = \(that<this.end())
+    }
+  ViewTraitCut=Trait:{
+    read method I end()
+    read method Collection.IteratorCompose #hasElem(I that) = \.cut(that<this.end())
+    }
+  ViewTraitCutMore=Trait:{
+    read method I end()
+    read method Collection.IteratorCompose #hasElem(I that) = \.cutDefault(that<this.end())
+    }
+  ViewTraitAllMore=Trait:{
+    read method I end()
+    read method Collection.IteratorCompose #hasElem(I that) = \.default(that<this.end())
+    }
+  }
+  
+//SView=View(S.List).cut().defaultMut().moreMut()  
+A=Data:{var I that}
+AList=Collection.list(A)
+//ALList=Collection.linkedList(A)//not iterating oven indexes
+ASet=Collection.set(A)
+AMap=Collection.map(key=I,val=A)
+Make={
+  class method mut AList mList()=\[
+    mutVal=\(1I);mutVal=\(2I);mutVal=\(3I);mutVal=\(4I);
+    mutVal=\(5I);mutVal=\(6I);mutVal=\(7I);mutVal=\(8I);
+    ]
+  class method mut AList iList()=\[
+    \(1I);\(2I);\(3I);\(4I);
+    \(5I);\(6I);\(7I);\(8I);
+    ]
+  class method mut AList mixList()=\[
+    mutVal=\(1I);\(2I);mutVal=\(3I);\(4I);
+    mutVal=\(5I);\(6I);mutVal=\(7I);\(8I);
+    ]
+  class method mut ASet set()=\[
+    \(1I);\(2I);\(3I);\(4I);
+    \(5I);\(6I);\(7I);\(8I);
+    ]
+  class method mut AMap map()=\[
+    key=10I val=\(1I);  key=20I val=\(2I);  key=30I val=\(3I);  key=40I val=\(4I);
+    key=50I val=\(5I);  key=60I val=\(6I);  key=70I val=\(7I);  key=80I val=\(8I);
+    ]
+  }
+Test000={...}
+TestCut00={...}
+/*
+Consider
+    S acc=Match.Accumulate(S"")(
+    for mut a in v \add(\acc ++a.that().toS()) )
+vs
+var acc=S"", ( for mut a in v acc++=a.that().toS() )
+vs
+  S.StringBuilder()( for mut a in v \append(a.that()) )
+Do we really need Math.Accumulate or any form of reduce?
+Main=(
+  mut SView msv=SView(\[S"a";S"b";S"c";S"aa";S"bb"])
+  //sv=SView(\[S"a";S"b"])<:read SView.vals(1I to=3I)
+  //read sv=SView(\[S"a";S"b"]).vals(1I to=3I)
+  sv=SView(\[S"a";S"b"]).#vals(1I to=3I)
+  //mut sv=msv.#vals(1I to=3I)
+  Debug(S"Hello world %sv %sv.size()")
+  ( for s in sv Debug(S"Hello world %s") )
+  ( for s in S.List[S"a";S"b";S"c";S"aa";S"bb"] Debug(S"Hello world %s") )
+  )*/

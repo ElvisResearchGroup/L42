@@ -5,8 +5,8 @@ mut method mut This #iterator()=this
 mut method mut This #varIterator()=this
 read method I #startIndex()=0I
 read method Collection.IteratorCompose #hasElem(I that)=
-  if this.streams().isEmpty() \.canContinue()
-  else \.likeToContinue()
+  if this.streams().isEmpty() \.canStop()
+  else \.canContinue()
 mut method Event from(S.Opt oRes)=(
   if !oRes.isPresent() error X"unexpected Event with null string"
   this.from(res=oRes.val())

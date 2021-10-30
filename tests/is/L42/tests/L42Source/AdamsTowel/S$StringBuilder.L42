@@ -102,6 +102,7 @@ mut method Void #stab()=native{trusted:tab}error void
 
 mut method Void #stringAddAll(mut This that)=this.append(that=that.toS())
 mut method Void #stringAddExpr(read This1.HasToS that)=this.append(that=that.toS())
+mut method Void add(read This1.HasToS that)=this.append(that=that.toS())
 mut method Void append(This1.S that)=native{trusted:addAll}error void
 
 class method mut This #apply()
