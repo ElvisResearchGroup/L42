@@ -1,3 +1,9 @@
+TODO: minimized Data.Close/Data.AddK bug
+AA=Data:{ S foo, S bar class method This (S bar,S foo) }
+Mm=Debug(AA(foo=S"foo",bar=S"bar"))
+
+Collection2 line 77 catch exception Message$Guard _ return that //TODO: with Message.Guard
+
 Bug in Data.Close A=Data:{capsule S.List ss @Cache.Clear class method Void ss(mut S.List ss) = (void)}
 
 Make all the css stuff again into the jar/side folder? should we have also an adamsTowel?

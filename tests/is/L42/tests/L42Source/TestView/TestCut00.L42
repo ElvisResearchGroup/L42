@@ -18,6 +18,9 @@ MainM=(
   for var mut a in v a:=\(10I+a.that())
   acc=S.StringBuilder()( for mut a in v \add(a.that()) )
   {}:Test"updateMut_000"(actual=acc,expected=S"1112131415161718")
+  )(
+  acc=S.StringBuilder()( for mut a in v, r in Range(4I) \add(a.that()) )
+  {}:Test"cutStopsOk_000"(actual=acc,expected=S"11121314")
   ))
 MainI=(
   mut v=AView(Make.iList())
@@ -53,6 +56,8 @@ MainSet=(
   )(acc=S.StringBuilder()( for read a in v.vals(1I to=5I) \add(a.that()) )
   {}:Test"vals15_000"(actual=acc,expected=S"2345")
   {}:Test"vals3Left_000"(actual=v.vals(2I).left(), expected=S"A(3)")
+  )(acc=S.StringBuilder()( for read a in v,r in Range(3I) \add(a.that()) )
+  {}:Test"cutSetOk_000"(actual=acc, expected=S"123")
   ))
 MainMap=(
   mut v=MView(Make.map())
@@ -61,5 +66,7 @@ MainMap=(
   )(acc=S.StringBuilder()( for (key,val) in v.vals(1I to=5I) \add(val.that()) )
   {}:Test"vals15_000"(actual=acc,expected=S"2345")
   {}:Test"vals3Left_000"(actual=v.vals(2I).left().val(), expected=S"A(3)")
+  )(acc=S.StringBuilder()( for read a in v,r in Range(3I) \add(a.val().that()) )
+  {}:Test"cutMapOk_000"(actual=acc, expected=S"123")
   ))
 

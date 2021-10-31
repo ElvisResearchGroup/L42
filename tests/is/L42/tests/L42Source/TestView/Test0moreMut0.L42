@@ -1,0 +1,79 @@
+AView=View(AList).moreMut()
+//SView=View(ASet).moreMut()
+MView=View(AMap).moreMut()
+
+MainM=(
+  mut v=AView(Make.mList(),more=A(100I))
+  ,(acc=S.StringBuilder()( for mut a in v \add(a.that()) )
+  {}:Test"visit0more0"(actual=acc,expected=S"12345678")
+  )(acc=S.StringBuilder()( for mut a in v.#vals(1I to=5I) \add(a.that()) )
+  {}:Test"vals15_0more0"(actual=acc,expected=S"2345")
+  )(acc=S.StringBuilder()( for mut a in v.#vals(1I to=5I).#vals(2I) \add(a.that()) )
+  {}:Test"subValsFrom_0more0"(actual=acc,expected=S"45")
+  )(acc=S.StringBuilder()( for mut a in v.#vals(1I to=5I).#vals(to=3I) \add(a.that()) )
+  {}:Test"subValsTo_0more0"(actual=acc,expected=S"234")
+  )(acc=S.StringBuilder()( for read a in v.vals(1I to=5I) \add(a.that()) )
+  {}:Test"valsRead_0more0"(actual=acc,expected=S"2345")
+  )(
+  for var mut a in v a:=\(10I+a.that())
+  acc=S.StringBuilder()( for mut a in v \add(a.that()) )
+  {}:Test"updateMut_0more0"(actual=acc,expected=S"1112131415161718")
+  )(
+  err=(
+    _=S.StringBuilder()( for mut a in AView(Make.mList(),more=A(100I)), r in Range(4I) \add(a.that()) )
+    catch error Message m ( m.toS() )
+    S""
+    )
+  {}:Test"errStops_0more0"(actual=err,expected=S"""
+    |Message This1.Collection.IterationIncomplete([###]):
+    |While iterating on multiple collections, iteration terminated abruptly.
+    |The size of the collections may have not been the same.
+    """)
+  ))
+MainI=(
+  mut v=AView(Make.iList(),more=A(100I))
+  ,(acc=S.StringBuilder()( for a in v \add(a.that()) )
+  {}:Test"visit0more0"(actual=acc,expected=S"12345678")
+  )(acc=S.StringBuilder()( for a in v.vals(1I to=5I) \add(a.that()) )
+  {}:Test"vals15_0more0"(actual=acc,expected=S"2345")
+  )(acc=S.StringBuilder()( for a in v.vals(1I to=5I).vals(2I) \add(a.that()) )
+  {}:Test"subValsFrom_0more0"(actual=acc,expected=S"45")
+  )(acc=S.StringBuilder()( for a in v.vals(1I to=5I).vals(to=3I) \add(a.that()) )
+  {}:Test"subValsTo_0more0"(actual=acc,expected=S"234")
+  )(acc=S.StringBuilder()( for read a in v.vals(1I to=5I) \add(a.that()) )
+  {}:Test"valsRead_0more0"(actual=acc,expected=S"2345")
+  )(for var a in v a:=\(10I+a.that())
+  acc=S.StringBuilder()( for a in v \add(a.that()) )
+  {}:Test"updateMut_0more0"(actual=acc,expected=S"1112131415161718")
+  )(
+  v.left(v.right())//checks that they are now imm and that gettes/setters are working
+  acc=S.StringBuilder()( for a in v \add(a.that()) )
+  {}:Test"updateMut_0more0"(actual=acc,expected=S"1812131415161718")
+  ))
+MainMix=(
+  mut v=AView(Make.mixList(),more=A(100I))
+  ,(acc=S.StringBuilder()( for read a in v \add(a.that()) )
+  {}:Test"visit0more0"(actual=acc,expected=S"12345678")
+  )(acc=S.StringBuilder()( for read a in v.vals(1I to=5I) \add(a.that()) )
+  {}:Test"vals15_0more0"(actual=acc,expected=S"2345")
+  )(acc=S.StringBuilder()( for (read that) in v, r in Range(12I) \add(that) )
+  {}:Test"valsMore_0more0"(actual=acc,expected=S"12345678100100100100")
+  ))
+MainMap=(
+  mut v=MView(Make.mmap(),more=\(key=90I,val=\(9I)))
+  ,(acc=S.StringBuilder()( for mut (key,val) in v \add(val.that()) )
+  {}:Test"setVisit000"(actual=acc,expected=S"12345678")
+  )(acc=S.StringBuilder()( for mut (key,val) in v.#vals(1I to=5I) \add(val.that()) )
+  {}:Test"vals15_0more0"(actual=acc,expected=S"2345")
+  {}:Test"vals3Left_0more0"(actual=v.#vals(2I).#left().val(), expected=S"A(3)")
+    )(
+  err = (for read a in MView(Make.mmap(),more=\(key=100I,val=\(100I))), r in Range(3I) ( void )
+    catch error Message m m,,,error X"")
+  {}:Test"errMap_0more0"(actual=err, expected=S"""
+    |Message This1.Collection.IterationIncomplete([###]):
+    |While iterating on multiple collections, iteration terminated abruptly.
+    |The size of the collections may have not been the same.
+    """)
+  )(acc=S.StringBuilder()( for mut (key,val) in v,r in Range(12I) (\add(key) \add(val.that())) )
+  {}:Test"valsMore_0more0"(actual=acc,expected=S"101202303404505606707808909909909909")
+  ))
