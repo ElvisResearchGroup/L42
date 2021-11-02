@@ -1,8 +1,6 @@
 package is.L42.common;
 
 import java.io.File;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
@@ -11,7 +9,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import is.L42.generated.Pos;
-import is.L42.tests.SecretHolder;
 
 public interface ToNameUrl{
   record NameUrl(String fullName,URL fullPath){}
