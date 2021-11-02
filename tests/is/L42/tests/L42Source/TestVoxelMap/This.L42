@@ -11,10 +11,10 @@ LoadDeploy = Load:{reuse[L42.is/Deploy]}
 DeployGit = LoadDeploy.with(writer=GW)
 TaskDeployVoxelMap = DeployGit.module(Module()
   name='VoxelMap
-  on=Url"github.com/%Secret.repo()/VoxelMapTrait.L42",
+  on=Url"github.com/%Secret.repo()/%Secret.version()/VoxelMapTrait.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
-    message=S"Voxel Map"++S" automatic release 42V0.95"
+    message=S"Voxel Map automatic release 42V "++Secret.version()
   ))
   
 VMT = Load : {reuse [#$L42.is/VoxelMapTrait] }

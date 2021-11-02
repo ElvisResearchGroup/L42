@@ -1,6 +1,6 @@
-AView=View(AList).cut()
-SView=View(ASet).cut()
-MView=View(AMap).cut()
+AView=Collection.View(AList).cut()
+SView=Collection.View(ASet).cut()
+MView=Collection.View(AMap).cut()
 
 MainM=(
   mut v=AView(Make.mList())

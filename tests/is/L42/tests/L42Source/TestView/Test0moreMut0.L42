@@ -1,6 +1,6 @@
-AView=View(AList).moreMut()
-//SView=View(ASet).moreMut()
-MView=View(AMap).moreMut()
+AView=Collection.View(AList).moreMut()
+//SView=Collection.View(ASet).moreMut()
+MView=Collection.View(AMap).moreMut()
 
 MainM=(
   mut v=AView(Make.mList(),more=A(100I))

@@ -16,10 +16,10 @@ LoadDeploy = Load:{reuse[L42.is/Deploy]}
 DeployGit = LoadDeploy.with(writer=GW)
 TaskDeploySifoLib = DeployGit.module(Base()
   name='Sifo
-  on=Url"github.com/%Secret.repo()/Sifo.L42",
+  on=Url"github.com/%Secret.repo()/%Secret.version()/Sifo.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
-    message=S"Sifo "++S" automatic release 42V0.95"
+    message=S"Sifo automatic release 42V "++Secret.version()
   ))
 
 Sifo=Load:{reuse[#$L42.is/Sifo]}

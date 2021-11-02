@@ -44,31 +44,28 @@ DeployLibDeployed = System.extractModule( //ready for load
 LoadDeploy = Load:DeployLibDeployed.code()
 DeployGit = LoadDeploy.with(writer=GW)
 Writer = {class method mut GW #$of(S that) = 
-  GW.#$of(token=Secret.#$of(), message=that++S" automatic release 42V0.95")
+  GW.#$of(token=Secret.#$of(), message=that++S" automatic release 42V"++Secret.version())
   }
-
-
-
 
 //Module 0  -- Towel AdamsTowel --> AdamsTowel
 TaskDeployAdams = DeployGit.towel(Trait({reuse [AdamsTowel]})
-  on=Url"github.com/%Secret.repo()/AdamsTowel.L42"
+  on=Url"github.com/%Secret.repo()/%Secret.version()/AdamsTowel.L42"
   writer=Writer.#$of(S"AdamsTowel")
   )
 
 //Module 1
 TaskDeployHttpRequest = DeployGit.towel(HttpRequestDeployed()
-  on=Url"github.com/%Secret.repo()/HttpRequest.L42"
+  on=Url"github.com/%Secret.repo()/%Secret.version()/HttpRequest.L42"
   writer=Writer.#$of(S"HttpRequest")
   )
 //Module 2
 TaskDeployGitWriterDeployed = DeployGit.towel(GitWriterDeployed()
-  on=Url"github.com/%Secret.repo()/GitWriter.L42"
+  on=Url"github.com/%Secret.repo()/%Secret.version()/GitWriter.L42"
   writer=Writer.#$of(S"GitWriter")
   )
 //Module 3
 TaskDeployDeployLib = DeployGit.towel(DeployLibDeployed()
-  on=Url"github.com/%Secret.repo()/Deploy.L42"
+  on=Url"github.com/%Secret.repo()/%Secret.version()/Deploy.L42"
   writer=Writer.#$of(S"Deploy")
   )
 
@@ -82,7 +79,7 @@ ToJar=Trait:{reuse [AdamsTowel]
   }
   
 DeployJar = DeployGit.jar(ToJar()
-  on=Url"github.com/%Secret.repo()/ExampleJar.L42"
+  on=Url"github.com/%Secret.repo()/%Secret.version()/ExampleJar.L42"
   writer=Writer.#$of(S" Example Jar")
   )
   

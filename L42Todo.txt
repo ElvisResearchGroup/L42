@@ -2,7 +2,12 @@ TODO: minimized Data.Close/Data.AddK bug
 AA=Data:{ S foo, S bar class method This (S bar,S foo) }
 Mm=Debug(AA(foo=S"foo",bar=S"bar"))
 
-Collection2 line 77 catch exception Message$Guard _ return that //TODO: with Message.Guard
+Remove all forms of reduce from lists
+vals(that,to) in lists now must make a copy, and remove iterators from lists
+
+In the guide, show how we can implement the concept of fold/reduce with less bother without the slash or lambdas, just with normal acc local variable
+
+Collection2 line 77 catch exception Message$Guard _ return that //TODO: with Message.Guard was assertion error
 
 Bug in Data.Close A=Data:{capsule S.List ss @Cache.Clear class method Void ss(mut S.List ss) = (void)}
 

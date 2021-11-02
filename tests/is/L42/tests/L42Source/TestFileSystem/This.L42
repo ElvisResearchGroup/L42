@@ -9,10 +9,10 @@ DeployGit = LoadDeploy.with(writer=GW)
 FSLib = Trait:{...}
 TaskDeployFS = DeployGit.module(FSLib['FileSystem$Real=>'FileSystem.Real]
   name='FileSystem
-  on=Url"github.com/%Secret.repo()/FileSystem.L42",
+  on=Url"github.com/%Secret.repo()/%Secret.version()/FileSystem.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
-    message=S"File System"++S" automatic release 42V0.95"
+    message=S"File System automatic release 42V"++Secret.version()
   ))
 
 FS = Load:{reuse[#$L42.is/FileSystem]}

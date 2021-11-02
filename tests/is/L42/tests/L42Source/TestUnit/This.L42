@@ -89,10 +89,10 @@ LoadDeploy = Load:{reuse[L42.is/Deploy]}
 DeployGit = LoadDeploy.with(writer=GW)
 TaskDeployUnit = DeployGit.module(Base['TraitSI=>'Unit.TraitSI]
   name='Unit
-  on=Url"github.com/%Secret.repo()/Unit.L42",
+  on=Url"github.com/%Secret.repo()/%Secret.version()/Unit.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
-    message=S"File System"++S" automatic release 42V0.95"
+    message=S"Unit automatic release 42V "++Secret.version()
   ))
   
 UnitLib=Load:{reuse[#$L42.is/Unit]}

@@ -15,10 +15,10 @@ Deployed0 = Load:Class.Relax:System.extractModule(Base.code(),name='Main)
 
 Deployed1 = DeployGit.module(Base()
   name='Main
-  on=Url"github.com/%Secret.repo()/MiniLib.L42",
+  on=Url"github.com/%Secret.repo()/%Secret.version()/MiniLib.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
-    message=S"Test library MiniLib "++S" automatic release 42V0.95"
+    message=S"Test library MiniLib automatic release 42 "++Secret.version()
   ))  
 
 Deployed2 = Load:{reuse[#$L42.is/MiniLib]}

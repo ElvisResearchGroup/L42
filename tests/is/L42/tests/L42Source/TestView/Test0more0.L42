@@ -1,6 +1,6 @@
-AView=View(AList).more()
-SView=View(ASet).more()
-MView=View(AMap).more()
+AView=Collection.View(AList).more()
+SView=Collection.View(ASet).more()
+MView=Collection.View(AMap).more()
 
 MainM=(
   mut v=AView(Make.mList(),more=A(100I))

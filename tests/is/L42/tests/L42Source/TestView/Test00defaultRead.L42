@@ -1,6 +1,6 @@
-AView=View(AList).defaultRead()
-SView=View(ASet).defaultRead()//no error? should error instead?
-MView=View(AMap).defaultRead()
+AView=Collection.View(AList).defaultRead()
+SView=Collection.View(ASet).defaultRead()//no error? should error instead?
+MView=Collection.View(AMap).defaultRead()
 
 MainM=(
   mut v=AView(Make.mList())

@@ -1,6 +1,6 @@
-AView=View(AList).defaultMut() //ok, but vals(..) does not make sense now, needs #vals(..) always
-//SView=View(ASet).defaultMut()  //throws a reasonable error. Could be improved?
-MView=View(AMap).defaultMut()
+AView=Collection.View(AList).defaultMut() //ok, but vals(..) does not make sense now, needs #vals(..) always
+//SView=Collection.View(ASet).defaultMut()  //throws a reasonable error. Could be improved?
+MView=Collection.View(AMap).defaultMut()
 
 MainM=(
   mut v=AView(Make.mList())

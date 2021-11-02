@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import is.L42.common.Parse;
 import is.L42.platformSpecific.javaTranslation.Resources;
-import is.L42.tests.DeployAdamsTowel;
+import is.L42.tests.IntegrationTests;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
 
@@ -76,7 +76,7 @@ public class PerfTests {
       PerfStat prevres2 = PerfStat.getResult("unit.memcache");
       PerfStat prevres3 = PerfStat.getResult("unit.filecache");
       File tmp = new File("tmp/tmp" + Math.random()); tmp.mkdirs();
-      var url=Paths.get(DeployAdamsTowel.class.getResource("L42Source/TestUnit").toURI()).resolve("This.L42");
+      var url=Paths.get(IntegrationTests.class.getResource("L42Source/TestUnit").toURI()).resolve("This.L42");
       var code=Parse.codeFromPath(url);
       CachedTop memcache = new CachedTop(L(),L());
       Resources.clearRes();
@@ -129,7 +129,7 @@ public class PerfTests {
       out.println(prevres);
       out.println(prevres2);
       out.println("New results:");
-      var url=Paths.get(DeployAdamsTowel.class.getResource(path).toURI()).resolve("This.L42");
+      var url=Paths.get(IntegrationTests.class.getResource(path).toURI()).resolve("This.L42");
       var code=Parse.codeFromPath(url);
       PerfMonitor.PerfResult res = PerfMonitor.test(() -> {
         return doExecNoCache(url, code);

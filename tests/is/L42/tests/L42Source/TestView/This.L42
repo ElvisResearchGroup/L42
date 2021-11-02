@@ -1,8 +1,5 @@
 reuse [L42.is/AdamsTowel]
-//TODO: minimized Data.Close/Data.AddK bug
-//AA=Data:{ S foo, S bar class method This (S bar,S foo) }
-//Mm=Debug(AA(foo=S"foo",bar=S"bar"))
-View=Public:Data:{
+/*View=Public:Data:{
   class Any that
   Bool cutF=Bool.false()
   S moreMdf=S""
@@ -240,7 +237,7 @@ View=Public:Data:{
     read method I end()
     read method Collection.IteratorCompose #hasElem(I that) = \.default(that<this.end())
     }
-  }
+  }*/
   
 A=Data:{var I that}
 AList=Collection.list(A)
@@ -279,22 +276,3 @@ Test0more0={...}
 Test0moreMut0={...}
 Test00defaultMut={...}
 Test00defaultRead={...}
-/*
-Consider
-    S acc=Match.Accumulate(S"")(
-    for mut a in v \add(\acc ++a.that().toS()) )
-vs
-var acc=S"", ( for mut a in v acc++=a.that().toS() )
-vs
-  S.StringBuilder()( for mut a in v \append(a.that()) )
-Do we really need Math.Accumulate or any form of reduce?
-Main=(
-  mut SView msv=SView(\[S"a";S"b";S"c";S"aa";S"bb"])
-  //sv=SView(\[S"a";S"b"])<:read SView.vals(1I to=3I)
-  //read sv=SView(\[S"a";S"b"]).vals(1I to=3I)
-  sv=SView(\[S"a";S"b"]).#vals(1I to=3I)
-  //mut sv=msv.#vals(1I to=3I)
-  Debug(S"Hello world %sv %sv.size()")
-  ( for s in sv Debug(S"Hello world %s") )
-  ( for s in S.List[S"a";S"b";S"c";S"aa";S"bb"] Debug(S"Hello world %s") )
-  )*/
