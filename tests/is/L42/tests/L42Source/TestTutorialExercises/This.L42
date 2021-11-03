@@ -19,12 +19,16 @@ MaxOfList = {//static method pattern
   }
 MaxOfList2 = {
   class method
-  Num (Num.List that) =
-    that.reduce()(
+  Num (Num.List that) = (
+    var res = that.left()
+    for n in that ( res:=res.max(n) ) 
+    res
+    )
+ /*  that.reduce()(
       for e in \vals() (
         if \acc < e \add(e) 
         )
-      )
+      )*/
   }
 MapText = {
   UnequalSize = Message:{[Message.Guard]}
@@ -35,7 +39,7 @@ MapText = {
     //the former formatting allows us to keep a whole line for the error message
     res = S.List()(for k in keys, v in vals \add(S"%k->%v"))
     if res.isEmpty() return S"[]"
-    text = res.reduce()(for s in \vals \add(\acc++S", %s"))
+    text = res.left().builder()(for s in res.vals(1I) \add(S", %s"))
     return S"[%text]"
     }
   }

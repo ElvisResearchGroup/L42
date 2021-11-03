@@ -40,23 +40,6 @@ TestSizeRange=(
   for i in Range(21I) (sAcc++=S"a")
   {}:Test"range 21"(sAcc.size()==21I)
   )
-TestMatchReduce=((
-  mut S.List ss=S.List[S"a";S"b";S"c"]
-  {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))
-  ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-  lent S.List ss=S.List[S"a";S"b";S"c"]
-  {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))    
-  ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-  read S.List ss=S.List[S"a";S"b";S"c"]
-  {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))    
-  ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-  imm S.List ss=S.List[S"a";S"b";S"c"]
-  {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))    
-  ))
 TestMatchSome=(
   ss=S.List[S"a";S"b";S"c"]
   (    

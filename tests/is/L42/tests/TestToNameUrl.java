@@ -52,6 +52,6 @@ public class TestToNameUrl {
       "NameUrl[fullName=localhost[###]AdamsTowel.L42, fullPath=[###]/localhost/AdamsTowel.L42]");}
   @Test public void test42Url2(){check("L42.is/AdamsTowel",
       //"NameUrl[fullName=https://github.com/"+ToNameUrl.l42IsRepoPath+"/blob/HEAD/AdamsTowel.L42?raw=true, fullPath=https://github.com/"+ToNameUrl.l42IsRepoPath+"/blob/HEAD/AdamsTowel.L42?raw=true]");}
-      "NameUrl[fullName=https://github.com/Language42/is/blob/HEAD/d001/AdamsTowel.L42?raw=true, fullPath=https://github.com/"+ToNameUrl.l42IsRepoPath+"/blob/HEAD/"+ToNameUrl.l42IsRepoVersion+"/AdamsTowel.L42?raw=true]");}
+      "NameUrl[fullName=https://github.com/Language42/is/blob/HEAD/"+ToNameUrl.l42IsRepoVersion+"/AdamsTowel.L42?raw=true, fullPath=https://github.com/"+ToNameUrl.l42IsRepoPath+"/blob/HEAD/"+ToNameUrl.l42IsRepoVersion+"/AdamsTowel.L42?raw=true]");}
 
   }

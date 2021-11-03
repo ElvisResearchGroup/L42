@@ -61,13 +61,6 @@ method This withAlsoRight(Elem that)
 method This without(I that)
 method This withoutLeft()
 method This withoutRight()
-read method lent ElemBox reduce()
-read method lent ElemBox reduce(Elem that)
-ElemBox={
-  read method Elem (Void that)
-  read method Elem acc()
-  lent method Void add(Elem that)
-  }  
 //----------------------------
 method This withoutAll(read Elem val)=
   This()(for e in this (if !This.equals(a=e,b=val) \add(e)))

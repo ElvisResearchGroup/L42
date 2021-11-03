@@ -147,39 +147,18 @@ method This withoutLeft()=this.without(0\)
 
 method This withoutRight()=this.without(\size.#pred())
 
-ElemBox={
-  read Iterator vals
-  var Elem elem
-  class method lent This(read Iterator vals,Elem elem)
-  lent method Void #add(Elem that)=this.elem(that)
-  //mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
-  read method Elem (Void that)=this.acc()
-  read method Elem acc()=this.elem()
-  lent method Void add(Elem that)=this.elem(that)
-  }
-read method lent ElemBox reduce() = (
-  l = this.left()
-  catch error Message$Guard _ error Collection$OperationUndefinedOnEmpty
-    "The requested operation can not be completed on an empty list"  
-  ElemBox(vals=this.vals(1\ to=\size),elem=l)
-  )
-read method lent ElemBox reduce(Elem that) = 
-  ElemBox(vals=this.vals(0\ to=\size),elem=that)
-
-read method read Iterator cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
-mut method mut Iterator #cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
-
-read method read Iterator vals(I that,I to)=Iterator(start=that,end=to,cut=\.false(),list=this)
-mut method mut Iterator #vals(I that,I to)=Iterator(start=that,end=to,cut=\.false(),list=this)
-read method read Iterator cutVals(I that,I to)=Iterator(start=that,end=to,cut=\.true(),list=this)
-mut method mut Iterator #cutVals(I that,I to)=Iterator(start=that,end=to,cut=\.true(),list=this)
+read method read Iterator vals(I that,I to)=Iterator(start=that,end=to,list=this)
+mut method mut Iterator #vals(I that,I to)=Iterator(start=that,end=to,list=this)
+read method read Iterator vals(I to)=this.vals(that=0I, to=to)
+mut method mut Iterator #vals(I to)=this.#vals(that=0I, to=to)
+read method read Iterator vals(I that)=this.vals(that=that, to=\size)
+mut method mut Iterator #vals(I that)=this.#vals(that=that, to=\size)
 
 Iterator={
   I start
   I end
-  Bool cut
   mut This1 list
-  class method mut This(I start,I end,Bool cut,fwd mut This1 list)
+  class method mut This(I start,I end,fwd mut This1 list)
   read method read This #iterator()=this
   mut method mut This #varIterator()=this
   read method I #startIndex()=this.start()

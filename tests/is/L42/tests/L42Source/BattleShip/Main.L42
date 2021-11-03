@@ -18,7 +18,8 @@ Board = Data:{[HasToS]
     for e in that \add(e==that.left())
     )
   class method Bool allContact(I.List that) = Match.All()((
-    min=that.reduce()( for e in \vals \add(\acc.min(e)) )
+    var min=that.left()
+    for e in that ( min:=min.min(e) )
     for i in Range(min to=min+that.size()) \add(i in that)
     ))
   method FireResult fire(Ships.Coord coord, Shots shots) = \(
