@@ -13,16 +13,10 @@ Bug in Data.Close A=Data:{capsule S.List ss @Cache.Clear class method Void ss(mu
 
 Make all the css stuff again into the jar/side folder? should we have also an adamsTowel?
 
-Make Collection.View(List/Set/Map/Enum?) and fix canStop and other names. Test Guis work again
-
 Fix FS library:
-  1)a name for a datatype can can be either an URI (including file://) or a local path with '/' slashes.
-  2)The FS type need to take that as input, and when given a path
-  it either starts with file:// or another whitelisted protocol
-  or starts with a valid portable fileName (prevent <, >,:,,",/,\,|,?,* and the convention on portable filenames)
-  and divides by "/" in other valid portable filenames
+  I'm following WHATWG URL Standard? to check?
   3) update adams towel and guide
-
+  The other option would be to check if it starts with a valid portable fileName (prevent <, >,:,,",/,\,|,?,* and the convention on portable filenames) and divides by "/" in other valid portable filenames
 
 =#$//should this be required to unlock #$ in its transivite main
 multi line escape syntax is now confusing.

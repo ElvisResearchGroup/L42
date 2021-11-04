@@ -7,13 +7,27 @@ FileSystem = {interface
   mut method Void write(Url on, S contentBase64)[Fail]
   mut method S read(Url that)[Fail]
   mut method S readBase64(Url that)[Fail]
+  @{
+    Url as for WHATWG URL Standard, where relative urls are allowed
+    In particular, if the provided url is relative,
+    it is resolved against the current location
+    For example
+    "https://google.com/bla/foo" is absolute so is left untouched
+    "bla/foo" becomes something like "file:/C:/Users/--/Desktop/--/--/bla/foo"
+        Note that "./bla/foo" would resolve exactly as "bla/foo"  
+    "/C:/bla/foo" becomes "file:///C:/bla/foo"
+        Note that "C:/bla/foo" would not be allowed
+    "/bla/foo" becomes "file:///bla/foo"; that is, starting from the root
+    names with spaces or other special characters must be percent encoded, so for example 
+    "myFolder/bla%20foo.txt" will point to the file "bla foo.txt" inside "myFolder"
+    }
   }
 FileSystem$Real = Public:{
   [FileSystem]
   @Public class method mut This #$of() = this.#$of::0()
   class method mut This #$of::0()
   @Public mut method Void makeDirs(Url that)[FileSystem.Fail] = (
-    _ = This.#$mkdirs(fileName=that.toS())
+    _ = This.#$mkdirs(fileName=that.toS())//should we return the bool result?
     catch System.JavaException x exception FileSystem.Fail"%x.text()"
     void
     )
@@ -42,56 +56,101 @@ FileSystem$Real = Public:{
     catch System.JavaException x exception FileSystem.Fail"%x.text()"
     s
     )
+  //------------------------
+
+  
   class method S #$mkdirs(S fileName)[System.JavaException] = native{
     ioSlave{}{
-    var file=#1.startsWith("file://")?
-      new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
-    file.mkdirs();return "";//should we return the bool result?
+    String s=#1;
+    var uri=new java.net.URI(s);
+    if(!uri.isAbsolute()){ uri=java.nio.file.Path.of(".").toUri().resolve(uri); } 
+    var file=new java.io.File(uri);
+    var res=file.mkdirs();return ""+res;
     }} error void
+
+
   class method S #$delete(S fileName)[System.JavaException] = native{
-    ioSlave{}{ 
-    var file=#1.startsWith("file://")?
-      new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
+    ioSlave{}{
+    String s=#1;
+    var uri=new java.net.URI(s);
+    if(!uri.isAbsolute()){ uri=java.nio.file.Path.of(".").toUri().resolve(uri); } 
+    var file=new java.io.File(uri);
     file.delete();return "";
     }} error void
+
+
   class method S #$write(S fileName,S content)[System.JavaException] = native{
     ioSlave{}{
+    String s=#1;
+    var content=#2.getBytes();
     try{
-      var file=#1.startsWith("file://")?
-        new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
-      java.nio.file.Files.write(file.toPath(), #2.getBytes());
+      var uri=new java.net.URI(s);
+      if(!uri.isAbsolute()){ uri=java.nio.file.Path.of(".").toUri().resolve(uri); }
+      java.nio.file.Files.write(new java.io.File(uri).toPath(), content);    
       return "";
       }
-    catch(java.io.IOException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
+    catch(java.io.IOException|java.net.URISyntaxException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
     }} error void
+  
+  
   class method S #$write(S fileName,S contentBase64)[System.JavaException] = native{
     ioSlave{}{
-    byte[] content=java.util.Base64.getMimeDecoder().decode(#2);
+    String s=#1;
+    var content=java.util.Base64.getMimeDecoder().decode(#2);
     try{
-      var file=#1.startsWith("file://")?
-        new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
-      java.nio.file.Files.write(file.toPath(), content);
+      var uri=new java.net.URI(s);
+      if(!uri.isAbsolute()){ uri=java.nio.file.Path.of(".").toUri().resolve(uri); }
+      java.nio.file.Files.write(new java.io.File(uri).toPath(), content);    
       return "";
       }
-    catch(java.io.IOException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
+    catch(java.io.IOException|java.net.URISyntaxException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
     }} error void
+
+
   class method S #$read(S fileName)[System.JavaException] = native{
     ioSlave{}{
-    try{
-      var file=#1.startsWith("file://")?
-        new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
-      var bytes=java.nio.file.Files.readAllBytes(file.toPath());
-      return new String(bytes);
+    String s=#1;
+    java.net.URI out=null;
+    try{try {
+      var uri=new java.net.URI(s);
+      if(!uri.isAbsolute()){ out=java.nio.file.Path.of(".").toUri(); uri=out.resolve(uri); }
+      try(var in=uri.toURL().openStream()){ return new String(in.readAllBytes()); }
       }
-    catch(java.nio.file.NoSuchFileException fnf){
-      String location="File '"+#1+"' not present in folder '";
-      location+=new java.io.File(".").getCanonicalFile();
+    catch(java.io.FileNotFoundException fnf){
+      if(out==null){ throw fnf; }
+      String location="File '"+s+"' not present in folder '";
+      location+=out;
       location +="'\nexisting files are:   ";
-      for (var pathname : new java.io.File(".").list()) {
-        location +="'"+pathname+"'   ";
-        }
+      for (var pathname : new java.io.File(".").list()) { location +="'"+pathname+"'   "; }
       throw new Error(location);
-      }
+      }}
+    catch(java.io.IOException|java.net.URISyntaxException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
     }} error void
-  class method S #$readBase64(S fileName)[System.JavaException] = error X"todo"
+
+
+  class method S #$readBase64(S fileName)[System.JavaException] = native{
+    ioSlave{}{
+    String s=#1;
+    java.net.URI out=null;
+    try{
+      try{
+        var uri=new java.net.URI(s);
+        if(!uri.isAbsolute()){ out=java.nio.file.Path.of(".").toUri(); uri=out.resolve(uri); }
+        try(var in=uri.toURL().openStream()){ 
+          var res = new String(in.readAllBytes());
+          res = java.util.Base64.getMimeEncoder().encodeToString(res.getBytes());
+          return res;
+          }
+        }
+      catch(java.io.FileNotFoundException fnf){
+        if(out==null){ throw fnf; }
+        String location="File '"+s+"' not present in folder '";
+        location+=out;
+        location +="'\nexisting files are:   ";
+        for (var pathname : new java.io.File(".").list()) { location +="'"+pathname+"'   "; }
+        throw new Error(location);
+        }
+      }
+    catch(java.io.IOException|java.net.URISyntaxException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
+    }} error void
   }
