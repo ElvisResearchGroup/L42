@@ -60,7 +60,10 @@ public class Utils {
     return a.withPoss(pos).withDocs(totDoc).withMh(mh);
     }
   public static boolean equalMH(MH mh1, MH mh2) {
-    if(!equalT(mh1.t(),mh2.t()) || mh1.mdf()!=mh2.mdf() 
+    return equalT(mh1.t(),mh2.t()) && equalMHignoreRet(mh1,mh2);
+    }
+  public static boolean equalMHignoreRet(MH mh1, MH mh2) {
+    if(mh1.mdf()!=mh2.mdf() 
       ||mh1.pars().size()!=mh2.pars().size()
       ||mh1.exceptions().size()!=mh2.exceptions().size()
       ){return false;}

@@ -2,6 +2,7 @@ reuse [L42.is/AdamsTowel]
 Fs=Load:{reuse[L42.is/FileSystem]}
 //TODO: why FS has an abstract towel annotation?
 //TODO: Url prints without the quotes (") ? actual Url /expected S prints the S in quotes and the Url not
+//TODO: should add a test for sum {Void foo()}+{[I] I={interface Void foo()[Void] } }->error
 Point = Data:{...}
 Main00 = (
   Debug(S"Hello world %Point(x=1Num,y=2Num)")
@@ -46,27 +47,30 @@ Test1= (
   {}:Test"ReadWriteOk"(actual=m.log() expected=S"readwrite")
   )
 
-OnlyTxt = Data:{[Fs]
-  capsule Fs inner
+OnlyTxt = Public:{[Fs]
+  mut Fs inner
   
-  class method Void checkTxt(Url that) = X.Guarded[
+  read method Void checkTxt(Url that) = X.Guarded[
     that.toS().endsWith(S".txt")
     ]
   method makeDirs(that) = error X""
-  @Cache.Clear class method Void delete(mut Fs inner, Url that) = (
+  method write(on,contentBase64) = error X""
+  method readBase64(that) = error X""
+  method delete(that) = (
     this.checkTxt(that)
-    inner.delete(that)
+    this.#inner().delete(that)
     )
-  @Cache.Clear class method Void write(mut Fs inner, Url on, S content) = ( 
+  method write(on,content) = ( 
     this.checkTxt(on)
-    inner.write(on=on, content=content)
+    this.#inner().write(on=on, content=content)
     )
-  @Cache.Clear class method Void read(mut Fs inner, Url that) = ( 
+  method read(that) = ( 
     this.checkTxt(that)
-    inner.read(that)
+    this.#inner().read(that)
     )
-  class method mut This #$of() = //example user declared #$ method, that can
+  @Public class method mut This #$of() = //example user declared #$ method, that can
     This(inner=Fs.Real.#$of())   //use $# methods inside its body
+  @Public class method mut This(mut Fs inner)
   }
 SaferMain = (
   fs = OnlyTxt.#$of()

@@ -129,7 +129,8 @@ _______
     {i,j}={1,2}
     MWTj.e?=empty//implemented can not lose
     either MWTi.MH==MWTj.MH //except docs
-    or interface?j=empty and loseSafeUnique(PLUS.topLeft,PLUS.topRight,Cs,MWTi,MWTj)//interface can not lose
+    or interface?j=empty and MWTi.MH[returnType=Void]==MWTj.MH[returnType=Void]
+        and loseSafeUnique(PLUS.topLeft,PLUS.topRight,Cs,MWTi,MWTj)//interface can not lose
 _______
 #define PLUS.loseSafeUnique(iMWT,MH)    loseSafe(L,Cs,MWT,MH)    
 * PLUS.loseSafeUnique(iMWT,MH)

@@ -457,10 +457,15 @@ public class Sum {
       }
     public static final String errConflict="Conflicting implementation: the method is implemented on both sides of the sum";
     IMWT plus(IMWT imwt1,IMWT imwt2,CoreL l1,CoreL l2){
-      boolean eqMH=Utils.equalMH(imwt1.mwt.mh(),imwt2.mwt.mh());
+      boolean eqRetT=Utils.equalT(imwt1.mwt.mh().t(),imwt2.mwt.mh().t());
+      boolean eqMHParsExc=Utils.equalMHignoreRet(imwt1.mwt.mh(),imwt2.mwt.mh());
+      boolean eqMH=eqRetT && eqMHParsExc;
       boolean abs1=imwt1.mwt._e()==null;
       boolean abs2=imwt2.mwt._e()==null;
       boolean oneInterf=imwt1.isInterface || imwt2.isInterface;
+      if(!eqMHParsExc){err(imwt1,imwt2,()->
+        "The two headers are incompatible:\n"+errM.intro(imwt2.mwt,false).stripTrailing());
+        }
       if(!abs1 && !abs2){err(imwt1,imwt2,()->errConflict);}
       if(eqMH){
         //if(abs1 && abs2){return new IMWT(oneInterf,accDoc(imwt1,imwt2));} 
