@@ -1,10 +1,80 @@
 reuse [L42.is/AdamsTowel]
+Fs=Load:{reuse[L42.is/FileSystem]}
+//TODO: why FS has an abstract towel annotation?
+//TODO: Url prints without the quotes (") ? actual Url /expected S prints the S in quotes and the Url not
 Point = Data:{...}
-Main = (
+Main00 = (
   Debug(S"Hello world %Point(x=1Num,y=2Num)")
   )
+Main10 = (
+  mut Fs f = Fs.Real.#$of()
+  f.write(on=Url"data.txt",content=S"SomeContent0") //non determistic operation
+  S s=f.read(Url"data.txt") //non determistic operation
+  //the result depends on the current file content
+  f.write(on=Url"data.txt",content=S"SomeContent") //non determistic operation
+  //the operation could go in error if there is not enough space to write the content on disk.
+  Debug(s)
+  )
+ReadWrite = {class method
+  Void (mut Fs f)[_] = (
+    S s=f.read(Url"data.txt")
+    f.write(on=Url"data.txt",content=S"SomeContent")
+    Debug(s)
+    )
+  }
+Main1 = ReadWrite(f=Fs.Real.#$of())
+Mock = Data:{[Fs]
+  var S log=S""
+  method delete(that) = error X""
+  method makeDirs(that) = error X""
+  method read(that) = (
+    X[actual=that expected=Url"data.txt"]
+    this.log(\log++S"read")
+    S"oldContent"
+    )
+  method readBase64(that) = error X""
+  method write(on,content) = ( 
+    X[actual=on expected=Url"data.txt";
+      actual=content  expected=S"SomeContent";]
+    this.log(\log++S"write")
+    )
+  method write(on,contentBase64) = error X""
+  }
+Test1= (
+  m=Mock()
+  ReadWrite(f=m)
+  {}:Test"ReadWriteOk"(actual=m.log() expected=S"readwrite")
+  )
+
+OnlyTxt = Data:{[Fs]
+  capsule Fs inner
   
-  
+  class method Void checkTxt(Url that) = X.Guarded[
+    that.toS().endsWith(S".txt")
+    ]
+  method makeDirs(that) = error X""
+  @Cache.Clear class method Void delete(mut Fs inner, Url that) = (
+    this.checkTxt(that)
+    inner.delete(that)
+    )
+  @Cache.Clear class method Void write(mut Fs inner, Url on, S content) = ( 
+    this.checkTxt(on)
+    inner.write(on=on, content=content)
+    )
+  @Cache.Clear class method Void read(mut Fs inner, Url that) = ( 
+    this.checkTxt(that)
+    inner.read(that)
+    )
+  class method mut This #$of() = //example user declared #$ method, that can
+    This(inner=Fs.Real.#$of())   //use $# methods inside its body
+  }
+SaferMain = (
+  fs = OnlyTxt.#$of()
+  ReadWrite(f=fs)
+  Debug(S"done")
+  )
+
+
 /*A= Load:{...}
 Foo=(
   f=MyFilter"""
