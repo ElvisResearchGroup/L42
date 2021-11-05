@@ -9,24 +9,6 @@ import java.util.stream.Stream;
 import is.L42.common.ToNameUrl;
 import is.L42.tools.TestL42Bridge;
 
-/*-marco developing 42 on ide // adamsTowel +Lib1..lib10
--adam developing 42 on ide Lib11
--bob using 42 on ide //appilication
--charles using 42 on portable zip //appilication
--david using 42 on portable zip Lib12
-
-
-if version of form r002 refuses to run in eclipse
-if version of form v002 the GW will write in /r002/
-if version of form v002 the reader will read from git hub /r002/
-if version of form r002 the reader will read from L42.is/r002/
-AdamsTowel/r004.L42
-
-*/
-//TODO: In ToNameUrl is.L42.override.L42IsRepoPathOverride
-//remove duplicate content
-//Now SecretHolder is defined in tests but used in src!!!
-
 //Note: to make this file compile you need to add
 //(and never commit) a class as follows:
 //public class SecretHolder {
@@ -71,7 +53,6 @@ public class IntegrationTests extends TestL42Bridge {
       nameSecret("L42Source/TestUnit"),
       nameSecret("L42Source/TestVoxelMap"),
       name("L42Source/TestAST"),
-      name("L42Source/BattleShip"),
       name("L42Source/TestCacheCall"),
       name("L42Source/TestCoherent"),
       name("L42Source/TestData"),
@@ -90,10 +71,11 @@ public class IntegrationTests extends TestL42Bridge {
       name("L42Source/TestOrganize"),
       name("L42Source/TestResetDocs"),
       name("L42Source/TestSelfCollection"),
-      name("L42Source/TestSifoExamples"),
       name("L42Source/TestSUtils"),
       name("L42Source/TestTutorialExercises"),
       name("L42Source/TestTutorialJavaSlave"),
-      name("L42Source/TestView")
+      name("L42Source/TestView"),
+      name("L42Source/TestSifoExamples"),
+      name("L42Source/BattleShip")
       ));}
   }
