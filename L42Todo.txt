@@ -23,6 +23,8 @@ Fix FS library:
   3) update adams towel and guide
   The other option would be to check if it starts with a valid portable fileName (prevent <, >,:,,",/,\,|,?,* and the convention on portable filenames) and divides by "/" in other valid portable filenames
 
+-- Main1=Debug(S"Hello1") Main2=Debug(S"Hello2"), why if I run again and change only hello1 I get a printout also for hello2? hello1 should have produced the same exact result
+
 =#$//should this be required to unlock #$ in its transivite main
 multi line escape syntax is now confusing.
   A better one would be """n where n is the number of % to mean 'escape' and the default is 1
@@ -79,6 +81,7 @@ can we just make it without the nested block, simply adding the catchReturn at t
 -Cache: use String .intern()?
   -what about Integer? what about big rational? what about arrays //now all ValueCache stuff is not flyweithed 
   -should wrap all the returns with normalization, so that we only return normalized numbers?
+  Overall, what if the normalization cache use a (normalized) string instead of the key datastructure?
 -test cache in case the cached method do some exceptions/errors
 -collections methods are quite irregular, for example add() is shortcut for add(right), but #add() does not exists to be a shortcut for #add(right)
 -if a method ends in stack oveflow, the error is only reported in Java and not in the IDE

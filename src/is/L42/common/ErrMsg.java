@@ -219,6 +219,8 @@ public class ErrMsg {
   "Path "+pathToS(_1)+" not existant."+others  
   ;}public static String urlNotExistant(Object _1){return
   "Url "+_1+" not existant."
+  ;}public static String urlUnreachable(Object _1,Object _2){return
+  "Url "+_1+" can not be reached. The error is:\n"+_2
   ;}public static String interfaceImplementsItself(Object ts){return
   "Interfaces can not implement This (self implement); but the current interface implements "+ts
   ;}public static String sealedInterface(Object _1,Object _2){return

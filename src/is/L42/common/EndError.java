@@ -50,6 +50,9 @@ public abstract class EndError extends RuntimeException {
   public static class UrlNotExistent extends EndError{
     public UrlNotExistent(List<Pos> poss, String msg) { super(poss,ErrMsg.urlNotExistant(msg));}
     }
+  public static class UrlUnreachable extends EndError{
+    public UrlUnreachable(List<Pos> poss, String url,String msg) { super(poss,ErrMsg.urlUnreachable(url,msg));}
+    }
 
   public static class InvalidHeader extends EndError{
     public InvalidHeader(List<Pos> poss, String msg) { super(poss, msg);}
