@@ -80,8 +80,9 @@ class Format42 implements FormatKind{
     List<X> xs=l.mwts().stream()
       .filter(m->m._e()==null && m.mh().mdf().isClass())
       .map(m->m.key().xs())
-      .distinct()
-      .reduce(toOneOrBug()).get();
+      .findFirst().get();//can be more then one in case factories
+      //.distinct()//has parameters in different order
+      //.reduce(toOneOrBug()).get();
     Object[] fields=f.k.lines()[lineN];
     int estimateSize=xs.size()*7+name.length();    
     StringBuilder res=new StringBuilder(name+"(");

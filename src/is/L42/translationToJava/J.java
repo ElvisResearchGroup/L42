@@ -29,6 +29,7 @@ import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.typeSystem.Coherence;
 import is.L42.visitors.FV;
 import is.L42.visitors.ToSTrait;
+import is.L42.meta.GuessFields;
 
 public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToSTrait{
   @Override public ToSTrait.ToSState state(){return state;}
@@ -516,9 +517,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final public ArrayList<MWT> cacheEager=new ArrayList<>();
     final public ArrayList<MWT> cacheNow=new ArrayList<>();
     public Fields(boolean forTs){
-      if(ch.classMhs.isEmpty()|| p.topCore().isInterface()){ xs=L(); ps=L();psJ=L();return;}
+      var noFields=ch.classMhs.isEmpty()|| p.topCore().isInterface();
+      if(noFields){ xs=L(); ps=L();psJ=L();return;}
       xs=ch.classMhs.get(0).s().xs();
-      assert forTs || ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)) : xs +" "+ch.classMhs;
+      assert forTs || ch.classMhs.stream().allMatch(m->GuessFields.fieldsEqAsSet(m.s().xs(),xs)) : xs +" "+ch.classMhs;
       ps=L(range(xs),(c,i)->{
         List<P> pis=L(ch.classMhs.stream().map(m->m.pars().get(i).p()).distinct());
         if(pis.size()==1){c.add(pis.get(0));}

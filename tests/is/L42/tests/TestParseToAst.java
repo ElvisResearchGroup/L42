@@ -49,7 +49,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("A<:mut@C.D{hi}B")
    ),new AtomicTest(()->
-   pass("A<:mut@C.D{@C}B")
+   pass("A<:mut@C.D{@C }B")
    ),new AtomicTest(()->
    pass("A<:mut@C.D{{}@C}B")
    ),new AtomicTest(()->
@@ -60,6 +60,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("A<:mut@C.D{hi @DD{with @D nest}ed @Dcurlie@D\n{@D\ns}}B")
    ),new AtomicTest(()->
    pass("A<:mut@C.D{hi @DD{with @D nest}ed @Dcurlie@D\n{@D\ns}@D}B")
+   ),new AtomicTest(()->
+   pass("A<:@{hi @DD{with @D nest}ed @Dcurlie@D\n{@D\ns}@D}B")
    ),new AtomicTest(()->
    pass("A(B)(C)")   
    ),new AtomicTest(()->
@@ -108,8 +110,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    {try{pass("(A a=A() (B))");Assertions.fail();}catch(EndError.NotWellFormed nwf){}}
    ),new AtomicTest(()->
    pass("(A a=A()    (B))","(\n  A a=A()\n  (B)\n  )\n")
-   ),new AtomicTest(()->
-   fail("(\n  @Foo{some text like a comment @Bar.foo(} A x=A\n  x\n  )\n","Error","doc")
+   //),new AtomicTest(()->//This now passes, and just parses @Bar as comment part, and .foo( becomes just text
+   //fail("(\n  @Foo{some text like a comment @Bar.foo(} A x=A\n  x\n  )\n","Error","doc")
    ),new AtomicTest(()->
    pass("(\n  @Foo{some text like a comment @Bar.foo(x,y) and more text}A x=A\n  x\n  )\n")
    ),new AtomicTest(()->
@@ -208,7 +210,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({})")
    ),new AtomicTest(()->
-   fail("({interface #norm{hey, I can write stuff here}})","Error","expecting {'}'")
+   fail("({interface #norm{hey, I can write stuff here}})","Error","'}', W}")
    ),new AtomicTest(()->
    pass("({interface #norm{}})")
    ),new AtomicTest(()->
@@ -232,6 +234,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
    ),new AtomicTest(()->
    pass("({method Any m()={#norm{}}#norm{}})")
+   ),new AtomicTest(()->
+   pass("({@{\ntextNewLine}method Any m()={#norm{}}#norm{}})")
+   ),new AtomicTest(()->
+   pass("({@{a()}method Any m()={#norm{}}#norm{}})")
+   ),new AtomicTest(()->
+   pass("({@{close}method Any m()={#norm{}}#norm{}})")
+   ),new AtomicTest(()->
+   pass("({@{c\n lo se}method Any m()={#norm{}}#norm{}})")
+   ),new AtomicTest(()->
+   pass("({@{c\n  (( foo [[ l)_o= se}method Any m()={#norm{}}#norm{}})")
    ),new AtomicTest(()->
    pass("({C={#norm{}}#norm{}})")
    ),new AtomicTest(()->

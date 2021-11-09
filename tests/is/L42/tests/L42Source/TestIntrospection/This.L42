@@ -3,17 +3,17 @@ reuse[AdamsTowel]
 TestLate={
   class method Library (Library that)=(
     i=Trait(that).info()
-    that:Test"a"(expected=S"imm This" actual=i.meth(selector='a()).returnType())
-    that:Test"s"(expected=S"imm This1.S" actual=i.meth(selector='s()).returnType())
+    that:Test"a"(expected=S"imm This" actual=i.meth(name='a()).returnType())
+    that:Test"s"(expected=S"imm This1.S" actual=i.meth(name='s()).returnType())
     that:Test"b"({
-      _=i.meth(selector='b()).returnType()
+      _=i.meth(name='b()).returnType()
       catch error Collection.NoElementInOpt _ return Bool.true()
       return Bool.false()
       })
-    that:Test"athat"(expected=S"[mut This; imm This]" actual=i.meth(selector='a(that)).parameters())
-    that:Test"sthat"(expected=S"[mut This; imm This1.S]" actual=i.meth(selector='s(that)).parameters())
+    that:Test"athat"(expected=S"[mut This; imm This]" actual=i.meth(name='a(that)).parameters())
+    that:Test"sthat"(expected=S"[mut This; imm This1.S]" actual=i.meth(name='s(that)).parameters())
     that:Test"bthat"({
-      _=i.meth(selector='b(that)).parameters()
+      _=i.meth(name='b(that)).parameters()
       catch error Collection.NoElementInOpt _ return Bool.true()
       return Bool.false()
       })

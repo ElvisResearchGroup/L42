@@ -1,6 +1,5 @@
 package is.L42.meta;
 
-import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.pushL;
 
@@ -14,9 +13,11 @@ import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
+import is.L42.generated.Core.MH;
 import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
+import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
@@ -30,7 +31,8 @@ import is.L42.typeSystem.TypeManipulation;
      mdfList list of all T.Mdf in getters
      setters=map X-> MHs of form mut/lent method Void #*x(T that)
      if there is already a class method mdf This named mutK or immK with parameters as
-       dom(getters), then skip the generation of such new abstract method
+       dom(getters), then skip the generation of such new abstract method;
+       search for all the possible orders of fields xs to avoid inserting another with the same parameters in different order
      if setters=empty and mdfList ={imm,read,class}, generate two imm constructors
           
      xs: dom(getters)
@@ -58,47 +60,95 @@ public class K extends GuessFields{
     assert res.wf();
     return res;
     }
-  public CoreL k(Program p,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
-    if(mutK.isEmpty()){ mutK="#apply"; }
-    if(mutK.startsWith("(")){ mutK="#apply"+mutK;}//TODO: or This( or Cs(.. ? or not?
-    var l=p.topCore();
+  String mutK;
+  String immK;
+  MWT mutM;
+  MWT immM;
+  CoreL l;
+  List<X> _pars=null;//optional factory parameters/order provided by user
+  MH _existingImmM=null;
+  MH _existingMutM=null;
+  public CoreL k(Program p,Function<L42£LazyMsg,L42Any>wrap,String baseMutK,String baseImmK){
+    l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
-    List<X>_pars=null;
-    if(mutK.contains("(")){
-      L42£Name s;try{s=L42£Name.parse(mutK);}
-      catch(NumberFormatException ee){throw invalidConstructorNames(mutK, immK, l);}
-      if(!s.x().isEmpty()){throw invalidConstructorNames(mutK, immK, l);}
-      S ss=S.parse(s.selector());
-      mutK=ss.m();
-      _pars=ss.xs();
-      }
-    try{L42£Name.parse(mutK+"()");L42£Name.parse(immK+"()");}
-    catch(NumberFormatException ee){throw invalidConstructorNames(mutK, immK, l);}
-    if(mutK.equals(immK)){throw invalidConstructorNames(mutK, immK, l);}
+    immK=normalizeName(baseImmK);
+    mutK=normalizeName(baseMutK);
+    fillPars();
+    checkValidNames();
     addGettersSetters(p,_pars);
-    boolean veryImm=gettersAllImm && setters.isEmpty();
     List<X> xs=L(getters.keySet().stream());//deterministic: it is a LinkedHashMap
     if(_pars!=null){xs=requiredPars(l,xs,_pars);}
+    makeMutMImmM(xs);
+    findExistingKs(xs);
+    if(_existingMutM!=null && _existingImmM==null){ reorderImmPars(xs); }//reorder fields?      
+    List<MWT> newMWT=L(c->{
+      c.addAll(l.mwts());
+      if(_existingImmM==null){ c.add(immM); }
+      if(_existingMutM==null){ c.add(mutM); }
+      });
+    var i=l.info();
+    if(i.typeDep().contains(P.pThis0)){return l.withMwts(newMWT);}
+    i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));
+    return l.withMwts(newMWT).withInfo(i);
+    }
+  private void checkValidNames(){
+    try{L42£Name.parse(mutK+"()");L42£Name.parse(immK+"()");}
+    catch(NumberFormatException ee){ throw invalidConstructorNames(mutK, immK, l); }
+    if(mutK.equals(immK)){ throw invalidConstructorNames(mutK, immK, l); }
+    }
+  private void reorderImmPars(List<X>xs) {
+    assert immM.key().xs().equals(xs);
+    var newXs=_existingMutM.key().xs();
+    if(newXs.equals(xs)){return;}
+    var ts=immM.mh().pars();
+    List<T> newTs=L(newXs,(c,xi)->{
+      int i=xs.indexOf(xi);
+      c.add(ts.get(i));
+      });
+    var mh=immM.mh();
+    mh=mh.withS(immM.key().withXs(newXs));
+    mh=mh.withPars(newTs);
+    immM=immM.withMh(mh);
+    }
+  private void fillPars() {
+    if(!mutK.contains("(")){ return; }
+    L42£Name s;try{s=L42£Name.parse(mutK);}
+    catch(NumberFormatException ee){ throw invalidConstructorNames(mutK, immK, l); }
+    if(!s.x().isEmpty()){ throw invalidConstructorNames(mutK, immK, l); }
+    S ss=S.parse(s.selector());
+    mutK=ss.m();
+    _pars=ss.xs();
+    }
+  private String normalizeName(String mutK) {
+    if(mutK.isEmpty()){ return "#apply"; }
+    if(mutK.startsWith("(")){ return "#apply"+mutK;}
+    //TODO: can it happens that mutK starts with This( or Cs(.. ?
+    return mutK;
+    }  
+  void makeMutMImmM(List<X> xs) {
+    boolean veryImm=gettersAllImm && setters.isEmpty();
     List<T> mutTs=L(xs,(c,x)->c.add(forgeT(x)));
     List<T> immTs=L(mutTs,this::forgeTImm);
     S mutS=new S(mutK,xs,-1);
     S immS=new S(immK,xs,-1);
     var immTsNoFwd=L(immTs.stream().map(t->t.withMdf(TypeManipulation.noFwd(t.mdf()))));
     var immMh=new Core.MH(Mdf.Class,L(),P.coreThis0,immS,immTsNoFwd,L());
-    var mutMh=new Core.MH(Mdf.Class,L(),P.coreThis0,mutS,immTs,L());
-    
+    var mutMh=new Core.MH(Mdf.Class,L(),P.coreThis0,mutS,immTs,L());    
     if(!veryImm){mutMh=mutMh.withT(P.coreThis0.withMdf(Mdf.Mutable)).withPars(mutTs);}
-    MWT immM=new MWT(l.poss(),L(),immMh,"",null);
-    MWT mutM=new MWT(l.poss(),L(),mutMh,"",null);
-    List<MWT> newMWT=L(c->{
-      c.addAll(l.mwts());
-      if(_elem(l.mwts(),immS)==null){c.add(immM);}
-      if(_elem(l.mwts(),mutS)==null){c.add(mutM);}
-      });
-    var i=l.info();
-    if(i.typeDep().contains(P.pThis0)){return l.withMwts(newMWT);}
-    i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));
-    return l.withMwts(newMWT).withInfo(i);
+    immM=new MWT(l.poss(),L(),immMh,"",null);
+    mutM=new MWT(l.poss(),L(),mutMh,"",null);
+    }
+  private void findExistingKs(List<X>xs){
+    for(var m:l.mwts()){
+      var mh=m.mh();
+      if(!mh.mdf().isClass()){ continue; }
+      var xsi=mh.key().xs();
+      if(xsi.size()!=xs.size()){ continue; }
+      if(!GuessFields.fieldsEqAsSet(xsi, xs)){ continue; }
+      String mi=mh.key().m();
+      if(_existingImmM==null && mi.equals(immK)){ _existingImmM=mh; }
+      if(_existingMutM==null && mi.equals(mutK)){ _existingMutM=mh; }
+      }
     }
   private List<X> requiredPars(CoreL l,List<X> computed, List<X> required){
     assert required.containsAll(computed);//can not be guessed if it is not required

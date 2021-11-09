@@ -1,4 +1,53 @@
 reuse [L42.is/AdamsTowel]
+A0=Data:{ S foo, S bar 
+  }
+A1=Data:{ S foo, S bar 
+  class method This (S foo, S bar)
+  class method This #immK(fwd imm S foo,fwd imm S bar) 
+  }
+A2=Data:{ S foo, S bar 
+  class method This (fwd imm S foo, S bar)
+  class method This #immK(S foo,S bar) 
+  }
+Start={class method S (HasToS that)=that.toS().subString(0I to=\indexOf(S.nl()))}
+Repr={
+  class method S mutK(class Any that)=Start(Info(that).meth(name='(foo,bar)))
+  class method S immK(class Any that)=Start(Info(that).meth(name='#immK(foo,bar)))
+  }
+MainA012=(
+  {}:Test"A0 imm"(actual=Repr.immK(A0), expected=
+    S"class method This #immK(This1.S foo, This1.S bar)=(..)")
+  {}:Test"A0 mut"(actual=Repr.mutK(A0), expected=
+    S"class method This #apply(fwd imm This1.S foo, fwd imm This1.S bar)=(..)")
+  Debug(Repr.mutK(A0))
+  Debug(Repr.immK(A0))
+  {}:Test"A1 imm"(actual=Repr.immK(A1), expected=
+    S"class method This #immK(fwd imm This1.S foo, fwd imm This1.S bar)=(..)")
+  {}:Test"A1 mut"(actual=Repr.mutK(A1), expected=
+    S"class method This #apply(This1.S foo, This1.S bar)=(..)")
+  Debug(Repr.mutK(A1))
+  Debug(Repr.immK(A1))
+  {}:Test"A2 imm"(actual=Repr.immK(A2), expected=
+    S"class method This #immK(This1.S foo, This1.S bar)=(..)")
+  {}:Test"A2 mut"(actual=Repr.mutK(A2), expected=
+    S"class method This #apply(fwd imm This1.S foo, This1.S bar)=(..)")
+  Debug(Repr.mutK(A2))
+  Debug(Repr.immK(A2))
+  )
+AA=Data:{ S foo, S bar class method This (S bar,S foo) }
+Inverted=(
+  {}:Test"Inverted1"(actual=AA(bar=S"bar",foo=S"foo")
+    expected=S"""
+      |AA(bar="bar", foo="foo")
+      """.trim())
+    {}:Test"Inverted1"(actual=AA.#immK(bar=S"bar",foo=S"foo")
+    expected=S"""
+      |AA(bar="bar", foo="foo")
+      """.trim())
+  Debug(AA(bar=S"bar",foo=S"foo"))
+  Debug(AA.#immK(bar=S"bar",foo=S"foo"))
+  )
+/*
 Fs=Load:{reuse[L42.is/FileSystem]}
 //TODO: why FS has an abstract towel annotation?
 //TODO: Url prints without the quotes (") ? actual Url /expected S prints the S in quotes and the Url not
@@ -78,7 +127,7 @@ SaferMain = (
   Debug(S"done")
   )
 
-
+*/
 /*A= Load:{...}
 Foo=(
   f=MyFilter"""

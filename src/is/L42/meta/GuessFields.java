@@ -20,7 +20,10 @@ public class GuessFields {
   boolean autoNormed=false;
   boolean gettersAllImm=true;
   LinkedHashMap<X,List<MWT>> setters=new LinkedHashMap<>();
-
+  public static boolean fieldsEqAsSet(List<X>xs1,List<X> xs2){
+    if(xs1.size()!=xs2.size()){ return false; }
+    return xs1.containsAll(xs2);
+    }
   public void addGettersSetters(Program p,List<X> _pars) {
     var l=p.topCore();
     for(var m:l.mwts()){

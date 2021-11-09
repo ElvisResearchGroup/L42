@@ -1,6 +1,6 @@
 TODO: minimized Data.Close/Data.AddK bug
-AA=Data:{ S foo, S bar class method This (S bar,S foo) }
-Mm=Debug(AA(foo=S"foo",bar=S"bar"))
+Bug in Data.Close A=Data:{capsule S.List ss @Cache.Clear class method Void ss(mut S.List ss) = (void)}
+
 //TODO: why FS has an abstract towel annotation?
 //TODO: Url prints without the quotes (") ? actual Url /expected S prints the S in quotes and the Url not
 //TODO: should add a test for sum {Void foo()}+{[I] I={interface Void foo()[Void] } }->error
@@ -9,7 +9,6 @@ In the guide, show how we can implement the concept of fold/reduce with less bot
 
 Collection2 line 77 catch exception Message$Guard _ return that //TODO: with Message.Guard was assertion error
 
-Bug in Data.Close A=Data:{capsule S.List ss @Cache.Clear class method Void ss(mut S.List ss) = (void)}
 
 Make all the css stuff again into the jar/side folder? should we have also an adamsTowel?
 

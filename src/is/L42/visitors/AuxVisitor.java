@@ -128,7 +128,7 @@ public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
     Full.Doc text1=visitTopDocText(ctx.topDocText(0));
     var res=Parse.ctxDoc(Paths.get(pos.fileName()),"@"+ctx.doc().getText());
     assert !res.hasErr():
-      "";
+      res;
     Full.Doc doc=visitTopDoc(res.res);
     return text1
       .withDocs(pushL(doc,text1.docs()))

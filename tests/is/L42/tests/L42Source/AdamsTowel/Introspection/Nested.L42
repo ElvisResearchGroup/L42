@@ -30,7 +30,16 @@ class method This(NativeNested native)=\(i=native)
     \add(Method$(this.i().methodIn(i)))
     i+=1I
     )))
-@Public method Method$ meth(S selector)={
+
+@{
+If the name has empty path, the method named as name.selector() is returned,
+otherwise the name path and selector are fetched from the root of this.
+} @Public method Method$ meth(Name name) = {
+  (path,selector)=name
+  if path==S"This" return \meth(selector=selector)
+  return \nested(name=name).meth(selector=selector)
+  }
+method Method$ meth(S selector)={
   size=this.i().methodNum()
   var i=0I
   while i<size (

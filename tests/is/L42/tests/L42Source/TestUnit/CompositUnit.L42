@@ -77,7 +77,7 @@ class method Library (Info that, Info and)[NotValidUnit,NotSameSupport]
 class method Library (Info that, Info per)[NotValidUnit,NotSameSupport]
   =this(i1=that,i2=per,trait=TraitDiv())
 class method Info.Type tOf(Info that)[NotValidUnit]={
-  return that.meth(selector='#inner()).returnType()
+  return that.meth(name='#inner()).returnType()
   catch error Collection.NoElementInOpt e exception NotValidUnit
     " Provided class %that.outerName() do not offers 'method Support #inner()'"
     .with(cause=e)

@@ -39,6 +39,7 @@ public class L42£Name extends L42NoFields.Eq<L42£Name>{
     return cs(cs)+"."+_s+"."+_x;
     }
   private static L42£Name res(List<C> cs,S _s, X _x){
+    if (_s!=null && _s.m().isEmpty()){_s=_s.withM("#apply");}
     String norm=norm(cs,_s,_x);
     return new L42£Name(norm,cs,_s,_x).myNorm();
     }

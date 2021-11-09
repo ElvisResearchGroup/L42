@@ -251,7 +251,7 @@ AA=(
     method Void beer()=void
     }
   foo1=Info(library=lib).nested(name='Foo)
-  doc=Info(library=lib).meth(selector='bar()).doc()
+  doc=Info(library=lib).meth(name='bar()).doc()
   Debug(doc.annotatedAs(nested=foo1))
   foo2=doc.docs().left().info()
   Debug(foo1)
