@@ -74,7 +74,7 @@ MaxSize=Data:{ @Cache.Lazy class method I ()=1073741823I }
     )
   method Trait tryAdd(Trait that, class Any coll, class Any elem,Trait t)={
     return that:t['Coll=>coll;'Elem=>elem]
-    catch exception Any _ return that //TODO: with Message.Guard raises assertion error
+    catch exception Any _ return that
     //ideally Message$Guard, but it is not implementing the trait exceptions until after AdamsTowel is deployed
     }
   TraitInDefaultRead=Trait:{

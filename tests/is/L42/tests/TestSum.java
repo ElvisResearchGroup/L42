@@ -524,6 +524,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       #norm{}
       }
   #norm{}}"""/*next test after this line*/)
+  ),new AtomicTest(()->fail("""
+    [This.I]
+    method Void foo()[Void]
+    I={ interface method Void foo()[Void] #norm{} }
+    #norm{typeDep=This.I refined=foo()}}""",/*second lib after this line*/"""
+    method Void foo()
+    #norm{}}""",/*expected lib after this line*/"""
+    method Void foo()[Void]
+    The two headers are incompatible:
+    method Void foo()
+    [###]
+    """/*next test after this line*/)              
   ));}
    
 

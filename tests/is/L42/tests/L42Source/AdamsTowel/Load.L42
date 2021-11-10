@@ -60,7 +60,7 @@ method Library :(Library that)
   =(this:Trait(that)).code()
 method Trait :(Trait trait)
   [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
-  =trait(squareBuilder=this.collect(trait.code()))
+  =trait(squareBuilder=this.collect(trait.code()))[hide='AbstractTowel]
 
   
 method Bool match(S src,S dest)=src==dest//To be overridden

@@ -358,3 +358,19 @@ TestDataFactoryAlreadyPresent={
     Debug(AA.#immK(bar=S"bar",foo=S"foo"))
     )
   }
+  
+TestCapsuleMutClashOnField={
+  A=(
+    err=(
+      _d=Data:{
+        capsule S.List ss
+        @Cache.Clear class method Void ss(mut S.List ss) = void
+        }
+      catch Data.Close.Fail x x 
+      error X""
+      )
+    {}:Test"errClash"(actual=err.toS() expected=S"""
+      |[###]read method read This2.S.List ss()=(..)[###]
+      """)
+    )
+  }
