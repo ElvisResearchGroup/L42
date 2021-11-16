@@ -1,0 +1,49 @@
+@Public Fail = Message:{[Message.Guard]}
+
+S text
+var I index
+class method mut This(S text,I index)
+
+read method S pos() = (
+  var line = 1I
+  var lastNl = 0I
+  (text,index) = this
+  lastNl := text.indexOf(S.nl() from=lastNl)
+  while lastNl!=I"-1" && lastNl<index (
+    line+=1I
+    lastNl := text.indexOf(S.nl() from=lastNl+1\)
+    )
+  S"Error in line %line"
+  )
+read method S more() = (
+  (text,index) = this
+  max = text.size().min(index+15\)
+  text.subString(index to=max).replace(S.nl() with=S" ")
+  )
+read method Fail err(S that) = Fail"""%
+  |%this.pos()
+  |%that
+  |<<%this.more()>>
+  """
+
+read method S top() = \text.subString(this.index() to=this.index()+1\)
+read method Bool top(S that) = \text.startsWith(that, leftOffSet=this.index())
+read method Void topErr(S that) = if !\top(that) error \err(S"Missing '%that'")
+
+mut method S pop() = (
+  (index0,drop,index1) = this
+  \text.subString(index0 to=index1)
+  )
+mut method Bool pop(S that) = {
+  if !\top(that) return \.false()
+  \index(\index+that.size())
+  return \.true()
+  }
+//popErr makes no sense
+mut method Void drop() = \index(\index+1\)
+mut method Bool drop(S that) = this.pop(that)
+mut method Void dropErr(S that) = if !\drop(that) error \err(S"Missing '%that'")
+
+read method Bool over() = \index>=\text.size()
+
+mut method Void skipWs() = while \top(S" ") || \top(S.nl()) || \top(S.tab()) ( \drop )

@@ -1,49 +1,10 @@
 reuse [AdamsTowel]
-Parse = Trait:{...}
-JsonBase = Trait:{...}
-JsonSeal = Trait:{...}
-ToJson =(JsonSeal:Organize:{...})[hide='Value.sealed()]
-Json = Organize:{
-  $ = Class:ToJson
-  ParseJson = Public:Class:Parse:{...}
-  class method $.Value #from(S.StringBuilder stringLiteral) = ParseJson(stringLiteral.toS())
-  }
 
-Mah = (
-  Json.Value v=Json"""
-    |[{ "a":12, "b":true, "c":["a","k"] },
-    |" hello ",
-    | 123456,
-    |-123456,
-    |" \n foo \uAABB hi! "
-    |]
-    """
-  Debug(S"second|%v|")
-  Debug(S"second|%v.toJson()|")
+Main=(
+  Debug(S"ssss")
+  {}:Test"aOk"(expected=S"aa" actual=S"aa")
+  {}:Test"bFail"(expected=S"aa" actual=S"bb")
+  //{}:Test"bFail2"(expected=S"aa" actual=S"bbb")
+  {}:Test"bFail3"(expected=S"aa" actual=S"bbb")
+  {}:Test"bFail5"(Bool.false())
   )
-
-  
-/*
-value::= object | array | string | number | "true" | "false" | "null"
-object::= '{' ws members '}' ///why this instead of ws in members
-members::=member | member ',' ws members
-member::= string ws ':' element
-array::='[' ws elements ']'
-elements::= element | element ',' ws elements
-element::= ws value ws
-string::= '"' characters '"'
-characters::=""| character characters
-character::= '0020' . '10FFFF' - '"' - '\' | '\' escape
-escape::='"'|'\'|'/'|'b'|'f'|'n'|'r'|'t'|'u' hex hex hex hex
-hex::=digit | 'A' . 'F' | 'a' . 'f'
-number::= integer fraction exponent
-integer::= digit | onenine digits | '-' digit | '-' onenine digits
-digits::= digit | digit digits
-digit::= '0' | onenine
-onenine ::= '1' . '9'
-fraction ::= "" | '.' digits
-exponent ::= "" | 'E' sign digits | 'e' sign digits
-sign ::= "" | '+' | '-'
-ws::="" | '0020' ws | '000A' ws | '000D' ws | '0009' ws
-
-*/

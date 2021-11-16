@@ -1,0 +1,7 @@
+Value = {interface [HasToS] }
+String = S.Alphanumeric:{[Value] class method This (S string) = This(string) } 
+Number = S.Alphanumeric:{[Value] class method This (S string) = This(string) }
+Bool = Collection.Enum:{[Value] True={} False={} }
+Null = Data:{[Value]}
+Object = Class:Trait({[Value]}):Collection.map(key=String,val=Value)
+Array = Class:Trait({[Value]}):Collection.list(Value)

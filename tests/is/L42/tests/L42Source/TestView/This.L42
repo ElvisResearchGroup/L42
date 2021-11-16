@@ -4,7 +4,7 @@ reuse [L42.is/AdamsTowel]
   Bool cutF=Bool.false()
   S moreMdf=S""
   S defaultMdf=S"imm"
-  @Public method This cut()=this.with(cutF=Bool.true())
+  @Public method This cut()=\with(cutF=Bool.true())
   @Public method This more()=\with(moreMdf=S"imm")
   @Public method This moreMut()=\with(moreMdf=S"mut")
   @Public method This defaultRead()=\with(defaultMdf=S"read")
@@ -33,7 +33,7 @@ reuse [L42.is/AdamsTowel]
       return TraitOutDefaultImm()//imm and read would be the same
       }
     coll = \that
-    elem = coll*Name"#elem#imm(that)"
+    elem = coll*Name"#elem#imm(that)"//TODO: should it be #default?
     var res=(TraitBase:stop:more:defaultInMdf)['Coll=>coll;'Elem=>elem]
     res:=\tryAdd(res,coll=coll,elem=elem,t=TraitHasElemMut())
     res:=\tryAdd(res,coll=coll,elem=elem,t=defaultOutMdf)

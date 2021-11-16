@@ -47,6 +47,8 @@ public class Resources {
   public static void setOutHandler(Consumer<String> c){outHandler=c;}
   private static Consumer<String> errHandler=s->{};
   public static void setErrHandler(Consumer<String> c){errHandler=c;}
+  private static Consumer<String> testHandler=s->{};
+  public static void setTestHandler(Consumer<String> c){testHandler=c;}
   public static void out(String s){
     s+="\n";
     out.append(s);
@@ -63,6 +65,7 @@ public class Resources {
   public static String tests(){return tests.toString();}
   public static void tests(String s){
     tests.append(s);
+    testHandler.accept(s);
     System.out.print(s);
     }
   public static <K> K throwE(L42Throwable e){throw e;}

@@ -52,6 +52,7 @@ public class IntegrationTests extends TestL42Bridge {
       nameSecret("L42Source/TestSifoLib"),
       nameSecret("L42Source/TestUnit"),
       nameSecret("L42Source/TestVoxelMap"),
+      nameSecret("L42Source/DeployJSon"),
       name("L42Source/TestAST"),
       name("L42Source/TestCacheCall"),
       name("L42Source/TestCoherent"),
@@ -75,6 +76,7 @@ public class IntegrationTests extends TestL42Bridge {
       name("L42Source/TestTutorialExercises"),
       name("L42Source/TestTutorialJavaSlave"),
       name("L42Source/TestView"),
+      name("L42Source/TestDecoratorDecorator"),
       name("L42Source/TestSifoExamples"),
       name("L42Source/BattleShip")
       ));}

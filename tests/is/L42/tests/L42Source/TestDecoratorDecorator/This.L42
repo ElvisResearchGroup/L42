@@ -1,0 +1,20 @@
+reuse [L42.is/AdamsTowel]
+DD1=Decorator:{
+  method Trait (Trait trait)[Message.Guard] = Data:trait
+  }
+DD2=Decorator:Data:{
+  Name that
+  method Trait (Trait trait)[Message.Guard] = Data(this.that()):trait
+  }
+A=DD1:{
+  I that
+  }
+B=DD2('BB):{
+  BB={I that}
+  }
+Main=(
+  a=A(32I)
+  bb=B.BB(42I)
+  {}:Test""(expected=S"A(32)" actual=a)
+  {}:Test""(expected=S"B.BB(42)" actual=bb)
+  )

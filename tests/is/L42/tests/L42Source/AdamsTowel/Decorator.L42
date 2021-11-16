@@ -1,3 +1,12 @@
+/*class method Bool hasNoArgF(Trait that)={//not needed?
+   //elem = coll*Name"#elem#imm(that)"
+   info1=Introspection.Nested(library=that.code())
+   f=info1.meth(selector=S"#apply()")
+   if f.parameters().val(0I).mdf()!=S"class" return Bool.false()
+   type=f.returnType()
+   info2=type.info()
+   return type.mdf()==S"imm" && info1==info2 
+   }*/
 WithArgs$DecoratorTrait=Trait:{
   @Public Fail=Message:{[Message$Guard]}
   @Public method Library : (Library lib)[Fail]=(this:Trait(lib)).code()
@@ -11,18 +20,30 @@ DecoratorTrait=WithArgs$DecoratorTrait:{
   @Public ClassOperators={class method This1()=This1()}
   @Public class method This()
   }
-$=(DecoratorTrait:{
-  @Public method Trait (Trait trait)[Message$Guard]={
-    return DecoratorTrait:trait //code below is only needed since Message.Guard is not yet implemented by many trait messages
-    catch Message$Guard e exception e
-    catch Any e error X"unreachable after adam towel deployment"
-    }
-  }).code()
 @Public WithArgs=(DecoratorTrait:{
   @Public method Trait (Trait trait)[Message$Guard]={
     return WithArgs$DecoratorTrait:trait
     catch Message$Guard e exception e
     catch Any e error X"unreachable after adam towel deployment"
     }    
+  }).code()
+$=(DecoratorTrait:{
+  class method Trait tryClose(Trait trait)[Message$Guard]=(
+    res = DecoratorTrait:trait
+    Data.checkCoherent(res.code())
+    catch Message$Guard e exception e //code below is only needed since Message.Guard is not yet implemented by many trait messages
+    catch Any e error X"unreachable after adam towel deployment"
+    res
+    )
+  class method Trait tryOpen(Trait trait)[Message$Guard]=(
+    res=WithArgs$DecoratorTrait:trait
+    catch Message$Guard e exception e //code below is only needed since Message.Guard is not yet implemented by many trait messages
+    catch Any e error X"unreachable after adam towel deployment"
+    res
+    )
+  @Public method Trait (Trait trait)[Message$Guard]={
+    return This.tryClose(trait=trait)    
+    catch Message$Guard e return This.tryOpen(trait=trait)
+    }
   }).code()
 @AbstractTowel{decorator}
