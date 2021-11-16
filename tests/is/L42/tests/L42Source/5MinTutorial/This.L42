@@ -1,4 +1,10 @@
 reuse [L42.is/AdamsTowel]
+D1=Decorator.WithArgs:Data:{
+  I that
+  method Trait (Trait trait)[Message.Guard] = trait
+  }
+DD1=D1(32I):{class method S hello()=S"hello"}
+MainDD1=Debug(DD1.hello())
 SSSS=(
   ns=Num.List[1\;2\;3\]
   S s=S"".builder()(for n in ns \add(n))

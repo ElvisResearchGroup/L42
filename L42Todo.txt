@@ -1,4 +1,8 @@
+-docs of string, nat, bool and collection
 Make all the css stuff again into the jar/side folder? should we have also an adamsTowel?
+-docs formatting:
+  1-now it is just formatted as code, should be recognized as a comment
+  2-in the IDE overview it should be indented somehow and .trim()
 
 I'm considering a Dispatch[res=S; 'fail=>Fail; 'fail2=>Fail2] decorator, to wrap return types and exceptions together, like
 res=if .. SDispatch(S"..") else SDispatch(fail=Fail"..")
@@ -7,7 +11,6 @@ This is needed for capsule mutators throwing exceptions
 
 Fix FS library:
   I'm following WHATWG URL Standard? to check?
-  3) update adams towel and guide
   The other option would be to check if it starts with a valid portable fileName (prevent <, >,:,,",/,\,|,?,* and the convention on portable filenames) and divides by "/" in other valid portable filenames
 
 -- Main1=Debug(S"Hello1") Main2=Debug(S"Hello2"), why if I run again and change only hello1 I get a printout also for hello2? hello1 should have produced the same exact result
@@ -34,14 +37,11 @@ can we just make it without the nested block, simply adding the catchReturn at t
     now it is inconsistent. Also, what about depending from This0?
 -db: null can also be input to the query
 -handle division by zero int, long, Num (and double? how is NAN cached eq?)
--Test cut() when object are removed, it may give a out of bound exception anyway?
--Involved butvEasy: when printing positions sort them by file
 -for pluggable type systems and field docs: it is very sad that
  @Foo T bar put the annotation on the field but imm @Foo bar puts it on the type
 -Bug: if you have a sum that sums wrong types for a field, we get a cache assertion fail.
   for example sum A a and $A a
 -GUI: somehow allows termination of the 42 program
--COnsistency of the desugar: should #if also work for while? what happens in for?
 -Bug -add constructor and possibly others remove docs form args of overridden abstract methods
 -DB: test it on a gui, improve error messages, support more parameters
 -Bug Optional toString in internal toString: it just prints the inside;  what happens if null? 

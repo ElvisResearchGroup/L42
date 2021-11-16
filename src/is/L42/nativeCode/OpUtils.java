@@ -22,7 +22,7 @@ import is.L42.translationToJava.NativeDispatch;
 enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class OpUtils{
   static String listGet(boolean mut,boolean self){
-    //Note: on different Java versions multiline strings are composed differenlty!
+    //Note: on different Java versions multiline strings are composed differently!
     //the "non indented" .wrap is needed, otherwise we would patter match
     // ""Gen3."" on some systems and ""Gen3  ."" on some others
     String tName="ArrayList";
@@ -46,6 +46,14 @@ class OpUtils{
         +op+"(%2$s*2+2,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")
         +");return L42£Void.instance;"
         );
+      }
+    static String listOpIsMut(){
+      return """
+        var self=%s;
+        int index=%s;
+        if(index<0 || index>=self.size()){ return false; }
+        return self.get(index*2+2)==((Object)is.L42.nativeCode.Flags.MutElem);
+        """;
       }
     static String listOpRemove(){
       return listExc2("%1$s.remove(%2$s*2+2);%1$s.remove(%2$s*2+1);return L42£Void.instance;");

@@ -1,56 +1,122 @@
 [This1.HasToS]
+@{Meta-programming friendly method.
+The constant zero.}
 class method This zero()
+
+@{Conversion method.
+Parse the string a produce the corresponding number.
+throws error @This1.S$ParseError if the string is not a valid int32.}
 class method This #apply(This1.S string)=string.toI()
+
+@{Conversion method.
+Rounds the parameter (floor) to the nearest int32.}
 class method This #apply(This1.Num num)=native{trusted:fromNum} error void
+
+@{Conversion method.
+Result = receiver/denominator.}
 method This1.Num toNum(This denominator)=This1.S<:class This1.S.sizeToNum(that=this,denominator=denominator)
+
+@{Optimized Signed Modular Arithmetic Operation.
+Signed Int32 addition, beware of overflows/underflows.}
 method This #plus0(This that)=native{trusted:OP+} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+Signed Int32 multiplication, beware of overflows/underflows.}
 method This #times0(This that)=native{trusted:OP*} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+Signed Int32 integer division, beware of lost precision because of reminders.}
 method This #divide0(This that)=native{trusted:OP/} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+Signed Int32 subtraction, beware of overflows/underflows.}
 method This #minus0(This that)=native{trusted:OP-} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+Signed Int32 integer reminder. a - ((a/b)*b) = a.mod(b)}
 method This mod(This that)=native{trusted:mod} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+This operation returns -1, 0 or 1 if the receiver is negative, zero or positive, respectivelly.}
 method This signum()=native{trusted:signum} error void
 
+@{Optimized Signed Modular Arithmetic Relation.
+This operation returns true iff this < that, in the common mathematical interpretation.}
 method This1.Bool #lt0(This that)=native{trusted:OP<} error void
+
+@{Optimized Signed Modular Arithmetic Relation.
+This operation returns true iff this > that, in the common mathematical interpretation.}
 method This1.Bool #gt0(This that)=that.#lt0(that=this)
+
+@{Optimized Signed Modular Arithmetic Relation.
+This operation returns true iff this <= that, in the common mathematical interpretation.}
 method This1.Bool #ltequal0(This that)=native{trusted:OP<=} error void
+
+@{Optimized Signed Modular Arithmetic Relation.
+This operation returns true iff this >= that, in the common mathematical interpretation.}
 method This1.Bool #gtequal0(This that)=that.#ltequal0(that=this)
 
+@{Optimized Signed Modular Arithmetic Relation.
+This operation returns true iff this = that, in the common mathematical interpretation.}
 read method This1.Bool readEquality(read This that)=native{trusted:OP==} error void
+
+@{Optimized Signed Modular Arithmetic Relation.
+This operation returns true iff this = that, in the common mathematical interpretation.}
 method This1.Bool #equalequal0(This that)=this.readEquality(that=that)
+
+@{Optimized Signed Modular Arithmetic Relation.
+This operation returns false iff this = that, in the common mathematical interpretation.}
 method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 
 read method This1.S toS()=native{trusted:toS} error void
+
 @This1.Cache.Call class method This0 #from(This1.S$StringBuilder stringLiteral)=(
   This1.S s=stringLiteral.toS()
   s.toI()
   )
+  
+@{Meta-programming friendly method.
+The successor operation.}
 method This #succ()=native{trusted:succ} error void
+
+@{Meta-programming friendly method.
+The predecessor operation.}
 method This #pred()=native{trusted:pred} error void
 
+@{Meta-programming friendly method.
+For this class it just returns the receiver.}
 method This ceil()=this
+
+@{Meta-programming friendly method.
+For this class it just returns the receiver.}
 method This floor()=this
+
+@{Meta-programming friendly method.
+For this class it just returns the receiver.}
 method This round()=this
+
+@{Meta-programming friendly method.
+For this class it just returns the receiver.}
 method This toI()=this
+
+@{Conversion method.
+Turns the receiver into its nearest double representation.}
 method This1.Double toDouble()=native{trusted:intToDouble} error void
+
+@{Conversion method.
+Turns the receiver into its int64 representation.}
 method This1.Long toLong()=native{trusted:intToLong} error void
+
+@{Conversion method.
+Turns the receiver into its arbitrary precision rational representation.}
 method This1.Num toNum()=(
   This zero = This<:class This.zero()
   This one = zero.#succ()
   This1.S<:class This1.S.sizeToNum(that=this,denominator=one)
   )
-/*method This1.Bool isZero()=(
-  This zero = This<:class This.zero()
-  this.readEquality(that=zero)
-  )
-method This min(This that)=(
-  This1.Bool lt=that.#lt0(that=this)
-  Void v=lt.#checkTrue()
-  catch exception Void vv ( this )
-  that
-  )*/
 
 #norm{nativeKind=Int
-  typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double,This1.Long
+  typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double,This1.Long,This1.S$ParseError
   coherentDep=This,This1.Num,This1.Bool,This1.S,This1.Double,This1.Long
   usedMethods=This1.S.toI(),This1.Bool.#checkTrue(), This1.S.sizeToNum(that,denominator), This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()

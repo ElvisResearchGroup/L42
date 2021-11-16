@@ -2,6 +2,7 @@ class method mut This #apply()
 class method mut This #apply(This2.I capacity)=native{trusted:listK} error void
 read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
 read method This2.I size()=native{trusted:size} error void
+read method imm This2.Bool isMutVal(This2.I that)=native{trusted:isMutVal} error void
 read method read This0.Elem readVal(This2.I that)=native{trusted:readVal} error void
 read method imm This0.Elem val(This2.I that)=native{trusted:immVal} error void
 mut method mut This0.Elem #val(This2.I that)=native{trusted:#val} error void

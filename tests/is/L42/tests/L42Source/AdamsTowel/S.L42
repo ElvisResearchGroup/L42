@@ -1,9 +1,18 @@
 [This1.HasToS,This1.HasToS.Raw]
 class method This empty()
+
+@{Meta-programming friendly method.
+For this class it just returns the argument.}
 @This1.Public class method This #apply(This string)=string
+
+@{String concatenation.}
 @This1.Public method This0 #plusplus0(This0 that)=native{trusted:OP+} error void
+
 /*refined*/ read method This0 toS()=native{trusted:toS} error void
+
+@{String size; the number of characters in this string.}
 @This1.Public read method This1.I size()=native{trusted:size} error void
+
 method This1.I toI()=native{trusted:toInt} error void
 method This1.Long toLong()=native{trusted:toLong} error void
 method This1.Double toDouble()=native{trusted:toDouble} error void
@@ -13,45 +22,106 @@ class method This1.Num doubleToNum(This1.Double that)=native{trusted:doubleToNum
 class method This1.Num longToNum(This1.Long that,This1.Long denominator)=native{trusted:longToNum} error void
 class method This1.Num sizeToNum(This1.I that,This1.I denominator)=native{trusted:intToNum} error void
 method This sum(This0 that)=native{trusted:OP+} error void
+
 @This1.Public @This1.Cache.Call class method This0 #from(This1.S$StringBuilder stringLiteral)=stringLiteral.toS()
 
+@{Structural equality on strings.}
 @This1.Public read method This1.Bool readEquality(read This that)=native{trusted:OP==} error void
+
+@{Structural equality on strings.}
 @This1.Public method This1.Bool #equalequal0(This that)=this.readEquality(that=that)
+
+@{Structural inequality on strings.}
 @This1.Public method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 
+@{Strings containment.
+Returns true iff the receiver contains the argument string.}
 @This1.Public method This1.Bool contains(This that)=native{trusted:contains}error void
+
+@{String replacement.
+Replaces each substring of the receiver that matches the first argument 
+with the second argument.
+The replacement proceeds from left to right,
+for example, replacing "aa" with "b" in the string "aaa" will result in "ba" rather than "ab".}
 @This1.Public method This replace(This that,This with)=native{trusted:replace}error void
+
+@{Indexing inside a string:
+Returns the index within this string of the leftmost 
+occurrence of the specified substring, starting from the provided index.
+If no such occurrence exists, -1 is returned.}
 @This1.Public method This1.I indexOf(This that,This1.I from)=native{trusted:indexOf}error void
+
+@{Indexing inside a string:
+Returns the index within this string of the rightmost 
+occurrence of the specified substring,
+ignoring any occurrence starting before the provided index.
+If no such occurrence exists, -1 is returned.}
 @This1.Public method This1.I lastIndexOf(This that,This1.I from)=native{trusted:lastIndexOf}error void
+
 method This _subString(This1.I that,This1.I to)=native{trusted:subString}error void
+
+@{Tests if this string starts with the specified prefix.}
 @This1.Public method This1.Bool startsWith(This that)=native{trusted:startsWith}error void
+
+@{Tests if this string ends with the specified suffix.}
 @This1.Public method This1.Bool endsWith(This that)=native{trusted:endsWith}error void
+
+@{Tests if the substring starting at the specified index starts with the specified prefix.
+characters before the provided index are ignored.}
 @This1.Public method This1.Bool startsWith(This that,This1.I leftOffSet)=native{trusted:startsWithOff}error void
+
+@{Tests if the substring ending at the specified index ends with the specified prefix.}
 @This1.Public method This1.Bool endsWith(This that,This1.I rightOffSet)=native{trusted:endsWithOff}error void
+
+@{Returns a string like the receiver; but with all leading and trailing spaces, new lines and tabs removed.}
 @This1.Public method This trim()=native{trusted:trim}error void
+
+@{Returns a string composed only of the double quote character (").}
 @This1.Public class method This dq()=This<:class This.#from(stringLiteral=(
   mut This1.S$StringBuilder b=This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
   Void v=b.#sdQuote()
   b
   ))
+
+@{Returns a string composed only of the new line character.}
 @This1.Public class method This nl()=This<:class This.#from(stringLiteral=(
   mut This1.S$StringBuilder b=This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
   Void v=b.#snewLine()
   b
   ))
+
+@{Returns a string composed only of the tab character.}
 @This1.Public class method This tab()=This<:class This.#from(stringLiteral=(
   mut This1.S$StringBuilder b=This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
   Void v=b.#stab()
   b
   ))
+
+@{Returns a string composed only of the percent character (%).}
 @This1.Public class method This percent()=This<:class This.#from(stringLiteral=(
   mut This1.S$StringBuilder b=This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
   Void v=b.#spercent()
   b
-  ))  
+  ))
+
+
+@{Indexing inside a string:
+Behaves like @This.indexOf(that,from)
+with from = 0.}
 @This1.Public method This1.I indexOf(This that)=this.indexOf(that=that,from=This1.I<:class This1.I.zero())
+
+@{Indexing inside a string:
+Behaves like @This.lastIndexOf(that,from)
+with from = 0.}
 @This1.Public method This1.I lastIndexOf(This that)=this.lastIndexOf(that=that,from=this.size())
 
+@{Returns a mutable string builder object starting with the receiver string.
+This allows for efficient concatenation of many strings.
+Below we show that using the #apply method of the builder,
+this can be used as a convenient syntax to accumulate many strings in a loop.
+
+S res = S"foo".builder()(for x in xs \add(x.bar())
+}
 @This1.Public method mut This1.S$StringBuilder builder()=(
   mut This1.S$StringBuilder res = This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
   Void u=res.append(that=this)

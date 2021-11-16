@@ -390,6 +390,10 @@ public enum TrustedOp {
     HSet,use("return  %s.size();",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
+  isMutVal("isMutVal",Map.of(
+      List,use(listOpIsMut(),sig(Readable,Immutable,Bool,Immutable,Int)),
+      SelfList,use(listOpIsMut(),sig(Readable,Immutable,Bool,Immutable,Int))
+      )),
   ReadVal("readVal",Map.of(
     List,use(listReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
     SelfList,use(listReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),

@@ -47,6 +47,7 @@ class method mut This of(mut Hi hi,mut Hm hm)
   if that<s return this.hi().immVal(that)
   error Collection$ElementNotImm"Index %that outside of the imm range 0--%s"
   }
+@Public read method Bool isMutVal(I that) = that>=this.hi().size()
 @Public read method read Val readVal(I that)={
   s=this.hi().size()
   if that<s return this.hi().immVal(that)
