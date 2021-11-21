@@ -60,9 +60,9 @@ MaxSize=Data:{ @Cache.Lazy class method I ()=1073741823I }
       return TraitOutDefaultImm()//imm and read would be the same
       }
     coll = \that
-    //elem = coll*Name"#elem#imm(that)"
+    //elem = coll*Name"#elem#default(that)"
     elem=Introspection.Nested(coll)
-      .meth(selector=S"#elem#imm(that)")
+      .meth(selector=S"#elem#default(that)")
       .returnType().info().classAny()
     var res=(TraitBase:stop:more:defaultInMdf)['Coll=>coll;'Elem=>elem]
     res:=\tryAdd(res,coll=coll,elem=elem,t=TraitHasElemMut())

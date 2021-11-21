@@ -33,7 +33,7 @@ reuse [L42.is/AdamsTowel]
       return TraitOutDefaultImm()//imm and read would be the same
       }
     coll = \that
-    elem = coll*Name"#elem#imm(that)"//TODO: should it be #default?
+    elem = coll*Name"#elem#default(that)"//TODO: should it be #default?//was imm
     var res=(TraitBase:stop:more:defaultInMdf)['Coll=>coll;'Elem=>elem]
     res:=\tryAdd(res,coll=coll,elem=elem,t=TraitHasElemMut())
     res:=\tryAdd(res,coll=coll,elem=elem,t=defaultOutMdf)
