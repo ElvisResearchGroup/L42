@@ -1,5 +1,11 @@
+division by zero error I Num
+
+
+UTF-8 in textArea instead of charset=ISO-8859-1
+check that the lastIndexOf in 42 is working since the index is 'searching backwords from' 
+//int i=res.lastIndexOf("L42.jar!/is/L42/repl/", res.length()-1);
+
 -docs of string, nat, bool and collection
-Make all the css stuff again into the jar/side folder? should we have also an adamsTowel?
 -docs formatting:
   1-now it is just formatted as code, should be recognized as a comment
   2-in the IDE overview it should be indented somehow and .trim()
@@ -41,7 +47,6 @@ can we just make it without the nested block, simply adding the catchReturn at t
  @Foo T bar put the annotation on the field but imm @Foo bar puts it on the type
 -Bug: if you have a sum that sums wrong types for a field, we get a cache assertion fail.
   for example sum A a and $A a
--GUI: somehow allows termination of the 42 program
 -Bug -add constructor and possibly others remove docs form args of overridden abstract methods
 -DB: test it on a gui, improve error messages, support more parameters
 -Bug Optional toString in internal toString: it just prints the inside;  what happens if null? 
@@ -55,7 +60,6 @@ can we just make it without the nested block, simply adding the catchReturn at t
 -IDE: cut paste on win do not survive the IDE being closed
 -IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: somehow disable insertion of random '}'
--IDE:we can sort alphabetically the members 
 -bug initVisitor 149 TODO: the above test is dangerous, it may encounter ... or reuse, and then we do not know if it is in the domain (good AssertionError)
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster

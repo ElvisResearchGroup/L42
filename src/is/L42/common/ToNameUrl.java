@@ -33,7 +33,7 @@ public interface ToNameUrl{
     }
 //Constants below should be changed accordingly to the secret in is.L42.tests.SecretHolder
   public static final String l42IsRepoPath = "Language42/is"; 
-  public static final String l42IsRepoVersion = "d007";
+  public static final String l42IsRepoVersion = "d008";
   static ToNameUrl forGitUrl=(url)->{
     //https://github.com/example42gdrive/Example1/blob/HEAD/FileSystem.L42?raw=true
     String rest=removePrefix(url,"https://github.com/","http://github.com/","github.com/");
