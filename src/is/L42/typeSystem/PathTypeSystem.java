@@ -8,7 +8,6 @@ import static is.L42.typeSystem.ProgramTypeSystem.errIf;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import is.L42.common.EndError;

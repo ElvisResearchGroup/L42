@@ -9,7 +9,6 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.NameMangling;
 import is.L42.flyweight.*;
-import is.L42.flyweight.P.*;
 import is.L42.generated.*;
 import is.L42.generated.Core.T;
 import is.L42.platformSpecific.javaTranslation.Resources;

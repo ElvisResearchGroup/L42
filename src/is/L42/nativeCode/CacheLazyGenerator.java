@@ -2,8 +2,6 @@ package is.L42.nativeCode;
 
 import static is.L42.tools.General.bug;
 
-import java.util.ArrayList;
-
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.flyweight.CoreL;

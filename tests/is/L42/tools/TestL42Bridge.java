@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -17,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import is.L42.common.PerfCounted;
 import is.L42.platformSpecific.javaTranslation.Resources;
-import is.L42.tools.TestL42Bridge.L42Test;
 
 public class TestL42Bridge extends PerfCounted {
   static final String separator = "<<<<STRCMP>>>>";

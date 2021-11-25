@@ -17,7 +17,6 @@ import is.L42.generated.Core.MH;
 import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
-import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;

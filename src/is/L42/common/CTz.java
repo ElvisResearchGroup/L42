@@ -22,7 +22,6 @@ import is.L42.generated.ST;
 import is.L42.generated.Y;
 import is.L42.tools.InductiveSet;
 import is.L42.visitors.Accumulate;
-import is.L42.visitors.CloneVisitor;
 /*
     
 //what to do when the program expands?

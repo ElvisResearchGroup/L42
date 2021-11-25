@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 import is.L42.common.ErrMsg;
 import is.L42.common.Parse.Result;
-import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.L42AuxParser;

@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
-import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
 import is.L42.generated.Core.MWT;
 import is.L42.nativeCode.TrustedKind;

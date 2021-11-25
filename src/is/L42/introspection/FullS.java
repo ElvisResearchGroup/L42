@@ -5,7 +5,6 @@ import static is.L42.tools.General.L;
 import java.util.List;
 import java.util.function.Predicate;
 
-import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MWT;

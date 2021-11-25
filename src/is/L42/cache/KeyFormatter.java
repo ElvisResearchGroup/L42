@@ -2,7 +2,6 @@ package is.L42.cache;
 
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
-import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.unreachable;
 
 import java.util.HashMap;

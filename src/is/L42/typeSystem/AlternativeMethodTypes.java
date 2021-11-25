@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
-import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
