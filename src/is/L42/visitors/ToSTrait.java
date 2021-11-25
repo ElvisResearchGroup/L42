@@ -12,6 +12,7 @@ public interface ToSTrait extends CollectorVisitor{
     private String currentIndent="";
     boolean lastWasNl=false;
     boolean lastWasNum=false;
+    public String currentIndent(){return currentIndent;}
     }
   ToSState state();
   default StringBuilder result(){return state().result;}
@@ -29,6 +30,10 @@ public interface ToSTrait extends CollectorVisitor{
     }
   default char last(){
     return state().result.charAt(state().result.length()-1);
+    }
+  default boolean endsWith(String s){
+    var i=state().result.lastIndexOf(s);
+    return i!=-1 && i+s.length()==state().result.length();
     }
   default void c(String s){
     if(s.isEmpty()){return;}

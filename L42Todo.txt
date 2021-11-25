@@ -1,14 +1,9 @@
 division by zero error I Num
-
-
 UTF-8 in textArea instead of charset=ISO-8859-1
 check that the lastIndexOf in 42 is working since the index is 'searching backwords from' 
 //int i=res.lastIndexOf("L42.jar!/is/L42/repl/", res.length()-1);
 
 -docs of string, nat, bool and collection
--docs formatting:
-  1-now it is just formatted as code, should be recognized as a comment
-  2-in the IDE overview it should be indented somehow and .trim()
 
 I'm considering a Dispatch[res=S; 'fail=>Fail; 'fail2=>Fail2] decorator, to wrap return types and exceptions together, like
 res=if .. SDispatch(S"..") else SDispatch(fail=Fail"..")

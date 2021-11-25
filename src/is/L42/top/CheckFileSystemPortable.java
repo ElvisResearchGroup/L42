@@ -26,7 +26,8 @@ public class CheckFileSystemPortable{
   }
   public boolean isDirectory(Path top){ return Files.isDirectory(top); }
   public CheckFileSystemPortable(Path top){
-    assert isDirectory(top);
+    assert isDirectory(top):
+      top;
     this.top=top;
     walkIn1(top);
     for(var p:okPaths) {checkRepeatedPaths(p);}
