@@ -188,3 +188,61 @@ TestNestedTraits={
   BB=AA.B.code()
   TestBB={}:Test"bb"(BB.m().k())
   }
+TestArithError=((
+  S res=(_=2I/0I catch error Math.ArithmeticError e (e.toS()) S"")
+  {}:Test"2/0I"(actual=res, expected=S"""
+    |Message This.Math.ArithmeticError([###]):
+    |Division by zero
+    """.trim())
+  )(
+  S res=(_=2Math.Long/0Math.Long catch error Math.ArithmeticError e (e.toS()) S"")
+  {}:Test"2/0Long"(actual=res, expected=S"""
+    |Message This.Math.ArithmeticError([###]):
+    |Division by zero
+    """.trim())
+  )(
+  S res=(_=0I/0I catch error Math.ArithmeticError e (e.toS()) S"")
+  {}:Test"0/0I"(actual=res, expected=S"""
+    |Message This.Math.ArithmeticError([###]):
+    |Division by zero
+    """.trim())
+  )(
+  S res=(_=0Math.Long/0Math.Long catch error Math.ArithmeticError e (e.toS()) S"")
+  {}:Test"0/0Long"(actual=res, expected=S"""
+    |Message This.Math.ArithmeticError([###]):
+    |Division by zero
+    """.trim())
+  ))
+  
+TestArithErrorStr=((
+  S res=(_=Num"2/0" catch error S.ParseError e (e.toS()) S"")
+  {}:Test"2/0 string"(actual=res, expected=S"""
+    |Message This.S.ParseError([###]):
+    |The string "2/0" is not a valid number
+    """.trim())
+  )(
+  S res=(_=Math.Long"2/0" catch error S.ParseError e (e.toS()) S"")
+  {}:Test"2/0 string"(actual=res, expected=S"""
+    |Message This.S.ParseError([###]):
+    |The string "2/0" is not a valid int64 number
+    """.trim())
+  )(
+  S res=(_=Num"2." catch error S.ParseError e (e.toS()) S"")
+  {}:Test"2. string"(actual=res, expected=S"""
+    |Message This.S.ParseError([###]):
+    |The string "2." is not a valid number
+    """.trim())
+  )(
+  S res=(_=Math.Long"2/3" catch error S.ParseError e (e.toS()) S"")
+  {}:Test"2/3 string"(actual=res, expected=S"""
+    |Message This.S.ParseError([###]):
+    |The string "2/3" is not a valid int64 number
+    """.trim())
+  ))
+TestArithErrorNum=((
+  S res=(_=2Num/0Num catch error Math.ArithmeticError e (e.toS()) S"")
+  {}:Test"zero"(actual=res, expected=S"""
+    |Message This.Math.ArithmeticError([###]):
+    |Zero denomitator not allowed for a number
+    """.trim())
+  ))

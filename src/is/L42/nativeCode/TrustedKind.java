@@ -38,6 +38,7 @@ public enum TrustedKind implements TrustedT{
     return "return 0;";
     }
     public String defaultVal(){return "0";}
+    @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
     },
   Long("long"){public String factory(J j,MWT mwt){
@@ -45,6 +46,7 @@ public enum TrustedKind implements TrustedT{
     return "return 0;";
     }
     public String defaultVal(){return "0";}
+    @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
     },
   Double("double"){public String factory(J j,MWT mwt){
@@ -77,6 +79,7 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return L42£BigRational.ZERO;";
     }
+    @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
     },
   Meta("L42£Meta"){

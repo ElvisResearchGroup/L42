@@ -119,7 +119,9 @@ public final class L42£BigRational extends L42NoFields.Eq<L42£BigRational> imp
   * @return 1/this.
   */
   public L42£BigRational inverse(){
-    if(num.signum()>=0){return new L42£BigRational(den,num);}
+    var signum=num.signum();
+    if(signum==0){ throw new NumberFormatException("Zero denomitator not allowed for a number"); }
+    if(signum>0){ return new L42£BigRational(den,num); }
     return new L42£BigRational(den.negate(),num.negate());
     }
  /**

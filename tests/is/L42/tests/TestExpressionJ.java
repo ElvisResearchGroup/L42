@@ -208,6 +208,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   jc("""
      """,
      """
+     """,
+     """
      public class £cN£n1 implements L42Any,L42Cachable<£cN£n1>{
        [###]
        public static int £mof(£cN£n1 £xthis){
@@ -260,7 +262,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   jc("""
      C={ #norm{}}
-     ""","""
+     """,
+     """
      public class £cC£n1 extends L42NoFields<£cC£n1> implements L42Any{
        static final Class<£cC£n1> _class=£cC£n1.class;
        public static final L42Cache<£cC£n1> myCache=[###]
@@ -276,7 +279,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        public static final £cC£n1 pathInstance=new _Fwd();
        static final L42Cache<£cC£n1> mySCache=[###]
        }
-     ""","","")
+     ""","","","")
   ),new AtomicTest(()->
   jc("""
      C={ 
@@ -307,7 +310,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        public static final £cC£n1 pathInstance=new _Fwd();
        static final L42Cache<£cC£n1> mySCache=[###]
        }
-     ""","","")
+     ""","","","")
 
   ));}
 public static void je(String e,String out){
@@ -335,10 +338,11 @@ public static void je(String e,String out){
 public static void jc(String e,String ...out){
   String l="{ "+e+
   """
+  PE={#norm{nativeKind=LazyMessage}}
   N={
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
-    #norm{nativeKind=Int typeDep=This coherentDep=This}}
+    #norm{nativeKind=Int typeDep=This,This1.PE coherentDep=This,This1.PE, nativePar=This1.PE}}
   A={
     class method mut This0 of(This1.N n)
     method This1.N n()

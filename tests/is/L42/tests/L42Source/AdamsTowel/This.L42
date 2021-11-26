@@ -65,6 +65,7 @@ DeployAAA=(
     NativeName={...}
     BootStrapping={...}
     @Public S$ParseError={...}//can not use BaseErrorTrait() since circular dependence from S
+    Math$ArithmeticError={...}
     @Public Debug={...}
     @Public System={...}
     @Public S$StringBuilder={...}//end of circular dependency for S
@@ -162,6 +163,7 @@ DeployAdamsTowel={reuse[#$aaa]
       clear='Data.checkCoherent(that);
       ][
       'S_ParseError=>'S.ParseError;
+      'Math_ArithmeticError=>'Math.ArithmeticError;
       'Trait_MethodClash=>'Trait.MethodClash;
       'Trait_ClassClash=>'Trait.ClassClash;
       'Trait_InvalidName=>'Trait.InvalidName;

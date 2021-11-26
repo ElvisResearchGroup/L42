@@ -22,9 +22,9 @@ read method This1.S toS()=native{trusted:toS} error void
   )
 method This1.Double toDouble() = This1.Double<:class This1.Double.#apply(num=this)
 
-#norm{nativeKind=BigRational
-  typeDep=This,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double
-  coherentDep=This,This1.Bool,This1.S,This1.Double,
+#norm{nativeKind=BigRational, nativePar=This1.Math$ArithmeticError
+  typeDep=This,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double, This1.Math$ArithmeticError
+  coherentDep=This,This1.Bool,This1.S,This1.Double, This1.Math$ArithmeticError
   usedMethods=This1.S.toNum(), This1.Bool.not(), This1.S$StringBuilder.toS(), This1.S.toNum(),This1.Double.#apply(num)
   refined=toS()
   }

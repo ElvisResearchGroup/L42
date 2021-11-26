@@ -115,9 +115,9 @@ method This1.Num toNum()=(
   This1.S<:class This1.S.sizeToNum(that=this,denominator=one)
   )
 
-#norm{nativeKind=Int
-  typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double,This1.Long,This1.S$ParseError
-  coherentDep=This,This1.Num,This1.Bool,This1.S,This1.Double,This1.Long
+#norm{nativeKind=Int, nativePar=This1.Math$ArithmeticError
+  typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double,This1.Long,This1.S$ParseError,This1.Math$ArithmeticError
+  coherentDep=This,This1.Num,This1.Bool,This1.S,This1.Double,This1.Long,This1.Math$ArithmeticError
   usedMethods=This1.S.toI(),This1.Bool.#checkTrue(), This1.S.sizeToNum(that,denominator), This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()
   }

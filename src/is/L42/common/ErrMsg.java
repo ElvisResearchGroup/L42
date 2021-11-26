@@ -281,7 +281,7 @@ public class ErrMsg {
   ;}public static String nativeInlinedInvalid(Object _1){return
   "Invalid Java has been inlined in a native body; here is the javac error:\n "+_1
   ;}public static String nativeExceptionNotLazyMessage(Object _1,Object _2){return
-  "class of native kind "+_1+" uses as error path "+_2+", that is not of nativeKind LazyMsg"  
+  "class of native kind "+_1+" uses as error path "+_2+", that is not of nativeKind LazyMessage"  
   ;}public static String nativeExceptionNotCoherentDep(Object _1,Object _2){return
   "class of native kind "+_1+" uses as error path "+_2+", that is not in coherentDep" 
   ;}public static String nativeReceiverInvalid(Object _1,Object _2){return

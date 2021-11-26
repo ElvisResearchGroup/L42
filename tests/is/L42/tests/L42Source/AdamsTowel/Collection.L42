@@ -68,9 +68,9 @@ IteratorComposeAux={class method IteratorCompose itAddAux(IteratorCompose a, Ite
     )
   method This #itAdd(This that)=
     This1.IteratorComposeAux<:class This1.IteratorComposeAux.itAddAux(a=this,b=that)
-  #norm{nativeKind=Int
-    typeDep=This,This2.Bool,This1.IteratorComposeAux
-    coherentDep=This,This2.Bool,This1.IteratorComposeAux
+  #norm{nativeKind=Int, nativePar=This2.Math$ArithmeticError
+    typeDep=This,This2.Bool,This1.IteratorComposeAux, This2.Math$ArithmeticError
+    coherentDep=This,This2.Bool,This1.IteratorComposeAux, This2.Math$ArithmeticError
     usedMethods=This2.Bool.not(),This2.Bool.#checkTrue(),This1.IteratorComposeAux.itAddAux(a,b)
     }
   }  

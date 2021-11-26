@@ -448,11 +448,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    A={B={method capsule AA main()=(mut BB b=BB.k(N.k()), AA a=AA.k(f=b) a)}}
    """,ErrMsg.methCallNoCompatibleMdfParametersSignature(hole,hole))
    ),new AtomicTest(()->pass("""
-   A={B={
-   class method This of()
-   method This0 main(This0 that)=native{trusted:OP+} error void
-   #norm{typeDep=This0 coherentDep=This nativeKind=Int}
-   }}
+   A={
+     B={
+       class method This of()
+       method This0 main(This that)=native{trusted:OP+} error void
+       #norm{typeDep=This,This1.C
+         coherentDep=This,This1.C
+         nativeKind=Int, nativePar=This1.C}
+       }
+     C={
+       class method This of()
+       #norm{typeDep=This coherentDep=This nativeKind=LazyMessage}
+       }
+     }
    """)
    /*Suppressed: now the invalid natives will simply perform the body
    ),new AtomicTest(()->fail("""

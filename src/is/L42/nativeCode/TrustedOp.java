@@ -521,10 +521,20 @@ public enum TrustedOp {
     BigRational,use("return %s.multiply(%s);",sigI(BigRational,BigRational))
     )),
   Divide("OP/",Map.of(
-    Int,use("return %s / %s;",sigI(Int,Int)),
-    Long,use("return %s / %s;",sigI(Long,Long)),
+    Int,use("""
+      try{return %s/%s;}catch(ArithmeticException ae)
+      { throw new L42Error(%Gen1.wrap(new L42£LazyMsg("Division by zero"))); }
+      """,sigI(Int,Int)),
+    Long,use("""
+      try{return %s/%s;}catch(ArithmeticException ae)
+      { throw new L42Error(%Gen1.wrap(new L42£LazyMsg("Division by zero"))); }
+      """,sigI(Long,Long)),
+    
     Double,use("return %s / %s;",sigI(Double,Double)),
-    BigRational,use("return %s.divide(%s);",sigI(BigRational,BigRational))
+    BigRational,use("""
+        try{return %s.divide(%s);}catch(NumberFormatException nfe)
+        { throw new L42Error(%Gen1.wrap(new L42£LazyMsg(nfe.getMessage()))); }
+        """,sigI(BigRational,BigRational))
     )),
   Minus("OP-",Map.of(
     Int,use("return %s - %s;",sigI(Int,Int)),
