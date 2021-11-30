@@ -246,3 +246,29 @@ TestArithErrorNum=((
     |Zero denomitator not allowed for a number
     """.trim())
   ))
+  TestMathConstants = (
+  d=4Double
+  {}:Test""(actual=Math.nan() expected=S"NaN")
+  {}:Test""(actual=Math.minusZero() expected=S"-0.0")
+  {}:Test""(actual=Math.minusInfinty() expected=S"-Infinity")
+  {}:Test""(actual=Math.plusInfinty() expected=S"Infinity")
+  {}:Test""(actual=Math.maxI() expected=S"2147483647")
+  {}:Test""(actual=Math.minI() expected=S"-2147483648")
+  {}:Test""(actual=Math.maxLong() expected=S"9223372036854775807")
+  {}:Test""(actual=Math.minLong() expected=S"-9223372036854775808")
+  
+  {}:Test""(expected=Math.nan() actual=Math.nan()*d)
+  {}:Test""(expected=d actual=Math.minusZero()+d)
+  {}:Test""(expected=d actual=Math.minusZero()+d)
+  {}:Test""(Math.minusZero().toS()!=(0Double).toS())
+  {}:Test""(Math.minusInfinty()!=Math.plusInfinty())
+  {}:Test""(expected=Math.minusInfinty() actual=Math.minusInfinty()+d)
+  {}:Test""(expected=Math.plusInfinty() actual=Math.plusInfinty()+d)
+  )
+TestLastIndexOf =(
+  s=S"aabbcc_aabbcc_aabbcc"
+  i1=s.lastIndexOf(S"aa",from=\size-1I)
+  i2=s.lastIndexOf(S"aa",from=11I)
+  {}:Test""(actual=i1 expected=14I)
+  {}:Test""(actual=i2 expected=7I)
+  )

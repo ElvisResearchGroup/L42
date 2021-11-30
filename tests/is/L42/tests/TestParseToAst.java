@@ -426,7 +426,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
  ),new AtomicTest(()->
    passI("S\"aa%x[].foo()bb\"","x[].foo()")
  ),new AtomicTest(()->
-   fail("S\"aa%x[].foo().bb\"","ill formed string interpolation"," input '.bb'")
+   fail("S\"aa%x[].foo().bb\"","ill formed string interpolation"," input '.bb'","in \"aa%x[].foo().bb\"")
+ ),new AtomicTest(()->
+   fail("S\"aa%0, foo\"","ill formed string interpolation","in \"aa%0, foo\"")
  ),new AtomicTest(()->
    passI("S\"a1%(x1)a2%(x2)a3%(x3)\"","(x1)","(x2)","(x3)")
  ),new AtomicTest(()->

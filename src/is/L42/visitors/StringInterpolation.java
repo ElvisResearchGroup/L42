@@ -15,7 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class StringInterpolation {
-  StringInterpolation(int escapeSize,Path fileName, EVoid eVoid, Pos pos, StringBuilder errors){  
+  StringInterpolation(String original,int escapeSize,Path fileName, EVoid eVoid, Pos pos, StringBuilder errors){  
+    this.original=original;
     this.escapeSize=escapeSize;
     this.symbol="%".repeat(escapeSize);
     this.fileName=fileName;
@@ -73,7 +74,7 @@ public class StringInterpolation {
     }
   private final String terminals="\\ ,\n!~\"%&|/=?'^*-+@><;:";
   final String symbol;
-  private static enum Mode{
+  private enum Mode{
     Str{public int run(StringInterpolation self,String s,int i){
       assert self.openR==0: self.openR;
       assert self.openS==0: self.openS;
@@ -87,7 +88,7 @@ public class StringInterpolation {
       i+=self.symbol.length()-1;
       int nextI=Math.min(i+1,s.length()-1);
       if(nextI!=i+1){
-          self.errors.append(self.pos + ErrMsg.stringInterpolation(s,"The interpolated expression is empty\n"));
+          self.errors.append(self.pos + ErrMsg.stringInterpolation(s,self.original,"The interpolated expression is empty\n"));
           self.mode=Mode.Expr;
           return nextI;
           }
@@ -111,7 +112,7 @@ public class StringInterpolation {
       //self.close(c);
       var lastE=self.es.get(self.es.size()-1);
       if(lastE.length()==0){
-          self.errors.append(self.pos + ErrMsg.stringInterpolation("<empty>","The interpolated expression is empty\n"));
+          self.errors.append(self.pos + ErrMsg.stringInterpolation("<empty>",self.original,"The interpolated expression is empty\n"));
           lastE.append("void");
           }
       self.modeToStr();
@@ -136,6 +137,7 @@ public class StringInterpolation {
     };
   Mode mode=Mode.Str;
   boolean topPar=false;
+  final String original;
   final int escapeSize;
   final Path fileName;
   final EVoid eVoid;
@@ -175,7 +177,7 @@ public class StringInterpolation {
       if(!res.errorsTokenizer.isEmpty()){msg+="\n"+res.errorsTokenizer;}
       if(!res.errorsParser.isEmpty()){msg+="\n"+res.errorsParser;}
       if(!res.errorsVisitor.isEmpty()){msg+="\n"+res.errorsVisitor;}
-      this.errors.append(pos + ErrMsg.stringInterpolation(buf,msg));
+      this.errors.append(pos + ErrMsg.stringInterpolation(buf,original,msg));
       c.add(eVoid);
       return;
       }

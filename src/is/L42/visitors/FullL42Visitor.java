@@ -84,7 +84,8 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   @Override public Full.EString visitString(StringContext ctx) {
     check(ctx);
-    String s=ctx.getText();
+    final String original=ctx.getText();
+    String s=original;
     boolean multi=s.startsWith("\"\"\"");
     int escapeSize=1;
     if(multi){
@@ -98,7 +99,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
       }
     else{s=s.substring(1,s.length()-1);}
     
-    return new StringInterpolation(escapeSize,fileName,eVoid,pos(ctx),errors).supParse(s);
+    return new StringInterpolation(original,escapeSize,fileName,eVoid,pos(ctx),errors).supParse(s);
     }
   @Override public Full.D visitD(DContext ctx) {
     check(ctx);

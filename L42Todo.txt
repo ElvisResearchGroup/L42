@@ -1,25 +1,15 @@
--main comment run + overview
--range on num/long and infinite, max I and other constants
--zero = Point(x: 0Num, y: 0Num) in the guide
--an about button with the version number, but how to know the last version?
--reading a file on l42.is and ask for a download new version?
--can the IDE be resized to be much narrower?
+// tasked -an about button with the version number, but how to know the last version? -reading a file on l42.is and ask for a download new version?
+//tasked: a list of available libraries in this version
+// tasked can the IDE be resized to be much narrower?
+
+-(0Double).toS() should parse the same as 0Double.toS(); today it is not
+-TestErr=( error X"Nope" )//fails but //TestErr= error X"Nope" //works
+
+in error 'no viable alternative at input' we should replace \n with actual new lines? or limit the error msg size?
 -can we make cache (and hints?) checkpoint every main compilation-run step?
--error messages for interpolation now do not show any context.
-Can we make [00] into [%00,%ai"] for example?
 -can we customize max/min memory on the ide+spawned processes?
--IDE button terminates and clear cache should add a 'terminated after' in the out/err?
--A way to measure 42 performance in 42 by calling 'time'
-- -> must become : in json, also... print "" around names?
 
 -X[test, msg=S"..."] would comput the S and the string interpolations even if the test pass, can we twist the sugar to avoid that
--terminate and clear cache should not clear the overview
-
-TestErr=( error X"Nope" )//fails but //TestErr= error X"Nope" //works
-
-UTF-8 in textArea instead of charset=ISO-8859-1
-check that the lastIndexOf in 42 is working since the index is 'searching backwords from' 
-//int i=res.lastIndexOf("L42.jar!/is/L42/repl/", res.length()-1);
 
 -docs of string, nat, bool and collection
 

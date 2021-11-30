@@ -135,7 +135,7 @@ public class Resources {
   public static <T> T sanitizeJavaRes(T t) {
     if(t==null){return t;}
     if(t instanceof String s){return (T)sanitizeString(s);}
-    assert t instanceof Integer || t instanceof Float;//Will need to add a few other cases
+    assert t instanceof Integer || t instanceof Float || t instanceof Long;//Will need to add a few other cases
     return t;
     }
   private static String sanitizeString(String s){

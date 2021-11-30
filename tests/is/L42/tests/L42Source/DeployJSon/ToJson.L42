@@ -1,22 +1,22 @@
-$ = Class.Relax:JsonBase:{ Value = { method S toJson() } }
+$ = Class.Relax:JsonBase:{ Value = { read method S toJson() } }
 
-String = { method S toJson() = (
-  @ToJson S inner = this.toS()
+String = { read method S toJson() = (
+  @ToJson S inner = this.that()
   S.dq()++inner++S.dq() 
   )} 
-Number = { method S toJson() = (
-  @ToJson S inner = this.toS()
+Number = { read method S toJson() = (
+  @ToJson S inner = this.that()
   inner
   )}
 Bool = {
-  True =  { method S toJson() = S"true"  }
-  False = { method S toJson() = S"false" }
+  True =  { read method S toJson() = S"true"  }
+  False = { read method S toJson() = S"false" }
   }
-Null = { method S toJson() = S"null" }
-Object = { method S toJson() = S.StringBuilder()((
+Null = { read method S toJson() = S"null" }
+Object = { read method S toJson() = S.StringBuilder()((
   \append(S"{")
   var first=This3.Bool.true()
-  @ToJson $.Object self = this
+  read @ToJson $.Object self = this
   for (key,val) in self (
     if first ( first:=This3.Bool.false() )
     else ( \append(S", ") )
@@ -27,9 +27,9 @@ Object = { method S toJson() = S.StringBuilder()((
   \append(S"}")
   )).toS()
   }
-Array = { method S toJson() = S.StringBuilder()((
+Array = { read method S toJson() = S.StringBuilder()((
   \append(S"[")
-  @ToJson $.Array self=this
+  read @ToJson $.Array self=this
   \append(self.left().toJson())
   for val in self.vals(1\ to=\size) (
     \append(S", ")

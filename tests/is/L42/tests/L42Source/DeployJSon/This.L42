@@ -1,6 +1,6 @@
 reuse [AdamsTowel]
 JsonLibTrait = Trait:{reuse [AdamsTowel]
-  Json=Organize:{
+  Json=Class:Trait(Organize:{
     Parse = Trait:{...}
     JsonBase = Trait:{...}
     JsonSeal = Trait:{...}
@@ -8,7 +8,15 @@ JsonLibTrait = Trait:{reuse [AdamsTowel]
     $ = Class:ToJson
     ParseJson = Public:Class:Parse:{...}
     class method $.Value #from(S.StringBuilder stringLiteral) = ParseJson(stringLiteral.toS())
-    }
+    })[
+  clear='String.toS();
+  clear='Number.toS();
+  clear='Bool.True.toS();
+  clear='Bool.False.toS();
+  clear='Null.toS();
+  clear='Object.toS();
+  clear='Array.toS();
+  ]['Value.toJson()=>'Value.toS()]
   }
 Json = Load:Class.Relax:System.extractModule(JsonLibTrait.code(),name='Json)
 
@@ -22,9 +30,6 @@ TestJSon = (
     |]
     """
   {}:Test""(actual=v, expected=S"""
-    |[{a->12; b->True; c->[a; k]};  hello ; 123456; -123456;  \n foo \uAABB hi! ]
-    """.trim())
-  {}:Test""(actual=v.toJson(), expected=S"""
     |[{"a": 12, "b": true, "c": ["a", "k"]}, " hello ", 123456, -123456, " \n foo \uAABB hi! "]
     """.trim())
   )
@@ -55,9 +60,6 @@ TestJSonDeployed = (
     |]
     """
   {}:Test""(actual=v, expected=S"""
-    |[{a->12; b->True; c->[a; k]};  hello ; 123456; -123456;  \n foo \uAABB hi! ]
-    """.trim())
-  {}:Test""(actual=v.toJson(), expected=S"""
     |[{"a": 12, "b": true, "c": ["a", "k"]}, " hello ", 123456, -123456, " \n foo \uAABB hi! "]
     """.trim())
   )

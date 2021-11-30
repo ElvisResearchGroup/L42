@@ -157,6 +157,9 @@ public class TestTopNorm{
      """,
      """
      [###]Error: ill formed string interpolation: [<empty>]
+      in \"""%
+        |a%"b
+        \"""
      The interpolated expression is empty
      [###]
      """

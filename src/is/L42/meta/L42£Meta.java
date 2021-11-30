@@ -139,8 +139,8 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
           var cs=popLRight(p.toNCs().cs());
           var p0=P.NCs.of(p.toNCs().n(),cs);
           var loc=this.p()._ofCore(p0);
-          if(loc==null){err.throwErr(p,"Path "+p+" adn path "+p0+" not defined inside of deployed code.");}
-          throw err.throwErr(p,"Path "+p+" adn path "+p0+" not defined in "+loc.poss());
+          if(loc==null){err.throwErr(p,"Path "+p+" and path "+p0+" not defined inside of deployed code.");}
+          throw err.throwErr(p,"Path "+p+" and path "+p0+" not defined in "+loc.poss());
           }
         });
       try {ProgramTypeSystem.type(true, p);}

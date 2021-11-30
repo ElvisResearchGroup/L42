@@ -32,7 +32,9 @@ public class ErrMsg {
     }
   public static String options(S attempted, List<MWT> mwts){
     mwts=L(mwts.stream().sorted((m1,m2)->best(attempted,m1,m2)));
-    return mwts.stream().map(m->m.key()+"        "+m.with_e(null)).collect(Collectors.joining("\n"));
+    return mwts.stream()
+      .filter(m->!m.key().hasUniqueNum())
+      .map(m->m.key()+"        "+m.with_e(null).withDocs(L())).collect(Collectors.joining("\n"));
     }
   public static int best(S hint, MWT m1, MWT m2){
     //consider using some variation of Levenshtein Distance from attempted
@@ -186,9 +188,9 @@ public class ErrMsg {
   ;}public static String malformedCoreMWT(Object info,Object names){return
   " Error: Extraneus token "+(info==null?"":ErrMsg.trimExpression(info.toString()))
   +"\ninvalid method with type for core library; invalid methods are:"+names
-  ;}public static String stringInterpolation(Object _1, Object _2){return
+  ;}public static String stringInterpolation(Object _1,String original, Object _2){return
   "Error: ill formed string interpolation: ["
-    +ErrMsg.trimExpression(_1.toString())+"]\n"+_2
+    +ErrMsg.trimExpression(_1.toString())+"]\n in "+original+"\n"+_2
   ;}public static String methodImplementedInInterface(Object _1){return
   "some methods are implemented in an interface:"+_1
   ;}public static String privateNestedNotCore(Object _1){return

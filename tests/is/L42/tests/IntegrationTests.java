@@ -53,6 +53,7 @@ public class IntegrationTests extends TestL42Bridge {
       nameSecret("L42Source/TestUnit"),
       nameSecret("L42Source/TestVoxelMap"),
       nameSecret("L42Source/DeployJSon"),
+      nameSecret("L42Source/TestTime"),
       name("L42Source/TestAST"),
       name("L42Source/TestCacheCall"),
       name("L42Source/TestCoherent"),

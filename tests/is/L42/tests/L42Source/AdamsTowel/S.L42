@@ -54,7 +54,7 @@ If no such occurrence exists, -1 is returned.}
 @{Indexing inside a string:
 Returns the index within this string of the rightmost 
 occurrence of the specified substring,
-ignoring any occurrence starting before the provided index.
+searching backwards starting from the provided index.
 If no such occurrence exists, -1 is returned.}
 @This1.Public method This1.I lastIndexOf(This that,This1.I from)=native{trusted:lastIndexOf}error void
 

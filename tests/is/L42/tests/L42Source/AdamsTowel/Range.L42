@@ -1,16 +1,33 @@
 I start
 I end
+@{Factory method
+  A range from zero (included) up to 'that' (excluded).
+  }
 @Public class method This(I that)=This(that=0\,to=that)
+
+@{Factory method
+  A range from 'that' (included) up to 'to' (excluded).
+  }
 @Public class method This(I that I to)=(
   if that>to error X"Invalid Range: start=%that end=%to"
   This.of(start=that,end=to)
   )    
+
 class method This of(I start I end)
+
 @Public method This #iterator()=this
+
 @Public method I #elem#default(I that)=that
+
 @Public method Collection.IteratorCompose #hasElem(I that)=\(that<this.end())
+
 @Public method I #startIndex()=this.start()
+
+@{Factory method
+  Creates a reverse range; a range exploring the sequence in the reverse order.
+  }
 @Public method ReverseRange reverse()=\(this)
+
 @Public ReverseRange={
   This1 that
   class method This(This1 that)
@@ -18,6 +35,31 @@ class method This of(I start I end)
   @Public method I #elem#default(I that)=this.that().end()-that
   @Public method Collection.IteratorCompose #hasElem(I that)=
     \(this.that().end()-that>=this.that().start())
-  @Public method I #startIndex()=I.zero().#succ()
+  @Public method I #startIndex()=1I //I.zero().#succ()
   }
+@{Factory method
+  behaves like 'endless(0I)'
+  }
+@Public class method EndlessRange endless()=\(0I)
+
+@{Factory method
+  Creates an endless range starting from 'that'
+  Since it is iterating on indexes, it is eventually going to overflow
+  and keep going over negative indexes.
+  If iterated together with other collections, it will behave like a
+  'cut-view' thus allowing for an early termination   
+  }
+@Public class method EndlessRange endless(I that)=\(that)
+
+@Public EndlessRange={
+  I that
+  class method This(I that)
+  @Public method This #iterator()=this
+  @Public method I #elem#default(I that)=that
+  @Public method Collection.IteratorCompose #hasElem(I that)=
+    \.canContinue()
+  @Public method I #startIndex()=this.that()
+  }
+
+  
 @This1.AbstractTowel{range}

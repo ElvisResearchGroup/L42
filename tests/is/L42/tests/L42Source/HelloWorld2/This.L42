@@ -1,60 +1,31 @@
 reuse [L42.is/AdamsTowel]
-
-TestArithError=((
-  S res=(_=2I/0I catch error Math.ArithmeticError e (e.toS()) S"")
-  {}:Test"2/0I"(actual=res, expected=S"""
-    |Message This.Math.ArithmeticError([###]):
-    |Division by zero
-    """.trim())
-  )(
-  S res=(_=2Math.Long/0Math.Long catch error Math.ArithmeticError e (e.toS()) S"")
-  {}:Test"2/0Long"(actual=res, expected=S"""
-    |Message This.Math.ArithmeticError([###]):
-    |Division by zero
-    """.trim())
-  )(
-  S res=(_=0I/0I catch error Math.ArithmeticError e (e.toS()) S"")
-  {}:Test"0/0I"(actual=res, expected=S"""
-    |Message This.Math.ArithmeticError([###]):
-    |Division by zero
-    """.trim())
-  )(
-  S res=(_=0Math.Long/0Math.Long catch error Math.ArithmeticError e (e.toS()) S"")
-  {}:Test"0/0Long"(actual=res, expected=S"""
-    |Message This.Math.ArithmeticError([###]):
-    |Division by zero
-    """.trim())
-  ))
+Point = Data:{Num x, Num y}
+Point2 = Data:{Num x, Num y}
+MM = (
+  d=4Double
+  {}:Test""(actual=Math.nan() expected=S"NaN")
+  {}:Test""(actual=Math.minusZero() expected=S"-0.0")
+  {}:Test""(actual=Math.minusInfinty() expected=S"-Infinity")
+  {}:Test""(actual=Math.plusInfinty() expected=S"Infinity")
+  {}:Test""(actual=Math.maxI() expected=S"2147483647")
+  {}:Test""(actual=Math.minI() expected=S"-2147483648")
+  {}:Test""(actual=Math.maxLong() expected=S"9223372036854775807")
+  {}:Test""(actual=Math.minLong() expected=S"-9223372036854775808")
   
-TestArithErrorStr=((
-  S res=(_=Num"2/0" catch error S.ParseError e (e.toS()) S"")
-  {}:Test"2/0 string"(actual=res, expected=S"""
-    |Message This.S.ParseError([###]):
-    |The string "2/0" is not a valid number
-    """.trim())
-  )(
-  S res=(_=Math.Long"2/0" catch error S.ParseError e (e.toS()) S"")
-  {}:Test"2/0 string"(actual=res, expected=S"""
-    |Message This.S.ParseError([###]):
-    |The string "2/0" is not a valid int64 number
-    """.trim())
-  )(
-  S res=(_=Num"2." catch error S.ParseError e (e.toS()) S"")
-  {}:Test"2. string"(actual=res, expected=S"""
-    |Message This.S.ParseError([###]):
-    |The string "2." is not a valid number
-    """.trim())
-  )(
-  S res=(_=Math.Long"2/3" catch error S.ParseError e (e.toS()) S"")
-  {}:Test"2/3 string"(actual=res, expected=S"""
-    |Message This.S.ParseError([###]):
-    |The string "2/3" is not a valid int64 number
-    """.trim())
-  ))
-TestArithErrorNum=((
-  S res=(_=2Num/0Num catch error Math.ArithmeticError e (e.toS()) S"")
-  {}:Test"zero"(actual=res, expected=S"""
-    |Message This.Math.ArithmeticError([###]):
-    |Zero denomitator not allowed for a number
-    """.trim())
-  ))
+  {}:Test""(expected=Math.nan() actual=Math.nan()*d)
+  {}:Test""(expected=d actual=Math.minusZero()+d)
+  {}:Test""(expected=d actual=Math.minusZero()+d)
+  {}:Test""(Math.minusZero().toS()!=(0Double).toS())
+  {}:Test""(Math.minusInfinty()!=Math.plusInfinty())
+  {}:Test""(expected=Math.minusInfinty() actual=Math.minusInfinty()+d)
+  {}:Test""(expected=Math.plusInfinty() actual=Math.plusInfinty()+d)
+  Debug(Math.minusInfinty())
+  Debug(Math.plusInfinty())
+  Debug(Math.maxI())
+  Debug(Math.minI())
+  Debug(Math.maxLong())
+  Debug(Math.minLong())
+
+  //for i in Range(forvever) Debug(i)
+for k in Range.endless() i in Range(3I to=50I).reverse() Debug(S"%i %k")
+ )

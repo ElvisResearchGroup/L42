@@ -84,7 +84,7 @@ public class NativeDispatch {
     String resT;
     boolean isOpt;
     List<String> invalid=new ArrayList<>();
-    static List<String>list=List.of("String","Boolean","Integer","Double");
+    static List<String>list=List.of("String","Boolean","Integer","Long","Double");
     String type(J j,Core.T t){
       String res=j.typeNameStr(t);
       res=J.boxed(res);

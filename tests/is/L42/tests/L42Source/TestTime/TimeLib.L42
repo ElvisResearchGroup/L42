@@ -1,0 +1,71 @@
+reuse [AdamsTowel]
+Time = {interface 
+  Fail = Message:{[Message.Guard]}
+  @{unix universal time}
+  mut method Math.Long currentTime()[Fail]
+  @{
+  This method returns a string following a format pattern and a zoneId.
+  The method accepts as zoneIds at least the following constants:
+    {
+    Australia/Darwin
+    Australia/Sydney
+    America/Argentina/Buenos_Aires
+    Africa/Cairo
+    America/Anchorage
+    America/Sao_Paulo
+    Asia/Dhaka
+    Africa/Harare
+    America/St_Johns
+    America/Chicago
+    Asia/Shanghai
+    Africa/Addis_Ababa
+    Europe/Paris
+    America/Indiana/Indianapolis
+    Asia/Kolkata
+    Asia/Tokyo
+    Pacific/Apia
+    Asia/Yerevan
+    Pacific/Auckland
+    Asia/Karachi
+    America/Phoenix
+    America/Puerto_Rico
+    America/Los_Angeles
+    Pacific/Guadalcanal
+    Asia/Ho_Chi_Minh
+    }
+    
+  However, other constants, like Europe/Rome may be available
+  An example of an accepted pattern is "yyyy/MM/dd HH:mm:ss OOOO"
+  }
+  mut method S dateTime(S zoneId,S pattern)[Fail]
+  }
+Time$Real = Public:{
+  [Time]
+  @Public class method mut This #$of() = this.#$of::0()
+  class method mut This #$of::0()
+  @Public mut method Math.Long currentTime()[Time.Fail] = {
+    return This.#$currentTime()
+    catch System.JavaException x exception Time.Fail"%x.text()"
+    }
+  @Public mut method S dateTime(S zoneId,S pattern)[Time.Fail] = {
+    return This.#$dateTime(zoneId=zoneId,pattern=pattern)
+    catch System.JavaException x exception Time.Fail"%x.text()"
+    }
+  //------------------------
+  class method Math.Long #$currentTime()[System.JavaException] = native{
+    ioSlave{}{
+    var c=java.time.Clock.systemUTC();
+    return c.instant().toEpochMilli();
+    }} error void
+  class method S #$dateTime(S zoneId,S pattern)[System.JavaException] = native{
+    ioSlave{}{
+    String zoneId=#1;
+    String pattern=#2;
+    var c=java.time.Clock.systemUTC();
+    var desiredZone = java.time.ZoneId.of(zoneId);
+    var desiredeLocale = java.util.Locale.forLanguageTag("en");
+    var desiredFormatter = java.time.format.DateTimeFormatter.ofPattern(pattern, desiredeLocale);
+    var desiredDateTime = c.instant().atZone(desiredZone);
+    return desiredDateTime.format(desiredFormatter);
+    }} error void
+  }
