@@ -7,6 +7,9 @@ class method S (This string)
   res
   )
 method This _subString(I that,I to)
+method Bool startsWith(This that)
+method I indexOf(This that, I from)
+read method I size()
 
 @Public Map=Collection$.map(key=S,val=S)
 @Public Set=Collection$.set(S)
@@ -91,4 +94,42 @@ class method S up1(S char)={
   r=this.lowToUp().val(key=char)
   if r return r.val()<:S
   return char
+  }
+  
+@{Splits on the separator 'that'.
+  Corner cases are handled by the following rules, that applies in order:
+    - if the string is empty this is the empty iterator.
+    - if the separator is empty, this iterator contains the whole string as a single element
+    - if the separator is not contained in the string, this iterator contains the whole string as a single element
+    - if the string ends and/or starts by the separator, it is splitted exactly as a string with those
+      starting/ending separators removed.
+    - if the string contains multiple occourrences of the separator without 
+      any other character in the middle, the iterator will step on an empty string while crossing them.
+  }
+@Public method mut Spliterator split(S$ that) = \(this,sep=that)  
+@Public Spliterator = Data:{
+  S$ that
+  var I from
+  var I to
+  S$ sep
+  class method mut This(S$ that, S$ sep) = \(
+    that
+    from=0I
+    to=(if that.startsWith(sep) sep.size() else 0I) - sep.size()
+    sep=sep
+    )
+  @Public read method S$ #elem#imm(I that) = this.#elem#default(that)
+  @Public read method S$ #elem#default(I that) = \that.subString(this.from() to=this.to())
+  @Public mut method Collection.IteratorCompose #hasElem(I that) = (
+    (from,to,sep) = this
+    (size) = \that
+    newFrom = to+sep.size()
+    newTo = \that.indexOf(sep from=newFrom)
+    \from(newFrom)
+    if newTo>0I ( \to(newTo) ) 
+    else ( \to(size) )
+    \(to+sep.size()<size)
+    )
+  @Public mut method mut This #iterator() = this
+  @Public read method I #startIndex()=0I
   }

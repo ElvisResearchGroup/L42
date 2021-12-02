@@ -272,3 +272,55 @@ TestLastIndexOf =(
   {}:Test""(actual=i1 expected=14I)
   {}:Test""(actual=i2 expected=7I)
   )
+TestSpliterator =(
+  multiS = S"""
+    |aa
+    |bb
+    |cc
+    """
+  s1 = S.List()(for s in multiS.split(S.nl()) \add(s))
+  {}:Test"1"(actual=s1 expected=S.List[S"aa";S"bb";S"cc"])
+
+  s2 = S.List()(for s in S"mah".split(S"NOTFOUND") \add(s))
+  {}:Test"2"(actual=s2 expected=S.List[S"mah"])
+  
+  s3 = S.List()(for s in S"".split(S"NOTFOUND") \add(s))
+  {}:Test"3"(actual=s3 expected=S.List[])
+  
+  s4 = S.List()(for s in S"mah".split(S"") \add(s))
+  {}:Test"4"(actual=s4 expected=S.List[S"mah"])
+  
+  s5 = S.List()(for s in S"".split(S"") \add(s))
+  {}:Test"5"(actual=s5 expected=S.List[])
+  
+  ( 
+  s6 = S.List()(for s in S"aaaWWbbb".split(S"W") \add(s))
+  {}:Test"6"(actual=s6 expected=S.List[S"aaa";S"";S"bbb"])
+  
+  s7 = S.List()(for s in S"aaaWbbb".split(S"W") \add(s))
+  {}:Test"7"(actual=s7 expected=S.List[S"aaa";S"bbb"])
+  
+  s8 = S.List()(for s in S"WaaaWbbb".split(S"W") \add(s))
+  {}:Test"8"(actual=s8 expected=S.List[S"aaa";S"bbb"])
+  
+  s9 = S.List()(for s in S"WWaaaWbbb".split(S"W") \add(s))
+  {}:Test"9"(actual=s9 expected=S.List[S"";S"aaa";S"bbb"])
+  
+  s10 = S.List()(for s in S"WWWaaaWbbb".split(S"W") \add(s))
+  {}:Test"10"(actual=s10 expected=S.List[S"";S"";S"aaa";S"bbb"])
+  )(  
+  s6 = S.List()(for s in S"aaaW-WW-Wbbb".split(S"W-W") \add(s))
+  {}:Test"6"(actual=s6 expected=S.List[S"aaa";S"";S"bbb"])
+  
+  s7 = S.List()(for s in S"aaaW-Wbbb".split(S"W-W") \add(s))
+  {}:Test"7"(actual=s7 expected=S.List[S"aaa";S"bbb"])
+  
+  s8 = S.List()(for s in S"W-WaaaW-Wbbb".split(S"W-W") \add(s))
+  {}:Test"8"(actual=s8 expected=S.List[S"aaa";S"bbb"])
+  
+  s9 = S.List()(for s in S"W-WW-WaaaW-Wbbb".split(S"W-W") \add(s))
+  {}:Test"9"(actual=s9 expected=S.List[S"";S"aaa";S"bbb"])
+
+  s10 = S.List()(for s in S"W-WW-WW-WaaaW-Wbbb".split(S"W-W") \add(s))
+  {}:Test"10"(actual=s10 expected=S.List[S"";S"";S"aaa";S"bbb"])
+  ))
