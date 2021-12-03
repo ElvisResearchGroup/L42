@@ -464,12 +464,22 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @Override public Full.E visitEPostfix(EPostfixContext ctx) {
     check(ctx);
     var res=visitEAtomic(ctx.eAtomic());
-    var uOpList=ctx.children.stream()
+    ArrayList<ParseTree> uOpList=ctx.children.stream()
       .takeWhile(c->c instanceof TerminalNodeImpl)
       .collect(Collectors.toCollection(ArrayList::new));
     Collections.reverse(uOpList);
     assert ctx.getChild(uOpList.size())==ctx.eAtomic();
-    for(int i: range(uOpList.size()+1,ctx.children.size())){
+    int numbers=0;
+    for(var uOp:uOpList){//add the uOp to res
+      String s=uOp.getText();
+      if(s.equals("!") || s.equals("~")){break;}
+      numbers+=1;
+      assert !s.contains("~");
+      assert !s.contains("!");
+      res=new Full.UOp(res.pos(),null,s,res);
+      }
+    uOpList.subList(0,numbers).clear();
+    for(int i: range(uOpList.size()+1,ctx.children.size())){ // add post op to res 
       ParseTree current=ctx.getChild(i);
       if(current instanceof FCallContext){
         res=visitFCall((FCallContext)current).withE(res);}
@@ -483,7 +493,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
         var es=pushL(fRes,popL(tmp.es()));
         res=visitString((StringContext)current).withEs(es);}
       }
-    for(var uOp:uOpList){
+    for(var uOp:uOpList){//add the uOp to res
       String s=uOp.getText();
       if(s.equals("!")){res=new Full.UOp(res.pos(),Op.Bang,null,res);}
       else if(s.equals("~")){res=new Full.UOp(res.pos(),Op.Tilde,null,res);}

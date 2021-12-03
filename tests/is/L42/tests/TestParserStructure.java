@@ -197,6 +197,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
    pass("~1~2!S","|||||P|")
   ),new AtomicTest(()->
+   pass("~1 2S.foo()","|||PFCall(|m||)|")
+  ),new AtomicTest(()->
    pass("a+b&&c","<<x|x>|x>|")
   ),new AtomicTest(()->
    pass("a+b&&c:d","<<x|x>|<x|x>>|")
