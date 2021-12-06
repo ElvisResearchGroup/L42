@@ -63,7 +63,12 @@ class OpUtils{
       }
     private static final String listExc2(String body){
       return "try{"+body+"}"+
-        "catch(IndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
+        "catch(IndexOutOfBoundsException oob){"+
+        "throw new L42Error(%Gen2.wrap(new L42£LazyMsg("+
+        "(%1$s.size()==1)?\"Attempting to access an element from an empty list\":("+
+        "\"For a list of size \"+(%1$s.size()/2)+\" the provided index: \"+%2$s+\" is not in the acceptable range 0..\"+((%1$s.size()/2)-1)"+
+        "))));"+
+        "}";
       }
     static final Function<Program,String> mapOutOfBound(String body,String bodyOpt){
       return mapChoice(mapOutOfBound(body), mapOutOfBound(bodyOpt));

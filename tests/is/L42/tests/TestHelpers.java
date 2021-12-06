@@ -16,6 +16,7 @@ import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.L42Visitor;
+import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.generated.L42Parser.BlockContext;
 import is.L42.generated.L42Parser.CastContext;
 import is.L42.generated.L42Parser.CsPContext;
@@ -144,9 +145,10 @@ public class TestHelpers {
   public static void checkFail(Runnable r,String [] output,Class<?> kind){
    assert output.length>0;
    try{r.run();}
-    catch(EndError ee){
+    catch(EndError|L42Error ee){
       if(!kind.isInstance(ee)){fail("Different kind of exception: "+ee);}
       String msg=ee.getMessage();
+      if(msg==null){msg="**error void**";}
       msg=msg.substring(msg.indexOf("\n")+1);
       msg=msg.substring(msg.indexOf("\n")+1);
       Err.strCmp(msg, output[0]);

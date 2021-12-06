@@ -35,11 +35,40 @@ TestOptSize=(
     error o1.val() catch error Collection.NoElementInOpt e e.text()
     ))
   )
-TestSizeRange=(
+TestRange=((
   var sAcc=S""
   for i in Range(21I) (sAcc++=S"a")
   {}:Test"range 21"(sAcc.size()==21I)
-  )
+  )(
+  Range.Indexes r=Range(5I).reverse()
+  {}:Test""(actual=S"".builder()(for i in r \add(i))
+    expected=S"43210")
+  )(
+  Range.Indexes r=Range(3I to=7I).reverse()
+  {}:Test""(actual=S"".builder()(for i in r \add(i))
+    expected=S"6543")
+  )(
+  Range.Indexes r=Range(I"-3" to=7I).reverse()
+  {}:Test""(actual=S"".builder()(for i in r \add(i))
+    expected=S"6543210-1-2-3")
+  )(
+  Range.Indexes r=Range(I"-10" to=I"-3").reverse()
+  {}:Test""(actual=S"".builder()(for i in r \add(i))
+    expected=S"-4-5-6-7-8-9-10")
+  )(
+  v=void//to force parsing it as a block
+  {}:Test""(actual=S"".builder()(
+    for u in Range.unbounded(5I),i in Range(15I to=24I) (
+      \add(u) \add(i)
+      ))
+    expected=S"5156167178189191020112112221323")
+  )(
+  r1=Range(0I to=10I)
+  r2=Range(0I to=5I)
+  {}:Test""(actual=S"".builder()(
+    for c in r1.andThen(r2) \add(c))
+    expected=S"012345678901234")
+  ))
 TestMatchSome=(
   ss=S.List[S"a";S"b";S"c"]
   (    
@@ -75,6 +104,36 @@ TestSList=(
   s.add(\"hi")
   {}:Test"singleVal"(expected=S"hi", actual=s.val(0I))
   {}:Test"size1"(s.size()==1I)
+  err1=(_=S.List[].val(1I) catch error Message e (e.toS()) S"")
+  err2=(_=S.List[S""].val(1I) catch error Message e (e.toS()) S"")
+  err3=(_=S.List[].val(0I) catch error Message e (e.toS()) S"")
+  err4=(_=S.List[S""].val(I"-5") catch error Message e (e.toS()) S"")
+  err5=(_=S.List[S"";S""].val(I"6") catch error Message e (e.toS()) S"")
+  err6=(_=S.List[S""].val(I"6") catch error Message e (e.toS()) S"")
+  {}:Test"err1"(actual=err1 expected=S"""
+    |Message This.Collection.OutOfBounds([###]):
+    |Attempting to access an element from an empty list
+    """.trim())
+  {}:Test"err2"(actual=err2 expected=S"""
+    |Message This.Collection.OutOfBounds([###]):
+    |For a list of size 1 the provided index: 1 is not in the acceptable range 0..0
+    """.trim())
+  {}:Test"err3"(actual=err3 expected=S"""
+    |Message This.Collection.OutOfBounds([###]):
+    |Attempting to access an element from an empty list
+    """.trim())
+  {}:Test"err4"(actual=err4 expected=S"""
+    |Message This.Collection.OutOfBounds([###]):
+    |For a list of size 1 the provided index: -5 is not in the acceptable range 0..0
+    """.trim())
+  {}:Test"err5"(actual=err5 expected=S"""
+    |Message This.Collection.OutOfBounds([###]):
+    |For a list of size 2 the provided index: 6 is not in the acceptable range 0..1
+    """.trim())
+  {}:Test"err6"(actual=err6 expected=S"""
+    |Message This.Collection.OutOfBounds([###]):
+    |For a list of size 1 the provided index: 6 is not in the acceptable range 0..0
+    """.trim())
   )
 TestMap=(
   imm s=S.List[S"a";S"b";S"c"]
@@ -323,4 +382,18 @@ TestSpliterator =(
 
   s10 = S.List()(for s in S"W-WW-WW-WaaaW-Wbbb".split(S"W-W") \add(s))
   {}:Test"10"(actual=s10 expected=S.List[S"";S"";S"aaa";S"bbb"])
+  ))
+  
+TestPlusEq = ((
+  var I i=2I
+  i+=3I
+  {}:Test""(actual=i expected=5I)
+  )(
+  mut I.List is=I.List[2I]
+  for var ii in is ( ii:=ii+3I)
+  {}:Test""(actual=is expected=I.List[5I])
+  )(
+  mut I.List is=I.List[2I]
+  for var ii in is (ii+=3I)
+  {}:Test""(actual=is expected=I.List[5I])
   ))

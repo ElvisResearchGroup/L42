@@ -827,7 +827,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     S s=NameMangling.methName("update",_mdf);
     return new CloneVisitor(){
       public @Override Full.OpUpdate visitOpUpdate(Full.OpUpdate o){
-        o=super.visitOpUpdate(o);
+        if(o.op()!=Op.ColonEqual){o=doUpdate(o);}//Not super, we extend CloneVisitor directly
         if(!o.x().equals(x2)){return o;}
         Full.Par pars=new Full.Par(new Core.EX(o.pos(), x1), valX,L(o.e()));
         Full.E e2=new Full.Call(o.pos(),new Core.EX(o.pos(), x),s,false,L(pars));

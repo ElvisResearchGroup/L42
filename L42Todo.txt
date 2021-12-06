@@ -2,9 +2,9 @@
 //tasked: a list of available libraries in this version
 // tasked can the IDE be resized to be much narrower?
 
--TestErr=( error X"Nope" )//fails but //TestErr= error X"Nope" //works
+-Main=((void)(void)) is parsed as Main=((void).#apply(void))
+It should be parsed as two blocks? we lost 2 hours on a bunch of scope separated tests 
 
-in error 'no viable alternative at input' we should replace \n with actual new lines? or limit the error msg size?
 -can we make cache (and hints?) checkpoint every main compilation-run step?
 -can we customize max/min memory on the ide+spawned processes?
 

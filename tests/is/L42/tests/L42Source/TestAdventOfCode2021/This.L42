@@ -1,0 +1,45 @@
+reuse [L42.is/AdamsTowel]
+Fs = Load:{reuse[L42.is/FileSystem]}
+
+
+Day5 = {
+  Point = Data.AddList:Data:{I x, I y }
+  Line = Data.AddList:Data:{
+    Point p1, Point p2
+    class method This (S that) = (
+      s0 = that.split(S" -> ")
+      s1 = s().split(S",")
+      s2 = s().split(S",")
+      This(
+        p1=Point(x=s1() y=s1()),
+        p2=Point(x=s2() y=s2())
+        )      
+      )
+  R = {class method I.List (I that, I to)=(
+    if that<to \()(for i in Range(that to=to+1I)\add(i))
+    else     \()(for i in Range(to to=that+1I).reverse() \add(i))
+    )}
+  method Point.List expand() = {
+    (x1,y1)=\p1
+    (x2,y2)=\p2    
+    if x1==x2 return \()(for y in R(y1 to=y2) \add(\(x=x1,y=y)))
+    if y1==y2 return \()(for x in R(x1 to=x2) \add(\(x=x,y=y1)))
+    return \()(for x in R(x1,to=x2), y in R(y1,to=y2) 
+      \add(\(x=x,y=y)))
+    }
+  }
+PMap = Collection.map(key=Point,val=I)
+Main = (
+  fs = Fs.Real.#$of()
+  input = fs.read(\"input")
+  lines = Line.List()(for s in input.split(S.nl()) \add(\(s)))
+  map = PMap()
+  for l in lines, for p in l.expand() (
+    opt = map.val(key=p)
+    if opt map.put(key=p, val=opt.val()+1I)
+    else map.put(key=p,val=1I)
+    )
+  res=Match.Count()(for (val) in map \add(val>1I))
+  Debug(res)
+  )
+  }

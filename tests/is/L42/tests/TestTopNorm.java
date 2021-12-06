@@ -9,6 +9,7 @@ import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.NotWellFormed;
 import is.L42.common.EndError.TypeError;
 import is.L42.flyweight.CoreL;
+import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
@@ -322,6 +323,11 @@ public class TestTopNorm{
        }
     }""",ErrMsg.nativeParameterViolatedConstraint("[###]","[###]","[###]")
   */
+  );}@Test public void mainNoParenthesis(){topFail(L42Error.class,
+    "{A=error void}","**error void**"
+  );}@Test public void mainParenthesis(){topFail(L42Error.class,
+    "{A=(error void)}","**error void**"
+
   );}@Test public void t2(){top(
    "{A={} B=(void)}","{A={#typed{}}B={#typed{}}#norm{}}"
   );}@Test public void t3(){top(

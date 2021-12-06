@@ -1,3 +1,4 @@
+[Range$Indexes]
 I start
 I end
 @{Factory method
@@ -23,24 +24,31 @@ class method This of(I start I end)
 
 @Public method I #startIndex()=this.start()
 
+@Public method I steps()=\end-\start
+@Public method I #endIndex()=\end
+
 @{Factory method
   Creates a reverse range; a range exploring the sequence in the reverse order.
   }
-@Public method ReverseRange reverse()=\(this)
+@Public method Reverse reverse()=\(this)
 
-@Public ReverseRange={
-  This1 that
+@Public Reverse={[Range$Indexes]
+  This1 that //start, end
   class method This(This1 that)
   @Public method This #iterator()=this
-  @Public method I #elem#default(I that)=this.that().end()-that
-  @Public method Collection.IteratorCompose #hasElem(I that)=
-    \(this.that().end()-that>=this.that().start())
-  @Public method I #startIndex()=1I //I.zero().#succ()
+  @Public method I #elem#default(I that) = 
+    ((\that.end()-1I) + \that.start()) - that
+  @Public method Collection.IteratorCompose #hasElem(I that) =
+    \that.#hasElem(that)
+  @Public method I #startIndex() = \that.#startIndex()
+  @Public method I #endIndex() = \that.end()
+  @Public method andThen(that) = AndThen(left=this,right=that)
   }
+
 @{Factory method
-  behaves like 'endless(0I)'
+  behaves like 'unbounded(0I)'
   }
-@Public class method EndlessRange endless()=\(0I)
+@Public class method Unbounded unbounded() = \(0I)
 
 @{Factory method
   Creates an endless range starting from 'that'
@@ -49,9 +57,9 @@ class method This of(I start I end)
   If iterated together with other collections, it will behave like a
   'cut-view' thus allowing for an early termination   
   }
-@Public class method EndlessRange endless(I that)=\(that)
+@Public class method Unbounded unbounded(I that)=\(that)
 
-@Public EndlessRange={
+@Public Unbounded={[Range$Indexes]
   I that
   class method This(I that)
   @Public method This #iterator()=this
@@ -59,7 +67,36 @@ class method This of(I start I end)
   @Public method Collection.IteratorCompose #hasElem(I that)=
     \.canContinue()
   @Public method I #startIndex()=this.that()
+  @Public method I #endIndex()=I"-1"
+  @Public method andThen(that) = this
   }
 
+@Public method andThen(that) = AndThen(left=this,right=that)
   
+@Public AndThen={[Range$Indexes]
+  Range$Indexes left
+  Range$Indexes right
+  class method This(Range$Indexes left, Range$Indexes right)
+  @Public method This #iterator()=this
+  @Public method I #elem#default(I that) = (
+    ls = \left.#endIndex()
+    if ls>that \left.#elem#default(that)
+    else \right.#elem#default((that-ls)+this.right().#startIndex())
+    )
+  @Public method Collection.IteratorCompose #hasElem(I that) = (
+    ls = \left.#endIndex()
+    if ls>that \.canContinue()
+    else \right.#hasElem((that-ls)+this.right().#startIndex())
+    )
+  @Public method I #startIndex() = \left.#startIndex()
+  @Public method I #endIndex() = (
+    rs = \right.#endIndex()
+    if rs==I"-1" rs
+    else ( \left.#endIndex() + \right.#endIndex() ) - \right.#startIndex()
+    )
+  @Public method andThen(that) = 
+    if \#endIndex()==I"-1" this
+    else AndThen(left=this,right=that)
+  }
+
 @This1.AbstractTowel{range}

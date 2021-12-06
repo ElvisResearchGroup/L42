@@ -156,6 +156,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     visitE(e.e());
     g=oldG;
     computeds.add(_computed);
+    if(computeds.stream().allMatch(c->c==null)){_computed=null;return;}
     computeds.removeIf(c->c==null);
     var computed=new HashSet<P>();
     for(P c1:computeds){

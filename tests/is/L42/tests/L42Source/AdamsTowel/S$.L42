@@ -118,6 +118,17 @@ class method S up1(S char)={
     to=(if that.startsWith(sep) sep.size() else 0I) - sep.size()
     sep=sep
     )
+  @Public read method Bool #if() = (
+    (from,to,sep) = this
+    (size) = \that
+    newFrom = to+sep.size()
+    newTo = \that.indexOf(sep from=newFrom)
+    to+sep.size()<size    
+    )
+  @Public mut method S$ () = (
+    _=this.#hasElem(0I)
+    this.#elem#default(0I)
+    )
   @Public read method S$ #elem#imm(I that) = this.#elem#default(that)
   @Public read method S$ #elem#default(I that) = \that.subString(this.from() to=this.to())
   @Public mut method Collection.IteratorCompose #hasElem(I that) = (

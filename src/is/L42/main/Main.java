@@ -68,10 +68,25 @@ public class Main {
       Resources.err("-------------------------");
       Resources.err("Compile time error:");
       Resources.err("-------------------------");
-      Resources.err(ee.getMessage());
+      Resources.err(fixMessage(ee.getMessage()));
       throw ee;
       }
     }
+  static private String fixMessage(String fullMsg){
+    var omsg=fullMsg.lines().skip(2).findFirst();
+    if(omsg.isEmpty()){ return fullMsg; }
+    var msg=omsg.get();
+    var pre=fullMsg.lines().limit(2).collect(Collectors.joining("\n"))+"\n";
+    String nva="no viable alternative at input '";
+    if(msg.startsWith(nva)){
+      msg=msg.substring(nva.length());
+      int nl=msg.lastIndexOf("\\n");
+      if(nl!=-1){msg=msg.substring(nl+2);}
+      if(msg.length()>40){msg=msg.substring(msg.length()-40);}
+      return pre+nva+msg;
+      }
+    return fullMsg;
+  }
   public static Object _unwrap(Object o){
     Class<?> c=o.getClass(); 
     try{
