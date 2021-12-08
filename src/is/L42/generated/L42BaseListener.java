@@ -292,6 +292,18 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMCall(L42Parser.MCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMCall(L42Parser.MCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFCall(L42Parser.FCallContext ctx) { }
 	/**
 	 * {@inheritDoc}

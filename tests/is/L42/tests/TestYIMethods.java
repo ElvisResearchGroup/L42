@@ -425,7 +425,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->pass("""
      method Any m1(This a)
      method Any foo()
-     method Any m2()=this.m1(a=(\\foo)())
+     method Any m2()=this.m1(a=(\\foo).#apply())
      ""","""
      method Any m1(This a)
      method Any foo()

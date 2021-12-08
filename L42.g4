@@ -84,7 +84,8 @@ csP: CsP;
 t:Mdf? doc* csP;
 tLocal: t | Mdf | ; 
 
-eAtomic: x | csP | voidE | fullL | block | slash | pathSel | slashX;
+//eAtomic: x | csP | voidE | fullL | block | slash | pathSel | slashX;
+eAtomic: x | csP | voidE | fullL | slash | pathSel | slashX;
 fullL:'{' (header | DotDotDot | ReuseURL) fullM* info? doc*'}';
 fullM: fullF | fullMi | fullMWT | fullNC;
 fullF: doc* VarKw? t x('=' e)?;
@@ -97,7 +98,13 @@ info: Info;
 fullMH: (Mdf doc*)? MethodKw t mOp oR (t x)* ')' ( ('[' UnderScore t* ']')|('[' t+ ']')  )?;
 mOp: | m | Uop | (OP0 | OP1 | OP2 | OP3) Number?;//to filter 'number' to be an int
 voidE: VoidKW;
-ePostfix: (Uop|Number)* eAtomic (fCall | squareCall | string | cast)*;
+//ePostfix: (Uop|Number)* eAtomic (fCall | squareCall | string | cast)*;
+ePostfix: (Uop|Number)* ( 
+           ( eAtomic (fCall | squareCall | string | cast)* )
+           | block 
+           |( block ( mCall | squareCall | string | cast) (fCall | squareCall | string | cast)* )
+         );
+mCall: '.'m ORNS par ')';
 fCall: ('.'m)? ORNS par ')';
 squareCall: ('.'m)? '[' (par';')* par ']';
 cast: CastOp t;

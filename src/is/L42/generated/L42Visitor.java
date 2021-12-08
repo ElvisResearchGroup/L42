@@ -149,6 +149,12 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEPostfix(L42Parser.EPostfixContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#mCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMCall(L42Parser.MCallContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#fCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

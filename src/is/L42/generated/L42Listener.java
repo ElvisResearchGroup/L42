@@ -238,6 +238,16 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitEPostfix(L42Parser.EPostfixContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#mCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterMCall(L42Parser.MCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#mCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitMCall(L42Parser.MCallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#fCall}.
 	 * @param ctx the parse tree
 	 */

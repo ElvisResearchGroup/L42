@@ -123,7 +123,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
       opt(ctx.csP(),null,this::visitCsP),
       opt(ctx.voidE(),null,this::visitVoidE),
       opt(ctx.fullL(),null,this::visitFullL),
-      opt(ctx.block(),null,this::visitBlock),
+      //opt(ctx.block(),null,this::visitBlock),
       opt(ctx.slash(),null,this::visitSlash),
       opt(ctx.pathSel(),null,this::visitPathSel),
       opt(ctx.slashX(),null,this::visitSlashX))
@@ -134,10 +134,16 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     return X.of(ctx.getText());
     }
+  @Override public Full.Call visitMCall(MCallContext ctx) {
+    return fmCall(ctx,ctx.m(),ctx.par());
+    }
   @Override public Full.Call visitFCall(FCallContext ctx) {
+    return fmCall(ctx,ctx.m(),ctx.par());
+    }
+  private Full.Call fmCall(ParserRuleContext ctx,MContext m,ParContext pars){
     check(ctx);
-    S s=opt(ctx.m(),null,this::visitM);
-    Full.Par par=visitPar(ctx.par());
+    S s=opt(m,null,this::visitM);
+    Full.Par par=visitPar(pars);
     if(par!=Full.Par.empty){
       return new Full.Call(pos(ctx), eVoid, s, false, L(par));
       }
@@ -463,12 +469,15 @@ public class FullL42Visitor implements L42Visitor<Object>{
 
   @Override public Full.E visitEPostfix(EPostfixContext ctx) {
     check(ctx);
-    var res=visitEAtomic(ctx.eAtomic());
+    Full.E res;
+    if(ctx.block()!=null){ res=visitBlock(ctx.block()); }
+    else { res=visitEAtomic(ctx.eAtomic()); }
     ArrayList<ParseTree> uOpList=ctx.children.stream()
       .takeWhile(c->c instanceof TerminalNodeImpl)
       .collect(Collectors.toCollection(ArrayList::new));
     Collections.reverse(uOpList);
-    assert ctx.getChild(uOpList.size())==ctx.eAtomic();
+    assert ctx.getChild(uOpList.size())==ctx.eAtomic()
+         ||ctx.getChild(uOpList.size())==ctx.block();
     int numbers=0;
     for(var uOp:uOpList){//add the uOp to res
       String s=uOp.getText();
@@ -483,6 +492,8 @@ public class FullL42Visitor implements L42Visitor<Object>{
       ParseTree current=ctx.getChild(i);
       if(current instanceof FCallContext){
         res=visitFCall((FCallContext)current).withE(res);}
+      if(current instanceof MCallContext){
+        res=visitMCall((MCallContext)current).withE(res);}
       if(current instanceof CastContext){
         res=visitCast((CastContext)current).withE(res);}
       if(current instanceof SquareCallContext){

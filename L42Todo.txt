@@ -1,9 +1,17 @@
 // tasked -an about button with the version number, but how to know the last version? -reading a file on l42.is and ask for a download new version?
 //tasked: a list of available libraries in this version
- 
--Main=((void)(void)) is parsed as Main=((void).#apply(void))
-It should be parsed as two blocks? we lost 2 hours on a bunch of scope separated tests 
+//tasked: js file for ide personalization modularized away
 
+-test james Time
+
+-42 library docs:
+  -introspection must be able to print outlines ("" for no nesteds, "A,B,C" for nesteds A,B,C and "*" for all nesteds?
+  -integration tests saves the outline as a file
+  -deployHtml also reads those folders and makes them into xhtml pages?
+    -in the future 42 could also make and deploy the xhtml; does it needs to be now?
+-if I moved the docs/getting started in the main project or ide, would it work transparently in the existing script?
+
+-acc for I,Num.Long...?
 -can we make cache (and hints?) checkpoint every main compilation-run step?
 -can we customize max/min memory on the ide+spawned processes?
 

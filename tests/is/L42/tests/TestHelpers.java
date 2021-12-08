@@ -41,6 +41,7 @@ import is.L42.generated.L42Parser.FullNCContext;
 import is.L42.generated.L42Parser.HeaderContext;
 import is.L42.generated.L42Parser.InfoContext;
 import is.L42.generated.L42Parser.KContext;
+import is.L42.generated.L42Parser.MCallContext;
 import is.L42.generated.L42Parser.MContext;
 import is.L42.generated.L42Parser.MOpContext;
 import is.L42.generated.L42Parser.MatchContext;
@@ -91,6 +92,7 @@ public class TestHelpers {
       @Override public String visitEAtomic(EAtomicContext ctx) {return c(ctx);}
       @Override public String visitX(XContext ctx) {return "x";}
       @Override public String visitFCall(FCallContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitMCall(MCallContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitNudeE(NudeEContext ctx) {return c(ctx);}
       @Override public String visitBlock(BlockContext ctx) {return "["+c(ctx)+"]";}
       @Override public String visitM(MContext ctx) {return "m";}
