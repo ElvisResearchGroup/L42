@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import is.L42.generated.Pos;
-
+import is.L42.main.Main;
 public interface ToNameUrl{
   record NameUrl(String fullName,URL fullPath){}
   Optional<NameUrl> apply(String url) throws MalformedURLException;
@@ -31,9 +31,6 @@ public interface ToNameUrl{
       .findFirst()
       .orElseThrow(MalformedURLException::new);
     }
-//Constants below should be changed accordingly to the secret in is.L42.tests.SecretHolder
-  public static final String l42IsRepoPath = "Language42/is"; 
-  public static final String l42IsRepoVersion = "d016";
   static ToNameUrl forGitUrl=(url)->{
     //https://github.com/example42gdrive/Example1/blob/HEAD/FileSystem.L42?raw=true
     String rest=removePrefix(url,"https://github.com/","http://github.com/","github.com/");
@@ -52,8 +49,8 @@ public interface ToNameUrl{
   //https://github.com/Language42/is
   static ToNameUrl forL42Is=(url)->{
     String rest=removePrefix(url,"https://L42.is/","http://L42.is/","L42.is/");
-    if(!rest.startsWith("blob/")){rest=l42IsRepoVersion+"/"+rest;}
-    return forGitUrl.apply("https://github.com/"+l42IsRepoPath+"/"+rest);
+    if(!rest.startsWith("blob/")){rest=Main.l42IsRepoVersion+"/"+rest;}
+    return forGitUrl.apply("https://github.com/"+Main.l42IsRepoPath+"/"+rest);
     };
   static ToNameUrl forFile=(url)->{
     if(url.isBlank() || url.contains(" ")){return Optional.empty();}

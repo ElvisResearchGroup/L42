@@ -30,7 +30,7 @@ read method imm  Elem val(I that)
 mut method mut Elem #val(I that)
 mut method Void set(I that,Elem val)
 mut method Void #set(I that,mut Elem val)
-mut method  Void remove(I that)
+mut method Void remove(I that)
 mut method Void add(I that, Elem val)
 mut method Void #add(I that, mut Elem val)
 read method Elem left()
@@ -62,21 +62,32 @@ method This without(I that)
 method This withoutLeft()
 method This withoutRight()
 //----------------------------
+@{Wither
+  Returns the receiver but without all the elements equal to 'val'
+  }
 method This withoutAll(read Elem val)=
   This()(for e in this (if !This.equals(a=e,b=val) \add(e)))
 
-method This withoutLeft(read Elem val) = (
-  pos=this.indexOfLeft(val=val)
+@{Wither
+  Returns the receiver but without the leftmost element equal to 'val'
+  }
+method This without(read Elem left) = (
+  pos=this.indexOf(left=left)
+  if pos<0I  this 
+  else this.without(pos)
+  )
+@{Wither
+  Returns the receiver but without the rightmost element equal to 'val'
+  }
+method This without(read Elem right) = (
+  pos=this.indexOf(right=right)
   if pos<0I  this 
   else this.without(pos)
   )
   
-method This withoutRight(read Elem val) = (
-  pos=this.indexOfRight(val=val)
-  if pos<0I  this 
-  else this.without(pos)
-  )
-
+@{Predicate
+  True if the element is contained in the List.
+  }
 read method Bool contains(read Elem that)={
   for read e in this (
     if This.equals(a=e,b=that) return Bool.true()
@@ -84,10 +95,19 @@ read method Bool contains(read Elem that)={
   return Bool.false()
   }
 //################# operators
+@{Predicate
+  True if the element is contained in the List.
+  }
 read method Bool #in1(read Elem that)=this.contains(that)
 
+@{Wither
+  Returns the receiver but without all the elements equal to 'right'
+  }
 method This -(Elem right)=this.withoutAll(val=right)
 
+@{Wither
+  Returns the receiver but without all the elements contained in the list 'right'
+  }
 method This --(This right) = (
   size = this.size()
   res = This(capacity=size)
@@ -100,118 +120,97 @@ method This --(This right) = (
   res
   )
 
-/*
-//method This &(This right)=This[for e in this ( if e in right \res<=e )]
-//TODO: what to do here? & operator has been removed and && short circuts..
+//We choose not to have a.containsAll(b) since we can just write
+//Match.All()(for bi in b \add(a.contains(bi))
+//We choose not to have a.intersect(b) or a.union(b) since we can just write
+//List()(for ai in a if ai in b \add(ai)) //intersection
+//a++(b--a)//union
 
-//superset
-//method Bool >>(This right)= this >>=right & !(right>>=this)
-
-//supersetEq
-//method Bool >>=(This right)=//TODO:
-//  Bool.falseOr[{for read e in right(if !(e in this) return \true)}]
-method Bool >>=(This right)={
-  for read e in right (
-    if !(e in this) return Bool.false()
-    )
-  return Bool.true()
+@{Predicate
+  returns true if all the elements in 'this' are individually 
+  This.equals(a,b) to the corresponding element in 'that'.
+  This can be different from '==' or 'readEquality': they just use system equality.
+  If the elements have a 'readEquality' method, that is used
+  On default This.equals(a,b) will use an available equality predicate visible on the element; 
+  prioritizing in the following order:
+  'allEq', 'readEquality' and '=='.
+  If none is present, 'System.immEquality' is used instead.
   }
-*/
-
 read method Bool allEq(read This that)=
   this.size()==that.size() &&
   Match.All()(for read e1 in this, read e2 in that 
     \add(This.equals(a=e1,b=e2)))
 
+@{Predicate
+  Delegates to 'System.immEquality'.
+  Look at 'allEq' for more flexible equivalence checks.
+  }
 method Bool ==(This that)=System.immEquality(this and=that)
+@{Predicate
+  Delegates to 'System.immEquality'.
+  Look at 'allEq' for more flexible equivalence checks.
+  }
 method Bool !=(This that)= !(this==that)
+@{Predicate
+  Delegates to 'System.immEquality'.
+  Look at 'allEq' for more flexible equivalence checks.
+  }
 read method Bool readEquality(read This that)=System.immEquality(System.immClone(this) and=System.immClone(that))
 
-read method I indexOfLeft(read Elem val)={
+@{Old fashion indexOf returning 0..size-1 or -1 to indicate absence. 
+  The result is the index of the leftmost occurrence
+  of 'left' in the list according to 'This.equals(a,b)'
+  }
+read method I indexOf(read Elem left)={
   //for pos in Range(this.size()) (//No, range is defined later so it can not be used here
   var pos=0I
-  size=this.size()
+  end=this.size()-1I
   loop (
-    if This.equals(a=this.val(pos) b=val) return pos
-    if pos<=0I return I"-1"
+    if This.equals(a=this.val(pos) b=left) return pos
+    if pos==end return I"-1"
     pos+=1I
     )
   }
-read method I indexOfRight(read Elem val)={
+  
+@{Old fashion indexOf returning 0..size-1 or -1 to indicate absence. 
+  The result is the index of the rightmost occurrence
+  of 'right' in the list according to 'This.equals(a,b)'
+  }
+read method I indexOf(read Elem right)={
   var I pos=this.size()-1I
   loop (
-    if This.equals(a=this.val(pos) b=val) return pos
+    if This.equals(a=this.val(pos) b=right) return pos
     if pos<=0I return I"-1"
     pos-=1I
     )
   }
-mut method Void removeLeft(read Elem val)=(
-  i=this.indexOfLeft(val=val)
+  
+@{Mutator 
+  Removes from the list the leftmost element equal to 'left'.
+  It relies on 'This.equals(a,b)' through 'this.indexOf(left)'  
+  }
+mut method Void remove(read Elem left)=(
+  i=this.indexOf(left=left)
   if i!=I"-1" (this.remove(i))
   )
-mut method Void removeRight(read Elem val)=(
-  i=this.indexOfRight(val=val)
+
+@{Mutator 
+  Removes from the list the rightmost element equal to 'right'.
+  It relies on 'This.equals(a,b)' through 'this.indexOf(right)'  
+  }
+mut method Void remove(read Elem right)=(
+  i=this.indexOf(right=right)
   if i!=I"-1" (this.remove(i))
   )
-/*
-//TODO: HERE
-
-
-mut method Void remove(I that) //from ListTrait
-
-mut method Void removeAll(read Elem val){
+@{Mutator 
+  Removes from the list all the elements equal to 'val'.
+  It relies on 'This.equals(a,b)'  
+  }
+mut method Void removeAll(read Elem val)={
   var I pos=0I
   loop (
-    if this.val(pos)==val (this.remove(pos))
-    else (pos+=1I)
-    if pos==this.size() (return void)
+    if This.equals(a=this.val(pos),b=val) ( this.remove(pos) )
+    else ( pos+=1I )
+    if pos==this.size() ( return void )
     )
   }
-
-mut method
-Void removeLeft(read Elem val){
-  pos=this.indexOfLeft(val:val)
-  if pos<0I (return void)
-  return this.remove(pos)
-  }
-
-mut method
-Void removeRight(read Elem val){
-  pos=this.indexOfRight(val:val)
-  if pos<0I (return void)
-  return this.remove(pos)
-  }
-
-
-
-
-class method mut This (mut This squareBuilder)=squareBuilder
-class method mut This #squareBuilder()=This()
-class method Bool #shortCircutSquare()=Bool.true()
-mut method Void #add(Elem that)=this.add(val=that)
-mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
-read method read This vals()=this
-mut method mut This #vals()=this
-read method read This #iterator()=this
-mut method mut This #varIterator()=this
-read method I #startIndex()=0I
-read method I #hasElem(I that)=if that<this.size() 0I else I"-1"
-read method Elem #elem#imm(I that)=this.val(that)
-mut method mut Elem #elem#mut(I that)=this.#val(that)
-read method Elem #elem#default(I that)=this.#elem#imm(that)
-mut method mut Elem #update#mut(I that, mut Elem val)=(this(that,mutVal=val) val)
-mut method Elem #update#imm(I that, Elem val)=(this(that,val=val) val)
-mut method Elem #update#default(I that, Elem val)=this.#update#imm(that,val=val)
-mut method Void add(Elem that)=this.add(right=that)
-
-class method mut This ()
-read method Bool isEmpty()
-read method I size()
-read method read Elem readVal(I that)
-read method imm  Elem val(I that)
-mut method mut Elem #val(I that)
-mut method Void #apply(I that,Elem val)
-mut method Void #apply(I that,mut Elem mutVal)
-mut method Void add(Elem val)
-mut method Void add(mut Elem mutVal)
-*/

@@ -19,7 +19,7 @@ mut method Event from(S res)=(
   if index2==I"-1" error X"unexpected Event format: [[%res]]"
   id=res.subString(index1+1\ to=index2)
   msg=res.subString(index2+1\ to=\size)
-  if id==S"##End##" (this.#streams().removeLeft(val=key))
+  if id==S"##End##" (this.#streams().remove(left=key))
   Event(key=key, id=id, msg=msg)
   )
 mut method Event #elem#imm(I that)={

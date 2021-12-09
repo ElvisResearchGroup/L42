@@ -1,0 +1,47 @@
+reuse [AdamsTowel]
+
+Process={interface
+  class method mut This #$of(S.List that)
+  mut method Result start(S input)[Fail]
+  Fail=Message:{[Message.Guard]}    
+
+  Result = Data:{
+    S out, S err
+    class method This(S that)=(
+      numS  = that.split(S"|")()
+      num   = I(string=numS)
+      split = num+numS.size()+1I
+      out   = that.subString(numS.size()+1I to=split)
+      err   = that.subString(split+1I to=\size)
+      This(out=out,err=err)
+      )
+    }
+  }
+
+Process$Real=Public:{[Process]
+  @Public read method S.List that() = this.that::0()
+  read method S.List that::0()
+  @Public class method mut This #$of(S.List that) = this.#$of::0(that)
+  class method mut This #$of::0(S.List that)
+  @Public mut method Process.Result start(S input)[Process.Fail] = (
+    all=S"".builder()(for s in this.that() ( \add(s)\add(S.nl()) ))
+    res=This.#$start(all=all,input=input)
+    catch System.JavaException x exception Process.Fail"%x.text()"
+    Process.Result(res)
+    )
+  class method S #$start(S all,S input)[System.JavaException] = native{
+    processSlave{}{
+    String all=#1;
+    String input=#2;
+    var builder = new ProcessBuilder(all.split("\n"));
+    var proc = builder.start();
+    var os=proc.getOutputStream();
+    os.write(input.getBytes());
+    os.close();
+    int res=proc.waitFor();
+    String out = new String(proc.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+    String err = new String(proc.getErrorStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+    var size=out.length();
+    return size+"|"+out+"|"+err;
+    }} error void
+  }

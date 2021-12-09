@@ -87,6 +87,10 @@ IteratorComposeAux={class method IteratorCompose itAddAux(IteratorCompose a, Ite
     S.dq()++res++S.dq()
     )
   }
+TraitEq0=Trait:{
+  Elem={read method Bool allEq(read This that)}
+  class method Bool equals(read Elem a,read Elem b)=a.allEq(b)
+  }
 TraitEq1=Trait:{
   Elem={read method Bool readEquality(read This that)}
   class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
@@ -100,13 +104,16 @@ TraitEq3=Trait:{
   class method Bool equals(read Elem a,read Elem b)
     =System.immEquality(System.immClone(a) and=System.immClone(b))
   }
-class method Trait selectEq(class Any that)={
-  return TraitEq1['Elem=>that]
-  catch Any e1 (
-    return TraitEq2['Elem=>that]
-    catch Any e2 (
-      return TraitEq3['Elem=>that]
-      catch Any e3 error e3
+class method Trait selectEq(class Any that)={ 
+  return TraitEq0['Elem=>that]
+  catch Any e0 (
+    return TraitEq1['Elem=>that]
+    catch Any e1 (
+      return TraitEq2['Elem=>that]
+      catch Any e2 (
+        return TraitEq3['Elem=>that]
+        catch Any e3 (error e3)
+        )
       )
     )
   } 
