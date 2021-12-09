@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.main.Main;
@@ -16,7 +18,7 @@ import is.L42.tools.TestL42Bridge;
 //}
 //Or with any kind of security you want to implement to save/store/retrive your access token
 
-public class DeployAllLibraries extends TestL42Bridge {
+public class DeployAllLibraries {
   public static String nameSecret(String name)throws IOException, URISyntaxException{
     var res=DeployAllLibraries.class.getResource(name);
     assert res!=null:"The resource "+name+" is invalid";
@@ -29,13 +31,20 @@ public class DeployAllLibraries extends TestL42Bridge {
       "class method S repo()=S\""+contentRepo+"\"\n"+
       "class method S version()=S\""+Main.l42IsRepoVersion+"\"\n";
     Files.write(sPath,content.getBytes());
-    try{return name(path);}
+    try{return TestL42Bridge.name(path);}
     finally{Files.delete(sPath);}
     }
-  public static Stream<L42Test> test() throws IOException, URISyntaxException {
-    return fromStream(deployAllLibraries());
-    }
-  
+  public static void main(String[]a) throws IOException, URISyntaxException {
+    var tests=deployAllLibraries().collect(Collectors.joining("\n"));
+    System.out.println("DeployAllLibraries completed\n\n");
+    System.out.println(tests);
+    String split="\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\n";
+    List<String> res=List.of(tests.split(split));
+    List<String> fRes=res.stream().filter(s->s.startsWith("#Fail")).toList();
+    if(!fRes.isEmpty()) {System.out.println("Errors deploying libraries:");}
+    for(var s:fRes) {System.out.println(split);System.out.println(s);}
+    //Why it is not terminating here?
+    }  
   public static Stream<String> deployAllLibraries() throws IOException, URISyntaxException {
     return Stream.of(
       nameSecret("L42Source/TestHttpRequest"),
