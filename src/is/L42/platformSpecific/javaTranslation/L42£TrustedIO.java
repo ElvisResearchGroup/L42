@@ -33,6 +33,7 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
       return res==null?"":res;
       }
     }
+  public static final String testsSeparator="###################\n";
   public L42£Void testActualExpected(L42£Library hasPos,String name, String actual, String expected,String message,String hole){
     //System.out.println("testActualExpected");
     //System.out.println(name);
@@ -42,7 +43,7 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");
     assert !pos.fileName().toString().contains("\n"):"|"+pos.fileName().toString()+"|";
-    StringBuilder sb=new StringBuilder("###################\n");
+    StringBuilder sb=new StringBuilder(testsSeparator);
     if(cond){sb.append("#Pass    "+name+"\n");}
     else{sb.append("#Fail    "+name+"\n");}
     sb.append("#line: "+pos.line());
@@ -66,7 +67,7 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");
     assert !pos.fileName().toString().contains("\n");
-    StringBuilder sb=new StringBuilder("###################\n");
+    StringBuilder sb=new StringBuilder(testsSeparator);
     if(cond){sb.append("#Pass    "+name+"\n");}
     else{sb.append("#Fail    "+name+"\n");}
     sb.append("#line: "+pos.line());

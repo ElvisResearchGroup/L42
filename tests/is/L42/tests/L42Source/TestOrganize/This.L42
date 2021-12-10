@@ -8,12 +8,14 @@ TestOrganizeWrongDollarStays=(
   Debug(Full(res))
   {}:Test"Public"(actual=Full(res)
     expected=S"""
-      |{A={#typed{}}$A={#typed{}}Foo={
-      |  read method This1.$A a()
-      |  class method This #apply(This1.$A a)
-      |  #typed{}
+      |$A={
       |  }
-      |#norm{}}
+      |A={
+      |  }
+      |Foo={
+      |  #apply(a)[###]class method This #apply($A a)
+      |  a()[###]read method $A a()
+      |  }
       """)
   )
 TestOrganize0=(
@@ -31,7 +33,10 @@ TestOrganize0=(
   res=pub:Organize:lib
   {}:Test"Public"(actual=Full(res)
   expected=S"""
-    |{@<private>A={method<private>b()#typed{typeDep=<private>watched=This1 close}}#norm{typeDep=<private>close}}
+    |@<private>A={
+    |  b()[###method<private>b()
+    |  }
+
     """)
   )
 TestOrganize1=(
@@ -41,7 +46,9 @@ TestOrganize1=(
     }
   {}:Test"Public"(actual=Full(res)
   expected=S"""
-    |{@This1.Public A={method<private>b()#typed{typeDep=<private>watched=This1 close}}#norm{close}}
+    |@Public A={
+    |  b()[###]method<private>b()
+    |  }
     """)
   )  
 TestOrganize=(
@@ -52,12 +59,11 @@ TestOrganize=(
     }
   {}:Test"$s"(actual=Full(res)
   expected=S"""
-    |{method Void m3()A={
-    |  method Void m1()
-    |  method Void m2()
-    |  #typed{}
+    |m3()[###]method Void m3()
+    |A={
+    |  m1()[###]method Void m1()
+    |  m2()[###]method Void m2()
     |  }
-    |#norm{}}
     """)
   res2=Public:Organize:{
     @Public A={method Void m1()=void}
@@ -68,11 +74,11 @@ TestOrganize=(
     }
   {}:Test"Public"(actual=Full(res2)
   expected=S"""
-    |{@This1.Public A={
-    |  @This2.Public method Void m2()=(..)
-    |  @This2.Public C={method Void m5()=(..)#typed{close}}
-    |  #typed{close}
-    |  }
-    |#norm{close}}
+    |@Public A={
+    |  m2()[###]@Public method Void m2()=(..)
+    |  @Public C={
+    |    m5()[###]method Void m5()=(..)
+    |    }
+  }
     """)
   )  

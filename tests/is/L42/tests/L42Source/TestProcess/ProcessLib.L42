@@ -1,12 +1,24 @@
 reuse [AdamsTowel]
 
 Process={interface
-  class method mut This #$of(S.List that)
+
+  @{Capability method
+    Starts the process with the provided input.
+    It waits until the process is completed.
+    returns a @Result.
+    Note that a @Fail exception would raise if the process can not start,
+    but if the process ends with errors (on the standard error stream),
+    they would just be part of the result.
+    }
   mut method Result start(S input)[Fail]
+  
   Fail=Message:{[Message.Guard]}    
 
   Result = Data:{
-    S out, S err
+    @{the standard output of the process}
+    S out
+    @{the standard error of the process}
+    S err
     class method This(S that)=(
       numS  = that.split(S"|")()
       num   = I(string=numS)
@@ -19,10 +31,25 @@ Process={interface
   }
 
 Process$Real=Public:{[Process]
+  @{The process ready to run}
   @Public read method S.List that() = this.that::0()
   read method S.List that::0()
+
+  @{Capability factory
+    Makes a @This capability object that can only run the provided process
+    with the provided parameters    
+    }  
   @Public class method mut This #$of(S.List that) = this.#$of::0(that)
   class method mut This #$of::0(S.List that)
+
+  @{Capability method
+    Starts the process with the provided input.
+    It waits until the process is completed.
+    returns a @Process.Result.
+    Note that a @Process.Fail exception would raise if the process can not start,
+    but if the process ends with errors (on the standard error stream),
+    they would just be part of the result.
+    }  
   @Public mut method Process.Result start(S input)[Process.Fail] = (
     all=S"".builder()(for s in this.that() ( \add(s)\add(S.nl()) ))
     res=This.#$start(all=all,input=input)
@@ -41,6 +68,8 @@ Process$Real=Public:{[Process]
     int res=proc.waitFor();
     String out = new String(proc.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
     String err = new String(proc.getErrorStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+    out=is.L42.platformSpecific.javaTranslation.Resources.sanitizeJavaRes(out);
+    err=is.L42.platformSpecific.javaTranslation.Resources.sanitizeJavaRes(err);
     var size=out.length();
     return size+"|"+out+"|"+err;
     }} error void

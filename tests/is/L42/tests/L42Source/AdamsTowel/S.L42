@@ -115,6 +115,22 @@ Behaves like @This.lastIndexOf(that,from)
 with from = 0.}
 @This1.Public method This1.I lastIndexOf(This that)=this.lastIndexOf(that=that,from=this.size())
 
+@{Base64 support
+Strings in AdamsTowel only contain a limited set of safe chars.
+To represent 'stringy' data with other chars/unicode-chars/binary data
+you can use the base64 encoding.
+This method encodes the current string in its Base64 form.} 
+@This1.Public method This encodeBase64()=native{trusted:encodeBase64}error void
+
+@{Base64 support
+Strings in AdamsTowel only contain a limited set of safe chars.
+To represent 'stringy' data with other chars/unicode-chars/binary data
+you can use the base64 encoding.
+This method decodes the current base64 encoded string into a human readable string.
+Any (encoded) chars that are not representable
+by AdamsTowel strings are pruned away from the result.} 
+@This1.Public method This decodeBase64()=native{trusted:decodeBase64}error void
+
 @{Returns a mutable string builder object starting with the receiver string.
 This allows for efficient concatenation of many strings.
 Below we show that using the #apply method of the builder,

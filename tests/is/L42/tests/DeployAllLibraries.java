@@ -5,10 +5,13 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.main.Main;
+import is.L42.platformSpecific.javaTranslation.L42£TrustedIO;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.TestL42Bridge;
 
 //Note: to make this file compile you need to add
@@ -35,15 +38,17 @@ public class DeployAllLibraries {
     finally{Files.delete(sPath);}
     }
   public static void main(String[]a) throws IOException, URISyntaxException {
-    var tests=deployAllLibraries().collect(Collectors.joining("\n"));
-    System.out.println("DeployAllLibraries completed\n\n");
-    System.out.println(tests);
-    String split="\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\#\\n";
-    List<String> res=List.of(tests.split(split));
+    String tests;try{tests=deployAllLibraries().collect(Collectors.joining("\n"));}
+    finally{Resources.clearResKeepReuse();}//did this make it terminating?
+    System.out.println("\n\nDeployAllLibraries completed\n\n");
+    String split=L42£TrustedIO.testsSeparator;
+    String splitP=Pattern.quote(split);
+    List<String> res=List.of(tests.split(splitP));
     List<String> fRes=res.stream().filter(s->s.startsWith("#Fail")).toList();
     if(!fRes.isEmpty()) {System.out.println("Errors deploying libraries:");}
+    else {System.out.println("\n\nAll tests passed\n\n");}
     for(var s:fRes) {System.out.println(split);System.out.println(s);}
-    //Why it is not terminating here?
+    //Why it is not terminating here?    
     }  
   public static Stream<String> deployAllLibraries() throws IOException, URISyntaxException {
     return Stream.of(

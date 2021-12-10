@@ -6,16 +6,30 @@ Main=(
   v3=Base.resetDocs[key='A val=\""; key='This val=\"hello world"]
   Debug(v1.info().toFullS())
   {}:Test"v1"(actual=v1.info().toFullS()
-    expected=S"{method Void b()=(..)@{Nope}A={#typed{}}#typed{}}"
-    )
+    expected=S"""
+      |b()[###]method Void b()=(..)
+      |@{
+      |  Nope
+      |  }A={
+      |  }
+      """)
   Debug(v2.info().toFullS())
   {}:Test"v2"(actual=v2.info().toFullS()
-    expected=S"{method Void b()=(..)A={#typed{}}#typed{}}"
-    )
+    expected=S"""
+    |b()[###]method Void b()=(..)
+    |A={
+    |  }
+    """)
   Debug(v3.info().toFullS())
   {}:Test"v3"(actual=v3.info().toFullS()
-    expected=S"{method Void b()=(..)A={#typed{}}#typed{}@{hello world}}"
-    )
+    expected=S"""
+    |b()[###]method Void b()=(..)
+    |A={
+    |  }
+    |@{
+    |  hello world
+    |  }
+    """)
   )
 HW=Class:Trait.LiftS(S"Hello World")
 TestLiftS=(

@@ -176,13 +176,9 @@ public class Resources {
       String[] localPaths=Stream.concat(sysPaths, workingPaths)
         .map(path -> Paths.get(path).toAbsolutePath().toString())
         .toArray(String[]::new);
-      //System.out.println("######################");
-      //System.out.println(Arrays.asList(workingDir.list()));
-      //System.out.println(Arrays.asList(localPaths));
       Slave s=new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader()){
         @Override protected List<String> getJavaArgs(String libLocation){
           var res=super.getJavaArgs(libLocation);
-          //return pushL(res.get(0),pushL("-ea",popL(res)));
           res.add(0,"-ea");
           return res;
           }

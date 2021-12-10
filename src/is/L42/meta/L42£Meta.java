@@ -203,7 +203,9 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       out.writeObject(l);
       out.flush();
       byte[] arr = auxOut.toByteArray();
-      return Resources.encoder.encodeToString(arr).replace("\r\n","");
+      return Resources.encoder.encodeToString(arr)
+        .replace("\r","")
+        .replace("\n","");
       }
     catch(IOException e) { throw unreachable(); }//unreachable
     }

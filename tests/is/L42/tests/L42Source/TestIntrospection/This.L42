@@ -29,29 +29,30 @@ Full={class method S (Trait that)=
 TestFullS=(
   {}:Test"fullS"(actual=Full(Trait:{ method Void foo(S that)=void  method B bar() B={}})
   expected=S"""
-    |{
-    |  method Void foo(This1.S that)=(..)
-    |  method This.B bar()
-    |  B={#typed{}}
-    |  #norm{}
-    |  }
+    |  bar()[###]method B bar()
+    |  foo(that)[###]method Void foo(S that)=(..)
+    |  B={[###]}
     """)
   {}:Test"sum"(actual=Full(
     Trait:{ method Void foo(S that)=void  method B bar() B={}}
     +{B={method Void beer()}}
     )
   expected=S"""
-    |{
-    |  method Void foo(This1.S that)=(..)
-    |  method This.B bar()
-    |  B={method Void beer()#typed{}}
-    |  #norm{}
-    |  }
+    |  bar()[###]method B bar()
+    |  foo(that)[###]method Void foo(S that)=(..)
+    |  B={[###]beer()[###]method Void beer()[###]}
     """)
   {}:Test"renameDeep"(actual=Full(
     Trait({ B={method Any b() C={method Any c()}}})['B=>'A.C])
   expected=S"""
-    |{A={C={method Any b()C={method Any c()#typed{}}#typed{}}#typed{}}#norm{}}
+    |A={
+    |  C={
+    |    b()[###]method Any b()
+    |    C={
+    |      c()[###]method Any c()
+    |      }
+    |    }
+    |  }
     """)
 
   )

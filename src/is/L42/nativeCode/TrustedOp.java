@@ -16,6 +16,7 @@ import is.L42.flyweight.P;
 import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
+import is.L42.platformSpecific.javaTranslation.Resources;
     
 public enum TrustedOp {
   //booleans
@@ -467,6 +468,13 @@ public enum TrustedOp {
   
   
   //String
+  EncodeBase64("encodeBase64",Map.of(String,use(
+    "return Resources.encoder.encodeToString(%s.getBytes())"+
+    ".replace(\"\\r\",\"\").replace(\"\\n\",\"\");",
+    sigI(String)))),
+  DecodeBase64("decodeBase64",Map.of(String,use(
+      "return Resources.sanitizeJavaRes(new String(Resources.decoder.decode(%s)));",
+      sigI(String)))),
   StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
   EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
   StartsWithOff("startsWithOff",Map.of(String,use("return %s.startsWith(%s,%s);",sigI(Bool,String,Int)))),
