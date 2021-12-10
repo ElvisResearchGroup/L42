@@ -1,22 +1,22 @@
 reuse[AdamsTowel]
 
+Trim={class method S(S that)=
+  that.replace(S" " with=S"").replace(S.nl() with=S"")}
 Full={class method S (Library that)=
-  Trait(that).info().toFullS()
+  Trim(Trait(that).info().toFullS())
   }
 TestOrganizeWrongDollarStays=(
   res=Organize:{A={} $A={} Foo={$A a, class method This ($A a)}}
   Debug(Full(res))
   {}:Test"Public"(actual=Full(res)
-    expected=S"""
-      |$A={
-      |  }
-      |A={
-      |  }
+    expected=Trim(S"""
+      |$A={}
+      |A={}
       |Foo={
-      |  #apply(a)[###]class method This #apply($A a)
-      |  a()[###]read method $A a()
+      |  #apply(a) class method This #apply($A a)
+      |  a()read method $A a()
       |  }
-      """)
+      """))
   )
 TestOrganize0=(
   lib={
@@ -32,12 +32,11 @@ TestOrganize0=(
   {}:Test"annotatedAs"(n2.outerDoc().annotatedAs(nested=n1))
   res=pub:Organize:lib
   {}:Test"Public"(actual=Full(res)
-  expected=S"""
+  expected=Trim(S"""
     |@<private>A={
-    |  b()[###method<private>b()
+    |  b()method<private>b()
     |  }
-
-    """)
+    """))
   )
 TestOrganize1=(
   res=Public:Organize:{
@@ -45,11 +44,9 @@ TestOrganize1=(
     B={}
     }
   {}:Test"Public"(actual=Full(res)
-  expected=S"""
-    |@Public A={
-    |  b()[###]method<private>b()
-    |  }
-    """)
+  expected=Trim(S"""
+    |@Public A={b()method<private>b()}
+    """))
   )  
 TestOrganize=(
   res=Organize:{
@@ -58,13 +55,13 @@ TestOrganize=(
     $={method Void m3()}
     }
   {}:Test"$s"(actual=Full(res)
-  expected=S"""
-    |m3()[###]method Void m3()
+  expected=Trim(S"""
+    |m3()method Void m3()
     |A={
-    |  m1()[###]method Void m1()
-    |  m2()[###]method Void m2()
+    |  m1()method Void m1()
+    |  m2()method Void m2()
     |  }
-    """)
+    """))
   res2=Public:Organize:{
     @Public A={method Void m1()=void}
     A$={@Public method Void m2()=void}
@@ -73,12 +70,12 @@ TestOrganize=(
     @Public A$C={method Void m5()=void}
     }
   {}:Test"Public"(actual=Full(res2)
-  expected=S"""
+  expected=Trim(S"""
     |@Public A={
-    |  m2()[###]@Public method Void m2()=(..)
+    |  m2()@Public method Void m2()=(..)
     |  @Public C={
-    |    m5()[###]method Void m5()=(..)
+    |    m5()method Void m5()=(..)
     |    }
-  }
-    """)
+    |  }
+    """))
   )  

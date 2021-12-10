@@ -12,14 +12,14 @@ Main=(
       |  Nope
       |  }A={
       |  }
-      """)
+      """.trim())
   Debug(v2.info().toFullS())
   {}:Test"v2"(actual=v2.info().toFullS()
     expected=S"""
     |b()[###]method Void b()=(..)
     |A={
     |  }
-    """)
+    """.trim())
   Debug(v3.info().toFullS())
   {}:Test"v3"(actual=v3.info().toFullS()
     expected=S"""
@@ -29,7 +29,7 @@ Main=(
     |@{
     |  hello world
     |  }
-    """)
+    """.trim())
   )
 HW=Class:Trait.LiftS(S"Hello World")
 TestLiftS=(

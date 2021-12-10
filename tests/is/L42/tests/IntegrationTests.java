@@ -28,6 +28,7 @@ public class IntegrationTests extends TestL42Bridge {
       name("L42Source/AdamsTowel")
       );
     Stream<String> deployed=DeployAllLibraries.deployAllLibraries();
+    //Stream<String> deployed=Stream.of();
     Stream<String> integrationTests=Stream.of(      
       name("L42Source/TestAST"),
       name("L42Source/TestCacheCall"),
