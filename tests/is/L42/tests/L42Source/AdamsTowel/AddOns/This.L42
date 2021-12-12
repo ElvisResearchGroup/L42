@@ -38,18 +38,36 @@ TraitRangeMax=Trait:{
     if this<that that
     else if this<max this
     else  max
+  }  
+TraitAcc=Trait:{
+  Acc = {
+    var This1 val
+    class method mut This(This1 val)
+    mut method This1 (Void that)=\val
+    mut method Void add(This1 that)=\val(\val+that)
+    mut method Void times(This1 that)=\val(\val*that)
+    mut method Void divide(This1 that)=\val(\val/that)
+    mut method Void addOne()=\val(\val.#succ())
+    mut method Void addIf(Bool that)=if that \val(\val.#succ())
+    }
+  method This + (This that)
+  method This * (This that)
+  method This / (This that)
+  method This #succ()
+  method mut Acc acc()=\(val=this)
   }
-I$=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax:{
+
+I$=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax:TraitAcc:{
   [Math.Numeric]
   method Math.Long toLong()//Long=>Math.Long is renamed later, mentioning it we delay typing of This
   class method This (Math.Numeric that) = that.toI()
   }
-Math$Long=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax:{
+Math$Long=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax:TraitAcc:{
   [Math.Numeric]
   method Math.Long toLong()//Long=>Math.Long is renamed later, mentioning it we delay typing of This
   class method This (Math.Numeric that) = that.toLong()
   }
-Num$=Class$Relax:TraitMinMax:TraitRangeMax:{
+Num$=Class$Relax:TraitMinMax:TraitRangeMax:TraitAcc:{
   [Math.Numeric]
   method Math.Long toLong()=Long(num=this)//Long=>Math.Long is renamed later, mentioning it we delay typing of This
   class method This (Math.Numeric that) = that.toNum()
@@ -60,7 +78,7 @@ Num$=Class$Relax:TraitMinMax:TraitRangeMax:{
   method I toI()=I(num=this)
   method This toNum()=this
   }
-Double$=Class$Relax:TraitMinMax:TraitRangeMax:{
+Double$=Class$Relax:TraitMinMax:TraitRangeMax:TraitAcc:{
   [Math.Numeric]
   method Math.Long toLong()//Long=>Math.Long is renamed later, mentioning it we delay typing of This
   class method This (Math.Numeric that) = that.toDouble()

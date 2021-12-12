@@ -20,7 +20,7 @@ TestDataDefaults={
     {}:Test"pol toS2"(actual=pol.toS(), expected=S"Poligon(points=[(x=2, y=3)])")
     pol2=Poligon2()
     {}:Test"pol2 size"(pol2.points().size()==0I)
-    pol2.points(\points.withAlsoRight(\(x=2\,y=3\)))
+    pol2.points(\points.withAlso(right=\(x=2\,y=3\)))
     {}:Test"pol2 size"(pol2.points().size()==1I)
     pSum=PointSum(x=2\,y=40\)
     {}:Test"pSum"(pSum.s()==42Num)

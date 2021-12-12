@@ -16,6 +16,7 @@ import is.L42.flyweight.P;
 import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
+import is.L42.numbers.L42£BigRational;
 import is.L42.platformSpecific.javaTranslation.Resources;
     
 public enum TrustedOp {
@@ -596,11 +597,15 @@ public enum TrustedOp {
     )),
   Succ("succ",Map.of(
     Int,use("return %s +1;",sigI(Int)),
-    Long,use("return %s +1;",sigI(Long))
+    Long,use("return %s +1;",sigI(Long)),
+    Double,use("return %s +1;",sigI(Double)),
+    BigRational,use("return %s.sum(L42£BigRational.ONE);",sigI(BigRational))
     )),
   Pred("pred",Map.of(
     Int,use("return %s -1;",sigI(Int)),
-    Long,use("return %s -1;",sigI(Long))
+    Long,use("return %s -1;",sigI(Long)),
+    Double,use("return %s -1;",sigI(Double)),
+    BigRational,use("return %s.subtract(L42£BigRational.ONE);",sigI(BigRational))
     )),
   LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new L42£LazyMsg(%2$s);",sig(Class,Mutable,LazyMessage,Immutable,String)))),
   NonDeterministicErrorK("nonDeterministicErrorK",Map.of(NonDeterministicError,use("return new L42£NonDeterministicError(%2$s);",sig(Class,Mutable,NonDeterministicError,Immutable,String)))),

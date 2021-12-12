@@ -144,3 +144,31 @@ class method S up1(S char)={
   @Public mut method mut This #iterator() = this
   @Public read method I #startIndex()=0I
   }
+@Public method mut Chariterator split() = 
+  \(this, from=0I,to=this.size())
+@Public method mut Chariterator split(I that, I to) = (
+  if that<0I || that>to || to<=this.size() (
+    error X"Invalid split range from %that to %to; string size is %this.size()"
+    )
+  \(this, from=that,to=to)
+  )
+  
+@Public Chariterator = Data:{
+  S$ that
+  var I from
+  var I to
+  @Public read method Bool #if() = \from<\to
+  @Public mut method S$ () = (
+    \from(\from+1I)
+    this.#elem#default(0I)
+    )
+  @Public read method S$ #elem#imm(I that) = this.#elem#default(that)
+  @Public read method S$ #elem#default(I that) = \that.subString(this.from()-1I to=this.from())
+  @Public mut method Collection.IteratorCompose #hasElem(I that) = (
+    (from,to) = this
+    \from(from+1I)
+    \(from<to)
+    )
+  @Public mut method mut This #iterator() = this
+  @Public read method I #startIndex()=0I
+  }

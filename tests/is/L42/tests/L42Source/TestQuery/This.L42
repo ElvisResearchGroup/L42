@@ -104,12 +104,12 @@ AfterMain=(
   s=Info(Table.Foo).toFullS()
   Debug(s)
   {}:Test""(expected=S"""
-    |{[HasToS]
-    |[###]method Num x()=(..)
-    |[###]method Num y()=(..)
-    |[###]method S z()=(..)
+    |[HasToS]
+    |[###]x()[###]method Num x()=(..)
+    |[###]y()[###]method Num y()=(..)
+    |[###]z()[###]method S z()=(..)
     |[###]
-    """, actual=s)
+    """.trim(), actual=s)
   db=DB.#$of()
   Drop(db)()
   db.kill()

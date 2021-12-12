@@ -34,10 +34,10 @@ TraitEnumStep=Trait:{interface
     method !=(that)=!this.readEquality(that)
     method toS()=Introspection.Nested(This).outerName().toS()
     }
-  List={method This withAlsoRight(This1 that)}
+  List={method This withAlso(This1 right)}
   Vals={
     class method List prev()
-    class method List next()=this.prev().withAlsoRight(E())
+    class method List next()=this.prev().withAlso(right=E())
     }
   }
 TraitCacheVals=Trait({interface[HasToS]

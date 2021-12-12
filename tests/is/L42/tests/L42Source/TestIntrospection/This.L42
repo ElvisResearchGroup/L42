@@ -29,19 +29,19 @@ Full={class method S (Trait that)=
 TestFullS=(
   {}:Test"fullS"(actual=Full(Trait:{ method Void foo(S that)=void  method B bar() B={}})
   expected=S"""
-    |  bar()[###]method B bar()
-    |  foo(that)[###]method Void foo(S that)=(..)
-    |  B={[###]}
-    """)
+    |bar()[###]method B bar()
+    |foo(that)[###]method Void foo(S that)=(..)
+    |B={[###]}
+    """.trim())
   {}:Test"sum"(actual=Full(
     Trait:{ method Void foo(S that)=void  method B bar() B={}}
     +{B={method Void beer()}}
     )
   expected=S"""
-    |  bar()[###]method B bar()
-    |  foo(that)[###]method Void foo(S that)=(..)
-    |  B={[###]beer()[###]method Void beer()[###]}
-    """)
+    |bar()[###]method B bar()
+    |foo(that)[###]method Void foo(S that)=(..)
+    |B={[###]beer()[###]method Void beer()[###]}
+    """.trim())
   {}:Test"renameDeep"(actual=Full(
     Trait({ B={method Any b() C={method Any c()}}})['B=>'A.C])
   expected=S"""
@@ -52,8 +52,8 @@ TestFullS=(
     |      c()[###]method Any c()
     |      }
     |    }
-    |  }
-    """)
+    |  }[###]
+    """.trim())
 
   )
 

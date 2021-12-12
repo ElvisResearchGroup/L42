@@ -116,8 +116,8 @@ method This with(I that, Elem val)=(
   while i<size (res.add(this.readVal(i)) i:=i.#succ())
   res
   )
-method This withLeft(Elem that)=this.with(0\, val=that)
-method This withRight(Elem that)=this.with(\size.#pred(), val=that)
+method This with(Elem left)=this.with(0\, val=left)
+method This with(Elem right)=this.with(\size.#pred(), val=right)
 
 method This withAlso(I that, Elem val)=(
   size=this.size()
@@ -129,8 +129,8 @@ method This withAlso(I that, Elem val)=(
   res
   )
 
-method This withAlsoLeft(Elem that)=this.withAlso(0\, val=that)
-method This withAlsoRight(Elem that)=this.withAlso(\size, val=that)
+method This withAlso(Elem left)=this.withAlso(0\, val=left)
+method This withAlso(Elem right)=this.withAlso(\size, val=right)
 
 //skipping/filtering
 method This without(I that)=(

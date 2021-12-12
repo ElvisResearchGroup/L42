@@ -38,6 +38,15 @@ method This1.Long roundLong()=native{trusted:mathRoundLong} error void
 method This1.Double toDouble()=this
 method This1.I toI()=native{trusted:mathFloorInt} error void
 method This1.Long toLong()=native{trusted:mathFloorLong} error void
+
+@{Meta-programming friendly method.
+The successor operation. Simply adds 1}
+method This #succ()=native{trusted:succ} error void
+
+@{Meta-programming friendly method.
+The predecessor operation. Simply subtracts 1}
+method This #pred()=native{trusted:pred} error void
+
 #norm{nativeKind=Double
   typeDep=This,This1.I,This1.Long,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
   coherentDep=This,This1.I,This1.Long,This1.Num,This1.Bool,This1.S
