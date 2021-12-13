@@ -92,3 +92,38 @@ Main=(
   {}:Test"100 steps x"(posX1+100I==posX2)
   {}:Test"100 steps y"(posY1+100I==posY2)
   )
+//----------
+Fs = Load:{reuse[L42.is/FileSystem]}
+Process = Load:{reuse[L42.is/Process]}
+DeployDocs = (
+  //m4 -P Doc.c > Doc.xhtml
+  /*command for linux/mac*/
+  Process.Result res={
+    return Process.Real.#$of(\[S"m4";S"-P";S"Doc.c"]).start(input=S"")
+    catch Process.Fail f (
+      /*command for win*/
+      return Process.Real.#$of(\[S"../CommonHtmlDocumentation/m4.exe";S"-P";S"Doc.c"]).start(input=S"")  
+      )
+    }
+  Debug(S"err is %res.err()")
+  var content=res.out()
+  content:=content.replace(S"[OVERVIEW_HERE1]" with=Info(LoadGui).toFullS())
+  content:=content.replace(S"[OVERVIEW_HERE2]" with=Info(Gui).toFullS())
+  writer = GW.#$of(
+    token=Secret.#$of(),
+    message=S"GuiBuilder automatic release 42V"++Secret.version()
+    )
+  Debug(S"writing html")
+  writer.write(
+    on=Url"github.com/%Secret.repo()/%Secret.version()/GuiBuilder.xhtml",
+    contentBase64=content.encodeBase64() 
+    )
+  Debug(S"writing jar")
+  fs=Fs.Real.#$of()
+  ss=fs.readBase64(\"guiSupport.jar")
+  writer.write(
+    on=Url"github.com/%Secret.repo()/%Secret.version()/guiSupport.jar",
+    contentBase64=ss
+    )
+  Debug(S"writing done")
+  )

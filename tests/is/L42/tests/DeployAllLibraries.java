@@ -38,6 +38,9 @@ public class DeployAllLibraries {
     finally{Files.delete(sPath);}
     }
   public static void main(String[]a) throws IOException, URISyntaxException {
+    System.out.println("Do not accidentally run this;\n fix the version number in "+Main.l42IsRepoVersion+" comment this and run. Then uncomment this");
+    System.exit(0);
+    //"".replaceAll("\\n|\\r","");
     String tests;try{tests=deployAllLibraries().collect(Collectors.joining("\n"));}
     finally{Resources.clearResKeepReuse();}//did this make it terminating?
     System.out.println("\n\nDeployAllLibraries completed\n\n");
@@ -52,9 +55,8 @@ public class DeployAllLibraries {
     }  
   public static Stream<String> deployAllLibraries() throws IOException, URISyntaxException {
     return Stream.of(
-      nameSecret("L42Source/TestHttpRequest"),
+      nameSecret("L42Source/TestStandardDeployment"),
       nameSecret("L42Source/TestLoad"),
-      nameSecret("L42Source/TestFileSystem"),
       nameSecret("L42Source/TestJavaServer"),
       nameSecret("L42Source/TestRawQuery"),
       nameSecret("L42Source/TestQuery"),
@@ -63,8 +65,7 @@ public class DeployAllLibraries {
       nameSecret("L42Source/TestUnit"),
       nameSecret("L42Source/TestVoxelMap"),
       nameSecret("L42Source/DeployJSon"),
-      nameSecret("L42Source/TestTime"),
-      nameSecret("L42Source/TestProcess")
+      nameSecret("L42Source/TestTime")
       );
     }
   }

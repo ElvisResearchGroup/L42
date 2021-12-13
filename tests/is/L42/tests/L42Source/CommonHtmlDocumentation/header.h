@@ -10,7 +10,7 @@ m4_include(`../CommonHtmlDocumentation/macro.h')m4_dnl
     <link rel="stylesheet" type="text/css" href="https://l42.is/css/style.css" media="all"/>
     <script src="https://l42.is/js/ace.js"></script>
     <script src="https://l42.is/js/utils.js"></script>
-    <link rel="shortcut icon" href="css/favicon.ico"/>
+    <link rel="shortcut icon" href="https://l42.is/css/favicon.ico"/>
     <title>42 - Metaprogramming as default</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script src="https://www.googletagmanager.com/gtag/js?id=G-M0E4M0XH2Z"></script>

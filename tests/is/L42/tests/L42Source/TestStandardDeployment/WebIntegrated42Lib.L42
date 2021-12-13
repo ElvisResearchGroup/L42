@@ -1,0 +1,99 @@
+reuse [AdamsTowel]
+
+WebIntegrated42Lib = {
+  GW = Load:This2.GitWriterDeployed.code()
+  Deploy = Load:This2.DeployLibDeployed.code()
+  Process = Load:This2.ProcessLibDeployed.code()
+  Fs = Load:This2.FsLibDeployed.code()  
+  DeployGit = Deploy.with(writer=GW)
+  
+  read method S repo::0()
+  read method S version::0()
+  read method S name::0()
+  read method S token::0()
+  class method mut This #$of::0(S repo, S version, S name, S token)
+  
+  read method S repo()=this.repo::0()
+  read method S version()=this.version::0()
+  read method S name()=this.name::0()
+  read method S token()=this.token::0()
+  
+  class method mut This #$of(S repo, S version, S name, S token) =
+    This.#$of::0(repo=repo,version=version,name=name,token=token)
+  mut method mut GW gw()=(
+    (version,name,token) = this
+    GW.#$of(token=token, message=name++S" automatic release 42V"++version)
+    )
+  mut method mut Fs fs()=Fs.Real.#$of()
+  mut method Void deployTowel(Trait that)[_] = (
+    (repo,version,name) = this
+    DeployGit.towel(
+      that
+      on=Url"github.com/%repo/%version/%(name).L42"
+      writer=this.gw()
+      )
+    )
+  mut method Void deployModule(Trait that,Name nestedName)[_] = (
+    (repo,version,name) = this
+    DeployGit.module(that
+      name=nestedName
+      on=Url"github.com/%repo/%version/%(name).L42",
+      writer=this.gw()
+      )
+    )  
+  mut method mut DocsBuilder deployDocs(S that)[_] = (
+    (repo,version,name,token) = this
+    //m4 -P Doc.c > Doc.xhtml
+    /*command for linux/mac*/
+    Process.Result res={
+      return Process.Real.#$of(\[S"m4";S"-P";that]).start(input=S"")
+      catch Process.Fail f (
+        /*command for win*/
+        return Process.Real.#$of(\[S"../CommonHtmlDocumentation/m4.exe";S"-P";that]).start(input=S"")  
+        )
+      }
+    X[res.err()==S"" msg=res.err()]
+    DocsBuilder(this,content=res.out())
+    )
+  DocsBuilder = Data:{
+    mut This1 that
+    var S content
+    mut method mut This (S key, class Any overview)=(
+      \content(\content.replace(S"[%key]" with=Info(overview).toFullS()))
+      this
+      )
+    mut method Void ~()[_] = (
+      (repo,version,name) = \that
+      writer = \#that.gw()
+      writer.write(
+        on=Url"github.com/%repo/%version/%(name).xhtml",
+        contentBase64=this.content().encodeBase64() 
+        )
+      )
+    mut method mut This (Url localName, S destination)[_] = (
+      (repo,version,name) = \that
+      fs = \#that.fs()
+      writer = \#that.gw()
+      writer.write(
+        on=Url"github.com/%repo/%version/%destination",
+        contentBase64=fs.readBase64(localName)
+        )    
+      Debug(S"writing done for %destination")
+      this
+      )
+    }
+  }
+  /*
+  Example of use
+  Secret = {...}
+  DeplyTaks = (
+    w = WebIntegrated42Lib.#$of(repo=Secret.repo(),version=Secret.version(),name='FileSystem,
+      token=Secret.token())
+    w.deployTowel(trait)
+    w.deployModule(trait)
+    ~w.deployDocs(name)
+      (key=.. overview=..)
+      (localName=... destination=...)
+      (key=.. overview=..)
+    )
+    */

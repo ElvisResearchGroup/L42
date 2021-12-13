@@ -139,7 +139,7 @@ FileSystem$Real = Public:{
         try(var in=uri.toURL().openStream()){ 
           var res = new String(in.readAllBytes());
           res = java.util.Base64.getMimeEncoder().encodeToString(res.getBytes());
-          return res;
+          return res.replaceAll("\\n|\\r","");//.replace("\n","").replace("\r","");
           }
         }
       catch(java.io.FileNotFoundException fnf){

@@ -19,11 +19,11 @@
   @Public mut method Bool (Void that)=this.pass()
   @Public mut method Void add(Bool that)[Void]=if that (this.pass(!that) Break())
   }
-@Public Count={
+/*@Public Count={
   var I count
   class method mut This(I count)
   @Public class method mut This()=This(count=0I)
   @Public mut method I (Void that)=this.count()
   @Public mut method Void add(Bool that)[Void]=if that (this.count(\count+1\))
-  }
+  }*/
 @AbstractTowel{match}

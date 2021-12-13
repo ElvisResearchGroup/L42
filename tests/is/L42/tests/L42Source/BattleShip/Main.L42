@@ -3,7 +3,7 @@ Board = Data:{[HasToS]
   Ships ships
   @Cache.Now class method Void invariant(Ships ships) = (
     totShips=17I//5I+4I+3I+3I+2I
-    countNone=Match.Count()(for s in ships \add(s==Ship.None()))
+    countNone=0I.acc()(for s in ships \addIf(s==Ship.None()))
     X[countNone+totShips==100I]
     for s in Ship.Vals() (if s!=Ship.None() (
       imm coords=Coords()(for si in ships, c in ships.coords(), if si==s \add(c))
@@ -30,8 +30,9 @@ Board = Data:{[HasToS]
   method Answer fireAnswer(Ships.Coord coord, Shots shots) = {
     ship = this.ships().val(coord)
     if ship==Ship.None() return Answer.Miss()
-    hits = Match.Count()(
-      for s in this.ships().asList(), h in shots.asList() \add(s==ship && h!=S"")
+    hits = 0I.acc()(
+      for s in this.ships().asList(), h in shots.asList()
+        \addIf(s==ship && h!=S"")
       )
     if hits+1I!=ship.size() return Answer.Hit()
     return ship.answer()

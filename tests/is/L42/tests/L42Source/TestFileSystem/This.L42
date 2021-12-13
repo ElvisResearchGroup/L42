@@ -1,21 +1,6 @@
 reuse [AdamsTowel]
 
-Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
-//class method S #$of()=S"ghp_..."
-
-GW = Load:{reuse[L42.is/GitWriter]}
-LoadDeploy = Load:{reuse[L42.is/Deploy]}
-DeployGit = LoadDeploy.with(writer=GW)
-FSLib = Trait:{...}
-TaskDeployFS = DeployGit.module(FSLib['FileSystem$Real=>'FileSystem.Real]
-  name='FileSystem
-  on=Url"github.com/%Secret.repo()/%Secret.version()/FileSystem.L42",
-  writer=GW.#$of(
-    token=Secret.#$of(),
-    message=S"File System automatic release 42V"++Secret.version()
-  ))
-
-Fs = Load:{reuse[#$L42.is/FileSystem]}
+Fs = Load:{reuse[L42.is/FileSystem]}
 Main = (
   f = Fs.Real.#$of()
   //S s = f.read(Url"file:///C:.. works.. but is not a portable test..L42Source/TestFileSystem/ExampleInputFile.txt")
@@ -111,13 +96,3 @@ SaferMain = (
   ReadWrite(f=fs)
   {}:Test"doneFsGuide"(Bool.true())
   )
-
-/*
-ExampleToDeploy=Trait:{reuse [AdamsTowel] method S foo()=S"hi"}
-Main2 = (
-  Debug(S"gggg")
-  f=Fs.Real.#$of()
-  f.write(fileName=S"c/d/testToSTowel.L42" content=S"hi")
-  Fs.Deploy.towel(ExampleToDeploy.code() on=\"file://a/b/testToSTowel.L42")(f)
-  )
-*/

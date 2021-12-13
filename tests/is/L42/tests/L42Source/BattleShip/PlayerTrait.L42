@@ -75,7 +75,7 @@ mut method Ships.Coord fire()
   )
 
 read method Bool win(Shots that) = 
-  Match.Count()(for s in that \add(s==S"" || s==S"*"))+17I==100I
+  17I.acc()(for s in that \addIf(s==S"" || s==S"*"))==100I
 @Public mut method Bool round(mut OtherPlayer other) = (
   X[this.myRound(); !this.win(this.myShots()); !this.win(this.otherShots())]
   coord = this.fire()

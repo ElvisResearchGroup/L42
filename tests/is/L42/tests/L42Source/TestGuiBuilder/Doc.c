@@ -30,9 +30,15 @@ Process = Load:{reuse[L42.is/Process]}
 CCode
 
 WTitle(Overview under AdamsTowel)
-OBCode
-[OVERVIEW_HERE]
+OFoldedCode
+[OVERVIEW_HERE1]
 CCode
+Exmaple instantiation
+OFoldedCode
+[OVERVIEW_HERE2]
+CCode
+
+
 m4_include(`../CommonHtmlDocumentation/footer.h')
 
 WComm build using
