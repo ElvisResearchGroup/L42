@@ -10,7 +10,7 @@ Secret = Trait({...}):{class method S name()='VoxelMap}
 Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
 TaskDeployJavaServer = Web.#$of().deployModule(Module(), nestedName='VoxelMap)
   
-VMT = Load : {reuse [#$L42.is/VoxelMapTrait] }
+VMT = Load : {reuse [#$L42.is/VoxelMap] }
 VM = Class: VMT : {
   class method I maxX()=50I
   class method I maxY()=100I

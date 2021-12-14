@@ -14,22 +14,6 @@ GitWriterDeployed = System.extractModule( //ready for load
     hide='This.getSha(user,repository,path,branch);
     ]
 
-/*
-With the right secret, the code above would test GW, but it is very slow,
-so much that it is not worth keeping this test
-UseGW = (
-  GW.#$of(
-    token=Secret.#$of()
-    message=S"now from 42 string repr"
-    )(
-    user=S"example42gdrive"
-    repository=S"Example1"
-    path=S"bar2/foo.txt"
-    contentBase64=S"AbbbbA=="
-    )
-  )
-*/
-
 //Module 3
 DeployLib = Trait:{...}
 DeployLibDeployed = System.extractModule( //ready for load
@@ -53,46 +37,64 @@ WebIntegrated42LibDeployed = System.extractModule(
   Class.Relax:WebIntegrated42Lib,
   name='WebIntegrated42Lib)
 
-//now we can actually deploy on git
-
-
-GW = Load:GitWriterDeployed.code()
-Deploy = Load:DeployLibDeployed.code()
-DeployGit = Deploy.with(writer=GW)
-Process = Load:ProcessLibDeployed.code()
+//** now we can actually deploy on git **
 
 //THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
 //class method S #$of()=S"ghp_..."
 Secret = Trait({...}):Load:WebIntegrated42LibDeployed.code()
 
 //Module 0  -- Towel AdamsTowel --> AdamsTowel
+AdamTrait = Trait:{ reuse [AdamsTowel] }
 WebAdams = Class:Secret:{class method S name()='AdamsTowel}
-TaskDeployAdams = WebAdams.#$of().deployTowel(Trait({reuse [AdamsTowel]}))
+TaskDeployAdams = WebAdams.#$of().deployTowel(AdamTrait())
+TaskDeployAdamsDocs = ~WebAdams.#$of().deployDocs(\"DocAdams.c")
+  .overview(trait=AdamTrait() key=S"OVERVIEW_HERE")
 
 //Module 1
 WebHttpRequest = Class:Secret:{class method S name()='HttpRequest}
 TaskDeployHttpRequest = WebHttpRequest.#$of().deployTowel(HttpRequestDeployed())
+Http = Load:HttpRequestDeployed.code()
+TaskDeployHttpDocs = ~WebHttpRequest.#$of().deployDocs(\"DocHttp.c")
+  .overview(Http key=S"OVERVIEW_HERE")
+
 
 //Module 2
 WebGitWriter = Class:Secret:{class method S name()='GitWriter}
-TaskDeployGitWriterDeployed = WebGitWriter.#$of().deployTowel(GitWriterDeployed())
+TaskDeployGW = WebGitWriter.#$of().deployTowel(GitWriterDeployed())
+GW = Load:GitWriterDeployed.code()
+TaskDeployGWDocs = ~WebGitWriter.#$of().deployDocs(\"DocGitWriter.c")
+  .overview(GW key=S"OVERVIEW_HERE")
 
 //Module 3
-WebDeployLib = Class:Secret:{class method S name()='Deploy}
-TaskDeployDeployLib = WebDeployLib.#$of().deployTowel(DeployLibDeployed())
+WebDeploy = Class:Secret:{class method S name()='Deploy}
+TaskDeployDeployLib = WebDeploy.#$of().deployTowel(DeployLibDeployed())
+Deploy = Load:DeployLibDeployed.code()
+DeployGit = Deploy.with(writer=GW)
+TaskDeployDeployDocs = ~WebDeploy.#$of().deployDocs(\"DocDeploy.c")
+  .overview(Deploy key=S"OVERVIEW_HERE1")
+  .overview(DeployGit key=S"OVERVIEW_HERE2")
+
 
 //Module 4
-WebDeployProcess = Class:Secret:{class method S name()='Process}
-TaskProcessDeployLib = WebDeployProcess.#$of().deployTowel(ProcessLibDeployed())
-TaskProcessDeployDocs = ~WebDeployProcess.#$of().deployDocs(\"DocProcess.c")
+WebProcess = Class:Secret:{class method S name()='Process}
+TaskProcessDeployLib = WebProcess.#$of().deployTowel(ProcessLibDeployed())
+Process = Load:ProcessLibDeployed.code()
+TaskProcessDeployDocs = ~WebProcess.#$of().deployDocs(\"DocProcess.c")
   .overview(Process key=S"OVERVIEW_HERE")
 
 //Module 5
-WebFsDeploy = Class:Secret:{class method S name()='FileSystem}
-TaskFsDeployLib = WebFsDeploy.#$of().deployTowel(FsLibDeployed())
+WebFs = Class:Secret:{class method S name()='FileSystem}
+TaskDeployFs = WebFs.#$of().deployTowel(FsLibDeployed())
+Fs=Load:FsLibDeployed.code()
+TaskDeployFsDocs = ~WebFs.#$of().deployDocs(\"DocFs.c")
+  .overview(Fs key=S"OVERVIEW_HERE")
+
 
 //Module 6
-WebWebDeploy = Class:Secret:{class method S name()='WebIntegrated42Lib}
-Task6 = WebWebDeploy.#$of().deployTowel(WebIntegrated42LibDeployed())
+WebWeb = Class:Secret:{class method S name()='WebIntegrated42Lib}
+TaskDeployWeb = WebWeb.#$of().deployTowel(WebIntegrated42LibDeployed())
+Web = Load:WebIntegrated42LibDeployed.code()
+TaskDeployWebDocs = ~WebWeb.#$of().deployDocs(\"DocWeb.c")
+  .overview(Web key=S"OVERVIEW_HERE")
 
 AllDone = {}:Test"All done reached"(Bool.true())

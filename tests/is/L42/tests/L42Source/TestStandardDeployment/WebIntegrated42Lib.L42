@@ -57,6 +57,10 @@ WebIntegrated42Lib = {
       \content(\content.replace(S"[%key]" with=Info(that).toFullS()))
       this
       )
+    mut method mut This overview(Trait trait, S key)=(
+      \content(\content.replace(S"[%key]" with=trait.info().toFullS()))
+      this
+      )
     mut method Void ~()[_] = (
       (repo,version,name) = This1
       writer = \#that.gw()
