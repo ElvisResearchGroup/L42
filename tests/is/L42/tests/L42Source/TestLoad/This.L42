@@ -17,7 +17,7 @@ Deployed1 = DeployGit.module(Base()
   name='Main
   on=Url"github.com/%Secret.repo()/%Secret.version()/MiniLib.L42",
   writer=GW.#$of(
-    token=Secret.#$of(),
+    token=Secret.#$token(),
     message=S"Test library MiniLib automatic release 42 "++Secret.version()
   ))  
 
@@ -38,4 +38,17 @@ Test1=(
     expected=S"hello L42"
     actual=Deployed3.B.A.hello(S"L42")
     )
+  )
+  
+ToJar=Trait:{reuse [AdamsTowel]
+  Point = Data:{Num x, Num y, Any note}
+  A={class method Void foo()=(
+    p = Point(x=3Num,y=5Num, note=Name"Info.info()")
+    Debug(S"hello WORLD ToJar %p")
+    )}
+  class method Void #$main()=A.foo()
+  }
+DeployJar = DeployGit.jar(ToJar()
+  on=Url"github.com/%Secret.repo()/%Secret.version()/ExampleJar.L42"
+  writer=GW.#$of(token=Secret.#$token(),message=S"Example Jar deploy")
   )

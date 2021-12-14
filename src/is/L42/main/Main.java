@@ -82,6 +82,8 @@ public class Main {
       msg=msg.substring(nva.length());
       int nl=msg.lastIndexOf("\\n");
       if(nl!=-1){msg=msg.substring(nl+2);}
+      int fileI=msg.lastIndexOf("file://");
+      if(fileI!=-1) {msg=msg.substring(0,fileI);}
       if(msg.length()>40){msg=msg.substring(msg.length()-40);}
       return pre+nva+msg;
       }
@@ -156,5 +158,4 @@ public class Main {
   public static final String l42IsRepoPath = "Language42/is"; 
   public static String l42IsRepoVersion = "d018";//this number should always be the last deployed version
   public static final String testingRepoVersion="testing";
-
   }

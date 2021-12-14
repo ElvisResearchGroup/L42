@@ -18,7 +18,7 @@ TaskDeploySifoLib = DeployGit.module(Base()
   name='Sifo
   on=Url"github.com/%Secret.repo()/%Secret.version()/Sifo.L42",
   writer=GW.#$of(
-    token=Secret.#$of(),
+    token=Secret.#$token(),
     message=S"Sifo automatic release 42V "++Secret.version()
   ))
 

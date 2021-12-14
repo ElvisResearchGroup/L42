@@ -5,25 +5,23 @@ Module=Trait:{reuse [AdamsTowel]
     class method Library (class Any javaServer)[_]=GuiBuilder['J=>javaServer].code()
     }
   }
-Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
+//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
 //class method S #$of()=S"ghp_..."
-GW = Load:{reuse[L42.is/GitWriter]}
-LoadDeploy = Load:{reuse[L42.is/Deploy]}
-DeployGit = LoadDeploy.with(writer=GW)
+Secret = Trait({...}):{class method S name()='GuiBuilder}
+Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
+TaskDeployGuiBuilder = Web.#$of().deployModule(Module(),nestedName='Top)
 
-TaskDeployGuiBuilder=DeployGit.module(Module()
-  name='Top
-  on=Url"github.com/%Secret.repo()/%Secret.version()/GuiBuilder.L42",
-  writer=GW.#$of(
-    token=Secret.#$of(),
-    message=S"Gui Builder automatic release 42V"++Secret.version()
-  ))
-//-------------
 LoadJ=Load:{reuse[L42.is/JavaServer]}
 GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
+
 LoadGui=Load:{reuse[#$L42.is/GuiBuilder]}
 Gui=LoadGui(javaServer=GuiJ)
 
+DeployGuiDocs = ~Web.#$of().deployDocs(S"Doc.c")
+  .overview(LoadGui key=S"OVERVIEW_HERE1")
+  .overview(Gui key=S"OVERVIEW_HERE2")
+  .supportFile(localName=\"guiSupport.jar" destination=\"guiSupport.jar")
+  
 Google=Data:{
   var I posX
   var I posY
@@ -91,39 +89,4 @@ Main=(
   Debug(S" %posX1 %posX2, %posY1 %posY2")
   {}:Test"100 steps x"(posX1+100I==posX2)
   {}:Test"100 steps y"(posY1+100I==posY2)
-  )
-//----------
-Fs = Load:{reuse[L42.is/FileSystem]}
-Process = Load:{reuse[L42.is/Process]}
-DeployDocs = (
-  //m4 -P Doc.c > Doc.xhtml
-  /*command for linux/mac*/
-  Process.Result res={
-    return Process.Real.#$of(\[S"m4";S"-P";S"Doc.c"]).start(input=S"")
-    catch Process.Fail f (
-      /*command for win*/
-      return Process.Real.#$of(\[S"../CommonHtmlDocumentation/m4.exe";S"-P";S"Doc.c"]).start(input=S"")  
-      )
-    }
-  Debug(S"err is %res.err()")
-  var content=res.out()
-  content:=content.replace(S"[OVERVIEW_HERE1]" with=Info(LoadGui).toFullS())
-  content:=content.replace(S"[OVERVIEW_HERE2]" with=Info(Gui).toFullS())
-  writer = GW.#$of(
-    token=Secret.#$of(),
-    message=S"GuiBuilder automatic release 42V"++Secret.version()
-    )
-  Debug(S"writing html")
-  writer.write(
-    on=Url"github.com/%Secret.repo()/%Secret.version()/GuiBuilder.xhtml",
-    contentBase64=content.encodeBase64() 
-    )
-  Debug(S"writing jar")
-  fs=Fs.Real.#$of()
-  ss=fs.readBase64(\"guiSupport.jar")
-  writer.write(
-    on=Url"github.com/%Secret.repo()/%Secret.version()/guiSupport.jar",
-    contentBase64=ss
-    )
-  Debug(S"writing done")
   )

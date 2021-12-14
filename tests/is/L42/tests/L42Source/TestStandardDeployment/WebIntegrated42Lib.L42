@@ -7,26 +7,21 @@ WebIntegrated42Lib = {
   Fs = Load:This2.FsLibDeployed.code()  
   DeployGit = Deploy.with(writer=GW)
   
-  read method S repo::0()
-  read method S version::0()
-  read method S name::0()
-  read method S token::0()
-  class method mut This #$of::0(S repo, S version, S name, S token)
+  class method mut This #$of() = This.#$of::0()
+  class method mut This #$of::0()
+  class method S repo()
+  class method S version()
+  class method S name()
+  class method S #$token()
+ 
   
-  read method S repo()=this.repo::0()
-  read method S version()=this.version::0()
-  read method S name()=this.name::0()
-  read method S token()=this.token::0()
-  
-  class method mut This #$of(S repo, S version, S name, S token) =
-    This.#$of::0(repo=repo,version=version,name=name,token=token)
-  mut method mut GW gw()=(
-    (version,name,token) = this
-    GW.#$of(token=token, message=name++S" automatic release 42V"++version)
+  mut method mut GW gw() = (
+    (version,name) = This
+    GW.#$of(token=This.#$token(), message=name++S" automatic release 42V"++version)
     )
-  mut method mut Fs fs()=Fs.Real.#$of()
+  mut method mut Fs fs() = Fs.Real.#$of()
   mut method Void deployTowel(Trait that)[_] = (
-    (repo,version,name) = this
+    (repo,version,name) = This
     DeployGit.towel(
       that
       on=Url"github.com/%repo/%version/%(name).L42"
@@ -34,7 +29,7 @@ WebIntegrated42Lib = {
       )
     )
   mut method Void deployModule(Trait that,Name nestedName)[_] = (
-    (repo,version,name) = this
+    (repo,version,name) = This
     DeployGit.module(that
       name=nestedName
       on=Url"github.com/%repo/%version/%(name).L42",
@@ -42,7 +37,7 @@ WebIntegrated42Lib = {
       )
     )  
   mut method mut DocsBuilder deployDocs(S that)[_] = (
-    (repo,version,name,token) = this
+    (repo,version,name) = This
     //m4 -P Doc.c > Doc.xhtml
     /*command for linux/mac*/
     Process.Result res={
@@ -58,42 +53,41 @@ WebIntegrated42Lib = {
   DocsBuilder = Data:{
     mut This1 that
     var S content
-    mut method mut This (S key, class Any overview)=(
-      \content(\content.replace(S"[%key]" with=Info(overview).toFullS()))
+    mut method mut This overview(class Any that, S key)=(
+      \content(\content.replace(S"[%key]" with=Info(that).toFullS()))
       this
       )
     mut method Void ~()[_] = (
-      (repo,version,name) = \that
+      (repo,version,name) = This1
       writer = \#that.gw()
       writer.write(
         on=Url"github.com/%repo/%version/%(name).xhtml",
         contentBase64=this.content().encodeBase64() 
         )
       )
-    mut method mut This (Url localName, S destination)[_] = (
-      (repo,version,name) = \that
+    mut method mut This supportFile(Url localName, S destination)[_] = (
+      (repo,version,name) = This1
       fs = \#that.fs()
       writer = \#that.gw()
       writer.write(
         on=Url"github.com/%repo/%version/%destination",
         contentBase64=fs.readBase64(localName)
         )    
-      Debug(S"writing done for %destination")
+      Debug(S"writing done for %destination "++Url"github.com/%repo/%version/%destination".toS())
       this
       )
     }
   }
   /*
   Example of use
-  Secret = {...}
-  DeplyTaks = (
-    w = WebIntegrated42Lib.#$of(repo=Secret.repo(),version=Secret.version(),name='FileSystem,
-      token=Secret.token())
-    w.deployTowel(trait)
-    w.deployModule(trait)
-    ~w.deployDocs(name)
-      (key=.. overview=..)
-      (localName=... destination=...)
-      (key=.. overview=..)
-    )
-    */
+  
+  Secret = Trait({...}):{class method S name()='LibName}
+  Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
+  TaskDeployLibName = Web.#$of().deployModule(Lib(), nestedName='Top)
+  A=Load:{reuse[#$L42.is/LibName]}
+  B=A(..)
+  TaskDeployJavaServerDocs = ~Web.#$of()
+   .deployDocs(\"Doc.c")
+   .overview(A, key=S"OVERVIEW_HERE1")
+   .overivew(B, key=S"OVERVIEW_HERE2")
+  */

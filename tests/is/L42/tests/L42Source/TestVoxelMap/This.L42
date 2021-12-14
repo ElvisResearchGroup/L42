@@ -3,19 +3,12 @@ reuse [AdamsTowel]
 Module = Trait : {reuse [AdamsTowel]
   VoxelMap =Organize : Trait({...})['$.Margin=>'This]
   }
-Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
+  
+//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
 //class method S #$of()=S"ghp_..."
-
-GW = Load:{reuse[L42.is/GitWriter]}
-LoadDeploy = Load:{reuse[L42.is/Deploy]}
-DeployGit = LoadDeploy.with(writer=GW)
-TaskDeployVoxelMap = DeployGit.module(Module()
-  name='VoxelMap
-  on=Url"github.com/%Secret.repo()/%Secret.version()/VoxelMapTrait.L42",
-  writer=GW.#$of(
-    token=Secret.#$of(),
-    message=S"Voxel Map automatic release 42V "++Secret.version()
-  ))
+Secret = Trait({...}):{class method S name()='VoxelMap}
+Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
+TaskDeployJavaServer = Web.#$of().deployModule(Module(), nestedName='VoxelMap)
   
 VMT = Load : {reuse [#$L42.is/VoxelMapTrait] }
 VM = Class: VMT : {
@@ -41,7 +34,15 @@ Terra = Class : VM.Physics : {
       mut method Void ping()=void 
       }
     }
-  }  
+  }
+
+TaskDeployJavaServerDocs = ~Web.#$of()
+   .deployDocs(\"Doc.c")
+   .overview(VMT key=S"OVERVIEW_HERE1")
+   .overview(VM key=S"OVERVIEW_HERE2")
+   .overview(Map key=S"OVERVIEW_HERE3")
+   .overview(Terra key=S"OVERVIEW_HERE4")
+
 Try = (
   capsule Terra.Entity.Cells cs=Terra.Entity.Cells()
   mut Terra.Entity.Cells.Box csBox = cs.#box()

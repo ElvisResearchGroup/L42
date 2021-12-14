@@ -1,8 +1,5 @@
 reuse [AdamsTowel]
 
-Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
-//class method S #$of()=S"ghp_..."
-
 //Module 1
 HttpRequest = Trait:{...}
 HttpRequestDeployed = System.extractModule(
@@ -53,9 +50,8 @@ FsLibDeployed = System.extractModule( //ready for load
 
 WebIntegrated42Lib = Trait({...})
 WebIntegrated42LibDeployed = System.extractModule(
-  Class:WebIntegrated42Lib,
+  Class.Relax:WebIntegrated42Lib,
   name='WebIntegrated42Lib)
-Web = Load:WebIntegrated42LibDeployed.code()
 
 //now we can actually deploy on git
 
@@ -65,84 +61,38 @@ Deploy = Load:DeployLibDeployed.code()
 DeployGit = Deploy.with(writer=GW)
 Process = Load:ProcessLibDeployed.code()
 
+//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
+//class method S #$of()=S"ghp_..."
+Secret = Trait({...}):Load:WebIntegrated42LibDeployed.code()
+
 //Module 0  -- Towel AdamsTowel --> AdamsTowel
-TaskDeployAdams = (
-    w = Web.#$of(
-      repo=Secret.repo(),version=Secret.version(),
-      name='AdamsTowel,
-      token=Secret.#$of())
-    w.deployTowel(Trait({reuse [AdamsTowel]}))
-    //~w.deployDocs(name)
-    //  (key=.. overview=..)
-    //  (localName=... destination=...)
-    //  (key=.. overview=..)
-    )
+WebAdams = Class:Secret:{class method S name()='AdamsTowel}
+TaskDeployAdams = WebAdams.#$of().deployTowel(Trait({reuse [AdamsTowel]}))
 
 //Module 1
-TaskDeployHttpRequest = (
-    w = Web.#$of(
-      repo=Secret.repo(),version=Secret.version(),
-      name='HttpRequest,
-      token=Secret.#$of())
-    w.deployTowel(HttpRequestDeployed())
-    )
+WebHttpRequest = Class:Secret:{class method S name()='HttpRequest}
+TaskDeployHttpRequest = WebHttpRequest.#$of().deployTowel(HttpRequestDeployed())
+
 //Module 2
-TaskDeployGitWriterDeployed = (
-    w = Web.#$of(
-      repo=Secret.repo(),version=Secret.version(),
-      name='GitWriter,
-      token=Secret.#$of())
-    w.deployTowel(GitWriterDeployed())
-    )
+WebGitWriter = Class:Secret:{class method S name()='GitWriter}
+TaskDeployGitWriterDeployed = WebGitWriter.#$of().deployTowel(GitWriterDeployed())
+
 //Module 3
-TaskDeployDeployLib = (
-    w = Web.#$of(
-      repo=Secret.repo(),version=Secret.version(),
-      name='Deploy,
-      token=Secret.#$of())
-    w.deployTowel(DeployLibDeployed())
-    )
+WebDeployLib = Class:Secret:{class method S name()='Deploy}
+TaskDeployDeployLib = WebDeployLib.#$of().deployTowel(DeployLibDeployed())
+
 //Module 4
-TaskProcessDeployLib = (
-    w = Web.#$of(
-      repo=Secret.repo(),version=Secret.version(),
-      name='Process,
-      token=Secret.#$of())
-    w.deployTowel(ProcessLibDeployed())
-    ~w.deployDocs(\"DocProcess.c")(
-       key=S"OVERVIEW_HERE" overview=Process)
-    )
+WebDeployProcess = Class:Secret:{class method S name()='Process}
+TaskProcessDeployLib = WebDeployProcess.#$of().deployTowel(ProcessLibDeployed())
+TaskProcessDeployDocs = ~WebDeployProcess.#$of().deployDocs(\"DocProcess.c")
+  .overview(Process key=S"OVERVIEW_HERE")
+
 //Module 5
-TaskFsDeployLib = (
-    w = Web.#$of(
-      repo=Secret.repo(),version=Secret.version(),
-      name='FileSystem,
-      token=Secret.#$of())
-    w.deployTowel(FsLibDeployed())
-    )
+WebFsDeploy = Class:Secret:{class method S name()='FileSystem}
+TaskFsDeployLib = WebFsDeploy.#$of().deployTowel(FsLibDeployed())
+
 //Module 6
-TaskWebIntegrated42LibDeployLib = (
-    w = Web.#$of(
-      repo=Secret.repo(),version=Secret.version(),
-      name='WebIntegrated42Lib,
-      token=Secret.#$of())
-    w.deployTowel(WebIntegrated42LibDeployed())
-    )
-//---------------
+WebWebDeploy = Class:Secret:{class method S name()='WebIntegrated42Lib}
+Task6 = WebWebDeploy.#$of().deployTowel(WebIntegrated42LibDeployed())
 
-ToJar=Trait:{reuse [AdamsTowel]
-  Point = Data:{Num x, Num y, Any note}
-  A={class method Void foo()=(
-    p = Point(x=3Num,y=5Num, note=Name"Info.info()")
-    Debug(S"hello WORLD ToJar %p")
-    )}
-  class method Void #$main()=A.foo()
-  }
-
-
-DeployJar = DeployGit.jar(ToJar()
-  on=Url"github.com/%Secret.repo()/ExampleJar.L42"
-  writer=GW.#$of(token=Secret.#$of(),message=S"Example Jar deploy")
-  )
-  
 AllDone = {}:Test"All done reached"(Bool.true())
