@@ -1,10 +1,6 @@
 reuse [AdamsTowel]
 JsonLibTrait = Trait:{reuse [AdamsTowel]
-  Json=Class:Trait(Organize:{
-    @{ Capability module.
-      Provides support for parsing on Json objects and conversion into Json objects.
-      The objects created is immutable
-    }
+  Json=Public:Class:Trait(Organize:{
     Parse = Trait:{...}
     JsonBase = Trait:{...}
     JsonSeal = Trait:{...}
@@ -14,14 +10,14 @@ JsonLibTrait = Trait:{reuse [AdamsTowel]
     @Public class method $.Value #from(S.StringBuilder stringLiteral) = ParseJson(stringLiteral.toS())
     @Public class method $.Value (S string) = ParseJson(string)
     })[
-  clear='String.toS();
-  clear='Number.toS();
-  clear='Bool.True.toS();
-  clear='Bool.False.toS();
-  clear='Null.toS();
-  clear='Object.toS();
-  clear='Array.toS();
-  ]['Value.toJson()=>'Value.toS()]
+      clear='String.toS();
+      clear='Number.toS();
+      clear='Bool.True.toS();
+      clear='Bool.False.toS();
+      clear='Null.toS();
+      clear='Object.toS();
+      clear='Array.toS();
+      ]['Value.toJson()=>'Value.toS()]
   }
 Json = Load:Class.Relax:System.extractModule(JsonLibTrait.code(),name='Json)
 
@@ -88,5 +84,4 @@ fraction ::= "" | '.' digits
 exponent ::= "" | 'E' sign digits | 'e' sign digits
 sign ::= "" | '+' | '-'
 ws::="" | '0020' ws | '000A' ws | '000D' ws | '0009' ws
-
 */

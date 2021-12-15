@@ -1,19 +1,19 @@
 $ = Class.Relax:JsonBase:{ Value = { read method S toJson() } }
 
-@Public String = { read method S toJson() = (
+String = { read method S toJson() = (
   @ToJson S inner = this.that()
   S.dq()++inner++S.dq() 
   )} 
-@Public Number = { read method S toJson() = (
+Number = { read method S toJson() = (
   @ToJson S inner = this.that()
   inner
   )}
-@Public Bool = {
+Bool = {
   True =  { read method S toJson() = S"true"  }
   False = { read method S toJson() = S"false" }
   }
-@Public Null = { read method S toJson() = S"null" }
-@Public Object = { read method S toJson() = S.StringBuilder()((
+Null = { read method S toJson() = S"null" }
+Object = { read method S toJson() = S.StringBuilder()((
   \append(S"{")
   var first=This3.Bool.true()
   read @ToJson $.Object self = this
@@ -27,7 +27,7 @@ $ = Class.Relax:JsonBase:{ Value = { read method S toJson() } }
   \append(S"}")
   )).toS()
   }
-@Public Array = { read method S toJson() = S.StringBuilder()((
+Array = { read method S toJson() = S.StringBuilder()((
   \append(S"[")
   read @ToJson $.Array self=this
   \append(self.left().toJson())
