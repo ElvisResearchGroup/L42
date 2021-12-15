@@ -1,9 +1,25 @@
 reuse [AdamsTowel]
 Time = {interface 
   Fail = Message:{[Message.Guard]}
-  @{unix universal time}
   mut method Math.Long currentTime()[Fail]
-  @{
+  mut method S dateTime(S zoneId,S pattern)[Fail]
+  }
+Time$Real = Public:{
+  [Time]
+  @{ Capability factory.
+  Provides an object to call the function methods on
+  }
+  @Public class method mut This #$of() = this.#$of::0()
+  class method mut This #$of::0()
+  
+  @{ Capability method. 
+  returns unix universal time}
+  @Public mut method Math.Long currentTime()[Time.Fail] = {
+    return This.#$currentTime()
+    catch System.JavaException x exception Time.Fail"%x.text()"
+    }
+    
+  @{ Capability method.
   This method returns a string following a format pattern and a zoneId.
   The method accepts as zoneIds at least the following constants:
     {
@@ -37,16 +53,6 @@ Time = {interface
   However, other constants, like Europe/Rome may be available
   An example of an accepted pattern is "yyyy/MM/dd HH:mm:ss OOOO"
   }
-  mut method S dateTime(S zoneId,S pattern)[Fail]
-  }
-Time$Real = Public:{
-  [Time]
-  @Public class method mut This #$of() = this.#$of::0()
-  class method mut This #$of::0()
-  @Public mut method Math.Long currentTime()[Time.Fail] = {
-    return This.#$currentTime()
-    catch System.JavaException x exception Time.Fail"%x.text()"
-    }
   @Public mut method S dateTime(S zoneId,S pattern)[Time.Fail] = {
     return This.#$dateTime(zoneId=zoneId,pattern=pattern)
     catch System.JavaException x exception Time.Fail"%x.text()"
