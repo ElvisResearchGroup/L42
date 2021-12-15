@@ -1,13 +1,18 @@
 reuse [AdamsTowel]
 JsonLibTrait = Trait:{reuse [AdamsTowel]
   Json=Class:Trait(Organize:{
+    @{ Capability module.
+      Provides support for parsing on Json objects and conversion into Json objects.
+      The objects created is immutable
+    }
     Parse = Trait:{...}
     JsonBase = Trait:{...}
     JsonSeal = Trait:{...}
     ToJson =(JsonSeal:Organize:{...})[hide='Value.sealed()]
     $ = Class:ToJson
     ParseJson = Public:Class:Parse:{...}
-    class method $.Value #from(S.StringBuilder stringLiteral) = ParseJson(stringLiteral.toS())
+    @Public class method $.Value #from(S.StringBuilder stringLiteral) = ParseJson(stringLiteral.toS())
+    @Public class method $.Value (S string) = ParseJson(string)
     })[
   clear='String.toS();
   clear='Number.toS();

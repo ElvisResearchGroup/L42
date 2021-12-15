@@ -5,23 +5,28 @@ OFloatClass(index)
 <div class="rotate90"> Index of Content</div>
 ContinueFloat
 <ol>
-WComm WMenuItem(`#Basics',`Basic concepts')
-WMenuItem(`#ChapterTitleHere',`Chapter Title Here')
-
+WMenuItem(`#Time',`Time')
 </ol>
 CFloat
- 
-WComm WChapter(`Basics',`tutorial1Basics.c')
 
-</p><p id="ChapterTitleHere">
-WBigTitle(Chapter Title Here)
-WTitle((1/5) Sub title)
-some text
+</p><p id="Time">
+WBigTitle(Time)
+WTitle(Importing time and example usage)
+The time module enables retrieval of the unix universal time and automatic conversion of
+that time into a timezone with a preferred format.
+OBCode
+reuse [L42.is/AdamsTowel]
+Time = Load:{reuse[L42.is/Time]}
+Main=(
+  t = Time.Real.#$of()
+  current = t.currentTime()
+  date = t.dateTime(zoneId=S"Australia/Sydney",pattern=S"yyyy/MM/dd HH:mm:ss OOOO")
+  Debug(current)
+  Debug(date)
+  )
+CCode
+WTitle(Overview under AdamsTowel)
 OBCode
 [OVERVIEW_HERE]
 CCode
-more text
 m4_include(`../CommonHtmlDocumentation/footer.h')
-
-WComm build using
-WComm m4 -P Doc.c > Doc.xhtml

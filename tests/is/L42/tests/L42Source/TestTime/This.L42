@@ -6,12 +6,12 @@ TimeLib = Trait:{...}
 //class method S #$of()=S"ghp_..."
 Secret = Trait({...}):{class method S name()='Time}
 Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
-TaskDeployJson = Web.#$of().deployModule(
+TaskDeployTime = Web.#$of().deployModule(
   TimeLib['Time$Real=>'Time.Real], nestedName='Time)
 
 Time = Load:{reuse[#$L42.is/Time]}
   
-TaskDeployJSonDocs = ~Web.#$of().deployDocs(\"Doc.c")
+TaskDeployTimeDocs = ~Web.#$of().deployDocs(\"Doc.c")
   .overview(Time key=S"OVERVIEW_HERE")
 
 Main = (
