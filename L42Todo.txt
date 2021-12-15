@@ -5,19 +5,19 @@
 Why ExampleJar.L42 is saved on git as L42 ?
 Matrix should have max col/ max row methods, and an initialize with val
 
+
+Opt should have a val(orElse=) method
+Matrix should have maxRow/maxCol methods, and init with value
+Map with default??
+
+In Unit, we generate _FromLeft, do we want to keep it public? with the underscore??
+In Unit, can we now remove N()? or make it private?
+Since Unit is so big, can we have some way to not have the SITrait if it is not needed?
+test if it is making a measurable time difference just to 'have' units.
+
 in a few more places with Base64 we may use the more efficient "".replaceAll("\\n|\\r","");
 
--in WebIntegrated42Lib we should escape the 'S that' string with the doc filename
-- Overview ToS should import the docs form interfaces for refined methods
-- collapse overview in html docs
--42 library docs:
-  -introspection must be able to print outlines ("" for no nesteds, "A,B,C" for nesteds A,B,C and "*" for all nesteds?
-  -integration tests saves the outline as a file
-  -deployHtml also reads those folders and makes them into xhtml pages?
-    -in the future 42 could also make and deploy the xhtml; does it needs to be now?
--if I moved the docs/getting started in the main project or ide, would it work transparently in the existing script?
 
--acc for I,Num.Long...?
 -can we make cache (and hints?) checkpoint every main compilation-run step?
 -can we customize max/min memory on the ide+spawned processes?
 

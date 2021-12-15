@@ -5,42 +5,39 @@ OFloatClass(index)
 <div class="rotate90">Index of Content</div>
 ContinueFloat
 <ol>
-WMenuItem(`#Process',`The process library')
+WMenuItem(`#Unit',`The Unit module')
 
 </ol>
 CFloat
 
-</p><p id="Process">
-WBigTitle(The process library)
+</p><p id="Unit">
+WBigTitle(The Unit module)
 WTitle(Importing process and example usage)
 
-The process library allows to run processes from AdamsTowel.
-Wcode(`Process.Real.#$of(..)') creates a capability object permanently connected with a specific
-command and option, but the standard input of the program can be specified by the capability user.
+Wcode(Unit) allows to make unit of measures.
+While Wcode(Unit) can be used with a mathematical mindset to make many interconnected units of measures,
+it is also very useful to simply define incompatible versions of number types.
+  
+We can import the Wcode(Unit) library as follows:
 OBCode
-Process = Load:{reuse[L42.is/Process]}
-..
-  (
-  Process pLinux=Process.Real.#$of(\[S"ls";S"-l"])
-  res=pLinux.start(input=S"")
-  Debug(res.out())
-  Debug(res.err())
-  catch Process.Fail f Debug(S"oh no!")
-  )
+Unit = Load:{reuse[L42.is/Unit]}
 CCode
 
 WTitle(Overview under AdamsTowel)
+This will give us the following:
 OFoldedCode
-[OVERVIEW_HERE1]
-CCode
-Exmaple instantiation
-OFoldedCode
-[OVERVIEW_HERE2]
+[OVERVIEW_HERE]
 CCode
 
+We can then use Wcode(Unit)
+OBCode
+SI = Class:Unit.TraitSI['Support=>Num]
+Year = Unit(I)
+Mana = Unit(Double)
+CCode
+This will give us the following:
+OFoldedCode
+[Example_OVERVIEW_HERE]
+CCode
 
 m4_include(`../CommonHtmlDocumentation/footer.h')
-
-WComm build using
-WComm m4 -P Doc.c > Doc.xhtml
-WComm can be seen at https://raw.githack.com/Language42/is/main/testing/Process.xhtml
