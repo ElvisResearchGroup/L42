@@ -5,36 +5,66 @@ OFloatClass(index)
 <div class="rotate90">Index of Content</div>
 ContinueFloat
 <ol>
-WMenuItem(`#Process',`The process library')
-
+WMenuItem(`#AdamsTowel',`AdamsTowel')
+WMenuItem(`#Collection',`Collection')
+WMenuItem(`#Message',`Message')
 </ol>
 CFloat
 
-</p><p id="Process">
-WBigTitle(The process library)
-WTitle(Importing process and example usage)
+</p><p id="AdamsTowel">
+WBigTitle(AdamsTowel)
 
-The process library allows to run processes from AdamsTowel.
-Wcode(`Process.Real.#$of(..)') creates a capability object permanently connected with a specific
-command and option, but the standard input of the program can be specified by the capability user.
+Wcode(AdamsTowel) is the most developed 42 towel, and it is a good starting point for varius 
+forms of towel staining and embroidery.
+Refer to the Wlink(`../tutorial_01Basics',tutorial)
+for more informations.
+WTitle(Importing process and example usage)
 OBCode
-Process = Load:{reuse[L42.is/Process]}
+reuse[L42.is/AdamsTowel]
 ..
-  (
-  Process pLinux=Process.Real.#$of(\[S"ls";S"-l"])
-  res=pLinux.start(input=S"")
-  Debug(res.out())
-  Debug(res.err())
-  catch Process.Fail f Debug(S"oh no!")
-  )
+Main = Debug(S"Hello world")
 CCode
 
-WTitle(Overview under AdamsTowel)
+WTitle(Overview)
 OFoldedCode
 [OVERVIEW_HERE]
 CCode
-m4_include(`../CommonHtmlDocumentation/footer.h')
 
-WComm build using
-WComm m4 -P Doc.c > Doc.xhtml
-WComm can be seen at https://raw.githack.com/Language42/is/main/testing/Process.xhtml
+</p><p id="Collection">
+WBigTitle(Collection)
+Wcode(Collection) allows to create many kinds of collections.
+Here you can see examples of collections of Wcode(Person).
+The following code: 
+OBCode
+Point = Data:{Num x, Num y}
+Person = Data:{S name var Point location}
+
+ListPerson = Collection.list(Person)
+SetPerson  = Collection.set(Person)
+MapSPerson = Collection.map(key=S val=Person)
+OptPerson  = Collection.optional(Person)
+MatrixPerson  = Collection.matrix(ListPerson, row=10I, col=20I)
+LinkeListPerson = Collection.linkedList(Person)
+CCode
+Would produce the following:
+OFoldedCode
+[Collection_OVERVIEW_HERE]
+CCode
+
+</p><p id="Message">
+WBigTitle(Message)
+Wcode(Message) allows to create many kinds of messages.
+Here you can see an example of a custom message, with an extra method and 
+additionally implementing Wcode(Message.Guard).
+The following code:
+OBCode
+KindInformation = Message:{[Message.Guard]
+  method S extra()=S"Wow that was a great explanation!"
+  }
+CCode
+Would produce the following:
+OFoldedCode
+[Message_OVERVIEW_HERE]
+CCode
+
+m4_include(`../CommonHtmlDocumentation/footer.h')

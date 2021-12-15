@@ -39,7 +39,7 @@ public class DeployAllLibraries {
     }
   public static void main(String[]a) throws IOException, URISyntaxException {
     System.out.println("Do not accidentally run this;\n fix the version number in "+Main.l42IsRepoVersion+" comment this and run. Then uncomment this");
-    System.exit(0);
+    //System.exit(0);//uncomment this line after any run!
     String tests;try{tests=deployAllLibraries().collect(Collectors.joining("\n"));}
     finally{Resources.clearResKeepReuse();}//did this make it terminating?
     System.out.println("\n\nDeployAllLibraries completed\n\n");

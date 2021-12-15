@@ -5,28 +5,23 @@ OFloatClass(index)
 <div class="rotate90">Index of Content</div>
 ContinueFloat
 <ol>
-WMenuItem(`#Process',`The process library')
+WMenuItem(`#FileSystem',`The File System module')
 
 </ol>
 CFloat
 
-</p><p id="Process">
-WBigTitle(The process library)
+</p><p id="FileSystem">
+WBigTitle(The File System module)
 WTitle(Importing process and example usage)
 
-The process library allows to run processes from AdamsTowel.
-Wcode(`Process.Real.#$of(..)') creates a capability object permanently connected with a specific
-command and option, but the standard input of the program can be specified by the capability user.
+The File System module allows basic interactions with the file system
+Wcode(`Fs.Real.#$of(..)') creates a capability object connected with the real file system.
 OBCode
-Process = Load:{reuse[L42.is/Process]}
+Fs = Load:{reuse[L42.is/FileSystem]}
 ..
-  (
-  Process pLinux=Process.Real.#$of(\[S"ls";S"-l"])
-  res=pLinux.start(input=S"")
-  Debug(res.out())
-  Debug(res.err())
-  catch Process.Fail f Debug(S"oh no!")
-  )
+Fs fs = Fs.Real.#$of()
+S res = fs.read(Url"a/b.txt")
+fs.write(on=Url"a/b.txt" content=res++res)
 CCode
 
 WTitle(Overview under AdamsTowel)
@@ -34,7 +29,3 @@ OFoldedCode
 [OVERVIEW_HERE]
 CCode
 m4_include(`../CommonHtmlDocumentation/footer.h')
-
-WComm build using
-WComm m4 -P Doc.c > Doc.xhtml
-WComm can be seen at https://raw.githack.com/Language42/is/main/testing/Process.xhtml

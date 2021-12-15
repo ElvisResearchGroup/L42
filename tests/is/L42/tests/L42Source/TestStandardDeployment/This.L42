@@ -46,9 +46,27 @@ Secret = Trait({...}):Load:WebIntegrated42LibDeployed.code()
 //Module 0  -- Towel AdamsTowel --> AdamsTowel
 AdamTrait = Trait:{ reuse [AdamsTowel] }
 WebAdams = Class:Secret:{class method S name()='AdamsTowel}
+
+CollectionsExample={
+  Point = Data:{Num x, Num y}
+  Person = Data:{S name var Point location}
+  ListPerson = Collection.list(Person)
+  SetPerson  = Collection.set(Person)
+  MapSPerson = Collection.map(key=S val=Person)
+  OptPerson  = Collection.optional(Person)
+  MatrixPerson  = Collection.matrix(ListPerson, row=10I, col=20I)
+  LinkeListPerson = Collection.linkedList(Person)
+  }
+MessageExample={
+  KindInformation = Message:{[Message.Guard]
+    method S extra()=S"Wow that was a great explanation!"
+    }
+  }
 TaskDeployAdams = WebAdams.#$of().deployTowel(AdamTrait())
 TaskDeployAdamsDocs = ~WebAdams.#$of().deployDocs(\"DocAdams.c")
   .overview(trait=AdamTrait() key=S"OVERVIEW_HERE")
+  .overview(CollectionsExample key=S"Collection_OVERVIEW_HERE")
+  .overview(MessageExample key=S"Message_OVERVIEW_HERE")
 
 //Module 1
 WebHttpRequest = Class:Secret:{class method S name()='HttpRequest}
