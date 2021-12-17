@@ -162,6 +162,11 @@ DeployAdamsTowel={reuse[#$aaa]
       clear='Introspection$Nested;
       clear='BootStrapping;
       clear='Data.checkCoherent(that);
+      hide='Long.randomNextSeed();
+      hide='Long.randomNextLong();
+      hide='Long.randomNextDouble();
+      hide='Long.randomNextSize(bound);
+      hide='Long.#$randomSeed();      
       ][
       'S_ParseError=>'S.ParseError;
       'Math_ArithmeticError=>'Math.ArithmeticError;

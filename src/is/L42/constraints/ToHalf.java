@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import is.L42.common.CTz;
+import is.L42.common.ErrMsg;
+import is.L42.common.EndError;
 import is.L42.common.NameMangling;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
@@ -102,7 +104,13 @@ public class ToHalf extends UndefinedCollectorVisitor{
     commit(new Half.MCall(pos, xp, s,LL(esRes)),stzRes,unique(retST));
     }
   List<ST> expectedRes(Half.XP xp){
-    if(xp instanceof Core.EX){return y.g()._of(((Core.EX)xp).x());}
+    if(xp instanceof Core.EX){
+      var res=y.g()._of( ((Core.EX)xp).x() );
+      if(res==null){
+        throw new EndError.NotWellFormed(xp.poss(),ErrMsg.methCallOnFwd(xp));
+        }
+      return res;
+      }
     if(xp instanceof Half.PCastT){return ((Half.PCastT)xp).stz();}
     assert xp instanceof Half.SlashCastT;
     return ((Half.SlashCastT)xp).stz1();

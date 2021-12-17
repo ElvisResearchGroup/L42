@@ -43,6 +43,9 @@ public class TestTopNorm{
     }
     """,
     "{Trash={class method Void #apply(Library that)=void #typed{}}Task={#typed{}}#norm{}}"
+  );}@Test public void wasLooping(){topFail(EndError.NotWellFormed.class,"""
+    {Main = ( a = (for s in void a.f()) void )}
+    """,ErrMsg.methCallOnFwd("a")
   );}@Test public void traitTopUnique0(){top("""
     {
     Trait = {

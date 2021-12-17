@@ -279,7 +279,10 @@ public class ErrMsg {
   ;}public static String methCallNoCompatibleMdfParametersSignature(Object _1,Object _2){return
   "Incompatible modifiers for method call.\nFor method "+_1+", method call parameter signature is incompatible with the parameters expected signature: "+_2
   ;}public static String mayLeakUnresolvedFwd(Object _1){return
-  "fwd variable "+_1+" may be leaked out using a return"  
+  "fwd binding '"+_1+"'  may be leaked out using a return"
+  ;}public static String methCallOnFwd(Object _1){return
+  "fwd binding '"+_1+"' is used as a method call receiver" 
+
   ;}public static String nativeInlinedInvalid(Object _1){return
   "Invalid Java has been inlined in a native body; here is the javac error:\n "+_1
   ;}public static String nativeExceptionNotLazyMessage(Object _1,Object _2){return

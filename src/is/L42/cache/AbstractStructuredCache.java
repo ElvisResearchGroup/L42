@@ -103,7 +103,7 @@ public abstract class AbstractStructuredCache<T> implements L42Cache<T>{
     }
   @Override public T dup(T that, Map<Object, Object> map) {
     if(that == null || isNorm(that)){return that;}
-    T nObj = newInstance(that);
+    T nObj = newInstance(that);//TODO: HERE, we should not call it for map/set?
     map.put(that, nObj);
     int size=this.fn(that);
     for(int i = 0; i < size; i++){
