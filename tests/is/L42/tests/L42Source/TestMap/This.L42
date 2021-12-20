@@ -58,12 +58,12 @@ MapWithOpts={
     map=Map[key=1\ val=\(\"hi");key=2\ val=\(\"world");]
     Debug(map)
     {}:Test"optMap1"(expected=S"""
-      |{1->["hi"]; 2->["world"]}
+      |{1-><"hi">; 2-><"world">}
       """.trim(),actual=map)
     map.put(key=2\,val=\())
     Debug(map)
     {}:Test"optMap2"(expected=S"""
-      |{1->["hi"]; 2->[]}
+      |{1-><"hi">; 2-><>}
       """.trim(),actual=map)
     )
   }
@@ -74,12 +74,12 @@ MapWithOptsKeys={
     map=Map[key=\() val=\"hi";key=\(\"one") val=\"world";]
     Debug(map)
     {}:Test"optMap1"(expected=S"""
-      |{[]->"hi"; ["one"]->"world"}
+      |{<>->"hi"; <"one">->"world"}
       """.trim(),actual=map)
     map.put(key=\(),val=\"bar")
     Debug(map)
     {}:Test"optMap2"(expected=S"""
-      |{[]->"bar"; ["one"]->"world"}
+      |{<>->"bar"; <"one">->"world"}
       """.trim(),actual=map)
     )
   }

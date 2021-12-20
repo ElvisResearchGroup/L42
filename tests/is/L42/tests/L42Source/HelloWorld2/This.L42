@@ -1,13 +1,38 @@
 reuse [AdamsTowel]
-A = Data:{ S.Set empty=\[] }
-Main=(
-  Debug(S"a")
-  {}:Test"mah"(Bool.true())
-  res = A()
-  Debug(S"b")
-  Debug(I.List()(for a in Range(4000I)\add(a)))
-  Debug(I.List()(for a in Range(4000I)\add(a)))
-  Debug(I.List()(for a in Range(4000I)\add(a)))
-  Debug(res)
-  Debug(S"c")
-  )
+Nope={
+  A = Data:{ S.Set empty=\() }
+  A2 = Data:{ S.Set empty=\[S"A";S"B"] }
+  B = Data:{ S.List empty=\() }
+  B2 = Data:{ S.List empty=\[S"A";S"B"] }
+  C = Data:{S.Map empty=\()}
+  C2 = Data:{S.Map empty=\[key=S"A" val=S"B"; key=S"C" val=S"D"]}
+  Map = Collection.map(key=S val=S.List)
+  C3 = Data:{Map empty=\[key=S"A" val=\[S"B"]; key=S"C" mutVal=\[S"D"]]}
+  D = Data:{ S.Opt empty=\() }
+  E = Data:{ Name empty='Foo }
+  F = Data:{ Any empty=Name"Foo" }
+  O = Collection.optional(A)
+  Main=(
+    Debug(S"a")
+    Debug(A())
+    Debug(A2())
+    Debug(A2().empty())
+    (for e in A2().empty() Debug(e))
+    Debug(B())
+    Debug(B2())
+    Debug(C())
+    Debug(C2())
+    Debug(C3())
+  
+    Debug(E())
+    Debug(F())
+    
+    Debug(D(empty=\(S"hello")))
+    //Debug(D())
+    
+    Debug(F(empty=S.Opt(S"Hi!")))
+    Debug(F(empty=O(A())))//so wrong {}O
+    //Debug(F(empty=S.Opt()))
+    Debug(S"end")
+    )
+  }

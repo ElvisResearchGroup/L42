@@ -41,17 +41,18 @@ class Format42 implements FormatKind{
       }
     if(cache instanceof L42ValueCache<?>){return false;}
     if(cache instanceof L42SingletonCache<?>){return false;}
-    var gen1=cache instanceof ArrayListCache || cache instanceof SetCache<?>;
+    var gen1=cache instanceof AbstractListCache || cache instanceof SetCache<?>;
     if(gen1){return isInterfaceNativePar(0,path);}
-    assert cache instanceof MapCache<?,?,?>;
+    assert cache instanceof MapCache<?,?,?>:cache;
     return isInterfaceNativePar(i%2,path);
     }
   static boolean isInterfaceNativePar(int i,P.NCs path){
+    assert i>=0;
     var p=Resources.currentP.navigate(path);
     var pars=p.topCore().info().nativePar();
     if(pars.size()<=i){return false;}
-    var pi=p.from(pars.get(i),path);
-    return Resources.currentP._ofCore(pi).isInterface();
+    var pi=p.from(pars.get(i),P.pThis0);
+    return p._ofCore(pi).isInterface();
     }
   String miniPath(){
     if(path.cs().isEmpty()){return path.toString();}
@@ -67,8 +68,20 @@ class Format42 implements FormatKind{
     assert f.k.lines().length>lineN;
     String name=isInterface?miniPath():"";
     var l=f.p._ofCore(path);
-    if(!l.info().nativeKind().isEmpty()){
-      assert isInterface;
+    boolean isOpt=l.info().nativeKind().equals("Opt");
+    boolean nativePrint=!l.info().nativeKind().isEmpty();
+    if(isOpt){
+      var elem=f.k.lines()[lineN][1];
+      if(elem==null){
+        return name+"<>"; }
+      var res=f.formatDispatch(null,path,null,null,
+          elem,false,size+name.length());
+      var roundy = res.length()>2 && res.startsWith("(") && res.endsWith(")");
+      if(roundy){ res=res.substring(1,res.length()-1); }
+      return name+"<"+res+">";
+      }
+    if(nativePrint){
+      assert isInterface || isOpt;
       String res=f.formatDispatch(path,path,
         null,null,f.k.lines()[lineN][1],false,size+name.length());
       if(res.startsWith("\"")||res.startsWith("[")){return name+res;}
@@ -83,6 +96,8 @@ class Format42 implements FormatKind{
       //.distinct()//has parameters in different order
       //.reduce(toOneOrBug()).get();
     Object[] fields=f.k.lines()[lineN];
+    assert fields!=null;
+    //assert Stream.of(fields).noneMatch(e->e==null):Stream.of(fields).toList();//can be null for ops
     int estimateSize=xs.size()*7+name.length();    
     StringBuilder res=new StringBuilder(name+"(");
     if(!xs.isEmpty() && !xs.get(0).equals(X.thatX)){res.append(xs.get(0)+"=");}
@@ -154,6 +169,44 @@ class FormatList extends Format42{
     return res.toString();
     }
   }
+class FormatSet extends Format42{
+  public FormatSet(P.NCs hint,KeyFormatter f, int lineN,Object o){
+    super(hint,f,lineN,o);
+    }
+  @Override public String format(boolean isInterface, int size){
+    assert f.k.lines().length>lineN;
+    String name=isInterface?miniPath():"";
+    Object[] fields=f.k.lines()[lineN];
+    int estimateSize=fields.length*3+name.length();    
+    StringBuilder res=new StringBuilder(name+"{");
+    for(int i=1;i<fields.length;i+=1){
+      res.append(f.formatDispatch(null,path,null,null,fields[i],isInterface(i),estimateSize));
+      if(i+1!=fields.length){res.append("; ");}    
+      }
+    res.append("}");
+    return res.toString();
+    }
+  }
+class FormatMap extends Format42{
+  public FormatMap(P.NCs hint,KeyFormatter f, int lineN,Object o){
+    super(hint,f,lineN,o);
+    }
+  @Override public String format(boolean isInterface, int size){
+    assert f.k.lines().length>lineN;
+    String name=isInterface?miniPath():"";
+    Object[] fields=f.k.lines()[lineN];
+    int estimateSize=fields.length*3+name.length();    
+    StringBuilder res=new StringBuilder(name+"{");
+    for(int i=1;i<fields.length;i+=2){
+      res.append(f.formatDispatch(null,path,null,null,fields[i],isInterface(i),estimateSize));
+      res.append("->");
+      res.append(f.formatDispatch(null,path,null,null,fields[i+1],isInterface(i),estimateSize));
+      if(i+2!=fields.length){ res.append("; "); }
+      }
+    res.append("}");
+    return res.toString();
+    }
+  }
 class KeyFormatter{
   KeyNorm2D k;
   Program p=Resources.currentP;
@@ -170,6 +223,10 @@ class KeyFormatter{
   public FormatKind newFormatKind(P.NCs hint,int lineN,Object o){
     var cache=(L42Cache<?>)k.lines()[lineN][0];
     if(cache.typename() == TrustedKind.List){return new FormatList(hint,this,lineN,o);}
+    if(cache.typename() == TrustedKind.SelfList){return new FormatList(hint,this,lineN,o);}
+    if(cache.typename() == TrustedKind.HSet){return new FormatSet(hint,this,lineN,o);}
+    if(cache.typename() == TrustedKind.HIMap){return new FormatMap(hint,this,lineN,o);}
+    if(cache.typename() == TrustedKind.HMMap){return new FormatMap(hint,this,lineN,o);}
     if(cache.typename() instanceof TrustedKind){return new FormatTrusted(hint,this,lineN,o);}
     if(cache.typename() instanceof String[]){return new Format42(hint,this,lineN,o);}
     assert false:
@@ -191,16 +248,19 @@ class KeyFormatter{
     return name;    
     }
   public String formatDispatch(P.NCs hint,P.NCs source,CoreL l,X x, Object o, boolean isInterface, int size) {
+    if(o==null) {
+      return "<>";}
     int id=((KeyVarID)o).value();
     var cache=(L42Cache<?>)k.lines()[id][0];
     boolean isNative=cache.typename()instanceof TrustedKind;
     if(hint==null && isNative){hint=_computeHint(source, l, x);}
     return formatDispatchId(id,hint,o,isInterface,size);
     }
+  private final static List<String>hintable=List.of("List","HSet","HIMap","HMMap","Opt","String");//TODO: why string?
   private P.NCs _computeHint(P.NCs source, CoreL l, X x){
     if(l==null){
       l=p._ofCore(source);
-      assert l.info().nativeKind().equals("List");
+      assert hintable.contains(l.info().nativeKind()):l.info().nativeKind();
       P res= p.from(l.info().nativePar().get(0),source);
       if(res.isNCs()){return res.toNCs();}
       return null;

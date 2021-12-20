@@ -192,7 +192,7 @@ public interface L42Cache<T> extends Serializable {
     for(int i=0;i<size;i+=1){key[0][i+1]=this.f(t, i);}
     return new KeyNorm2D(key);
     }  
-  void clear();  
+  void clear();
   default T dup(T that) {
     return this.dup(that, new IdentityHashMap<>());
     }  

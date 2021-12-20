@@ -6,6 +6,12 @@ import is.L42.cache.L42CacheMap;
 import is.L42.nativeCode.TrustedKind;
 public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
   public int size(){return inner==null?0:inner.size();}
+  @Override public L42£Set<K> newInstance(){
+    var res=new L42£Set<K>();
+    if(this.inner==null){ return res; }
+    res.inner=new LinkedHashSet<K>(this.inner);
+    return res; 
+    }
   @SuppressWarnings("unchecked")
   protected void loadIteration(){
     if(keys!=null){return;}
@@ -34,7 +40,11 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
       return t.keys[i];
       }
     @Override public void setF(L42£Set<K> t, int i, Object o){
+      //ok doing nothing: keys are pre normalized,
+      //thus when the outer set is normalized,
+      //the keys are already normalized
       t.loadIteration();
+      assert i>=0 && i<t.keys.length;
       assert t.keys[i]==o;
       }
     @Override public int fn(L42£Set<K> t){return t.inner==null?0:t.inner.size();}

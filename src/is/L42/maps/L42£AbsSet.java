@@ -14,7 +14,6 @@ public abstract class L42£AbsSet<K,Inner,Self>implements L42Cachable<Self>{
   protected abstract void loadIteration();
   public K keyIndex(int index){loadIteration();return keys[index];}
   public abstract void remove(K key);
-  @Override public Self newInstance(){throw unreachable();}
   @Override public void setNorm(Self norm){this.norm=norm;}
   @Override public Self myNorm(){return norm;}
   @Override public void setField(int i, Object o){throw unreachable();}

@@ -1,5 +1,102 @@
 reuse[AdamsTowel]
 
+TestToS={
+  A = Data:{ S.Set empty=\() }
+  A2 = Data:{ S.Set empty=\[S"A";S"B"] }
+  B = Data:{ S.List empty=\() }
+  B2 = Data:{ S.List empty=\[S"A";S"B"] }
+  C = Data:{S.Map empty=\()}
+  C2 = Data:{S.Map empty=\[key=S"A" val=S"B"; key=S"C" val=S"D"]}
+  Map = Collection.map(key=S val=S.List)
+  C3 = Data:{Map empty=\[key=S"A" val=\[S"B"]; key=S"C" mutVal=\[S"D"]]}
+  D = Data:{ S.Opt empty=\() }
+  E = Data:{ Name empty='Foo }
+  F = Data:{ Any empty=Name"Foo" }
+  O = Collection.optional(A)
+  OName = Collection.optional(Name)
+  OBox = Data:{O o}
+  ONameBox = Data:{OName o}
+  Main=(
+    {}:Test""(actual=A().toS() expected=S"""
+      |A(empty=(set={}))
+      """.trim())
+    {}:Test""(actual=A2().toS() expected=S"""
+      |A2(empty=(set={"A"; "B"}))
+      """.trim())
+    {}:Test""(actual=A2().empty().toS() expected=S"""
+      |{"A"; "B"}
+      """.trim())
+    {}:Test""(actual=B().toS() expected=S"""
+      |B(empty=[])
+      """.trim())
+    {}:Test""(actual=B2().toS() expected=S"""
+      |B2(empty=["A"; "B"])
+      """.trim())
+    {}:Test""(actual=C().toS() expected=S"""
+      |C(empty=(hi={}, hm={}))
+      """.trim())
+    {}:Test""(actual=C2().toS() expected=S"""
+      |C2(empty=(hi={"A"->"B"; "C"->"D"}, hm={}))
+      """.trim())
+    {}:Test""(actual=C3().toS() expected=S"""
+      |C3(empty=(hi={"A"->["B"]}, hm={"C"->["D"]}))
+      """.trim())
+    {}:Test""(actual=E().toS() expected=S"""
+      |E(empty=("Foo"))
+      """.trim())
+    {}:Test""(actual=F().toS() expected=S"""
+      |F(empty=Name("Foo"))
+      """.trim())
+    {}:Test""(actual=D(empty=\(S"hello")).toS() expected=S"""
+      |D(empty="hello")
+      """.trim())
+    {}:Test""(actual=D().toS() expected=S"""
+      |D(empty=<>)
+      """.trim())
+    {}:Test""(actual=F(empty=S.Opt(S"Hi!")) expected=S"""
+      |F(empty=S.Opt<"Hi!">)
+      """.trim())
+    {}:Test""(actual=F(empty=S.Opt()) expected=S"""
+      |F(empty=S.Opt<>)
+      """.trim())
+    {}:Test""(actual=F(empty=O(A())) expected=S"""
+      |F(empty=O<empty=(set={})>)
+      """.trim())
+    {}:Test""(actual=F(empty=O()) expected=S"""
+      |F(empty=O<>)
+      """.trim())
+    {}:Test""(actual=OBox(o=O(A())) expected=S"""
+      |OBox(o=(empty=(set={})))
+      """.trim())
+    {}:Test""(actual=OBox(o=O()) expected=S"""
+      |OBox(o=<>)
+      """.trim())
+    {}:Test""(actual=F(empty=OName(Name"Hi")) expected=S"""
+      |F(empty=OName<"Hi">)
+      """.trim())
+    {}:Test""(actual=F(empty=OName()) expected=S"""
+      |F(empty=OName<>)
+      """.trim())
+    {}:Test""(actual=ONameBox(o=OName(Name"Hi")) expected=S"""
+      |ONameBox(o=("Hi"))
+      """.trim())
+    {}:Test""(actual=ONameBox(o=OName()) expected=S"""
+      |ONameBox(o=<>)
+      """.trim())
+    {}:Test""(actual=Name"A" expected=S"""
+      |A
+      """.trim())
+    {}:Test""(actual=OName(Name"A") expected=S"""
+      |<A>
+      """.trim())
+    {}:Test""(actual=OName(Name"a(x).x") expected=S"""
+      |<This.a(x).x>
+      """.trim())
+    {}:Test""(actual=OName() expected=S"""
+      |<>
+      """.trim())
+    )
+  }
 TestOptOK={
   A=Data:{S name}
   Opt1S=Collection.optional(S)
@@ -42,32 +139,32 @@ TestOptOK={
     Debug(opt1S)
     {}:Test"toS"(actual=opt1S
       expected=S"""
-        |["hi"]
+        |<"hi">
         """.trim())
     Debug(opt1A)
     {}:Test"toS"(actual=opt1A
       expected=S"""
-        |[A(name="hi")]
+        |<A(name="hi")>
         """.trim())
     Debug(opt2S)
     {}:Test"toS"(actual=opt2S
       expected=S"""
-        |[["hi"]]
+        |<<"hi">>
         """.trim())
     Debug(opt2A)
     {}:Test"toS"(actual=opt2A
       expected=S"""
-        |[[A(name="hi")]]
+        |<<A(name="hi")>>
         """.trim())
     Debug(opt3S)
     {}:Test"toS"(actual=opt3S
       expected=S"""
-        |[[["hi"]]]
+        |<<<"hi">>>
         """.trim())
     Debug(opt3A)
     {}:Test"toS"(actual=opt3A
       expected=S"""
-        |[[[A(name="hi")]]]
+        |<<<A(name="hi")>>>
         """.trim())
     Debug(opt2A==opt3A.val())
     Debug(Opt2A()<:Opt2A!=opt3A.val())

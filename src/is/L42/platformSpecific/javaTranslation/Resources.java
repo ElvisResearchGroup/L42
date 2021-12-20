@@ -25,6 +25,7 @@ import is.L42.common.ReadURL;
 import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.Pos;
+import is.L42.main.Main;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
@@ -179,7 +180,7 @@ public class Resources {
       Slave s=new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader()){
         @Override protected List<String> getJavaArgs(String libLocation){
           var res=super.getJavaArgs(libLocation);
-          res.add(0,"-ea");
+          if(Main.isTesting()){ res.add(0,"-ea"); }
           return res;
           }
         @Override protected ProcessBuilder makeProcessBuilder() throws IOException {

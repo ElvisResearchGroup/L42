@@ -52,7 +52,7 @@ MainAsk=(
   """)
   S.Opt text=j.askEvent(key=S"BarAsk", id=S"anId",msg=S"aMsg")
   {}:Test"OptOk"(actual=text, expected=S"""
-    |["any string computed in Java using anId and aMsg"]
+    |<"any string computed in Java using anId and aMsg">
     """.trim())
   Debug(text)
   )

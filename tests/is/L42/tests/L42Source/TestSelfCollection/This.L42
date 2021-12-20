@@ -2,14 +2,18 @@ reuse [AdamsTowel]
 A=Organize:{
   L$={}
   L=Collection.list(L$)
+  BoxL=Data:{L that}
   S$={}
   S=Collection.set(S$)
+  BoxS=Data:{S that}
   SN=Collection.set(Num)
   SSN=Collection.set(SN)
   M$={} 
   M=Collection.map(key=M$ val=M$)
+  BoxM=Data:{M that}
   O$={}
   O=Collection.optional(O$)
+  BoxO=Data:{O that}
   Ol=Collection.optional(This1.S.List)
   Lol=Collection.list(Ol)
   Mol=Collection.map(key=This1.S, val=Ol)
@@ -24,6 +28,52 @@ A=Organize:{
   Mini=Collection.map(key=A, val=La)
   Sola=Collection.set(Ola)
   }
+MainBoxes=(
+  bl=A.BoxL(\())
+  bs=A.BoxS(\())
+  bm=A.BoxM(\())
+  bo=A.BoxO(\())
+  {}:Test""(expected=S"A.BoxL([])" actual=bl.toS())
+  {}:Test""(expected=S"A.BoxS((set={}))" actual=bs.toS())
+  {}:Test""(expected=S"A.BoxM((hi={}, hm={}))" actual=bm.toS())
+  {}:Test""(expected=S"A.BoxO(<>)" actual=bo.toS())
+  bl1=A.BoxL(\[\()])
+  bs1=A.BoxS(\[\()])
+  bm1=A.BoxM(\[key=\(),val=\()])
+  bo1=A.BoxO(\(\()))
+  {}:Test""(expected=S"A.BoxL([[]])" actual=bl1.toS())
+  {}:Test""(expected=S"A.BoxS((set={(set={})}))" actual=bs1.toS())
+  {}:Test""(expected=S"""
+    |A.BoxM(m1)
+    |  where://buggy: Who is hi::39_5 ??
+    |    m1 = A.M(hi=hi::392, hm=hm::393)
+    |    hi::392 = A.M.Hi::39{m4->m4}
+    |    hm::393 = A.M.Hm::39{}
+    |    m4 = A.M(hi=hi::395, hm=hm::393)
+    """,
+    actual=bm1.toS())
+  {}:Test""(expected=S"A.BoxO(<>)" actual=bo1.toS())  
+  bl2=A.BoxL((l=A.L() l.#add(right=l) l))
+  //bs2=A.BoxS(..) circular set can not happen
+  bm2=A.BoxM((m=A.M() m.#put(key=\() val=m) m))
+  bo2=A.BoxO((o=A.O(o) o))
+  {}:Test""(expected=S"""
+  |A.BoxL(l1)
+  |  where:
+  |    l1 = A.L[l1]
+  """ actual=bl2.toS())
+  {}:Test""(expected=S"""
+  |A.BoxM(m1)
+  |  where: //buggy, where is hm::39_2
+  |    m1 = A.M(hi=hi::393, hm=hm::392)
+  |    hi::393 = A.M.Hi::39{}
+  """ actual=bm2.toS())
+  Debug(S"here")
+  {}:Test""(expected=S"""
+  |A.BoxO(<<>>)//print is ok, fwd resolution is buggy
+  """ actual=bo2.toS())
+  void  
+  )
 MainMini=(
   mini=A.Mini[key=A.A(), val=A.La[]]
   Debug(mini)
@@ -32,43 +82,43 @@ MainMini=(
 MainSoa=(
   soa0=A.Soa[A.OA()]
   Debug(soa0)
-  {}:Test""(expected=S"{[]}" actual=soa0)
+  {}:Test""(expected=S"{<>}" actual=soa0)
   soa1=A.Soa[A.OA(A.A())]
   Debug(soa1)
-  {}:Test""(expected=S"{[A.A()]}" actual=soa1)
+  {}:Test""(expected=S"{<A.A()>}" actual=soa1)
   )
 MainLoa=(
   loa0=A.Loa[A.OA()]
   Debug(loa0)
-  {}:Test""(expected=S"[[]]" actual=loa0)
+  {}:Test""(expected=S"[<>]" actual=loa0)
   loa1=A.Loa[A.OA(A.A())]
   Debug(loa1)
-  {}:Test""(expected=S"[[A.A()]]" actual=loa1)
+  {}:Test""(expected=S"[<A.A()>]" actual=loa1)
   )
 MainSola=(
   sola0=A.Sola[\()]
   Debug(sola0)
-  {}:Test""(expected=S"{[]}" actual=sola0)
+  {}:Test""(expected=S"{<>}" actual=sola0)
   sola1=A.Sola[\(A.La[])]
   Debug(sola1)
-  {}:Test""(expected=S"{[[]]}" actual=sola1)
+  {}:Test""(expected=S"{<[]>}" actual=sola1)
   )
 
 MainMos=(
   mos=A.Mos[key=12\, val=S.Opt(S"hi")]
   Debug(mos)
-  {}:Test""(expected=S"{12->[%S.dq()hi%S.dq()]}" actual=mos)
+  {}:Test""(expected=S"{12-><%S.dq()hi%S.dq()>}" actual=mos)
   )
 MainMols=(
   imm ol=A.Ol()
   mol=A.Mol[key=S"hello" val=ol]
   Debug(mol)
-  {}:Test""(expected=S"{%S.dq()hello%S.dq()->[]}" actual=mol)  
+  {}:Test""(expected=S"{%S.dq()hello%S.dq()-><>}" actual=mol)  
   )
 MainSos=(
   sos=A.Sos[S.Opt(S"hi")]
   Debug(sos)
-  {}:Test""(expected=S"{[%S.dq()hi%S.dq()]}" actual=sos)
+  {}:Test""(expected=S"{<%S.dq()hi%S.dq()>}" actual=sos)
   )
 
 MainL=(
@@ -133,10 +183,10 @@ MainO=(
   o2=A.O(o1)
   o3=A.O(o2)
   Debug(o1)
-  {}:Test""(expected=S"[]" actual=o1)
+  {}:Test""(expected=S"<>" actual=o1)
   Debug(o2)
-  {}:Test""(expected=S"[[]]" actual=o2)
-  {}:Test""(expected=S"[[[]]]" actual=o3)
+  {}:Test""(expected=S"<<>>" actual=o2)
+  {}:Test""(expected=S"<<<>>>" actual=o3)
   )
 MainLols=(
   imm ss=S.List[S"hello"; S" ";S"world"]
@@ -145,6 +195,6 @@ MainLols=(
   Debug(lol)
   mol=A.Mol[key=lol.val(0\).val().val(0\) val=lol.val(2\)]
   Debug(mol)
-  {}:Test""(expected=S"[[[%S.dq()hello%S.dq(); %S.dq() %S.dq(); %S.dq()world%S.dq()]]; []; [[%S.dq()hello%S.dq(); %S.dq() %S.dq(); %S.dq()world%S.dq()]]]" actual=lol)
-  {}:Test""(expected=S"{%S.dq()hello%S.dq()->[[%S.dq()hello%S.dq(); %S.dq() %S.dq(); %S.dq()world%S.dq()]]}" actual=mol)  
+  {}:Test""(expected=S"[<[%S.dq()hello%S.dq(); %S.dq() %S.dq(); %S.dq()world%S.dq()]>; <>; <[%S.dq()hello%S.dq(); %S.dq() %S.dq(); %S.dq()world%S.dq()]>]" actual=lol)
+  {}:Test""(expected=S"{%S.dq()hello%S.dq()-><[%S.dq()hello%S.dq(); %S.dq() %S.dq(); %S.dq()world%S.dq()]>}" actual=mol)  
   )
