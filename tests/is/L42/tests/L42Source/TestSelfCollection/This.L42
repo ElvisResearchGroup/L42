@@ -27,7 +27,38 @@ A=Organize:{
   Ola=Collection.optional(La)
   Mini=Collection.map(key=A, val=La)
   Sola=Collection.set(Ola)
+  MM=Collection.map(key=M,val=M)
+  MMBox=Data:{MM that}
   }
+MainMMBox= (
+  imm m = A.M()
+  {}:Test""(
+    actual=A.MMBox(\[key=\(), val=\()]) 
+    expected=S"""
+    |A.MMBox(mM1)
+    |  where:
+    |    mM1 = A.MM(hi=hi::114_2, hm=hm::114_3)
+    |    hi::114_2 = A.MM.Hi::114{m4->m4}
+    |    hm::114_3 = A.MM.Hm::114{}
+    |    m4 = A.M(hi=hi::39_5, hm=hm::39_3)
+    |    hi::39_5 = A.M.Hi::39{}
+    """)
+    //hm::114_3 and hm::39_3 
+    //are both empty maps, thus identified
+  {}:Test""(
+    actual=A.MMBox(\[key=\[key=m val=m], val=\()]) 
+    expected=S"""
+    |A.MMBox(mM1)
+    |  where:
+    |    mM1 = A.MM(hi=hi::114_2, hm=hm::114_3)
+    |    hi::114_2 = A.MM.Hi::114{m4->m5}
+    |    hm::114_3 = A.MM.Hm::114{}
+    |    m4 = A.M(hi=hi::39_6, hm=hm::39_3)
+    |    m5 = A.M(hi=hi::39_7, hm=hm::39_3)
+    |    hi::39_6 = A.M.Hi::39{m5->m5}
+    |    hi::39_7 = A.M.Hi::39{}
+    """)
+  )
 MainBoxes=(
   bl=A.BoxL(\())
   bs=A.BoxS(\())
@@ -45,18 +76,20 @@ MainBoxes=(
   {}:Test""(expected=S"A.BoxS((set={(set={})}))" actual=bs1.toS())
   {}:Test""(expected=S"""
     |A.BoxM(m1)
-    |  where://buggy: Who is hi::39_5 ??
-    |    m1 = A.M(hi=hi::392, hm=hm::393)
-    |    hi::392 = A.M.Hi::39{m4->m4}
-    |    hm::393 = A.M.Hm::39{}
-    |    m4 = A.M(hi=hi::395, hm=hm::393)
+    |  where:
+    |    m1 = A.M(hi=hi::39_2, hm=hm::39_3)
+    |    hi::39_2 = A.M.Hi::39{m4->m4}
+    |    hm::39_3 = A.M.Hm::39{}
+    |    m4 = A.M(hi=hi::39_5, hm=hm::39_3)
+    |    hi::39_5 = A.M.Hi::39{}
     """,
     actual=bm1.toS())
-  {}:Test""(expected=S"A.BoxO(<>)" actual=bo1.toS())  
+  {}:Test""(expected=S"A.BoxO(<>)" actual=bo1.toS())
   bl2=A.BoxL((l=A.L() l.#add(right=l) l))
   //bs2=A.BoxS(..) circular set can not happen
   bm2=A.BoxM((m=A.M() m.#put(key=\() val=m) m))
   bo2=A.BoxO((o=A.O(o) o))
+  A.O oo=(o=A.O(o) o)
   {}:Test""(expected=S"""
   |A.BoxL(l1)
   |  where:
@@ -64,16 +97,23 @@ MainBoxes=(
   """ actual=bl2.toS())
   {}:Test""(expected=S"""
   |A.BoxM(m1)
-  |  where: //buggy, where is hm::39_2
-  |    m1 = A.M(hi=hi::393, hm=hm::392)
-  |    hi::393 = A.M.Hi::39{}
+  |  where:
+  |    m1 = A.M(hi=hi::39_3, hm=hm::39_2)
+  |    hm::39_2 = A.M.Hm::39{m4->m1}
+  |    hi::39_3 = A.M.Hi::39{}
+  |    m4 = A.M(hi=hi::39_3, hm=hm::39_5)
+  |    hm::39_5 = A.M.Hm::39{}
   """ actual=bm2.toS())
-  Debug(S"here")
   {}:Test""(expected=S"""
   |A.BoxO(<<>>)//print is ok, fwd resolution is buggy
   """ actual=bo2.toS())
+  {}:Test""(expected=S"""
+  |<<<>>>//print is ok, fwd resolution is buggy
+  """ actual=S" %oo, %oo.val(), %oo.val().val() ")
   void  
   )
+  
+
 MainMini=(
   mini=A.Mini[key=A.A(), val=A.La[]]
   Debug(mini)

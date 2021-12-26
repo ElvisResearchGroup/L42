@@ -496,7 +496,10 @@ public enum TrustedOp {
       }
     """,sigI(String,Int,Int)
     ))),  
-  Contains("contains",Map.of(String,use("return %s.contains(%s);",sigI(Bool,String)))),
+  Contains("contains",Map.of(
+    String,use("return %s.contains(%s);",sigI(Bool,String)),
+    HSet,use("return %s.contains(%s);",sig(Readable,Immutable,Bool,Immutable,Gen1))
+    )),
   Replace("replace",Map.of(String,use("return %s.replace(%s,%s);",sigI(String,String,String)))),
   IndexOf("indexOf",Map.of(String,use("return %s.indexOf(%s,%s);",sigI(Int,String,Int)))),
   LastIndexOf("lastIndexOf",Map.of(String,use("return %s.lastIndexOf(%s,%s);",sigI(Int,String,Int)))),

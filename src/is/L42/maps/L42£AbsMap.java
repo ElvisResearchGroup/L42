@@ -35,6 +35,7 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     }
   public void remove(K key){
     if(inner==null){return;}
+    if(key!=null){key=L42CacheMap.normalize(key);}
     inner.remove(key);
     clearIteration();
     }

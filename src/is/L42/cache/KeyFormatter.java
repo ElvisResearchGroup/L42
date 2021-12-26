@@ -21,6 +21,7 @@ import is.L42.maps.L42£AbsMap.MapCache;
 import is.L42.maps.L42£Set.SetCache;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.tools.General;
 
 interface FormatKind{
   P path();
@@ -29,7 +30,7 @@ interface FormatKind{
   }
 class Format42 implements FormatKind{
   L42Cache<?> cache;
-  P.NCs path;
+  final P.NCs path;
   int lineN;
   Object o;
   KeyFormatter f;
@@ -120,19 +121,19 @@ class Format42 implements FormatKind{
     this.lineN=lineN;
     this.f=f;
     this.o=o;
-    if(hint!=null){this.path=hint;assert null!=f.p._ofCore(path);return;}
+    if(hint!=null){
+      this.path=hint;
+      assert null!=f.p._ofCore(this.path);
+      return;
+      }
     var oNames=cache.typename();
     if(oNames instanceof String[] names) {
       List<C> cs=L(range(names.length),(c,i)->c.add(fromS(names[i])));
       this.path=f.p.minimize(P.of(f.p.dept(), cs));
-      assert null!=f.p._ofCore(path):cs;
+      assert null!=f.p._ofCore(this.path):cs;
       return;
       }
-    if(oNames instanceof TrustedKind tk){
-      this.path=P.pThis0;//only in the fixpoint for non-trees
-      return;
-      }
-    assert false:oNames+" "+oNames.getClass();
+    throw General.unreachable(/*oNames+" "+oNames.getClass()*/);
     }
   @Override public String specialS(){return null;}
   @Override public P path(){return path;}
@@ -197,6 +198,7 @@ class FormatMap extends Format42{
     Object[] fields=f.k.lines()[lineN];
     int estimateSize=fields.length*3+name.length();    
     StringBuilder res=new StringBuilder(name+"{");
+    assert fields.length%2==1:fields.length;
     for(int i=1;i<fields.length;i+=2){
       res.append(f.formatDispatch(null,path,null,null,fields[i],isInterface(i),estimateSize));
       res.append("->");
@@ -210,15 +212,20 @@ class FormatMap extends Format42{
 class KeyFormatter{
   KeyNorm2D k;
   Program p=Resources.currentP;
-  HashMap<Integer,Supplier<String>> expanded=new HashMap<>();
+  record NameKSize(String name,FormatKind k,int size){
+    String get(){ return name+" = "+k.format(true,size); }
+    }
+  HashMap<Integer,NameKSize> expanded=new HashMap<>();
   HashSet<Integer> visited= new HashSet<>();
-
   public String varName(P path){
     String name=path.toString();
     int i=name.lastIndexOf(".");
     if(i!=-1){name=name.substring(i+1);}
     String first=name.substring(0,1).toLowerCase();
-    return first+name.substring(1);
+    String last=name.substring(name.length()-1);
+    String optUnderscore="";
+    if("0123456789".contains(last)){optUnderscore="_";}
+    return first+name.substring(1)+optUnderscore;
     }
   public FormatKind newFormatKind(P.NCs hint,int lineN,Object o){
     var cache=(L42Cache<?>)k.lines()[lineN][0];
@@ -239,12 +246,12 @@ class KeyFormatter{
     if(special!=null){return special;}
     String name=varName(k.path())+id;
     if(visited.contains(id)){
-      expanded.put(id,()->name+" = "+k.format(true,size));
+      expanded.put(id,new NameKSize(name,k,size));
       return name;
       }
     visited.add(id);
     if(size<50){return k.format(isInterface,size);}
-    expanded.put(id,()->name+" = "+k.format(true,size));
+    expanded.put(id,new NameKSize(name,k,size));
     return name;    
     }
   public String formatDispatch(P.NCs hint,P.NCs source,CoreL l,X x, Object o, boolean isInterface, int size) {
@@ -252,15 +259,16 @@ class KeyFormatter{
       return "<>";}
     int id=((KeyVarID)o).value();
     var cache=(L42Cache<?>)k.lines()[id][0];
-    boolean isNative=cache.typename()instanceof TrustedKind;
+    boolean isNative=cache.typename() instanceof TrustedKind;
     if(hint==null && isNative){hint=_computeHint(source, l, x);}
     return formatDispatchId(id,hint,o,isInterface,size);
     }
-  private final static List<String>hintable=List.of("List","HSet","HIMap","HMMap","Opt","String");//TODO: why string?
+  private final static List<String>hintable=List.of("List","HSet","HIMap","HMMap","Opt");
   private P.NCs _computeHint(P.NCs source, CoreL l, X x){
     if(l==null){
       l=p._ofCore(source);
-      assert hintable.contains(l.info().nativeKind()):l.info().nativeKind();
+      if(!hintable.contains(l.info().nativeKind())){ return null; }
+      if(l.info().nativePar().isEmpty()){ return null; }
       P res= p.from(l.info().nativePar().get(0),source);
       if(res.isNCs()){return res.toNCs();}
       return null;
@@ -284,10 +292,10 @@ class KeyFormatter{
     FormatKind first=f.newFormatKind(null,0,o);
     String res=first.format(true,0);
     if(f.expanded.isEmpty()){return res;}
-    var before=f.expanded.keySet().stream().collect(Collectors.toSet());
     res=first.format(true,0);
-    f.fixPoint(o,before);
+    f.fixPoint(o,Set.of());
     res+="\n  where:\n"+f.expanded.entrySet().stream()
+      .filter(e->e.getKey()!=0)
       .sorted((e1,e2)->e1.getKey()-e2.getKey())
       .map(e->"    "+e.getValue().get())
       .collect(Collectors.joining("\n"));
@@ -297,15 +305,18 @@ class KeyFormatter{
     return res;
     }
   void fixPoint(Object o,Set<Integer>before){
-    var after=this.expanded.keySet().stream().collect(Collectors.toSet());
+    var after=this.expanded.entrySet().stream().collect(Collectors.toSet());
+    var afterK=this.expanded.keySet().stream().collect(Collectors.toSet());
     boolean more=false;
     for(var a:after) {
-      if(before.contains(a)) {continue;}
+      if(before.contains(a.getKey())) {continue;}
       more=true;
-      FormatKind novel=this.newFormatKind(null,a,o);
-      novel.format(true,0);
+      P p=a.getValue().k.path();
+      FormatKind novel=this.newFormatKind(p.toNCs(),a.getKey(),o);
+      @SuppressWarnings("unused")
+      var unused = novel.format(true,0);
       }
     if(!more){return;}
-    fixPoint(o,after);
+    fixPoint(o,afterK);
     }
   }

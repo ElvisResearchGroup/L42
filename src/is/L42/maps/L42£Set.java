@@ -20,8 +20,14 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
     }
   public void remove(K key){
     if(inner==null){return;}
+    if(key!=null){key=L42CacheMap.normalize(key);}
     inner.remove(key);
     clearIteration();
+    }
+  public boolean contains(K key){
+    if(inner==null){return false;}
+    if(key!=null){key=L42CacheMap.normalize(key);}
+    return inner.contains(key);
     }
   public void add(K key){
     if(key!=null){key=L42CacheMap.normalize(key);}

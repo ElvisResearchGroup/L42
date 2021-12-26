@@ -5,6 +5,7 @@ Set={
   read method I size()
   read method Key immKey(I that)
   mut method Void put(Key key)
+  read method Bool contains(Key key)
   mut method Void remove(Key key)
   }
 read method read Set set()
@@ -18,8 +19,10 @@ class method mut This of(mut Set set)
 
 @Public read method Key val(I that)=this.set().immKey(that)
 //---------------
-@Public mut method Void add(Key that)=this.#set().put(key=that)
-@Public mut method Void remove(Key that)=this.#set().remove(key=that)
+@Public mut  method Void add(Key that)=this.#set().put(key=that)
+@Public mut  method Void remove(Key that)=this.#set().remove(key=that)
+@Public read method Bool contains(Key that)=this.set().contains(key=that)
+@Public read method Bool #in1(Key that)=this.contains(that)
 //-------------------Supporting []
 @Public class method mut This (mut This squareBuilder)=squareBuilder
 @Public class method mut This #squareBuilder()=This.empty()
@@ -55,3 +58,5 @@ class method mut This of(mut Set set)
 @Public method Bool ==(This that)=System.immEquality(this and=that)
 @Public method Bool !=(This that)= !(this==that)
 @Public read method Bool readEquality(read This that)=System.immEquality(System.immClone(this) and=System.immClone(that))
+
+@Public mut method mut This (Void that) = this //mapping

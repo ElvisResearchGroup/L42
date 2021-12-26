@@ -1,5 +1,5 @@
 reuse [AdamsTowel]
-Base={
+Base = {
   Map=Collection.map(key=S, val=Num)
   Main=(
     mut Map m=Map[key=\"a", val=5\; key=\"b",val=7\]
@@ -51,7 +51,7 @@ Base={
         """.trim())
     )
   }
-MapWithOpts={
+MapWithOpts = {
   SO=Collection.optional(S)
   Map=Collection.map(key=Num,val=SO)
   Main=(
@@ -67,7 +67,7 @@ MapWithOpts={
       """.trim(),actual=map)
     )
   }
-MapWithOptsKeys={
+MapWithOptsKeys = {
   SO=Collection.optional(S)
   Map=Collection.map(key=SO,val=S)
   Main=(
@@ -84,7 +84,7 @@ MapWithOptsKeys={
     )
   }
   
-SetTest1={
+SetTest1 = {
   Set=Collection.set(S)
   Main=(
     set=Set[S"Hello";S" ";S"world"]
@@ -99,3 +99,16 @@ SetTest1={
       """.trim(),actual=set)
     )
   }
+  
+Person = Data:{S name}
+PMap = Collection.map(key=Person val=Num)
+PSet = Collection.set(Person)
+
+DataedKeys = (
+  m = PMap[key=\(name=S"Bob") val=0\]
+  s = PSet[\(name=S"Bob")]
+  {}:Test""(Person(name=S"Bob").norm() in s)
+  {}:Test""(Person(name=S"Bob") in s)
+  {}:Test""(s.contains(\(name=S"Bob")))
+  {}:Test""(m.val(key=\(name=S"Bob"))==PMap.OVal(0Num)<:PMap.OVal)
+  )
