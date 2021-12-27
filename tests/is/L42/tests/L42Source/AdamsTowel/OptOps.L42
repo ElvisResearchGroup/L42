@@ -5,6 +5,7 @@ read method read Elem val()
 mut method mut Elem #val()
 read method Bool isPresent()=this.#if()
 read method Bool !()=!this.isPresent()
+
 read method read Elem val(read Elem orElse)= if this \val else orElse
 mut method mut Elem #val(mut Elem orElse)= if this \#val else orElse
 

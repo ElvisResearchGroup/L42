@@ -23,6 +23,10 @@ Ideally, find the assertion failing trycatching the error and add the lambda the
 --either add a bunch of data stuff to collections or slim data
 as in Insert = Class:(Trait:Collection.map(key=S val=S)):Data.addImmClone()
 
+With the simple desugaring this could work: 
+  X[test || X".."]
+  X[\(actual, expected) || X".."] //mutate the builder to remember actual/expected
+
 -if we have a lent list, can we iterate on it, error now on spliterators
 
 Why ExampleJar.L42 is saved on git Language42.is as .L42 ?

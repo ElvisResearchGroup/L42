@@ -5,9 +5,9 @@ public enum Op {
   Tilde("~", OpKind.Unary),//
   Bang("!", OpKind.Unary),//
 
-  MinusGT("->",OpKind.BoolOp),//
   AndAnd("&&", OpKind.BoolOp),//
   OrOr("||", OpKind.BoolOp),//
+  MinusGT("->",OpKind.RelationalOp),//was OpKind.BoolOp but now it is no more short circuted
   EqualEqual("==", OpKind.RelationalOp),//
   LT("<", OpKind.RelationalOp),//
   GT(">",OpKind.RelationalOp),//

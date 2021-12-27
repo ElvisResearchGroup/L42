@@ -124,8 +124,8 @@ _______
   UOp ::= ! | ~ // prefix
   OP0 ::= ^ | : | << | ++ | -- | **   // right associative
   OP1 ::= + | - | * | / | >>  // left associative   
-  OP2 ::= == | < | > | >= | <= | => | in | !=  // unassiociative
-  OP3 ::= -> | && | '||' // right associative, will be short circuting
+  OP2 ::= == | < | > | >= | <= | => | -> | in | !=  // unassiociative
+  OP3 ::= && | '||' // right associative, will be short circuting
   OP  ::= OP0 | OP1 | OP2 | OP3 
   opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= //allowing OP3 could be done as an extension, it might interact with short circuit
   FULL/CORE.Doc ::= @PathSel | @PathSel?{docText}

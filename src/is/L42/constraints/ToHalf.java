@@ -503,27 +503,11 @@ public class ToHalf extends UndefinedCollectorVisitor{
       visitBlock(makeBlock(p,L(d),b.withEs(List.of(ex,e1))));
       return;
       }
-    //from here, e0 is xP, and x is x
-    S sc=NameMangling.shortCircuit(b.op());
-    S sr=NameMangling.shortResult(b.op());
-    S sp=NameMangling.shortProcess(b.op());
-    X other=X.of("other");
-    Par par1=new Par(ex,L(),L());
-    Par par2=new Par(ex,L(other),L(e1));
-    var scCall=new Full.Call(p,e0,sc,false,Par.emptys);
-    var srCall=new Full.Call(p,e0,sr,false,L(par1));
-    Full.E elseBody;
-    if(isFullXP(e1)){elseBody=new Full.Call(p,e0,sp,false,L(par2));}
-    else{
-      X y=freshX("op3");
-      var dy=makeDec(null,y,e1);
-      Par par2y=new Par(ex,L(other),L(new Core.EX(e1.pos(),y)));
-      var spCally=new Full.Call(p,e0,sp,false,L(par2y));
-      elseBody=makeBlock(p, L(dy),spCally);
-      }
-    var dx=makeDec(null,x,scCall);
-    var ifElse=new Full.If(p, ex,L(), srCall,elseBody);
-    visitBlock(makeBlock(p, L(dx),ifElse));
+    assert b.op()==Op.AndAnd || b.op()==Op.OrOr;
+    Full.If ifElse=(b.op()==Op.AndAnd)?
+      new Full.If(p, e0,L(), e1, e0):
+      new Full.If(p, e0,L(), e0, e1);
+    visitIf(ifElse);
     }
   private Full.BinOp visitBinOpCsp(Full.BinOp b){
     assert b.es().get(0) instanceof Full.CsP;

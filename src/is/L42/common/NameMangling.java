@@ -74,15 +74,6 @@ public class NameMangling {
       };
     }
 
-  public static S shortCircuit(Op op){
-    return new S("#shortCircut#"+op.name().toLowerCase(),L(),-1);
-    }
-  public static S shortResult(Op op){
-    return new S("#shortResult#"+op.name().toLowerCase(),L(),-1);
-    }
-  public static S shortProcess(Op op){
-    return new S("#shortProcess#"+op.name().toLowerCase(),L(),-1);
-    }
   public static S methNameTrim(X x) {
     assert x!=null;
     String s=x.inner();
