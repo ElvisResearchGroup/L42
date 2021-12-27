@@ -49,6 +49,6 @@ ToJar=Trait:{reuse [AdamsTowel]
   class method Void #$main()=A.foo()
   }
 DeployJar = DeployGit.jar(ToJar()
-  on=Url"github.com/%Secret.repo()/%Secret.version()/ExampleJar.L42"
+  on=Url"github.com/%Secret.repo()/%Secret.version()/ExampleJar.jar"
   writer=GW.#$of(token=Secret.#$token(),message=S"Example Jar deploy")
   )
