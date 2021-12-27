@@ -156,7 +156,7 @@ public class Main {
       """;
   //Constants below should be changed accordingly to the secret in is.L42.tests.SecretHolder
   public static final String l42IsRepoPath = "Language42/is"; 
-  public static String l42IsRepoVersion = "d021";//this number should always be the last deployed version
+  public static String l42IsRepoVersion = "d022";//this number should always be the last deployed version
   public static final String testingRepoVersion="testing";
   public static final boolean isTesting(){ return Main.testingRepoVersion==Main.l42IsRepoVersion; }
   }
