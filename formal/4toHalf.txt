@@ -164,7 +164,7 @@ _______
         DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)
         e[replaceOnUpdate mdf?1; DX1.x?; x1; x'1]..[replaceOnUpdate mdf?n; DXn.x?; xn; x'n]
         // Note: DXi.x? = empty if DXi is not of form var? TLocal x
-        x'1 := x'1.#succ() .. xn := x'n.#succ()
+        x'1 := x'1.succ() .. xn := x'n.succ()
         )
       )    
     mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?, or first of capsule,mut,lent,read,imm if one of those is defined in the TLocals in DXi.TLocal 

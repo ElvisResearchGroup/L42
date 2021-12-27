@@ -14,17 +14,17 @@ IteratorComposeAux={class method IteratorCompose itAddAux(IteratorCompose a, Ite
   class method This zero()
   class method This mustContinue()=(
     This zero=This<:class This.zero()
-    This one = zero.#succ()
-    one.#succ()
+    This one = zero.succ()
+    one.succ()
     )
   class method This mustStop()=(
     This zero=This<:class This.zero()
-    This mone = zero.#pred()
-    mone.#pred()
+    This mone = zero.pred()
+    mone.pred()
     )
   class method This canContinue()=(
     This zero=This<:class This.zero()
-    zero.#succ()
+    zero.succ()
     )
   class method This canStop()=This<:class This.zero()
   
@@ -56,8 +56,8 @@ IteratorComposeAux={class method IteratorCompose itAddAux(IteratorCompose a, Ite
   read method This2.Bool readEquality(read This that)=native{trusted:OP==} error void
   method This2.Bool #equalequal0(This that)=this.readEquality(that=that)
   method This2.Bool #bangequal0(This that)=(This2.Bool tmp=this.#equalequal0(that=that) tmp.not())
-  method This #succ()=native{trusted:succ} error void
-  method This #pred()=native{trusted:pred} error void
+  method This succ()=native{trusted:succ} error void
+  method This pred()=native{trusted:pred} error void
   method This2.Bool isZero()=(
     This zero = This<:class This.zero()
     this.readEquality(that=zero)

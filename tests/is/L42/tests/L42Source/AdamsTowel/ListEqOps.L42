@@ -115,7 +115,7 @@ method This --(This right) = (
   while i<size (
     Elem ei = this.readVal(i)
     if !(ei in right) ( res.add(ei) )
-    i := i.#succ()
+    i := i.succ()
     )
   res
   )

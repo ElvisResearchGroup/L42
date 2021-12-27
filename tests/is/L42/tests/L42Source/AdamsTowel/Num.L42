@@ -24,11 +24,11 @@ method This1.Double toDouble() = This1.Double<:class This1.Double.#apply(num=thi
 
 @{Meta-programming friendly method.
 The successor operation. Simply adds 1}
-method This #succ()=native{trusted:succ} error void
+method This succ()=native{trusted:succ} error void
 
 @{Meta-programming friendly method.
 The predecessor operation. Simply subtracts 1}
-method This #pred()=native{trusted:pred} error void
+method This pred()=native{trusted:pred} error void
 
 #norm{nativeKind=BigRational, nativePar=This1.Math$ArithmeticError
   typeDep=This,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double, This1.Math$ArithmeticError

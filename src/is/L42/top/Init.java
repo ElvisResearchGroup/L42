@@ -29,6 +29,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.S;
 import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.tools.General;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.PropagatorCollectorVisitor;
 
@@ -43,7 +44,7 @@ public class Init {
     assert program!=null;
     this.f=new FreshNames();
     Program res=init(program,f);
-    assert res.top.wf();
+    assert General.checkNoException(()->res.top.wf());
     collectAllUniqueNs(res,Resources.usedUniqueNs);
     p=res;
     }
@@ -76,7 +77,6 @@ public class Init {
     return pStart.top.visitable().accept(new InitVisitor(f,pStart));
     }
   public static CoreL topCache(CachedTop c,String code){
-    //TestCachingCases.timeNow("begin0");
     return new Init(code).topCache(c);
     }    
   public static CoreL topCache(CachedTop c,Path initialPath,String code){
@@ -92,11 +92,8 @@ public class Init {
     return new State(f,new ArrayList<>(),0,new JavaCodeStore(),new ArrayList<>());
     }
   public CoreL topCache(CachedTop c){
-    //TestCachingCases.timeNow("begin1");
     Resources.loader=new Loader();
-    //TestCachingCases.timeNow("begin2");
     LayerE l=LayerL.empty().push(this.p.top,Map.of());
-    //TestCachingCases.timeNow("begin3");
     R res=c.openClose(new GLOpen(l,makeState()));
     if(res.isErr()){throw res._err;}
     return (CoreL)res._obj;    

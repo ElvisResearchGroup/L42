@@ -77,11 +77,11 @@ read method This1.S toS()=native{trusted:toS} error void
   
 @{Meta-programming friendly method.
 The successor operation.}
-method This #succ()=native{trusted:succ} error void
+method This succ()=native{trusted:succ} error void
 
 @{Meta-programming friendly method.
 The predecessor operation.}
-method This #pred()=native{trusted:pred} error void
+method This pred()=native{trusted:pred} error void
 
 @{Meta-programming friendly method.
 For this class it just returns the receiver.}
@@ -111,7 +111,7 @@ method This1.Long toLong()=native{trusted:intToLong} error void
 Turns the receiver into its arbitrary precision rational representation.}
 method This1.Num toNum()=(
   This zero = This<:class This.zero()
-  This one = zero.#succ()
+  This one = zero.succ()
   This1.S<:class This1.S.sizeToNum(that=this,denominator=one)
   )
 

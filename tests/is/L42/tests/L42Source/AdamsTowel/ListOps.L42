@@ -43,7 +43,7 @@ read method capsule This clone()=(
     if Elem ei = System.immClone(this.readVal(i)) (
       res.add(ei) //always matches
       )
-    i := i.#succ()
+    i := i.succ()
     )
   res
   )
@@ -55,7 +55,7 @@ method This immNorm() = (
     while i<size (
       Elem ei = this.readVal(i)
       res.add(ei)
-      i := i.#succ()
+      i := i.succ()
       )
     res
     )
@@ -68,23 +68,23 @@ method toS()=(
   var res=S"["
   while i<this.size() (
     res++= AnyToS(this.readVal(i))
-    i:=i.#succ()
+    i:=i.succ()
     if i!=this.size() (res++=S"; ") 
     )
   res++S"]"
   )
 read method Elem left()=this.val(0\)
-read method Elem right()=this.val(\size.#pred())
+read method Elem right()=this.val(\size.pred())
 mut method mut Elem #left()=this.#val(0\)
-mut method mut Elem #right()=this.#val(\size.#pred())
+mut method mut Elem #right()=this.#val(\size.pred())
 read method read Elem readLeft()=this.readVal(0\)
-read method read Elem readRight()=this.readVal(\size.#pred())
+read method read Elem readRight()=this.readVal(\size.pred())
 
 
 mut method  Void left(Elem that)=this.set(0\ val=that)
-mut method  Void right(Elem that)=this.set(\size.#pred() val=that)
+mut method  Void right(Elem that)=this.set(\size.pred() val=that)
 mut method  Void #left(mut Elem that)=this.#set(0\ val=that)
-mut method  Void #right(mut Elem that)=this.#set(\size.#pred() val=that)
+mut method  Void #right(mut Elem that)=this.#set(\size.pred() val=that)
 
 mut method Void add(Elem left)=this.add(0\, val=left)
 mut method Void add(Elem right)=this.add(\size, val=right)
@@ -92,7 +92,7 @@ mut method Void #add(mut Elem left)=this.#add(0\, val=left)
 mut method Void #add(mut Elem right)=this.#add(\size, val=right)
 
 mut method  Void removeLeft()=this.remove(0\)
-mut method  Void removeRight()=this.remove(\size.#pred())
+mut method  Void removeRight()=this.remove(\size.pred())
 
 mut method Void clear() =
   while !this.isEmpty() this.removeRight()
@@ -111,21 +111,21 @@ method This with(I that, Elem val)=(
   size=this.size()
   res=This(capacity=this.size())
   var i=0I
-  while i<that (res.add(this.readVal(i)) i:=i.#succ())
-  res.add(val) i:=i.#succ()
-  while i<size (res.add(this.readVal(i)) i:=i.#succ())
+  while i<that (res.add(this.readVal(i)) i:=i.succ())
+  res.add(val) i:=i.succ()
+  while i<size (res.add(this.readVal(i)) i:=i.succ())
   res
   )
 method This with(Elem left)=this.with(0\, val=left)
-method This with(Elem right)=this.with(\size.#pred(), val=right)
+method This with(Elem right)=this.with(\size.pred(), val=right)
 
 method This withAlso(I that, Elem val)=(
   size=this.size()
   res=This(capacity=this.size())
   var i=0I
-  while i<that (res.add(this.readVal(i)) i:=i.#succ())
+  while i<that (res.add(this.readVal(i)) i:=i.succ())
   res.add(val)
-  while i<size (res.add(this.readVal(i)) i:=i.#succ())
+  while i<size (res.add(this.readVal(i)) i:=i.succ())
   res
   )
 
@@ -137,15 +137,15 @@ method This without(I that)=(
   size=this.size()
   res=This(capacity=this.size())
   var i=0I
-  while i<that (res.add(this.readVal(i)) i:=i.#succ())
-  i:=i.#succ()
-  while i<size (res.add(this.readVal(i)) i:=i.#succ())
+  while i<that (res.add(this.readVal(i)) i:=i.succ())
+  i:=i.succ()
+  while i<size (res.add(this.readVal(i)) i:=i.succ())
   res
   )
 
 method This withoutLeft()=this.without(0\)
 
-method This withoutRight()=this.without(\size.#pred())
+method This withoutRight()=this.without(\size.pred())
 
 read method read Iterator vals(I that,I to)=Iterator(start=that,end=to,list=this)
 mut method mut Iterator #vals(I that,I to)=Iterator(start=that,end=to,list=this)

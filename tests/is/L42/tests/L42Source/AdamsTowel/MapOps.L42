@@ -114,7 +114,7 @@ class method mut This of(mut Hi hi,mut Hm hm)
     key=Collection.AnyToS(this.key(i))
     val=Collection.AnyToS(this.readVal(i))
     res++=S"%key->%val"    
-    i:=i.#succ()
+    i:=i.succ()
     if i!=this.size() (res++=S"; ") 
     )
   res++S"}"

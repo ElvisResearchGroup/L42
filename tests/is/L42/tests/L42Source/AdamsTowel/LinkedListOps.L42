@@ -7,7 +7,7 @@ interface
 @Public read method Bool isEmpty()
 @Public read method Iterator #iterator()
 @Public read method read L #startIndex()
-@Public read method read L #succ()
+@Public read method read L succ()
 
 @Public Elem = {}
 L = {interface
@@ -18,7 +18,7 @@ L = {interface
   read method Bool isEmpty()
   read method Iterator #iterator()
   read method read L #startIndex()
-  read method read L #succ()
+  read method read L succ()
   }
   
 @Public Empty = {[L]
@@ -31,7 +31,7 @@ L = {interface
   method isEmpty() = Bool.true()
   method #iterator() = Iterator()
   method #startIndex() = this
-  method #succ() = this.pop()
+  method succ() = this.pop()
   }
   
 Cons = {[L]
@@ -43,7 +43,7 @@ Cons = {[L]
   method isEmpty() = Bool.false()
   method #iterator() = Iterator()
   method #startIndex() = this
-  method #succ() = this.pop()
+  method succ() = this.pop()
   }
 
 @Public Iterator = {

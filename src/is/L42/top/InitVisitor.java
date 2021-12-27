@@ -69,6 +69,7 @@ class InitVisitor extends CloneVisitorWithProgram{
     catch(IOException ioe){
       throw new EndError.InvalidImplements(s.poss(),ErrMsg.dotDotDotSouceNotExistant(path));
       }
+    dots.wf();
     if(dots.isFullL()){
       List<Full.L.M> newMs=merge(((Full.L)dots).ms(),s.ms());
       newMs=Init.exapandMs(newMs);

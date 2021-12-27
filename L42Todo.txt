@@ -11,25 +11,15 @@
     if neither, System.eq, if some, eq is false.
     But.. how often to compute the repr for contains? 
   
-Outside of assertion mode errors:
-A = (void),A = (void) gives well formed error but
-Content = {...}//A = (void),A = (void)
-gives linkage error and 
-Content = {...}//B = {class method Library library()={} }, A = (void),A = (void)
-gives a precondition violation
-Ideally, find the assertion failing trycatching the error and add the lambda there
-
 -make a trusted native op to read the command line options
 --either add a bunch of data stuff to collections or slim data
 as in Insert = Class:(Trait:Collection.map(key=S val=S)):Data.addImmClone()
 
+-X[test, msg=S"..."] would comput the S and the string interpolations even if the test pass, can we twist the sugar to avoid that
 With the simple desugaring this could work: 
   X[test || X".."]
   X[\(actual, expected) || X".."] //mutate the builder to remember actual/expected
 
--if we have a lent list, can we iterate on it, error now on spliterators
-
-Why ExampleJar.L42 is saved on git Language42.is as .L42 ?
 Matrix should have max col/ max row methods, and an initialize with val
 
 typo in keyword: close -> closed or sealed and Data.Close Data.Seal
@@ -37,17 +27,10 @@ typo in keyword: close -> closed or sealed and Data.Close Data.Seal
 guide, check typos from 7+
 guide 6: table spacing
 
-Long has private/pubblic, losing a few stuff
-
-pres/succ without the #
-
-
-
-Opt should have a val(orElse=) method
 Matrix should have maxRow/maxCol methods, and init with value
 Map with default??
 
-simplify && / || desugaring, check that it works well for opts
+&& / || desugaring : check that it works well for opts
 
 In Unit, we generate _FromLeft, do we want to keep it public? with the underscore??
 In Unit, can we now remove N()? or make it private?
@@ -60,7 +43,6 @@ in a few more places with Base64 we may use the more efficient "".replaceAll("\\
 -can we make cache (and hints?) checkpoint every main compilation-run step?
 -can we customize max/min memory on the ide+spawned processes?
 
--X[test, msg=S"..."] would comput the S and the string interpolations even if the test pass, can we twist the sugar to avoid that
 
 -docs of string, nat, bool and collection
 

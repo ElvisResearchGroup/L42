@@ -831,7 +831,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S checkTrueS=S.parse("#checkTrue()");
   private static final S iteratorS=S.parse("#iterator()");
   private static final S varIteratorS=S.parse("#varIterator()");
-  private static final S succS=S.parse("#succ()");
+  private static final S succS=S.parse("succ()");
   private static final S hasElemS=S.parse("#hasElem()");
   private static final S itAddS=S.parse("#itAdd()");
   private static final S startIndexS=S.parse("#startIndex()");

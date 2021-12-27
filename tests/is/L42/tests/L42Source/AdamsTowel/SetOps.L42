@@ -48,7 +48,7 @@ class method mut This of(mut Set set)
   var res=S"{"
   while i<this.size() (
     res++= Collection.AnyToS(this.val(i))
-    i:=i.#succ()
+    i:=i.succ()
     if i!=this.size() (res++=S"; ") 
     )
   res++S"}"

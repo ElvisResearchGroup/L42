@@ -575,7 +575,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     }
   N={
     class method This ()
-    method This #succ()=this
+    method This succ()=this
     method B #if()=B()
     }
   E={

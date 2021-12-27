@@ -141,7 +141,7 @@ class method S up1(S char)={
     else ( \to(size) )
     \(to+sep.size()<size)
     )
-  @Public mut method mut This #iterator() = this
+  @Public lent method lent This #iterator() = this
   @Public read method I #startIndex()=0I
   }
 @Public method mut Chariterator split() = 
@@ -169,6 +169,6 @@ class method S up1(S char)={
     \from(from+1I)
     \(from<to)
     )
-  @Public mut method mut This #iterator() = this
+  @Public lent method lent This #iterator() = this
   @Public read method I #startIndex()=0I
   }

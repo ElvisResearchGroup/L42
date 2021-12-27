@@ -26,11 +26,11 @@ TraitMinMax=Trait:{
   }
 TraitRangeTo=Trait:{
   method Bool <(This that)
-  method This #pred()
+  method This pred()
   method This clamp(This that,This to)=
     if this<that that
     else if this<to this
-    else  to.#pred()
+    else  to.pred()
   }
 TraitRangeMax=Trait:{
   method Bool <(This that)
@@ -47,13 +47,13 @@ TraitAcc=Trait:{
     mut method Void add(This1 that)=\val(\val+that)
     mut method Void times(This1 that)=\val(\val*that)
     mut method Void divide(This1 that)=\val(\val/that)
-    mut method Void addOne()=\val(\val.#succ())
-    mut method Void addIf(Bool that)=if that \val(\val.#succ())
+    mut method Void addOne()=\val(\val.succ())
+    mut method Void addIf(Bool that)=if that \val(\val.succ())
     }
   method This + (This that)
   method This * (This that)
   method This / (This that)
-  method This #succ()
+  method This succ()
   method mut Acc acc()=\(val=this)
   }
 

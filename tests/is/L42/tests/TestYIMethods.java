@@ -818,7 +818,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
              Void fresh6_underscore=(
                a:=fresh0_xIt.#update#imm(that=fresh1_xIndex, val=a)
                )
-             fresh1_xIndex:=fresh1_xIndex.#succ()
+             fresh1_xIndex:=fresh1_xIndex.succ()
              )
            )
          catch exception Void fresh7_underscore void

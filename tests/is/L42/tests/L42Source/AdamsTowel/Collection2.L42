@@ -178,7 +178,7 @@ MaxSize=Data:{ @Cache.Lazy class method I ()=1073741823I }
     //next 3 methods are duplicated, could be avoided but would be harder
     mut  method mut Elem #val(I that)      = (\checkRange(that) this.#elem#mut(that+\start) )
     mut method  mut Elem #left()    = this.#val(0I)
-    mut method mut Elem #right()   = this.#val(\end.#pred())
+    mut method mut Elem #right()   = this.#val(\end.pred())
 
     class method mut This(fwd mut Coll collection, I start, I maxEnd, fwd mut Elem more)
     class method mut This(fwd mut Coll that, I from, I to, fwd mut Elem more)=\(collection=that,start=from,maxEnd=to,more=more)
@@ -198,7 +198,7 @@ MaxSize=Data:{ @Cache.Lazy class method I ()=1073741823I }
     mut  method mut Elem #elem#mut(I that) = this.#collection().#elem#mut(that)
     mut  method mut Elem #val(I that)      = (\checkRange(that) this.#elem#mut(that+\start) )
     mut method  mut Elem #left()    = this.#val(0I)
-    mut method mut Elem #right()   = this.#val(\end.#pred())
+    mut method mut Elem #right()   = this.#val(\end.pred())
     }
   TraitHasUpdateMut=Trait:{
     Elem = {}
@@ -209,7 +209,7 @@ MaxSize=Data:{ @Cache.Lazy class method I ()=1073741823I }
     mut  method mut Elem #update#mut(I that, mut Elem val) = this.#collection().#update#mut(that,val=val)
     mut  method Void #set(I that,mut Elem val) =  (_=this.#update#mut(that,val=val) void)
     mut  method Void #left(mut Elem that)  = this.#set(\start,val=that)
-    mut  method Void #right(mut Elem that) = this.#set(\end.#pred(),val=that)
+    mut  method Void #right(mut Elem that) = this.#set(\end.pred(),val=that)
     }
   TraitHasUpdateImm=Trait:{
     Elem = {}
@@ -220,7 +220,7 @@ MaxSize=Data:{ @Cache.Lazy class method I ()=1073741823I }
     mut  method Elem #update#imm(I that, Elem val) = this.#collection().#update#imm(that,val=val)
     mut  method Void set(I that,Elem val)      =  (_=this.#update#imm(that,val=val) void)
     mut  method Void left(Elem that)       = this.set(\start,val=that)
-    mut  method Void right(Elem that)      = this.set(\end.#pred(),val=that)
+    mut  method Void right(Elem that)      = this.set(\end.pred(),val=that)
     }
   TraitBase=Trait:{
     Elem = {}
@@ -247,7 +247,7 @@ MaxSize=Data:{ @Cache.Lazy class method I ()=1073741823I }
     read method read Elem readVal(I that) = (\checkRange(that) this.#elem#read(that+\start) )
     read method imm  Elem val(I that)     = (\checkRange(that) this.#elem#imm(that+\start) )
     read method imm  Elem left()    = this.val(0I)
-    read method imm  Elem right()   = this.val(\end.#pred())
+    read method imm  Elem right()   = this.val(\end.pred())
     read method Void checkRange(I that)= (
       if that<0I (_=this.#elem#read(that) void)//will throw out of bound
       if that>=\size (_=this.#elem#read(this.collection().size()) void)//will throw out of bound
