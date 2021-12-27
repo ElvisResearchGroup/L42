@@ -58,7 +58,6 @@ public class IntegrationTests extends TestL42Bridge {
       name("L42Source/TestDecoratorDecorator"),
       name("L42Source/TestSifoExamples"),
       name("L42Source/BattleShip")
-      //name("L42Source/TestAdventOfCode2021")
       );
     return Stream.concat(adamTowel,Stream.concat(deployed,integrationTests));
     }

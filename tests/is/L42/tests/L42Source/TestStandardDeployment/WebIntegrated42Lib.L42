@@ -44,10 +44,11 @@ WebIntegrated42Lib = {
       return Process.Real.#$of(\[S"m4";S"-P";that]).start(input=S"")
       catch Process.Fail f (
         /*command for win*/
-        return Process.Real.#$of(\[S"../CommonHtmlDocumentation/m4.exe";S"-P";that]).start(input=S"")  
+        return Process.Real.#$of(\[S"../CommonHtmlDocumentation/m4.exe";S"-P";that]).start(input=S"")
         )
       }
     X[res.err()==S"" msg=res.err()]
+    X[res.out().trim()!=S"" msg=S"m4 command silently unsuccessful"]
     DocsBuilder(this,content=res.out())
     )
   DocsBuilder = Data:{
@@ -76,8 +77,7 @@ WebIntegrated42Lib = {
       writer.write(
         on=Url"github.com/%repo/%version/%destination",
         contentBase64=fs.readBase64(localName)
-        )    
-      Debug(S"writing done for %destination "++Url"github.com/%repo/%version/%destination".toS())
+        )
       this
       )
     }

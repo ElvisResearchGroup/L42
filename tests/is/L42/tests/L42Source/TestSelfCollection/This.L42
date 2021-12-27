@@ -88,8 +88,6 @@ MainBoxes=(
   bl2=A.BoxL((l=A.L() l.#add(right=l) l))
   //bs2=A.BoxS(..) circular set can not happen
   bm2=A.BoxM((m=A.M() m.#put(key=\() val=m) m))
-  bo2=A.BoxO((o=A.O(o) o))
-  A.O oo=(o=A.O(o) o)
   {}:Test""(expected=S"""
   |A.BoxL(l1)
   |  where:
@@ -104,15 +102,31 @@ MainBoxes=(
   |    m4 = A.M(hi=hi::39_3, hm=hm::39_5)
   |    hm::39_5 = A.M.Hm::39{}
   """ actual=bm2.toS())
-  {}:Test""(expected=S"""
-  |A.BoxO(<<>>)//print is ok, fwd resolution is buggy
-  """ actual=bo2.toS())
-  {}:Test""(expected=S"""
-  |<<<>>>//print is ok, fwd resolution is buggy
-  """ actual=S" %oo, %oo.val(), %oo.val().val() ")
   void  
   )
-  
+
+MainFwdOpt=(
+  err = (
+    A.O res=(o=A.O(o) o)
+    catch error Collection.NoElementInOpt nopt nopt
+    error X""
+    )
+  {}:Test""(actual=err,expected=S"[###]Optional value can not be initialized with a fwd[###]")
+  err2 = (
+    bo2=A.BoxO((o=A.O(o) o))
+    catch error Collection.NoElementInOpt nopt nopt
+    error X""
+    )
+  {}:Test""(actual=err2,expected=S"[###]Optional value can not be initialized with a fwd[###]")
+
+  //A.O oo=(o=A.O(o) o)
+  //{}:Test""(expected=S"""
+  //|A.BoxO(<<>>)//print is ok, fwd resolution is buggy
+  //""" actual=bo2.toS())
+  //{}:Test""(expected=S"""
+  //|<<<>>>//print is ok, fwd resolution is buggy
+  //""" actual=S" %oo, %oo.val(), %oo.val().val() ")
+  )  
 
 MainMini=(
   mini=A.Mini[key=A.A(), val=A.La[]]

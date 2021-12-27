@@ -240,6 +240,15 @@ class OpUtils{
   static Generator use(String s0,Signature sig){
     return use(p->s0,sig);
     }
+  static String preOptK="""
+    boolean bad=%2$s instanceof L42Fwd &&
+      !(((Object)%2$s) instanceof L42NoFields<?>);
+    if(!bad){return
+    """;
+  static String postOptK="""
+    ;}
+    throw new L42Error(%Gen2.wrap(new L42£LazyMsg(\"Optional value can not be initialized with a fwd\")));
+    """; 
   static Function<Program,String> optChoice(String opt,String optOpt){
     return p->{
       if(!TrustedKind.isOptOpt(p,false)){return opt;}

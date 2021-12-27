@@ -1,4 +1,14 @@
 reuse [AdamsTowel]
+SBox = Data:{S val}
+SBBox = Data:{SBox box}
+OBox = Collection.optional(Any)
+Main=(
+  OBox obhi = OBox(bhi)
+  SBBox b2 = SBBox(box=bhi)
+  SBox bhi = SBox(val=S"hi!!")
+  Debug(obhi)
+  Debug(b2)
+  )/*
 Nope={
   A = Data:{ S.Set empty=\() }
   A2 = Data:{ S.Set empty=\[S"A";S"B"] }
@@ -12,7 +22,17 @@ Nope={
   E = Data:{ Name empty='Foo }
   F = Data:{ Any empty=Name"Foo" }
   O = Collection.optional(A)
+  SBox = Data:{S val}
+  OBox = Collection.optional(Any)
   Main=(
+    OBox obhi = OBox(bhi)
+    SBox bhi = SBox(val=S"hi!!")
+    Debug(obhi)
+    //(
+    //S.Opt oHi = S.Opt(hi)
+    //S hi =S"hi!!"
+    //Debug(oHi)
+    //)
     Debug(S"a")
     Debug(A())
     Debug(A2())
@@ -35,4 +55,4 @@ Nope={
     //Debug(F(empty=S.Opt()))
     Debug(S"end")
     )
-  }
+  }*/

@@ -16,8 +16,6 @@ import is.L42.flyweight.P;
 import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
-import is.L42.numbers.L42£BigRational;
-import is.L42.platformSpecific.javaTranslation.Resources;
     
 public enum TrustedOp {
   //booleans
@@ -617,7 +615,9 @@ public enum TrustedOp {
     NonDeterministicError,use("%s.setMsg(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,String))
       )),
   OptK("optK",Map.of(Opt,use(optChoice(
-    "return (%Gen1)%2$s;","return %Gen1.wrap((%Gen1)%2$s);"),
+    preOptK+" (%Gen1)%2$s"+postOptK,
+    preOptK+" %Gen1.wrap((%Gen1)%2$s)"+postOptK
+    ),
     sig(Class,Mutable,This,MutableFwd,Gen1)
     ))),
   Get("get",  Map.of(Opt,use(optChoice("""
@@ -632,13 +632,13 @@ public enum TrustedOp {
     NonDeterministicError,use("return %s.getMsg();",sig(Readable,Immutable,String))
     )),
   HGet("#get",Map.of(Opt,use(optChoice("""
-      if(%1$s!=null){return %1$s;}
-      throw new L42Error(%Gen2.wrap(new L42£LazyMsg(\"Optional value is empty\")));
-      ""","""
-      if(%1$s!=null){return %1$s.unwrap;}
-      throw new L42Error(%Gen2.wrap(new L42£LazyMsg(\"Optional value is empty\")));    
-      """),
-      sig(Mutable,Mutable,Gen1)))),
+    if(%1$s!=null){return %1$s;}
+    throw new L42Error(%Gen2.wrap(new L42£LazyMsg(\"Optional value is empty\")));
+    ""","""
+    if(%1$s!=null){return %1$s.unwrap;}
+    throw new L42Error(%Gen2.wrap(new L42£LazyMsg(\"Optional value is empty\")));    
+    """),
+    sig(Mutable,Mutable,Gen1)))),
   IsPresent("isPresent",Map.of(Opt,use("return %1$s!=null;",sig(Readable,Immutable,Bool)))),
   CacheLazy("lazyCache",Map.of(AnyKind,new CacheLazyGenerator())),
   CacheEager("eagerCache",Map.of(AnyKind,new CacheEagerGenerator())),

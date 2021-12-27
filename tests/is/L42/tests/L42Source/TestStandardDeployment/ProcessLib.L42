@@ -65,11 +65,11 @@ Process$Real=Public:{[Process]
     var os=proc.getOutputStream();
     os.write(input.getBytes());
     os.close();
-    int res=proc.waitFor();
     String out = new String(proc.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
     String err = new String(proc.getErrorStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
     out=is.L42.platformSpecific.javaTranslation.Resources.sanitizeJavaRes(out);
     err=is.L42.platformSpecific.javaTranslation.Resources.sanitizeJavaRes(err);
+    int res=proc.waitFor();
     var size=out.length();
     return size+"|"+out+"|"+err;
     }} error void

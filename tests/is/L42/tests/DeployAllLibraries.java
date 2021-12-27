@@ -49,8 +49,7 @@ public class DeployAllLibraries {
     List<String> fRes=res.stream().filter(s->s.startsWith("#Fail")).toList();
     if(!fRes.isEmpty()) {System.out.println("Errors deploying libraries:");}
     else {System.out.println("\n\nAll tests passed\n\n");}
-    for(var s:fRes) {System.out.println(split);System.out.println(s);}
-    //Why it is not terminating here?    
+    for(var s:fRes) {System.out.println(split);System.out.println(s);}    
     }  
   public static Stream<String> deployAllLibraries() throws IOException, URISyntaxException {
     return Stream.of(
