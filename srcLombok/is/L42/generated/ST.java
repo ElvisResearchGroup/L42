@@ -1,6 +1,9 @@
 package is.L42.generated;
 import lombok.Value;
 import lombok.experimental.Wither;
+
+import static is.L42.tools.General.L;
+
 import java.util.List;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
@@ -15,4 +18,9 @@ public interface ST extends HasWf,HasVisitable{
   @Value @Wither public static class
   STOp implements ST,Visitable<ST>{@Override public Visitable<ST>visitable(){return this;}@Override public ST accept(CloneVisitor cv){return cv.visitSTOp(this);}@Override public void accept(CollectorVisitor cv){cv.visitSTOp(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Op op; List<List<ST>> stzs;}
-}
+  @Value @Wither public static class
+  STHalfT implements ST, Visitable<ST>{@Override public Visitable<ST>visitable(){return this;}@Override public ST accept(CloneVisitor cv){return cv.visitSTHalfT(this);}@Override public void accept(CollectorVisitor cv){cv.visitSTHalfT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+    Mdf _mdf; List<ST> stz;
+    public static STHalfT of(Core.T t){return new STHalfT(null,L(t));}
+    }
+  }

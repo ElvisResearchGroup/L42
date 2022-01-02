@@ -194,6 +194,11 @@ public class Program implements Visitable<Program>{
         var st0=super.visitSTOp(st);
         return solve(st0);
         }
+      @Override public ST visitSTHalfT(ST.STHalfT st){
+        var st0=super.visitSTHalfT(st);
+        return solve(st0);
+        }
+
       @Override public Full.L visitL(Full.L l){throw bug();}
       @Override public CoreL visitL(CoreL l){
         return new From(Program.this,source,0).visitL(l);
@@ -372,13 +377,14 @@ public class Program implements Visitable<Program>{
   public ST solve(ST st){
     st=new UnDocST().visitST(st);
     if(st instanceof T){return st;}
-    if(st instanceof ST.STMeth){return solve((ST.STMeth)st);}
-    if(st instanceof ST.STOp){return solve((ST.STOp)st);}
+    if(st instanceof ST.STMeth sti){return solve(sti);}
+    if(st instanceof ST.STOp sti){return solve(sti);}
+    if(st instanceof ST.STHalfT sti){return solve(sti);}
     throw bug();
     }
   public ST solve(ST.STMeth stsi){
-    assert stsi.toString().length()<500:
-    "";
+    assert stsi.toString().length()<1000://663 was hit
+      stsi.toString().length();
     ST st=solve(stsi.st());
     if(!(st instanceof T) ||!((T)st).p().isNCs()){return stsi.withSt(st);}
     P.NCs p0=((T)st).p().toNCs();
@@ -405,6 +411,19 @@ public class Program implements Visitable<Program>{
     assert options.size()==1;
     Psi psi=options.iterator().next();
     return UnDocST.of(from(_elem(_ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p()));
+    }
+  public ST solve(ST.STHalfT ht){
+    ST res=auxSolve(ht);
+    return res.equals(ht)?ht:res;
+    }
+  public ST auxSolve(ST.STHalfT ht){
+    var stz1=ht.stz().stream().map(sti->solve(sti)).toList();
+    if(stz1.size()!=1) { return ht.withStz(stz1); }
+    var left= stz1.get(0);
+    if (!(left instanceof T t)) {
+      return ht._mdf()==null?left:ht.withStz(L(left));
+      }
+    return ht._mdf()==null?t:t.withMdf(ht._mdf());
     }
   static List<List<T>> tzsToTsz(List<List<T>> tzs){
     assert !tzs.isEmpty();
@@ -498,6 +517,7 @@ public class Program implements Visitable<Program>{
   public static Map<ST, List<ST>> pruneThis0(Map<ST, List<ST>> map) {
     return map.entrySet().stream()
       .<Map.Entry<ST, List<ST>>>mapMulti(Program::pruneThis0)
+      .distinct()
       .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
     }
   private static void pruneThis0(Map.Entry<ST, List<ST>> e, Consumer<Map.Entry<ST, List<ST>>> c) {

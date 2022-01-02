@@ -75,7 +75,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitEX(Core.EX x){
     var t=y.g()._of(x.x());
     if (t==null){commit(x,L(),L());}
-    else{commit(x,t,L());}
+    else{commit(x,L(t),L());}
     }
   @Override public void visitEVoid(Core.EVoid eVoid){
     commit(eVoid,L(P.coreVoid),L());
@@ -109,9 +109,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
       if(res==null){
         throw new EndError.NotWellFormed(xp.poss(),ErrMsg.methCallOnFwd(xp));
         }
-      return res;
+      return L(res);
       }
-    if(xp instanceof Half.PCastT){return ((Half.PCastT)xp).stz();}
+    if(xp instanceof Half.PCastT pct){return pct.stz();}
     assert xp instanceof Half.SlashCastT;
     return ((Half.SlashCastT)xp).stz1();
     //Note: should it be stz1() or stz()? it was stz, but looked wrong
@@ -192,10 +192,10 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
     if(opUpdate.op()!=Op.ColonEqual){opUpdate=doUpdate(opUpdate);}
     Y oldY=y;
-    y=y.with_expectedT(y.g().of(opUpdate.x()));
+    y=y.with_expectedT(L(y.g().of(opUpdate.x())));
     var res=compute(opUpdate.e());
     y=oldY;
-    ctz.plusAcc(y.p(), res.resSTz, y.g().of(opUpdate.x()));
+    ctz.plusAcc(y.p(), res.resSTz, L(y.g().of(opUpdate.x())));
     commit(new Half.OpUpdate(opUpdate.pos(),opUpdate.x(),res.e),P.stzCoreVoid,res.retSTz);        
     }  
   private Full.OpUpdate doUpdate(Full.OpUpdate ou) {
@@ -273,7 +273,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       ds.addAll(res.e);
       retSTDs.addAll(res.retSTz); //resST is empty
       for(var dRes:res.e){
-        y=y.withG(y.g().plusEqOver(dRes.x(),dRes.stz()));
+        y=y.withG(y.g().plusEqOver(dRes.x(),dRes._mdf(),dRes.stz()));
         }
       }
     for(Full.K k:block.ks()){
@@ -348,7 +348,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     ds.addAll(res.e);
     retST.addAll(res.retSTz);
     Y oldY=y;
-    y=y.withG(y.g().plusEq(x,res.e.get(0).stz()));
+    y=y.withG(y.g().plusEq(x,res.e.get(0)._mdf(),res.e.get(0).stz()));
     for(var vtx:d.varTxs()){
       S s=NameMangling.methNameTrim(vtx._x());
       var addHash=vtx._mdf()!=null && vtx._mdf().isIn(Mdf.Capsule,Mdf.Mutable,Mdf.Lent);
@@ -440,10 +440,10 @@ public class ToHalf extends UndefinedCollectorVisitor{
     if(k._x()==null){k=k.with_x(freshX("underscore"));}
     if(k._thr()==null){k=k.with_thr(ThrowKind.Exception);}
     Y oldY=y;
-    List<ST> t=L(TypeManipulation.toCore(k.t()));
+    Core.T t=TypeManipulation.toCore(k.t());
     y=y.withG(y.g().plusEq(k._x(),t));
     var res=compute(k.e());
-    Half.K kr=new Half.K(k._thr(),t,k._x(),res.e);
+    Half.K kr=new Half.K(k._thr(),L(t),k._x(),res.e);
     y=oldY;
     return new Res<>(kr,res.resSTz,res.retSTz);
     }
@@ -503,7 +503,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       visitBlock(makeBlock(p,L(d),b.withEs(List.of(ex,e1))));
       return;
       }
-    assert b.op()==Op.AndAnd || b.op()==Op.OrOr;
+    assert b.op()==Op.AndAnd || b.op()==Op.OrOr: b.op();
     Full.If ifElse=(b.op()==Op.AndAnd)?
       new Full.If(p, e0,L(), e1, e0):
       new Full.If(p, e0,L(), e0, e1);

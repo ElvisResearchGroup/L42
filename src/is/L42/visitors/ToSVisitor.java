@@ -73,7 +73,13 @@ public class ToSVisitor implements ToSTrait{
     visitS(stMeth.s());
     if(stMeth.i()!=-1){c("."+stMeth.i());}
     }
-
+  public void visitSTHalfT(ST.STHalfT stHalfT){
+    if(stHalfT._mdf()==null){ c("noMdf"); }
+    else { c(stHalfT._mdf().inner); }//different on purpose from visitMdf
+    c("[");
+    for(var st: stHalfT.stz()){ visitST(st); }
+    c("]");
+    }
   public void visitSTOp(ST.STOp stOp){
     c(opRepr(stOp.op()));
     for(var stz:stOp.stzs()){

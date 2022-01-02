@@ -108,6 +108,12 @@ _______
     {P.s.i}={P.s.i| P.s.i in p.opOptions(OP T1..Tn) and Ti in TZi}
 * p.solve(OP STz1..STzn) = OP p.solve(STz1)..p.solve(STzn)
     otherwise    
+* p.solve(empty ST) = p.solve(ST)
+* p.solve(mdf ST) = T[mdf=mdf] 
+    if T = p.solve(STz)
+* p.solve(mdf? STz) = mdf? p.solve(STz)
+    otherwise    
+
 NOTE: ST may contains Ps that are not in the domain of p,
       in those cases solve is the identity.
 TODO: should also p.minimize(P) and from(P;p) be resilient and do a best effort?

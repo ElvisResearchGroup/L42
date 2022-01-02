@@ -15,6 +15,7 @@ public class UndefinedCollectorVisitor implements CollectorVisitor{
   @Override public void visitS(S s){uc();}
   @Override public void visitX(X x){uc();}
   @Override public void visitSTMeth(ST.STMeth stMeth){uc();}
+  @Override public void visitSTHalfT(ST.STHalfT stHalfT){uc();}
   @Override public void visitSTOp(ST.STOp stOp){uc();}
   @Override public void visitEX(Core.EX x){uc();}
   @Override public void visitPCastT(Core.PCastT pCastT){uc();}

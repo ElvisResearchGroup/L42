@@ -25,7 +25,9 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     visitST(stMeth.st());
     visitS(stMeth.s());
     }
-
+  @Override public void visitSTHalfT(ST.STHalfT stHalfT){
+    for(var st:stHalfT.stz()){ visitST(st); }
+    }
   @Override public void visitSTOp(ST.STOp stOp){
     stOp.stzs().forEach(this::visitSTz);
     }

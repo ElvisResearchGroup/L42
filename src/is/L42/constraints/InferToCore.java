@@ -3,6 +3,7 @@ package is.L42.constraints;
 import static is.L42.tools.General.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import is.L42.common.CTz;
 import is.L42.common.EndError;
@@ -42,12 +43,23 @@ public class InferToCore extends UndefinedCollectorVisitor{
     if(_mdf!=null){res=res.withMdf(_mdf);}
     return res;
     }
+  private void mapMulti(ST st,Consumer<T> c){
+    if(st instanceof T t) { c.accept(t); }
+    if(st instanceof ST.STHalfT ht) {mapMulti(ht,c);}
+    }
+  private void mapMulti(ST.STHalfT ht,Consumer<T> c){
+    if (ht.stz().size()!=1){ return; }
+    var left=ht.stz().get(0);
+    if(!(left instanceof T t)){ return; }
+    if(ht._mdf()!=null) { t=t.withMdf(ht._mdf()); }
+    c.accept(t);
+    }
   private T infer(List<ST> stz, List<Pos> poss) {
     if(stz.size()==1 && stz.get(0) instanceof T){return (T)stz.get(0);}
     List<T> tzErr=new ArrayList<>();
     List<T> ts=L(stz,(c,sti)->{
       var stzi=sets.compute(sti);
-      var tz=typeFilter(stzi.stream(),T.class);
+      var tz=stzi.stream().<T>mapMulti(this::mapMulti).toList();
       var speci=TypeManipulation._chooseSpecificT(i.p(),tz, poss);
       if(speci!=null){c.add(speci);}
       else{tzErr.addAll(tz);}
@@ -61,8 +73,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
       var st=i.p().solve(stz);
       String hints="";
       for(var sti:st){
-        if(!(sti instanceof ST.STMeth)){continue;}
-        var meth=(ST.STMeth)sti;
+        if(!(sti instanceof ST.STMeth meth)){continue;}
         if(!(meth.st() instanceof Core.T)){continue;}
         var t=(Core.T)meth.st();
         var l=i.p()._ofCore(t.p());

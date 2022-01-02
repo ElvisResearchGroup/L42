@@ -7,8 +7,8 @@ public enum Op {
 
   AndAnd("&&", OpKind.BoolOp),//
   OrOr("||", OpKind.BoolOp),//
-  MinusGT("->",OpKind.RelationalOp),//was OpKind.BoolOp but now it is no more short circuted
   EqualEqual("==", OpKind.RelationalOp),//
+  MinusGT("->",OpKind.RelationalOp),//was BoolOp; new short circut does not work with it any more
   LT("<", OpKind.RelationalOp),//
   GT(">",OpKind.RelationalOp),//
   GTEqual(">=", OpKind.RelationalOp),//

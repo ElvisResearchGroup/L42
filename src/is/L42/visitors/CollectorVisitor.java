@@ -1,4 +1,6 @@
 package is.L42.visitors;
+import static is.L42.tools.General.L;
+
 import java.util.List;
 
 import is.L42.common.PTails;
@@ -54,6 +56,7 @@ public interface CollectorVisitor {
   void visitX(X x);
   void visitSTMeth(ST.STMeth stMeth);
   void visitSTOp(ST.STOp stOp);
+  void visitSTHalfT(ST.STHalfT stHalfT);
   void visitEX(Core.EX x);
   void visitPCastT(Core.PCastT pCastT);
   void visitEVoid(Core.EVoid eVoid);

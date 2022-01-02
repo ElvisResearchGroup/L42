@@ -72,7 +72,7 @@ public class CTz{
     for(var e:inner.entrySet()){
       assert !(e.getKey() instanceof T):e.getKey();
       assert p.solve(e.getKey())==e.getKey():
-        p.solve(e.getKey())+" "+e.getKey();
+        p.solve(e.getKey())+" "+e.getKey()+" "+p.solve(e.getKey()).getClass()+" "+e.getKey().getClass();
       for(var st:e.getValue()){
         assert p.solve(st)==st:p.solve(st)+" "+st;  
         }
@@ -99,8 +99,6 @@ public class CTz{
     inner.put(st,mergeU(data,stz1));
     assert coherent(p);    
     }    
-    
-    
   public InductiveSet<ST,ST> allSTz(Program p){
     return new AllSTzRule(this,p);
     }
@@ -109,8 +107,9 @@ public class CTz{
     @Override public void rule(ST st, Consumer<ST> s){
       s.accept(st);//* ST in CTz.allSTz(p,ST)
       transitive(st, s);
-      if(st instanceof ST.STMeth){onSTMeth((ST.STMeth)st,s);}
-      if(st instanceof ST.STOp){onSTOp((ST.STOp)st,s);}
+      if(st instanceof ST.STMeth sti){onSTMeth(sti,s);}
+      if(st instanceof ST.STOp sti ){onSTOp(sti,s);}
+      if(st instanceof ST.STHalfT sti){onSTHalfT(sti,s);}
       }
     private void transitive(ST st, Consumer<ST> s) {
       var st1n=ctz.inner.get(st);//    ST1..STn = CTz(ST)
@@ -133,7 +132,18 @@ public class CTz{
       }
     private void onSTOp(ST.STOp stop, Consumer<ST> s) {
       step(stop,s,L());
-      //need to accumulate the elements from the stop.stzs() 
+      //need to accumulate the elements from the stop.stzs()
+      }
+    private void onSTHalfT(ST.STHalfT ht, Consumer<ST> s) {
+      if(ht._mdf()==null){
+        for(var si : ht.stz()) { 
+          install(si,st1->s.accept(st1));
+          }
+        return;
+        }
+      for(var si : ht.stz()) { 
+        install(si,st1->s.accept(ht.withStz(L(st1))));
+        }
       }
     private void step(ST.STOp stop, Consumer<ST> s,List<ST> pre) {
       var stz1n=stop.stzs();

@@ -5,10 +5,10 @@ public enum Op {
   Tilde("~", OpKind.Unary),//
   Bang("!", OpKind.Unary),//
 
-  MinusGT("->",OpKind.BoolOp),//
   AndAnd("&&", OpKind.BoolOp),//
   OrOr("||", OpKind.BoolOp),//
   EqualEqual("==", OpKind.RelationalOp),//
+  MinusGT("->",OpKind.RelationalOp),//was BoolOp; new short circut does not work with it any more
   LT("<", OpKind.RelationalOp),//
   GT(">",OpKind.RelationalOp),//
   GTEqual(">=", OpKind.RelationalOp),//

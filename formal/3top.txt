@@ -282,14 +282,14 @@ _______
 * I!xs;var? mdf? STz x=e Ds => DsR
     I(mdf? STz) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,STz)
     I!e => ER 
-    ER = CTz';e' IfErr(ER) DR = ER
-    CORE.T' = CORE.T[mdf=imm] if mdf?=empty, CORE.T.mdf=read, e' not a block of for (ds _ x) where ds(x) is read and 
+    ER = CTz';e' IfErr(ER) DsR = ER
+    CORE.T' = CORE.T[mdf=imm] if mdf?=empty, CORE.T.mdf=read, e' not a block of form (ds _ x) where ds(x) is read and 
       not exists x in FV(e') such that x in dom(I.G) and I.G(x).mdf in {read,lent,mut}
     CORE.T' = CORE.T[mdf=mut] if mdf?=empty, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
     CORE.T' = CORE.T otherwise
     I[G=I.G,x:CORE.T'; CTz=CTz']!Ds => DsR'
-    DsR' = CTz;Ds IfErr(DsR') DsR = DsR'
-    DsR = CTz;var? CORE.T' x=e',Ds
+    DsR' = CTz;Ds' IfErr(DsR') DsR = DsR'
+    DsR = CTz;var? CORE.T' x=e',Ds'
 
 * I!catch throw STz x e => KR
     I(STz) = CORE.T IfNotE(CORE.T) inferenceFailure(I,STz)
@@ -393,6 +393,11 @@ _______
     STi in STzi
     ST'i in CTz.allSTz(STi)
     ST' in  CTz.allSTz(p.solve(OP ST'1..ST'n))
+
+* mdf ST' in CTz.allSTz(mdf STz)
+    ST' in CTz.allSTz(STz)
+* CTz.allSTz(STz) = CTz.allSTz(empty STz)//the empty "mdf?"
+
 //note:
     if S has 2 overloaded for + with both S->A and ToS->B, then
     [S, ToS] y=(S x=S"" catch error ToS y y x)
@@ -400,8 +405,8 @@ _______
     +[S][S] DOES NOT solve/infer to A, since also ToS->B is applicable
     +[S][S] will stay dormient and harmless during I.infer 
    
-* CTz.allTz(p,ST)={T | T in CTz.allST(p,ST)}
-
+* CTz.allTz(p,ST)={T | T in CTz.allSTz(p,ST)}
+    U {T[mdf=mdf] | mdf T in CTz.allSTz(p,ST)}
 _______
 #define I(mdf? STz) = CORE.T
 * I(mdf STz) = I(STz)[mdf=mdf]

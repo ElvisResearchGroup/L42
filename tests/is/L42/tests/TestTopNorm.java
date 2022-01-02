@@ -46,6 +46,18 @@ public class TestTopNorm{
   );}@Test public void wasLooping(){topFail(EndError.NotWellFormed.class,"""
     {Main = ( a = (for s in void a.f()) void )}
     """,ErrMsg.methCallOnFwd("a")
+      );}@Test public void wasSubTypeErr(){top("""    
+    {Foo = { mut Any mah
+        class method mut This(fwd mut Any mah)
+        read method A #if()=A()}
+    A = { class method This() method Void #checkTrue()=void }
+    Mini = (
+      imm foo = Foo(mah=void)
+      c = foo
+      imm Foo res = c
+      void
+      )}
+    """
   );}@Test public void traitTopUnique0(){top("""
     {
     Trait = {

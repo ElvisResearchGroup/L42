@@ -1,5 +1,31 @@
 reuse[AdamsTowel]
 
+OL = Collection.optional(S.List)
+TestAndOrOrElse = (
+  imm io1 = OL(\[S"mah"])
+  imm io2 = OL()
+  mut mo1 = OL(\[S"mah"])
+  mut mo2 = OL()
+  var acc = S""
+  if !io2 (acc++=S"A")
+  if io2 || io1 (acc++=S"B")
+  if io1 || io2 (acc++=S"C")
+  if mo2 || mo1 (acc++=S"D")
+  if mo1 || mo2 (acc++=S"E")
+  if io2 || mo1 (acc++=S"F")
+  if io1 || mo2 (acc++=S"G")
+  if mo2 || io1 (acc++=S"H")
+  if mo1 || io2 (acc++=S"I")
+  {}:Test"all"(actual=acc expected=S"ABCDEFGHI")
+  S res = (io2||io1).val(orElse=\()).left()
+  {}:Test"valOrElse"(actual=res expected=S"mah")
+  S lazy = (io2||OL(\[S"long"])).val().left()
+  {}:Test"valOrElse"(actual=lazy expected=S"long")
+  false = (S.List() in io2)
+  {}:Test"notIn"(!false)
+  )
+Map = Collection.map(key=Num, val=Num)
+
 TestToS={
   A = Data:{ S.Set empty=\() }
   A2 = Data:{ S.Set empty=\[S"A";S"B"] }

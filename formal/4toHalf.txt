@@ -229,9 +229,9 @@ _______
     otherwise TLocal'=mut if mut or capsule in TLocal1..TLocaln
     otherwise TLocal'=lent if lent in TLocal1..TLocaln
     Y!(TLocal' x = e) = D0; STz0; CTz0
-    Y[GX+=x:D0.STz CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(TLocal1,x1)()) = D1; STz1; CTz1
+    Y[GX+=x:D0.mdf? D0.STz CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(TLocal1,x1)()) = D1; STz1; CTz1
     ..
-    Y[GX+=x:D0.STz CTz=CTz(n-1)]!(varn? TLocaln xn = x.methNameTrim(TLocaln,xn)()) = Dn; STzn; CTzn
+    Y[GX+=x:D0.mdf? D0.STz CTz=CTz(n-1)]!(varn? TLocaln xn = x.methNameTrim(TLocaln,xn)()) = Dn; STzn; CTzn
     x fresh
 
 * methodNameTrim(TLocal, x)=x without any number postfix. If TLocal contains mut,capsule,lent, then '#' is added

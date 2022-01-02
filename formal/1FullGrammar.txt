@@ -58,7 +58,7 @@ _______
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
-  ST ::= CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type
+  ST ::= CORE.T | mdf? STz | OP STzs | ST.s | ST.s.i //i=0 for receiver type
   HALF.xP ::= x | P<:STz | %STz%<:STz'
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? mdf? STz x = e
@@ -74,7 +74,7 @@ _______
   Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| headerErr(p) | inferenceFailure(I,STz) | throw(p,A,v)
   R ::= PR | ER | DsR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
-  GX ::= x1:STz1 .. xn:STzn
+  GX ::= x1:mdf?1 STz1 .. xn:mdf?n STzn
   I ::= I[C?;p;G;CTz; frommed=CTz]//inference application environment
   Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=STz?;CTz] //desugaring & constraints accumulation
   v ::= CORE.xP | void | CORE.L

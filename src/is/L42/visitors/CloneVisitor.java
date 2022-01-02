@@ -79,7 +79,10 @@ public class CloneVisitor {
     if(s==s0 && st==st0){return stMeth;}
     return new ST.STMeth(st, s, stMeth.i());
     }
-
+  public ST visitSTHalfT(ST.STHalfT stHalfT){//note: different ret type
+    List<ST> stz=L(stHalfT.stz(),this::visitST);
+    return stHalfT.withStz(stz);   
+    }
   public ST visitSTOp(ST.STOp stOp){//note: different ret type
     List<List<ST>> zs=L(stOp.stzs(),this::listRoot);
     return stOp.withStzs(zs);
