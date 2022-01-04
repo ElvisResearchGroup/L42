@@ -1,8 +1,10 @@
 interface
+@{Handles the event by delegating it to an appropriate instance method.}
 @Public mut method Void >>1(Event event)
 @Public Fail=Message:{[Message.Guard]}
 BaseTrait=Trait:{[Handler$] method >>1(event)=void}
-InductiveTrait=Trait:{[Handler$] 
+InductiveTrait=Trait:{[Handler$]
+  @{Handles the event by delegating it to an appropriate instance method.}
   method >>1(event)=(
     if event.id() == This() (this.current(msg=event.msg()))
     this.super(event=event)

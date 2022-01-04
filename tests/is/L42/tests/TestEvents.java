@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import is.L42.platformSpecific.javaEvents.Event;
+import is.L42.platformSpecific.javaEvents.ConcreteEvent;
 
 public class TestEvents {
-  static{Event.test_only_initialize();}
-  Event event=Event.instance();
+  static{ConcreteEvent.test_only_initialize();}
+  ConcreteEvent event=ConcreteEvent.instance();
   @Test void test1Stream(){
     event.setTimeout(30);
     event.submitEvent("bar", "baz", "msg");

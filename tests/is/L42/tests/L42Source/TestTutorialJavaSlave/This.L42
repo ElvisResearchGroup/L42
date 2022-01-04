@@ -20,11 +20,11 @@ MainPingPong=(
     |import is.L42.platformSpecific.javaEvents.Event;
     |public record Bar2(Event event){
     | public Bar2{
-    |    event.registerEvent("BarIn","ping",(k,id,msg)->{
-    |      System.out.println("Ping Event received "+id+" "+msg);
+    |    event.registerEvent("BarIn","ping",(msg)->{
+    |      System.out.println("Ping Event received ping "+msg);
     |      event.submitEvent("BarOut","fromJavaToL42","pong");
     |      });
-    |    event.registerEvent("Kill",(k,id,msg)->{
+    |    event.registerEvent("Kill",(id,msg)->{
     |      System.out.println("Doing cleanup before slave JVM is killed");
     |      System.exit(0);
     |      });
@@ -45,7 +45,7 @@ MainAsk=(
   |import is.L42.platformSpecific.javaEvents.Event;
   |public record Bar1(Event event){//class Bar1 will be instanstiated
   |  public Bar1{ //by 42 and Event parameter is passed
-  |    event.registerAskEvent("BarAsk",(k,id,msg)->
+  |    event.registerAskEvent("BarAsk",(id,msg)->
   |      "any string computed in Java using "+id+" and "+msg);
   |    }
   |  }

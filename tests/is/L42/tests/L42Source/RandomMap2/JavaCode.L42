@@ -24,13 +24,13 @@ class method S (mut Gui that)=(
     |  .name("TreeTop",topProjection.Drawable.treeTop);
     |{
     |  paintable.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
-    |  event.registerEvent("Example.SetMap",(k,id,msg)->{
+    |  event.registerEvent("Example.SetMap",(id,msg)->{
     |    System.out.println("Map setted");
     |    paintable.map(msg);
     |    paintable.setFocusable(true);
     |    paintable.requestFocusInWindow();
     |    });
-    |  event.registerEvent("Example.SetCamera",(k,id,msg)->{
+    |  event.registerEvent("Example.SetCamera",(id,msg)->{
     |    paintable.cameraPos(msg);
     |    paintable.setFocusable(true);
     |    paintable.requestFocusInWindow();

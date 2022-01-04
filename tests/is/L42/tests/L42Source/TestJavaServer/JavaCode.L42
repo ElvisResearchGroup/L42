@@ -20,13 +20,13 @@ class method S ()=S"""
   |    button.addActionListener(e->{
   |      event.submitEvent("MiniGui","pressButton","");
   |      });
-  |    event.registerEvent("MiniGuiInput",(k,id,msg)->
+  |    event.registerEvent("MiniGuiInput",(id,msg)->
   |      SwingUtilities.invokeLater(()->button.setText(button.getText()+"!"))
   |      );
-  |    event.registerEvent("Kill",(k,id,msg)->
+  |    event.registerEvent("Kill",(id,msg)->
   |      frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
   |      );
-  |    event.registerAskEvent("Ask",(k,id,msg)->{
+  |    event.registerAskEvent("Ask",(id,msg)->{
   |      if(SwingUtilities.isEventDispatchThread()){throw new Error("unreachable");}
   |      var res=new CompletableFuture<String>();
   |      SwingUtilities.invokeLater(()->res.complete(button.getText()));

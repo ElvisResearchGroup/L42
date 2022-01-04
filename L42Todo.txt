@@ -2,6 +2,15 @@
 //tasked: a list of available libraries in this version
 //tasked: js file for ide personalization modularized away
 
+Data should not generate certain methods for immutable classes:
+immClone()                         read method This immClone()=(..)
+readEquality(that)                 read method Bool readEquality(read This that)=(..)
+capsuleClone()                     mut method capsule This capsuleClone()=(..)
+
+complete documentation of JavaServer
+include the interface for Event, to be included while compiling a
+jar and then the .class will be removed before putting into 42 project
+
 -big: refactor adam towel?
   -equals ->representative
   -map->single native instead of two
@@ -20,15 +29,10 @@ With the simple desugaring this could work:
   X[test || X".."]
   X[\(actual, expected) || X".."] //mutate the builder to remember actual/expected
 
-Matrix should have max col/ max row methods, and an initialize with val
-
 typo in keyword: close -> closed or sealed and Data.Close Data.Seal
 
 guide, check typos from 7+
 guide 6: table spacing
-
-Matrix should have maxRow/maxCol methods, and init with value
-Map with default??
 
 In Unit, we generate _FromLeft, do we want to keep it public? with the underscore??
 In Unit, can we now remove N()? or make it private?
@@ -76,7 +80,6 @@ can we just make it without the nested block, simply adding the catchReturn at t
 -should typeDep and coherentDep always contains explicitly the roots of the unique names one?
     now it is inconsistent. Also, what about depending from This0?
 -db: null can also be input to the query
--handle division by zero int, long, Num (and double? how is NAN cached eq?)
 -for pluggable type systems and field docs: it is very sad that
  @Foo T bar put the annotation on the field but imm @Foo bar puts it on the type
 -Bug: if you have a sum that sums wrong types for a field, we get a cache assertion fail.
@@ -88,7 +91,6 @@ can we just make it without the nested block, simply adding the catchReturn at t
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
 -BIG: Find a pattern to enable any native to be mapped on any type; consider loading a library on a towel where S is not native
--BIG, but confusing: the java compiler go in loop for code too complex, like to many &&. See TestTopNorm t_manyAnds() :-(
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
 -IDE: cut paste on win do not survive the IDE being closed
@@ -98,8 +100,6 @@ can we just make it without the nested block, simply adding the catchReturn at t
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
  //TODO: now somehow the Info is always declassed to "norm" :-(    
--Vector BUG: the error message seams to only mention imms:
-  -- "#val called, but the element in position "+%1$s+" was inserted as immutable"
 -can we simplify or remove class NormResult?
 -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
@@ -109,9 +109,8 @@ can we just make it without the nested block, simply adding the catchReturn at t
   Overall, what if the normalization cache use a (normalized) string instead of the key datastructure?
 -test cache in case the cached method do some exceptions/errors
 -collections methods are quite irregular, for example add() is shortcut for add(right), but #add() does not exists to be a shortcut for #add(right)
--if a method ends in stack oveflow, the error is only reported in Java and not in the IDE
 -add and test System.restartThreads() //or better name
--Consider removing 'pos' from Info toS, since pos is very big, that toFullS() is shorted then toS()
+-Consider removing 'pos' from Info toS, since pos is very big, than toFullS() is shorted then toS()
 -circular toString in TestData?
 -toLibrary in Data? is similar to the toString... now we have ListS+from(string), should we have from(ListAnys fields)? 
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)

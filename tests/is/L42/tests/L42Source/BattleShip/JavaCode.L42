@@ -58,6 +58,6 @@ class method S ()=S"""
   |      }
   |    }
   |  }
-  |{event.registerEvent("BattleShip.Display","MyShots",(k,id,msg)->display(msg,myButtons));}
-  |{event.registerEvent("BattleShip.Display","OtherShots",(k,id,msg)->display(msg,myShips));}
+  |{event.registerEvent("BattleShip.Display","MyShots",msg->display(msg,myButtons));}
+  |{event.registerEvent("BattleShip.Display","OtherShots",msg->display(msg,myShips));}
   """

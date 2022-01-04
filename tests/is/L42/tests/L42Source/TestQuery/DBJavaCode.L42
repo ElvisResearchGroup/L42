@@ -29,7 +29,7 @@ class method S (S url)=S"""%%
   |      "queryColumns(tableName)",this::queryColumns,
   |      "kill()",this::kill
   |      );
-  |    event.registerAskEvent("DB",(k,id,msg)->{
+  |    event.registerAskEvent("DB",(id,msg)->{
   |      try{return hm.get(id).of(msg);}
   |      catch(NullPointerException npe){throw new RuntimeException("Invalid id: "+id);}
   |      catch(SQLException e){throw new RuntimeException(e);}

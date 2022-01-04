@@ -1,16 +1,15 @@
 @Public Fail=Message:{[Message.Guard]}
-@Public Event=Data:{S key,S id,S msg
-  method This self()=this
-  }
+@Public Event=Data:{ S key,S id,S msg }
 @Public EventIterator={...}
-Handler$={interface mut method Void >>1(Event event)}
+Handler$={ interface mut method Void >>1(Event event) }
 @Public Handler={...}
 @Public Handler$Map=Collection.map(key=S val=Handler)
 Event$={
-  method Event self()
+  @{This event get handled by the 'map'}
   method Void >>(mut Handler$Map map)=(
-    optH=map.#val(key=this.self().key())
-    if optH (this.self()>>optH.#val())
+    @JavaServer Event self = this
+    optH=map.#val(key=self.key())
+    if optH (self>>optH.#val())
     )
   }
 @Public mut method mut EventIterator (mut S.List that)
@@ -19,8 +18,12 @@ Event$={
 class method mut This #$of::0(Bool alive)
 read method Bool alive::0()
 mut method Void alive::0(Bool that)
+
+@{Is this Java process alive?}
 @Public read method Bool alive()=this.alive::0()
 
+@{Loads the following code into a Java class and creates an instance of it.
+It then sets the alive flag to true.}
 @Public mut method Void loadCode(S fullName,S code)[Fail]=(
   S res=This.#$loadCode(fullName=fullName,code=code)
   this.alive::0(Bool.true())
@@ -35,15 +38,20 @@ class method S #$loadCode(S fullName,S code)[System.JavaException]=native{
   return is.L42.platformSpecific.javaEvents.LoadJavaCode.loadJavaCode(#1,#2);
   }} error void
 
+@{Gets the next event from the Java slave.
+More then one key can be specified; 
+if multiple keys are specified, they must be separated by a single new line character.
+}
 @Public mut method S.Opt nextEvent(S keys)[Fail]={
   return This.#$nextEvent(keys=keys)
   catch System.JavaException x exception Fail"%x.text()"
   }
 class method S.Opt #$nextEvent(S keys)[System.JavaException]=native{
   serverSlave{}{
-    return is.L42.platformSpecific.javaEvents.Event.instance().nextEvent(#1);
+    return is.L42.platformSpecific.javaEvents.ConcreteEvent.instance().nextEvent(#1);
   }} error void
 
+@{Submits a new event to the Java slave.}
 @Public mut method Void submitEvent(S key, S id, S msg)[Fail]=(
   _=This.#$submitEvent(key=key,id=id,msg=msg)
   catch System.JavaException x exception Fail"%x.text()"
@@ -51,21 +59,23 @@ class method S.Opt #$nextEvent(S keys)[System.JavaException]=native{
   )
 class method S.Opt #$submitEvent(S key,S id,S msg)[System.JavaException]=native{
   serverSlave{}{
-  is.L42.platformSpecific.javaEvents.Event.instance().submitEvent(#1,#2,#3);
+  is.L42.platformSpecific.javaEvents.ConcreteEvent.instance().submitEvent(#1,#2,#3);
   return "";}} error void
+
+@{Submits the 'Kill' event on the Java slave and sets the alive flag to false.}
 @Public mut method Void kill()=(
   (this.submitEvent(key=S"Kill",id=S"",msg=S"")
   catch exception Fail _ void)
   this.alive::0(Bool.false())
   )
-
+@{Submits a synchronous event and waits for the answer.}
 @Public mut method S.Opt askEvent(S key, S id, S msg)[Fail]={
   return This.#$askEvent(key=key,id=id,msg=msg)
   catch System.JavaException x exception Fail"%x.text()"
   }
 class method S.Opt #$askEvent(S key,S id,S msg)[System.JavaException]=native{
   serverSlave{}{
-  try{return is.L42.platformSpecific.javaEvents.Event.instance().askEvent(#1,#2,#3).join();}
+  try{return is.L42.platformSpecific.javaEvents.ConcreteEvent.instance().askEvent(#1,#2,#3).join();}
   catch(java.util.concurrent.CompletionException ce){
     Throwable t=ce.getCause();
     if(t==null){throw ce;}

@@ -19,7 +19,7 @@ class method S ()=S"""
   |      "val(that)",this::getIndex,
   |      "kill()",this::kill
   |      );
-  |    event.registerAskEvent("IQL42",(k,id,msg)->{
+  |    event.registerAskEvent("IQL42",(id,msg)->{
   |      try{return hm.get(id).of(msg);}
   |      catch(NullPointerException npe){throw new RuntimeException("Invalid id: "+id);}
   |      });

@@ -13,10 +13,16 @@ import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import safeNativeCode.utils.Utils;
 
 public class LoadJavaCode {
+  static final private List<String> extra=List.of(
+    "is.L42.platformSpecific.javaEvents.Event",
+    "is.L42.platformSpecific.javaEvents.ConcreteEvent"
+    //"is.L42.platformSpecific.javaEvents.Event.Function3",
+    //"is.L42.platformSpecific.javaEvents.Event.Consumer3"
+    );
   static{
     var sup=Utils.getIsJavaClass();
     Utils.setIsJavaClass((loc,name)->
-      name.equals("is.L42.platformSpecific.javaEvents.Event") || sup.test(loc, name)
+      extra.contains(name) || sup.test(loc, name)
       );
     }
   private static HashSet<String> loaded=new HashSet<>();
@@ -26,8 +32,8 @@ public class LoadJavaCode {
     loaded.add(fullName);
     SourceFile file = new SourceFile(fullName,code);
     List<SourceFile> files = List.of(file);
-    Event.initialize();
-    Event e=Event.instance();//Thus, the class is loaded here, before calling the new code
+    ConcreteEvent.initialize();
+    Event e=ConcreteEvent.instance();//Thus, the class is loaded here, before calling the new code
     ClassLoader classes = InMemoryJavaCompiler.compile(
         //ClassLoader.getSystemClassLoader()
         LoadJavaCode.class.getClassLoader()

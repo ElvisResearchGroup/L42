@@ -1,176 +1,94 @@
 package is.L42.platformSpecific.javaEvents;
 
-import static is.L42.tools.General.range;
-import static is.L42.tools.General.unreachable;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
+public interface Event{
+  /**
+   * registerEvent(key,c) registers an event handler for an asynchronous event.
+   * Any time an event key,id,msg is submitted for the specified 'key',
+   * the BiConsumer<id,msg> 'c' is called in response.
+   * All events for the same key are processed in order.
+   * Registering a new event handler for a key also unregisters any former
+   * event handler for that same key.
+   * Keys for events and askEvents are handled independently, so there is no
+   * conflict if the same key is used in both environments for different purposes.
+   * */
+  void registerEvent(String key,BiConsumer<String,String> c);
+  /**
+   * registerEvent(key,id,c) acts similar to
+   * registerEvent(key,c), but only registers an handler 
+   * for a specific combination of key and id.
+   * An event handler for a key,id combination does not unregister
+   * any event handler, but take precedence over an handler for the same key.
+   * A common pattern is to first call registerEvent("Channel",..)
+   * with a fallback operation to perform on any unrecognized id,
+   * then call registerEvent("Channel","id1",..) ..registerEvent("Channel","idn",..)
+   * to handle specialized actions for certain ids.
+   * In this example, if the event "Channel","id1","hi" is submitted,
+   * only the specialized action is called.
+   * If the event "Channel","pizza","hi" is submitted, then the fallback action
+   * is called.
+   * */
+  void registerEvent(String key,String id,Consumer<String> c);
+  /**
+   * Unregisters any former event handler for the key.
+   * */
+  void resetEvent(String key);
 
-public class Event{
-  private static Event instance=null;
-  public static void initialize(){
-    if(instance==null){instance=new Event();}
-    }
-  //Mah, when initialize is protected, we get a runtime security error
-  public static void test_only_initialize(){instance=new Event();}
-  private Event(){}
-  public static Event instance(){
-    if(instance!=null){return instance;}
-    throw new Error("Event instance not initialized; this may be an issue with multiple class loaders");
-    }
-  private final String end="##End##\n";
-  public String end(){return end;}
-  private String empty="##Empty##\n";
-  public String empty(){return empty;}
-  public void setEmpty(String idMsg){empty=idMsg;}
-  private int longWait=1000;
-  private int shortWait=8;//longWait/120
-  public void setTimeout(int timeout){
-    longWait=timeout;
-    if(timeout>=500){
-      shortWait=timeout/120;
-      ps=psLong;
-      }
-    else{
-      shortWait=timeout/4;
-      ps=psShort;
-      }
-    }
-  @FunctionalInterface
-  public static interface Consumer3{void accept(String key,String id,String msg);}
-  public static interface Function3{String accept(String key,String id,String msg);}
-  public static interface FFunction3{CompletableFuture<String> accept(String key,String id,String msg);}
-  static{preLoad();}//just loading Consumer3,Function3 together with Event
-  static void preLoad(){
-    Consumer3.class.getClass();
-    Function3.class.getClass();
-    FFunction3.class.getClass();
-    }
-  static private final ExecutorService executor = Executors.newFixedThreadPool(1);
-  private static LinkedBlockingDeque<String> clearDeque(Consumer3 c,String key,LinkedBlockingDeque<String>deque){
-    while(!deque.isEmpty()){
-      String s;try {s=deque.takeFirst();}
-      catch (InterruptedException e) {throw unreachable();}//not empty
-      int index=s.indexOf("\n");
-      if(index==-1) {throw new Error("invalid event shape "+s);}
-      String id=s.substring(0,index);
-      String msg=s.substring(index+1);
-      c.accept(key, id,msg); 
-      }
-    return null;
-    } 
-  public void registerEvent(String key,Consumer3 c){
-    callbacks.compute(key,(k,v)->{
-      streams.computeIfPresent(k,(k0,v0)->clearDeque(c, k0,v0));
-      return c;
-      });
-    }
-  public void registerEvent(String key,String id,Consumer3 c){
-      callbacks.compute(key,(k,v)->{
-        Consumer3 vOld=v!=null?v:this::defaultAction;
-        Consumer3 cIf=(_key,_id,_msg)->{
-          if(id.equals(_id)){c.accept(_key, _id, _msg);}
-          else {vOld.accept(_key, _id, _msg);}
-          };
-        streams.computeIfPresent(k,(k0,v0)->clearDeque(cIf, k0,v0));
-        return cIf;
-        });
-      }
-  public void resetEvent(String key){
-    callbacks.put(key,this::defaultAction);
-    }
-  public String nextEvent(String keys){
-    var ks=keys.split("\n");
-    if(ks.length==0) {return end;}
-    if(ks.length==1) {
-      var k=ks[0].trim();
-      var res=k+"\n"+nextEvent1(k);
-      return res;
-      }
-    @SuppressWarnings("unchecked")
-    var qs=(LinkedBlockingDeque<String>[])new LinkedBlockingDeque[ks.length];
-    for(var i:range(ks.length)){
-      qs[i]=streams.computeIfAbsent(ks[i],k->new LinkedBlockingDeque<>());
-      }
-    try{
-      for(var pi:ps){
-        var res=oneRound(ks,qs,pi);
-        if(res!=null){return res;}
-        }
-      }
-    catch(InterruptedException ie){
-      Thread.currentThread().interrupt();
-      throw new Error(ie);
-      }
-    return ks[0]+"\n"+empty;
-    }  
-  private final List<Poller>psShort=List.of(
-      q->q.poll(),
-      q->q.poll(shortWait,TimeUnit.MILLISECONDS),
-      q->q.poll(shortWait*3,TimeUnit.MILLISECONDS)
-      );
-  private final List<Poller>psLong=List.of(
-    q->q.poll(),
-    q->q.poll(shortWait,TimeUnit.MILLISECONDS),
-    q->q.poll(shortWait*3,TimeUnit.MILLISECONDS),
-    q->q.poll(shortWait*9,TimeUnit.MILLISECONDS),
-    q->q.poll(shortWait*27,TimeUnit.MILLISECONDS),
-    q->q.poll(shortWait*81,TimeUnit.MILLISECONDS)
-    );
-  private List<Poller>ps=psLong;
-  private static interface Poller{String apply(LinkedBlockingDeque<String> q)throws InterruptedException;}
-  private String oneRound(String[]ks,LinkedBlockingDeque<String>[]qs, Poller poll)throws InterruptedException{
-    var res=poll.apply(qs[0]);
-    if(res!=null){return ks[0].trim()+"\n"+res;}
-    for(var i=1;i<ks.length;i++){
-      var resi=qs[i].pollFirst();
-      if(resi!=null){return ks[i].trim()+"\n"+resi;}
-      }
-    return null;
-    }
-  private String nextEvent1(String key){
-    var events=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());
-    String res;try{res=events.pollFirst(longWait,TimeUnit.MILLISECONDS);}
-    catch (InterruptedException e){
-      Thread.currentThread().interrupt();
-      throw new Error(e);
-      }
-    if(res==null){return empty;}
-    return res;
-    }
-  public void submitEvent(String key,String id,String msg){
-    try{auxSubmitEvent(key, id, msg);}
-    catch(RuntimeException err){err.printStackTrace();throw err;}
-    catch(Error err){err.printStackTrace();throw err;}
-    }
-  public void auxSubmitEvent(String key,String id,String msg){
-    var v = callbacks.getOrDefault(key,this::defaultAction);
-    v.accept(key, id, msg);
-    }
-  public CompletableFuture<String> askEvent(String key,String id,String msg){
-    var v=askCallbacks.get(key);
-    if(v==null){return this.defaultAskAction;}
-    return CompletableFuture.supplyAsync(()->v.accept(key, id, msg), executor);
-    }
-  public void registerAskEvent(String key,Function3 c){
-    askCallbacks.put(key,c);
-    }
-  public void resetAskEvent(String key){
-    askCallbacks.remove(key);
-    }
-  private void defaultAction(String key,String id,String msg){
-    var s=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());
-    s.addLast(id+"\n"+msg);
-    }
-  private final CompletableFuture<String>defaultAskAction=CompletableFuture.completedFuture("");
-  private final Map<String,LinkedBlockingDeque<String>> streams=Collections.synchronizedMap(new LinkedHashMap<>());
-  private final Map<String,Consumer3> callbacks=Collections.synchronizedMap(new LinkedHashMap<>());
-  private final Map<String,Function3> askCallbacks=Collections.synchronizedMap(new LinkedHashMap<>());
+  /**
+   * registerAskEvent(key,c) registers an event handler for a synchronous event, producing a String result.
+   * Any time an event key,id,msg is submitted for the specified 'key',
+   * the BiFunction<id,msg> 'f' is called in response.
+   * 42 will wait until the function is completed and will receive the message.
+   * Registering a new event handler for a key also unregisters any former
+   * event handler for that same key.
+   * Keys for events and askEvents are handled independently, so there is no
+   * conflict if the same key is used in both environments for different purposes.
+   * */  
+  void registerAskEvent(String key,BiFunction<String,String,String> f);
+  /**
+   * registerAskEvent(key,id,f) works as registerEvent(key,id,c)
+   * but it works in a synchronous manner.
+   * */
+  void registerAskEvent(String key,String id, Function<String,String> f);
+
+  /**
+   * Unregisters any former askEvent handler for the key.
+   * */
+  void resetAskEvent(String key);
+  
+  /**
+   * Submits an event. If an event handler for this key has been registered,
+   * this event is going to be processed by Java, otherwise it
+   * is going to be processed by 42.
+   * */
+  void submitEvent(String key,String id,String msg);
+
+  /**
+   * The key of the special event representing the end of the event stream.
+   * On default it is "##End##\n"
+   * */
+  void setEnd(String idMsg);
+
+  /**
+   * The key of the special event representing that no new events
+   * have been produced up to the timeout.
+   * On default it is "##Empty##\n"
+   * */
+  void setEmpty(String idMsg);
+  
+  /**
+   * The default result for an askEvent with no associated handler function.
+   * On default it is ""
+   * */
+  void setDefaultAsk(String answer);
+
+  /**
+   * 42 will receive at least one event any 'timeout' milliseconds.
+   * On default it is 1000.
+   * */
+  void setTimeout(int timeout);
   }

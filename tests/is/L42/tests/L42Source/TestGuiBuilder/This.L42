@@ -75,7 +75,7 @@ Main=(
     |{
     |  e.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
     |  //event.submitEvent("Example","First","Here");
-    |  event.registerEvent("Example.RefreshEntities",(k,id,msg)->
+    |  event.registerEvent("Example.RefreshEntities",(id,msg)->
     |    e.submit(id,msg,true));
     |  add(p);
     |  addEast(p,reset);

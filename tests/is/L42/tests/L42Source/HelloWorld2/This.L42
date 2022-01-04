@@ -1,7 +1,23 @@
-reuse [AdamsTowel]
-Main = (
-  lent strings = S.List[S"a";S"b";S"c";]
-  for s in strings (Debug(s))
-  lent ss = S"abc".split()
-  for s in ss (Debug(s))
+reuse [L42.is/AdamsTowel]
+J0 = Load:{reuse [L42.is/JavaServer]}
+J = J0(slaveName=S"mySlave{}")
+MainAsk = (
+  j = J.#$of()
+  j.loadCode(fullName=S"foo.Bar1",code=S"""
+    |package foo;
+    |import is.L42.platformSpecific.javaEvents.Event;
+    |public record Bar1(Event event){//class Bar1 will be instantiated by 42
+    |  public Bar1{                  //and the Event parameter is provided
+    |    event.registerAskEvent("BarAsk",(id,msg)->
+    |      "any string computed in Java using "+id+" and "+msg);
+    |    event.registerEvent("BarAsk",(id,msg)->
+    |      System.out.println("notASK any string computed in Java using "+id+" and "+msg));
+    |    }
+    |  }
+    """)
+  S.Opt text = j.askEvent(key=S"BarAsk", id=S"anId",msg=S"aMsg55")
+  j.submitEvent(key=S"BarAsk", id=S"anId",msg=S"aMsg")
+  {}:Test"OptOk"(actual=text, expected=S"""
+    |<"any string computed in Java using anId and aMsg">
+    """.trim())
   )

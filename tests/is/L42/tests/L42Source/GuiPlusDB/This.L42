@@ -132,9 +132,9 @@ OpenGui = {class method Void (mut GuiJ j)[_] = (
     |JTable table = new JTable(tModel);
     |{addCenter(screen1,new JScrollPane(table));}
     |{event.registerEvent("Example.Display","tableAdd",
-    |  (k,id,msg)->SwingUtilities.invokeLater(()->tModel.addRow(msg.split(","))));}
+    |  (id,msg)->SwingUtilities.invokeLater(()->tModel.addRow(msg.split(","))));}
     |{event.registerEvent("Example.Display","tableClear",
-    |  (k,id,msg)->SwingUtilities.invokeLater(()->tModel.setRowCount(0)));}
+    |  (id,msg)->SwingUtilities.invokeLater(()->tModel.setRowCount(0)));}
     """
   )}
 //Finally, the Main puts all together

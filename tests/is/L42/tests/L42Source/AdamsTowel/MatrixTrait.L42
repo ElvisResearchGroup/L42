@@ -16,6 +16,14 @@ class method mut This of::0(fwd mut L inner)
   X$[that.size()==tot msg=S"Wrong size list: size %that.size() != %tot"]
   This.of::0(inner=that)
   )
+@Public class method mut This(Elem default)=(
+  (tot)=This.dimensions()
+  \(L()(for _ in Range(tot) \add(default)))
+  )
+@Public class method mut This(mut Elem mutDefault)=(
+  (tot)=This.dimensions()
+  \(L()(for _ in Range(tot) \#add(mutDefault)))  
+  )
 class method S row()
 class method S col()
 @Public @Cache.Lazy class method Dimensions dimensions() = Dimensions(

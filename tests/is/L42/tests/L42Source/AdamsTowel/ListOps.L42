@@ -20,6 +20,7 @@ mut method Elem #update#imm(I that, Elem val)=(this.set(that,val=val) val)
 mut method Elem #update#default(I that, Elem val)=this.#update#imm(that,val=val)
 
 mut method Void add(Elem that)=this.add(right=that)
+mut method Void #add(mut Elem that)=this.#add(right=that)
 mut method mut This (Void that)=this
 
 class method mut This ()

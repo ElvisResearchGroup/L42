@@ -16,13 +16,19 @@ Secret = Trait({...}):{class method S name()='JavaServer}
 Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
 TaskDeployJavaServer = Web.#$of().deployModule(Lib(), nestedName='Top)
 
-J0=Load:{reuse[#$L42.is/JavaServer]}
-J=J0(slaveName=S"miniGuiSlave{}")
-
+JavaServerOverview = {
+  J0 = Load:{reuse [L42.is/JavaServer]}
+  J = J0(slaveName=S"mySlave{}")
+  Model = J.Handler:{
+    @J.Handler mut method Void fromJavaToL42(S msg) = void
+    }
+  }
 TaskDeployJavaServerDocs = ~Web.#$of()
    .deployDocs(\"Doc.c")
-   .overview(J0 key=S"OVERVIEW_HERE")
+   .overview(JavaServerOverview key=S"OVERVIEW_HERE")
     
+J0 = Load:{reuse [L42.is/JavaServer]}
+J = J0(slaveName=S"mySlave{}")
 
 Model=Data:J.Handler:{
   var I count, mut J j

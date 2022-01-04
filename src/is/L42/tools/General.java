@@ -209,4 +209,8 @@ public class General {
       c.add(ai);
     });
   }
+  public static <T> void forceInit(Class<T> klass) {
+    try{ Class.forName(klass.getName(), true, klass.getClassLoader()); }
+    catch(ClassNotFoundException e){ throw unreachable(); }
+  } 
 }

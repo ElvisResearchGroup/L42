@@ -24,7 +24,7 @@ class method S (mut Gui that)=(
     |  };
     |{
     |  paintable.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
-    |  event.registerEvent("Example.RefreshEntities",(k,id,msg)->{
+    |  event.registerEvent("Example.RefreshEntities",(id,msg)->{
     |    paintable.submit(id,msg,true);
     |    paintable.setFocusable(true);
     |    paintable.requestFocusInWindow();
