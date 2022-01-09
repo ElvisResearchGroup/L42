@@ -1,23 +1,26 @@
 reuse [L42.is/AdamsTowel]
-J0 = Load:{reuse [L42.is/JavaServer]}
-J = J0(slaveName=S"mySlave{}")
-MainAsk = (
-  j = J.#$of()
-  j.loadCode(fullName=S"foo.Bar1",code=S"""
-    |package foo;
-    |import is.L42.platformSpecific.javaEvents.Event;
-    |public record Bar1(Event event){//class Bar1 will be instantiated by 42
-    |  public Bar1{                  //and the Event parameter is provided
-    |    event.registerAskEvent("BarAsk",(id,msg)->
-    |      "any string computed in Java using "+id+" and "+msg);
-    |    event.registerEvent("BarAsk",(id,msg)->
-    |      System.out.println("notASK any string computed in Java using "+id+" and "+msg));
-    |    }
-    |  }
-    """)
-  S.Opt text = j.askEvent(key=S"BarAsk", id=S"anId",msg=S"aMsg55")
-  j.submitEvent(key=S"BarAsk", id=S"anId",msg=S"aMsg")
-  {}:Test"OptOk"(actual=text, expected=S"""
-    |<"any string computed in Java using anId and aMsg">
-    """.trim())
+//Matrix: near 4, near 8 iterators given a point?
+//operations rolling around?
+//---
+//What this meant in day 14? "no ambiguity if the next is a local var dec??"
+//--
+//if b0==0 ( that.pad() return res )
+//    return (res*16I)+\vals(that)
+//it is parsed as if b0==0(that.pad() return res) return (res*16I)+\vals(that)
+//is this ok?
+//--
+//  /*BUG*/Debug(Map.Coord(row=3I,col=2I))//this prints Map.Coord.POUNDkinvariant() in the stack trace
+//--
+//Set does not have a (void) mapping mehtod?? checked; still missing.
+//---
+//sort, maxindex,popmax etc..
+Map=Collection.matrix(S.List,row=1I,col=1I)
+A={interface [HasToS] class method This (S foo)}
+B=Data:{[A] S foo}
+Main = (
+  A a= B(foo=S"")
+  Debug(a)
+  m=Map(\[S"hi"])
+  ///*BUG*/Debug(Map.Coord(row=3I,col=2I))//this prints Map.Coord.POUNDkinvariant() in the stack trace
+  Debug(m)
   )
