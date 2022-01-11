@@ -207,7 +207,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     /*var v=new FullS();
     this.currentL.accept(v);
     return v.result().toString();*/
-    return OverviewVisitor.makeOverview(this.currentL);
+    return OverviewVisitor.makeOverview(this.currentL,false);
     }
   @Override public String toString(){
     return new MetaError(null).intro(currentL,false)+"\n"+position;

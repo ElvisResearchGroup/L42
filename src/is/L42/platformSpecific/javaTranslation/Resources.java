@@ -205,7 +205,7 @@ public class Resources {
   public static void breakHere(){//poor man attempt to add breakpoints to generated java
     System.out.println("java debugger Breakpoint");
     String s=Arrays.asList(Thread.currentThread().getStackTrace()).toString();
-    if(s.contains("My_TestCircularObjects£n0£_£cBase£n71")) {
+    if(s.contains("My_TestCircularObjects£i0£_£cBase£i71")) {
       System.out.println();//example conditional breakpoint
       }
     }

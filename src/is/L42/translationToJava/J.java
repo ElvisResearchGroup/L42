@@ -118,7 +118,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     String name="";
     while(!pt.isEmpty()){
       String uId="";
-      if(pt.coreL().info()._uniqueId()!=-1){uId="£n"+pt.coreL().info()._uniqueId();}
+      if(pt.coreL().info()._uniqueId()!=-1){uId="£i"+pt.coreL().info()._uniqueId();}
       String cName=pt.c().inner().replace("$", "£d");
       if(pt.c().hasUniqueNum()){cName+="£n"+pt.c().uniqueNum();}
       name="£c"+cName+uId+"£_"+name;

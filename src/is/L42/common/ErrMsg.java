@@ -156,6 +156,8 @@ public class ErrMsg {
   "Only zero is allowed for private state, but the following is used "+_1
   ;}public static String notValidC(Object _1){return
   "Error: "+_1+" is not a valid class name"
+  ;}public static String notValidNumberReceiver(Object _1, String lit){return
+  "Error: "+_1+" is not a valid receiver for the number literal "+lit
   ;}public static String malformedAtInDocs(){return
   "Error: malformed @ in docs"
   ;}public static String invalidNumber(Object _1){return

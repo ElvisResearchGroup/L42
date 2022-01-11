@@ -23,9 +23,10 @@ GitWriter = Data:{//slave name can be renamed with Trait.NativeSlaveRename(code,
     } 
   mut method Void write(Url on, S contentBase64)[HttpRequest.Fail] = (
     var info=on.toS()
-    for s in S.List[S"https://";S"http://"]
+    for s in S.List[S"https://";S"http://"] (
       if on.toS().startsWith(s)
         info:=on.toS().subString(s.size() to=\size)
+      )
     res = this(info=info, pre=S"raw.githubusercontent.com/", center=S"/HEAD/", contentBase64=contentBase64)
       || this(info=info, pre=S"api.github.com/repos/", center=S"/contents/", contentBase64=contentBase64)
       || this(info=info, pre=S"github.com/", center=S"/blob/HEAD/", contentBase64=contentBase64)

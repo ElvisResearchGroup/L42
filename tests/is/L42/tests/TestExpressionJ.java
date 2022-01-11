@@ -20,13 +20,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   je("Void<:class Any","L42£Void.pathInstance")
   ),new AtomicTest(()->
-  je("This0.A<:class This0.A","£cA£n1.pathInstance")
+  je("This0.A<:class This0.A","£cA£i1.pathInstance")
   ),new AtomicTest(()->
-  je("This0.B<:class This0.B","£cB£n1.pathInstance")
+  je("This0.B<:class This0.B","£cB£i1.pathInstance")
   ),new AtomicTest(()->
-  je("This0.A<:class Any","£cA£n1.pathInstance")
+  je("This0.A<:class Any","£cA£i1.pathInstance")
   ),new AtomicTest(()->
-  je("This0.B<:class Any","£cB£n1.pathInstance")
+  je("This0.B<:class Any","£cB£i1.pathInstance")
   ),new AtomicTest(()->
   je("void","L42£Void.instance")
   ),new AtomicTest(()->
@@ -34,9 +34,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
   je("{#typed{}}","Resources.ofLib(0)")
     ),new AtomicTest(()->
-  je("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA£n1.£mma£xa(£cA£n1.pathInstance,£cA£n1.£mof(£cA£n1.pathInstance))")
+  je("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA£i1.£mma£xa(£cA£i1.pathInstance,£cA£i1.£mof(£cA£i1.pathInstance))")
     ),new AtomicTest(()->
-  je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£n1.£mmb£xb(£cB£n1.pathInstance,£cB£n1.£mof(£cB£n1.pathInstance))")
+  je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£i1.£mmb£xb(£cB£i1.pathInstance,£cB£i1.£mof(£cB£i1.pathInstance))")
     ),new AtomicTest(()->
   je("loop void","switch(0){default->{if(false)yield Resources.throwE(null);while(true){Object loopVar1=L42£Void.instance;}}}")
     ),new AtomicTest(()->
@@ -47,16 +47,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   je("(This0.A a=This0.A<:class This0.A.of() a)","""
     switch(0){default->{
-      £cA£n1 £xa=null;
-      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
+      £cA£i1 £xa=null;
+      £xa=£cA£i1.£mof(£cA£i1.pathInstance);
       yield £xa;
       }}
     """)
   ),new AtomicTest(()->
   je("(var This0.A a=This0.A<:class This0.A.of() a:=a)","""
     switch(0){default->{
-      £cA£n1 £xa=null;
-      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
+      £cA£i1 £xa=null;
+      £xa=£cA£i1.£mof(£cA£i1.pathInstance);
       yield Resources.toVoid(£xa=£xa);
       }}
     """)
@@ -67,11 +67,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     a.ma(a=a)
     )""","""
     switch(0){default->{
-      £cA£n1 £xa=null;
-      £cA£n1 £xa0=null;
-      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
+      £cA£i1 £xa=null;
+      £cA£i1 £xa0=null;
+      £xa=£cA£i1.£mof(£cA£i1.pathInstance);
       £xa0=£xa;
-      yield £cA£n1.£mma£xa(£xa,£xa);
+      yield £cA£i1.£mma£xa(£xa,£xa);
       }}
     """)
   ),new AtomicTest(()->//using Any for a0
@@ -81,11 +81,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     a.ma(a=a)
     )""","""
     switch(0){default->{
-      £cA£n1 £xa=null;
+      £cA£i1 £xa=null;
       L42Any £xa0=null;
-      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
+      £xa=£cA£i1.£mof(£cA£i1.pathInstance);
       £xa0=£xa;
-      yield £cA£n1.£mma£xa(£xa,£xa);
+      yield £cA£i1.£mma£xa(£xa,£xa);
       }}
     """)
   ),new AtomicTest(()->//using B instead of A
@@ -97,9 +97,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       String £xb=null;
       String £xb0=null;
-      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
+      £xb=£cB£i1.£mof(£cB£i1.pathInstance);
       £xb0=£xb;
-      yield £cB£n1.£mmb£xb(£xb,£xb);
+      yield £cB£i1.£mmb£xb(£xb,£xb);
       }}
     """)
   ),new AtomicTest(()->//B instead of A, Any for b0
@@ -111,9 +111,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       String £xb=null;
       L42Any £xb0=null;
-      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
-      £xb0=£cB£n1.wrap(£xb);
-      yield £cB£n1.£mmb£xb(£xb,£xb);
+      £xb=£cB£i1.£mof(£cB£i1.pathInstance);
+      £xb0=£cB£i1.wrap(£xb);
+      yield £cB£i1.£mmb£xb(£xb,£xb);
       }}
     """)
   ),new AtomicTest(()->//throwing a B and an A a Void
@@ -126,15 +126,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     void
     )""","""
     switch(0){default->{
-      £cA£n1 £xa=null;
+      £cA£i1 £xa=null;
       String £xb=null;
       L42£Void £xv0=null;
       L42£Void £xv1=null;
       L42£Void £xv2=null;
-      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
-      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
+      £xa=£cA£i1.£mof(£cA£i1.pathInstance);
+      £xb=£cB£i1.£mof(£cB£i1.pathInstance);
       £xv0=Resources.throwE(new L42Error(£xa));
-      £xv1=Resources.throwE(new L42Error(£cB£n1.wrap(£xb)));
+      £xv1=Resources.throwE(new L42Error(£cB£i1.wrap(£xb)));
       £xv2=Resources.throwE(new L42Error(L42£Void.instance));
       yield L42£Void.instance;
       }}
@@ -147,11 +147,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     a0
     )""","""
     switch(0){default->{
-      £cA£n1 £xa=null;
-      £cA£n1 £xa0=null;
-      £cA£n1 £xa0£fwd=£cA£n1.NewFwd();
-      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
-      £xa0=£cA£n1.£mma£xa(£xa,£xa0£fwd);
+      £cA£i1 £xa=null;
+      £cA£i1 £xa0=null;
+      £cA£i1 £xa0£fwd=£cA£i1.NewFwd();
+      £xa=£cA£i1.£mof(£cA£i1.pathInstance);
+      £xa0=£cA£i1.£mma£xa(£xa,£xa0£fwd);
       ((L42Fwd)£xa0£fwd).fix(£xa0);
       yield £xa0;
       }}
@@ -165,9 +165,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       String £xb=null;
       String £xb0=null;
-      Object £xb0£fwd=£cB£n1.NewFwd();
-      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
-      £xb0=£cB£n1.£mmb£xb(£xb,£xb0£fwd);
+      Object £xb0£fwd=£cB£i1.NewFwd();
+      £xb=£cB£i1.£mof(£cB£i1.pathInstance);
+      £xb0=£cB£i1.£mmb£xb(£xb,£xb0£fwd);
       ((L42Fwd)£xb0£fwd).fix(£xb0);
       yield £xb0;
       }}
@@ -183,15 +183,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       String £xb=null;
       String £xb0=null;
-      Object £xb0£fwd=£cB£n1.NewFwd();
+      Object £xb0£fwd=£cB£i1.NewFwd();
       try{
-        £xb=£cB£n1.£mof(£cB£n1.pathInstance);
-        £xb0=£cB£n1.£mmb£xb(£xb,£xb0£fwd);
+        £xb=£cB£i1.£mof(£cB£i1.pathInstance);
+        £xb0=£cB£i1.£mmb£xb(£xb,£xb0£fwd);
         ((L42Fwd)£xb0£fwd).fix(£xb0);
         }
       catch(L42Error catchVar0){
-        if(catchVar0.obj42() instanceof £cB£n1){
-          String £xx=((£cB£n1)catchVar0.obj42()).unwrap;
+        if(catchVar0.obj42() instanceof £cB£i1){
+          String £xx=((£cB£i1)catchVar0.obj42()).unwrap;
           yield £xx;
           }
         throw catchVar0;
@@ -210,53 +210,53 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      """
      """,
      """
-     public class £cN£n1 implements L42Any,L42Cachable<£cN£n1>{
+     public class £cN£i1 implements L42Any,L42Cachable<£cN£i1>{
        [###]
-       public static int £mof(£cN£n1 £xthis){
+       public static int £mof(£cN£i1 £xthis){
          return 0;
          }
        public static int £msum£xthat(int £xthis, int £xthat){
          return £xthis + £xthat;
          }
-       public static £cN£n1 NewFwd(){return new _Fwd();}
-       public static class _Fwd extends £cN£n1 implements L42Fwd{
+       public static £cN£i1 NewFwd(){return new _Fwd();}
+       public static class _Fwd extends £cN£i1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
-         @Override public L42Cache<£cN£n1> myCache() {return mySCache;}}
-       public static final £cN£n1 pathInstance=new _Fwd();
-       static final L42Cache<£cN£n1> mySCache=[###]
+         @Override public L42Cache<£cN£i1> myCache() {return mySCache;}}
+       public static final £cN£i1 pathInstance=new _Fwd();
+       static final L42Cache<£cN£i1> mySCache=[###]
        public int unwrap;
-       public static £cN£n1 wrap(int that){£cN£n1 res=new £cN£n1();res.unwrap=that;return res;}
+       public static £cN£i1 wrap(int that){£cN£i1 res=new £cN£i1();res.unwrap=that;return res;}
        }
      ""","""
-     public class £cA£n1 implements L42Any,L42Cachable<£cA£n1>{
+     public class £cA£i1 implements L42Any,L42Cachable<£cA£i1>{
        [###]
        int £xn;
-       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cA£n1)o).£xn=(int)f;};
-       public static £cA£n1 £mof£xn(£cA£n1 £xthis, int £xn){
-         £cA£n1 Res=new £cA£n1();
+       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cA£i1)o).£xn=(int)f;};
+       public static £cA£i1 £mof£xn(£cA£i1 £xthis, int £xn){
+         £cA£i1 Res=new £cA£i1();
          Res.£xn=£xn;
          return Res;
          }
-       public static int £mn(£cA£n1 £xthis){
+       public static int £mn(£cA£i1 £xthis){
          return £xthis.£xn;
          }
-       public static L42£Void £mn£xthat(£cA£n1 £xthis, int £xthat){
+       public static L42£Void £mn£xthat(£cA£i1 £xthis, int £xthat){
          £xthis.£xn=£xthat;return L42£Void.instance;
          }
-       public static £cA£n1 NewFwd(){return new _Fwd();}
-       public static class _Fwd extends £cA£n1 implements L42Fwd{
+       public static £cA£i1 NewFwd(){return new _Fwd();}
+       public static class _Fwd extends £cA£i1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
-         @Override public L42Cache<£cA£n1> myCache() {return mySCache;}}
-       public static final £cA£n1 pathInstance=new _Fwd();
-       static final L42Cache<£cA£n1> mySCache=[###]
+         @Override public L42Cache<£cA£i1> myCache() {return mySCache;}}
+       public static final £cA£i1 pathInstance=new _Fwd();
+       static final L42Cache<£cA£i1> mySCache=[###]
        }
      """)
   ),new AtomicTest(()->
@@ -264,20 +264,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      C={ #norm{}}
      """,
      """
-     public class £cC£n1 extends L42NoFields<£cC£n1> implements L42Any{
-       static final Class<£cC£n1> _class=£cC£n1.class;
-       public static final L42Cache<£cC£n1> myCache=[###]
-       @Override public L42Cache<£cC£n1> myCache(){return myCache;}
-       public static £cC£n1 NewFwd(){return new _Fwd();}
-       public static class _Fwd extends £cC£n1 implements L42Fwd{
+     public class £cC£i1 extends L42NoFields<£cC£i1> implements L42Any{
+       static final Class<£cC£i1> _class=£cC£i1.class;
+       public static final L42Cache<£cC£i1> myCache=[###]
+       @Override public L42Cache<£cC£i1> myCache(){return myCache;}
+       public static £cC£i1 NewFwd(){return new _Fwd();}
+       public static class _Fwd extends £cC£i1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
-         @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
-       public static final £cC£n1 pathInstance=new _Fwd();
-       static final L42Cache<£cC£n1> mySCache=[###]
+         @Override public L42Cache<£cC£i1> myCache() {return mySCache;}}
+       public static final £cC£i1 pathInstance=new _Fwd();
+       static final L42Cache<£cC£i1> mySCache=[###]
        }
      ""","","","")
   ),new AtomicTest(()->
@@ -287,28 +287,28 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        method This1.N n()
        #norm{typeDep=This This1.N}}
      ""","""
-     public class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
+     public class £cC£i1 implements L42Any,L42Cachable<£cC£i1>{
        [###]
        int £xn;
-       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};
-       public static £cC£n1 £mof£xn(£cC£n1 £xthis, Object £xn){
-         £cC£n1 Res=new £cC£n1();
-         if(£xn instanceof L42Fwd && !(((Object)£xn ) instanceof L42NoFields<?>)){((L42Fwd)£xn).rememberAssign(Res,£cC£n1.FieldAssFor_n);}else{Res.£xn=(int)£xn;}
+       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£i1)o).£xn=(int)f;};
+       public static £cC£i1 £mof£xn(£cC£i1 £xthis, Object £xn){
+         £cC£i1 Res=new £cC£i1();
+         if(£xn instanceof L42Fwd && !(((Object)£xn ) instanceof L42NoFields<?>)){((L42Fwd)£xn).rememberAssign(Res,£cC£i1.FieldAssFor_n);}else{Res.£xn=(int)£xn;}
          return Res;
          }
-       public static int £mn(£cC£n1 £xthis){
+       public static int £mn(£cC£i1 £xthis){
          return £xthis.£xn;
          }
-       public static £cC£n1 NewFwd(){return new _Fwd();}
-       public static class _Fwd extends £cC£n1 implements L42Fwd{
+       public static £cC£i1 NewFwd(){return new _Fwd();}
+       public static class _Fwd extends £cC£i1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
-         @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
-       public static final £cC£n1 pathInstance=new _Fwd();
-       static final L42Cache<£cC£n1> mySCache=[###]
+         @Override public L42Cache<£cC£i1> myCache() {return mySCache;}}
+       public static final £cC£i1 pathInstance=new _Fwd();
+       static final L42Cache<£cC£i1> mySCache=[###]
        }
      ""","","","")
 

@@ -1,26 +1,78 @@
 reuse [L42.is/AdamsTowel]
 //Matrix: near 4, near 8 iterators given a point?
 //operations rolling around?
-//---
-//What this meant in day 14? "no ambiguity if the next is a local var dec??"
 //--
-//if b0==0 ( that.pad() return res )
-//    return (res*16I)+\vals(that)
-//it is parsed as if b0==0(that.pad() return res) return (res*16I)+\vals(that)
-//is this ok?
-//--
-//  /*BUG*/Debug(Map.Coord(row=3I,col=2I))//this prints Map.Coord.POUNDkinvariant() in the stack trace
-//--
-//Set does not have a (void) mapping mehtod?? checked; still missing.
-//---
 //sort, maxindex,popmax etc..
-Map=Collection.matrix(S.List,row=1I,col=1I)
-A={interface [HasToS] class method This (S foo)}
-B=Data:{[A] S foo}
-Main = (
-  A a= B(foo=S"")
-  Debug(a)
-  m=Map(\[S"hi"])
-  ///*BUG*/Debug(Map.Coord(row=3I,col=2I))//this prints Map.Coord.POUNDkinvariant() in the stack trace
-  Debug(m)
+
+
+DD = Decorator:Data:{
+  TraitDD = Trait:{
+    Elem = {}
+    NoMinMaxForEmpty = Message:{[Message.Guard]}
+    View = {
+      read method read It #iterator()
+      mut  method mut  It #varIterator()
+      read method I #startIndex()
+      read method I size()
+      }
+    It = {
+      read method Collection.IteratorCompose #hasElem(I that)
+      read method Elem #elem#imm(I that)
+      read method Elem #elem#default(I that)//wh
+      read method read Elem #elem#read(I that)      
+      }
+    class method I compare(Elem a,Elem b)//a-b
+    class method I count(View that)=0I.acc()( for e in that \addOne )
+    class method Elem max(read View that)=(
+      if that.size()==0I error NoMinMaxForEmpty""
+      it = that.#iterator()
+      var i = that.#startIndex()
+      var maxCandidate = it.#elem#imm(i)
+      i := i.succ()
+      while it.#hasElem(i) (
+        var e=it.#elem#imm(i)
+        if \compare(a=maxCandidate, b=e)<0I (maxCandidate:=e)
+        i := i.succ()
+        )
+      maxCandidate
+      )
+      //the user gave us a read Compare, imm Compare or mut Compare?
+      // expect imm, mut or unknown
+      //mvp
+      read compare
+      max,#max,readMax //err on empty, leftmost?
+      min,#min,readMin //err on empty, leftmost?
+      sortOut(read)/*err on mut elements*/ ,#sortOut(mut)
+      sortIn(mut)
+      mode?
+      insert ordered
+      maxIndex?
+      sort by insertionSort/bubbleSort?
+      Acc?
+      on maps/sets no sorting?
+      operations to create a new view/add/set element?
+      //sorting a set is actually very useful for norm() and caching
+      //if imm compare, no #/read methods and sortIn can give more errors
+      //if mut compare, only #max,#min #sortOut and sortIn can give more errors
+      
+    }
+  class Any that
+  method Trait(Trait trait)[Message.Guard] = (
+    view = this.that()
+    it = view*Name"#iterator()"
+    elem = it*Name"#elem#imm(that)"
+    //check trait has a compare method? if the type is not ok we get a good error from the sum?
+    TraitDD['View=>view;'It=>it;'Elem=>elem]+trait
+    )
+  }
+DDS = DD(S.List):{ class method I compare(S a,S b)=a.size()-b.size() }
+AName =Collection.AName(..):{..}
+MMain=(
+  list = S.List[S"a";S"bb";S"ccc"]
+  Debug(DDS.count(list))
+  Debug(DDS.max(list))//left most max? right most max?
+  maxList=DDS.acc(S"")(for e in list if \compareIsGeq(e) \val(e))
+  maxList=DDS.acc(list.left())(for e in list.val(1I) if \compareIsGeq(e) \val(e))
+  
+  
   )

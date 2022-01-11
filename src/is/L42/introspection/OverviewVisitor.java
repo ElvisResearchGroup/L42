@@ -14,18 +14,35 @@ import is.L42.generated.Core.MWT;
 import is.L42.tools.General;
 
 public class OverviewVisitor extends is.L42.introspection.FullS{
-  public static String makeOverview(CoreL top){
-    var v=new OverviewVisitor();
+  public static String makeOverview(CoreL top,boolean topShowFiles){
+    var v=new OverviewVisitor(topShowFiles);
     top.accept(v);
     String res=v.result().substring(2,v.result().length()-4);
     return res.lines().map(l->l.substring(2)).collect(Collectors.joining("\n"));    
     }
+  public OverviewVisitor(boolean topShowFiles){this.showFiles=topShowFiles?-1:0;}
+  int showFiles;
+  Mdf lastMethodMdf=null;
+  long methKinds=0;
+  private void updateMethKinds(CoreL l){
+    methKinds=l.mwts().stream()
+      .filter(m->!m.key().hasUniqueNum())
+      .map(m->m.mh().mdf())
+      .distinct()
+      .count();
+    }
   @Override public void visitInfo(Core.Info info){}
   @Override public boolean headerNewLine(){return true;}
   @Override public void visitL(CoreL l){
-    var mwts=L(l.mwts().stream().sorted(this::compareMWT));
-    var ncs=L(l.ncs().stream().sorted(this::compareNC));
-    super.visitL(l.withMwts(mwts).withNcs(ncs));
+    showFiles+=1;
+    lastMethodMdf=null;
+    updateMethKinds(l);
+    try{
+      var mwts=L(l.mwts().stream().sorted(this::compareMWT));
+      var ncs=L(l.ncs().stream().sorted(this::compareNC));
+      super.visitL(l.withMwts(mwts).withNcs(ncs));
+      }
+    finally { showFiles-=1; methKinds=0; }
     }
   int compareMWT(Core.MWT mwt1,Core.MWT mwt2){
     var mdf1=valOfMdf(mwt1.mh().mdf());
@@ -45,7 +62,7 @@ public class OverviewVisitor extends is.L42.introspection.FullS{
     default ->{ throw General.bug(); }
     };}
   int compareNC(Core.NC nc1,Core.NC nc2){
-    int poss=comparePoss(nc1.poss(),nc2.poss());
+    int poss=this.showFiles!=0?0:comparePoss(nc1.poss(),nc2.poss());
     if(poss!=0){ return poss; }
     return nc1.key().inner().compareTo(nc2.key().inner());
     }
@@ -82,6 +99,11 @@ public class OverviewVisitor extends is.L42.introspection.FullS{
     super.visitMWT(mwt);
     }
   private void printMethName(Core.MH mh){
+    if(this.methKinds>1 && this.lastMethodMdf!=mh.mdf()){
+      c("//"+mh.mdf().inner +" methods:");
+      nl();
+      }
+    this.lastMethodMdf=mh.mdf();
     c(mh.key().m());
     c("(");
     seq(i->{},mh.key().xs(),", ");

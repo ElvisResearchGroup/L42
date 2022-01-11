@@ -162,8 +162,8 @@ _______
     if B={ Ds1 Ks WHOOPS? Ds2} then returningBlock({ Ds1 Ks WHOOPS? Ds2})
     if B=(Ds1 Ks WHOOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
     if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D)
-    if B=(_ D e _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
-    if B=(_ K e _) then noBlockNeeded(K.e) (only in code, allowed with no block if K.e in void, x, LL, P, ... all the cases of the degenerate DX empty)
+    if (B of form  _ _ D D' _ _  or _ _ D e _ _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
+    if (B of form  _ _ K D _ _ or _ _ K e _ _) then either noBlockNeeded(K.e)  or K.e in void, x, LL, P, ... all the cases of the degenerate DX empty    
 * (CORE.Ds CORE.Ks CORE.e): //less then full, to avoid issues with inlining and such
     no repetition in Ds.xs
 * throw FULL.e: not returning(FULL.e)
@@ -189,7 +189,7 @@ _______
 * e.m::0(_) and e::0.m[_]: e in {'this','This0'}
 * FULL.MWT/CORE.MWT if MWT.e?=empty and MWT.s of form m::n(_) 
     then either n=0 xor the method is contained in an interface //exclusive or
-* LL: //TODO in code: check when the well formedness for LL and Core.L is called
+* LL:
 //When is checked for core?
     LL.ts do not contains This/This0
     no repetition in LL.Ms.LDom

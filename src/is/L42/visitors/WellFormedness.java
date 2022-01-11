@@ -314,17 +314,15 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }
     }
   void checkNeedBlock(Full.Block b){
-    for(int i:range(1,b.ds().size())){
+    for(int i:range(0,b.ds().size()-1)){//skip the last one
       var di=b.ds().get(i);
-      var dj=b.ds().get(i-1);
-      if(di._varTx()!=null || !di.varTxs().isEmpty()){continue;}
       if(b.dsAfter()==i){continue;}
-      if(!CheckBlockNeeded.of(dj._e(),true)){continue;}
-      lastPos=dj._e().poss();
-      err(ErrMsg.needBlock(dj._e()));
+      if(!CheckBlockNeeded.of(di._e(),true)){continue;}
+      lastPos=di._e().poss();
+      err(ErrMsg.needBlock(di._e()));
       }
     if(!b.ds().isEmpty() && b.ks().isEmpty() && b._e()!=null){
-      var lastD=b.ds().get(b.ds().size()-1);
+      var lastD=b.ds().get(b.ds().size()-1);//handle the last one
       if(!CheckBlockNeeded.of(lastD._e(),true)){return;}
       lastPos=lastD._e().poss();
       err(ErrMsg.needBlock(lastD._e()));
@@ -332,10 +330,6 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(b.ks().isEmpty()){return;}
     var hasAfter=b.ds().size()>b.dsAfter();
     if(!hasAfter && b._e()==null){return;}
-    if(hasAfter){
-      Full.D firstAfter=b.ds().get(b.dsAfter());
-      if(firstAfter._varTx()!=null || !firstAfter.varTxs().isEmpty()){return;}
-      }
     if(!b.whoopsed().isEmpty()){return;}
     Full.K kLast=b.ks().get(b.ks().size()-1);
     if(degenerate(kLast.e())){return;}

@@ -485,6 +485,9 @@ public class FullL42Visitor implements L42Visitor<Object>{
       numbers+=1;
       assert !s.contains("~");
       assert !s.contains("!");
+      if(!validNumberReceiver(res.getClass())){
+        this.errors.append(res.pos()+ErrMsg.notValidNumberReceiver(res.toString(),s)); 
+        }
       res=new Full.UOp(res.pos(),null,s,res);
       }
     uOpList.subList(0,numbers).clear();
@@ -515,6 +518,13 @@ public class FullL42Visitor implements L42Visitor<Object>{
         }
       }
     return res;
+    }
+  private boolean validNumberReceiver(Class<?> kind){
+    return kind==Core.EX.class 
+        || kind==Full.CsP.class
+        || kind==Full.UOp.class
+        || kind==Full.Slash.class
+        || kind==Full.SlashX.class;
     }
   @Override public Full.Call visitSquareCall(SquareCallContext ctx) {
     check(ctx);

@@ -15,7 +15,7 @@ MainM=(
   )(acc=S.StringBuilder()( for a in v.vals(1I to=5I) \add(a.that()) )
   {}:Test"valsRead_000"(actual=acc,expected=S"2345")
   )(
-  for var mut a in v a:=\(10I+a.that())
+  for var mut a in v ( a:=\(10I+a.that()) )
   acc=S.StringBuilder()( for a in v \add(a.that()) )
   {}:Test"updateMut_000"(actual=acc,expected=S"1112131415161718")
   )(
@@ -42,7 +42,7 @@ MainI=(
   {}:Test"subValsTo_000"(actual=acc,expected=S"234")
   )(acc=S.StringBuilder()( for a in v.vals(1I to=5I) \add(a.that()) )
   {}:Test"valsRead_000"(actual=acc,expected=S"2345")
-  )(for var imm a in v a:=\(10I+a.that())
+  )(for var imm a in v ( a:=\(10I+a.that()) )
   acc=S.StringBuilder()( for imm a in v \add(a.that()) )
   {}:Test"updateMut_000"(actual=acc,expected=S"1112131415161718")
   )(

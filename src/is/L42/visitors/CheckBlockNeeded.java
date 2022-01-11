@@ -2,7 +2,7 @@ package is.L42.visitors;
 
 import java.util.List;
 import is.L42.generated.Full;
-
+//noBlockNeeded of 1FullGrammar
 public class CheckBlockNeeded extends UndefinedCollectorVisitor{
   private static final List<Class<?>> danger=List.of(
     Full.For.class,Full.If.class,Full.Loop.class,Full.While.class);

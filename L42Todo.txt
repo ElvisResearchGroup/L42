@@ -2,6 +2,10 @@
 //tasked: a list of available libraries in this version
 //tasked: js file for ide personalization modularized away
 
+Replace all #succ/#pred with succ/pred also in the guide
+
+test that == on set and map does not just use structural equality, since order is relevant in 42 sets....
+
 Data should not generate certain methods for immutable classes:
 immClone()                         read method This immClone()=(..)
 readEquality(that)                 read method Bool readEquality(read This that)=(..)

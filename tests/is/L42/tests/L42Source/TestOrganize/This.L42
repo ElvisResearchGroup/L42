@@ -13,7 +13,9 @@ TestOrganizeWrongDollarStays=(
       |$A={}
       |A={}
       |Foo={
+      |  //class methods:
       |  #apply(a) class method This #apply($A a)
+      |  //read methods:
       |  a()read method $A a()
       |  }
       """))
