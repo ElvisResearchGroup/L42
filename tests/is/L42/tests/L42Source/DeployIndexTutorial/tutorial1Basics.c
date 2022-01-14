@@ -17,25 +17,26 @@ Java program.
 <ul>
 <li>
   For windows download here <a href=
-  "https://github.com/Language42/Language42.github.io/releases/download/d025/L42PortableWin.zip"
+  "https://l42.is/L42PortableWin.zip"
   >L42PortableWin.zip</a>
+  WComm "https://github.com/Language42/Language42.github.io/releases/download/d025/L42PortableWin.zip"
   WComm For windows download here <a href="http://130.195.5.18/L42PortableWin.zip">L42PortableWin.zip</a>
   WComm or <a href="L42Win.jar">L42Win.jar</a>
 </li>
 <li>
   For Linux download here <a href=
-  "https://github.com/Language42/Language42.github.io/releases/download/d025/L42PortableLinux.zip"
+  "https://l42.is/L42PortableLinux.zip"
   >L42PortableLinux.zip</a>
   WComm For Linux download here <a href="http://130.195.5.18/L42PortableLinux.zip">L42PortableLinux.zip</a>
   WComm <a href="L42Linux.jar">L42Linux.jar</a>
 </li>
 <li>
   For Mac download here <a href=
-  "https://github.com/Language42/Language42.github.io/releases/download/d025/L42PortableMac.zip"
+  "https://l42.is/L42PortableMac.zip"
   >L42PortableMac.zip</a>
   WComm For Mac download here <a href="http://130.195.5.18/L42PortableMac.zip">L42PortableMac.zip</a>
 </li>
-  WComm <li>  The portable version contains also an appropriate JVM.</li>
+WComm <li>  The portable version contains also an appropriate JVM.</li>
   <li>  Run Wcode(L42)
     WComm  Wcode(java --enable-preview -jar L42.jar) 
     to start the IDE.

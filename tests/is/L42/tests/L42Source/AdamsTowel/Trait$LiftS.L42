@@ -5,11 +5,15 @@ TraitS=Trait:{
     Introspection.Nested(A)
       .outerDoc().docs().left().texts().left()
   }
+@{
+Returns a Trait whose code has an #apply() method
+returning the 'that' string.
+}
 class method Trait (S that)={(
   map=Trait$DocMap[key='A val=that]
   lib=map.resetDocs(TraitS.code())
   return Trait(lib)[hide='A]
-  //I can not yet use Class:TraitS.resetDocs[key='A val=that]
+  //I can not yet use TraitS.resetDocs[key='A val=that]
   whoops Message
   )
   catch Trait$InvalidName x error x//unreachable
