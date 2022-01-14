@@ -62,6 +62,10 @@ WebIntegrated42Lib = {
       \content(\content.replace(S"[%key]" with=trait.info().toFullS()))
       this
       )
+    mut method mut This replace(S that, S with)=(
+      \content(\content.replace(that with=with))
+      this
+      )
     mut method Void ~()[_] = (
       (repo,version,name) = This1
       writer = \#that.gw()
@@ -70,6 +74,15 @@ WebIntegrated42Lib = {
         contentBase64=this.content().encodeBase64() 
         )
       )
+    mut method Void write(Url on)[_] = (
+      (repo) = This1
+      writer = \#that.gw()
+      writer.write(
+        on=Url"github.com/%repo/%(on)",
+        contentBase64=this.content().encodeBase64() 
+        )
+      )
+    
     mut method mut This supportFile(Url localName, S destination)[_] = (
       (repo,version,name) = This1
       fs = \#that.fs()

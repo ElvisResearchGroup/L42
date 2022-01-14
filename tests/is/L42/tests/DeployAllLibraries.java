@@ -63,7 +63,8 @@ public class DeployAllLibraries {
       nameSecret("L42Source/TestUnit"),
       nameSecret("L42Source/TestVoxelMap"),
       nameSecret("L42Source/DeployJSon"),
-      nameSecret("L42Source/TestTime")
+      nameSecret("L42Source/TestTime"),
+      nameSecret("L42Source/DeployIndexTutorial")
       );
     }
   }
