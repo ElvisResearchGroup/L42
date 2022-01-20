@@ -11,15 +11,15 @@ import is.L42.common.Parse;
 public class ParseSettings {
   public static final String defaultArgs=Settings.defaultOptions.toString(); 
   public static void main(String...arg) throws IOException {
-    if(arg.length==0){ System.out.println(defaultArgs); }
+    if(arg.length==0){ System.out.println(defaultArgs); return;}
     String name = arg[0];
     assert name != null;
     Path path=Paths.get(name);
     boolean exists=Files.exists(path);
     boolean isDir=exists && Files.isDirectory(path);
-    if(!exists || !isDir){ System.out.println(defaultArgs); }
+    if(!exists || !isDir){ System.out.println(defaultArgs); return;}
     Path thisFile=path.resolve("Setti.ngs");
-    if(!Files.exists(thisFile)){ System.out.println(defaultArgs); }
+    if(!Files.exists(thisFile)){ System.out.println(defaultArgs); return ;}
     String code=Files.readString(path,StandardCharsets.US_ASCII);
     code=code.replace("\r","");
     var o=Settings.defaultOptions;
@@ -27,6 +27,7 @@ public class ParseSettings {
     catch(Throwable t){
       System.err.println("better printout for"+t);
       //what happens if there is error but not out?
+      return;
       }
     System.out.println(o.toString());
     }
