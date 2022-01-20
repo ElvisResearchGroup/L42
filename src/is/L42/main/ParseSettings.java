@@ -20,7 +20,7 @@ public class ParseSettings {
     if(!exists || !isDir){ System.out.println(defaultArgs); return;}
     Path thisFile=path.resolve("Setti.ngs");
     if(!Files.exists(thisFile)){ System.out.println(defaultArgs); return ;}
-    String code=Files.readString(path,StandardCharsets.US_ASCII);
+    String code=Files.readString(thisFile,StandardCharsets.US_ASCII);
     code=code.replace("\r","");
     var o=Settings.defaultOptions;
     try{o=Parse.sureSettings(thisFile, code).options();}
