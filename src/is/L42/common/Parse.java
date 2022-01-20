@@ -123,6 +123,12 @@ public class Parse {
       }
     return new Result<Settings>("","","",e);
     }
+  public static Settings sureSettings(Path fileName){
+    String code;try{code=Files.readString(fileName,StandardCharsets.US_ASCII);}
+    catch (IOException e) {throw new Error(e); }//TODO:
+    code=code.replace("\r","");
+    return sureSettings(fileName,code);    
+    }
   public static Settings sureSettings(Path fileName,String s){
     var res=settings(fileName,s);
     if (res.hasErr()){

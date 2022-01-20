@@ -26,6 +26,7 @@ import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.Pos;
 import is.L42.main.Main;
+import is.L42.main.Settings;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
@@ -50,6 +51,9 @@ public class Resources {
   public static void setErrHandler(Consumer<String> c){errHandler=c;}
   private static Consumer<String> testHandler=s->{};
   public static void setTestHandler(Consumer<String> c){testHandler=c;}
+  private static Settings settings=null;
+  public static void setSettings(Settings s){settings=s;}
+  public static Settings settings(){return settings;}
   public static void out(String s){
     s+="\n";
     out.append(s);

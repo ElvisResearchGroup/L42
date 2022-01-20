@@ -4,7 +4,16 @@ reuse [L42.is/AdamsTowel]
 //--
 //sort, maxindex,popmax etc..
 
+Rec={class method Void foo(I num)=(
+  Debug(num)
+  Rec.foo(num=num+1I)
+  )}
 
+Main = Rec.foo(num=0I)//695//771
+//ims20 754// ims30 786
+//789
+
+/*
 DD = Decorator:Data:{
   TraitDD = Trait:{
     Elem = {}
@@ -42,7 +51,8 @@ DD = Decorator:Data:{
       read compare
       max,#max,readMax //err on empty, leftmost?
       min,#min,readMin //err on empty, leftmost?
-      sortOut(read)/*err on mut elements*/ ,#sortOut(mut)
+      sortOut(read)//err on mut elements
+       ,#sortOut(mut)
       sortIn(mut)
       mode?
       insert ordered
@@ -76,3 +86,4 @@ MMain=(
   
   
   )
+  */
