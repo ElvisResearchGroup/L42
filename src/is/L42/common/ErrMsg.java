@@ -154,6 +154,10 @@ public class ErrMsg {
   "Zero is not allowed for interface methods, but the following is used "+_1
   ;}public static String zeroPrivateState(Object _1){return
   "Only zero is allowed for private state, but the following is used "+_1
+  ;}public static String repeatedSetting(Object _1){return
+  "Error: the setting with key "+_1+" is mentioned multiple times"
+  ;}public static String invalidSettingKey(Object _1){return
+  "Error: the setting key "+_1+" is invalid"
   ;}public static String notValidC(Object _1){return
   "Error: "+_1+" is not a valid class name"
   ;}public static String notValidNumberReceiver(Object _1, String lit){return

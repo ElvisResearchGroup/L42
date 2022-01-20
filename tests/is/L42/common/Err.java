@@ -9,12 +9,12 @@ import org.opentest4j.AssertionFailedError;
 
 public class Err {
   public static String hole="[###]";//not contains \.[]{}()<>*+-=!?^$|
-  public static boolean strCmp(String cmp1, String cmp2){
-    cmp1 = cmp1.trim();
-    cmp2 = cmp2.trim();
-    try{assertTrue(ErrMsg.strCmpAux(cmp1, cmp2,Err.hole));}
+  public static boolean strCmp(String actual, String expected){
+    actual = actual.trim();
+    expected = expected.trim();
+    try{assertTrue(ErrMsg.strCmpAux(actual, expected,Err.hole));}
     catch(AssertionFailedError e){
-      assertEquals(cmp2,cmp1);
+      assertEquals(expected,actual);
       throw unreachable();
       }
     return true;

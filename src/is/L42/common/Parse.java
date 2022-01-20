@@ -29,8 +29,13 @@ import is.L42.generated.L42AuxParser.TopDocContext;
 import is.L42.generated.L42Lexer;
 import is.L42.generated.L42Parser;
 import is.L42.generated.L42Parser.NudeEContext;
+import is.L42.generated.SettingsFileLexer;
+import is.L42.generated.SettingsFileParser;
+import is.L42.generated.SettingsFileParser.NudeSettingsContext;
+import is.L42.main.Settings;
 import is.L42.visitors.AuxVisitor;
 import is.L42.visitors.FullL42Visitor;
+import is.L42.visitors.TopSettingsFileVisitor;
 
 public class Parse {
   static{Constants.toS.getClass();}//initialize Constants class
@@ -100,9 +105,31 @@ public class Parse {
     assert !res.hasErr():s;
     return new AuxVisitor(null).visitPathSelX(res.res.pathSelX());
     }
-
   public static Result<Program> program(Path fileName,String s){
     return aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
+    }
+  public static Result<Settings> settings(Path fileName,String s){
+    var l=new SettingsFileLexer(CharStreams.fromString(s));
+    var t = new CommonTokenStream(l);
+    var p=new SettingsFileParser(t);
+    Result<NudeSettingsContext> res1=doResult(fileName,l,p,()->p.nudeSettings());
+    if(res1.hasErr()){
+      return new Result<>(res1.errorsParser,res1.errorsTokenizer,res1.errorsVisitor,null);         
+      }
+    var v=new TopSettingsFileVisitor(fileName);
+    Settings e=v.visitNudeSettings(res1.res);
+    if(v.errors.length()!=0){
+      return new Result<Settings>("","",v.errors.toString(),null);
+      }
+    return new Result<Settings>("","","",e);
+    }
+  public static Settings sureSettings(Path fileName,String s){
+    var res=settings(fileName,s);
+    if (res.hasErr()){
+      throw new EndError.NotWellFormed(L(),res.toString());
+      }
+    assert res.res!=null;
+    return res.res; 
     }
   public static String codeFromPath(Path path) throws IOException{
     if(Files.isDirectory(path)){path=path.resolve("This.L42");}
