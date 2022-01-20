@@ -11,6 +11,7 @@ import is.L42.common.Parse;
 public class ParseSettings {
   public static final String defaultArgs=Settings.defaultOptions.toString(); 
   public static void main(String...arg) throws IOException {
+    if(arg.length==0){ System.out.println(defaultArgs); }
     String name = arg[0];
     assert name != null;
     Path path=Paths.get(name);
