@@ -1,9 +1,9 @@
-// tasked -an about button with the version number, but how to know the last version? -reading a file on l42.is and ask for a download new version?
-//tasked: a list of available libraries in this version
 //tasked: js file for ide personalization modularized away
 
-In the IDE, if the parameters in the settings are too low, the executor thread in the gui get killed ?
-//that is, GuiData.makeSlave running thread is killed mid way
+Add settings secuirity to the type system
+
+Right now Resources keeps in memory all the out/err/tests ever happened.
+Those fields of Resources should be removed and the callbacks should be used instead during tests.
  
 Replace all #succ/#pred with succ/pred also in the guide
 
@@ -66,7 +66,6 @@ Fix FS library:
 
 -- Main1=Debug(S"Hello1") Main2=Debug(S"Hello2"), why if I run again and change only hello1 I get a printout also for hello2? hello1 should have produced the same exact result
 
-=#$//should this be required to unlock #$ in its transivite main
 multi line escape syntax is now confusing.
   A better one would be """n where n is the number of % to mean 'escape' and the default is 1
 

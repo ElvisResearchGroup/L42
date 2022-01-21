@@ -28,9 +28,9 @@ public class TestSettings {
       Settings[options=-Xss1G -Xms256M -Xmx2G, permissions={}]
       """);}
   @Test public void opt1(){parseOk("""
-      maxStackSize = 10G
+      maxStackSize = 10M
       ""","""
-      Settings[options=-Xss10G -Xms256M -Xmx2G, permissions={}]
+      Settings[options=-Xss10M -Xms256M -Xmx2G, permissions={}]
       """);}
   @Test public void opt2(){parseOk("""
       maxMemorySize = 20G
@@ -38,23 +38,23 @@ public class TestSettings {
       Settings[options=-Xss1G -Xms256M -Xmx20G, permissions={}]
       """);}
   @Test public void opt3(){parseOk("""
-      initialMemorySize = 30M
+      initialMemorySize = 300M
       ""","""
-      Settings[options=-Xss1G -Xms30M -Xmx2G, permissions={}]
+      Settings[options=-Xss1G -Xms300M -Xmx2G, permissions={}]
       """);}
   @Test public void opt4(){parseOk("""
-      maxStackSize = 10G
+      maxStackSize = 10M
       maxMemorySize = 20G
-      initialMemorySize = 30M
+      initialMemorySize = 300M
       ""","""
-      Settings[options=-Xss10G -Xms30M -Xmx20G, permissions={}]
+      Settings[options=-Xss10M -Xms300M -Xmx20G, permissions={}]
       """);}
   @Test public void opt5(){parseOk("""
-      initialMemorySize = 30M
-      maxStackSize = 10G
+      initialMemorySize = 300M
+      maxStackSize = 10M
       maxMemorySize = 20G
       ""","""
-      Settings[options=-Xss10G -Xms30M -Xmx20G, permissions={}]
+      Settings[options=-Xss10M -Xms300M -Xmx20G, permissions={}]
       """);}
   @Test public void sec1(){parseOk("""
       Foo.Bar = [L42.is/FileSystem] [L42.is/bb]

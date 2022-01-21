@@ -72,7 +72,7 @@ public class Main {
       throw ee;
       }
     }
-  static private String fixMessage(String fullMsg){
+  static public String fixMessage(String fullMsg){
     var omsg=fullMsg.lines().skip(2).findFirst();
     if(omsg.isEmpty()){ return fullMsg; }
     var msg=omsg.get();
