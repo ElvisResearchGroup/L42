@@ -5,6 +5,8 @@ import static is.L42.generated.ThrowKind.*;
 import static is.L42.tools.General.*;
 import static is.L42.typeSystem.ProgramTypeSystem.errIf;
 
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,15 +16,18 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.common.ToNameUrl;
+import is.L42.flyweight.C;
 import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core.*;
 import is.L42.generated.Pos;
 import is.L42.nativeCode.TrustedKind;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class PathTypeSystem extends UndefinedCollectorVisitor{
-  public PathTypeSystem(boolean isDeep, Program p, G g, List<T> ts, List<P> ps, P expected) {
+  public PathTypeSystem(boolean isDeep, Program p, G g, List<T> ts, List<P> ps, P expected, List<String>allowedHDurls) {
     this.isDeep = isDeep;
     this.p = p;
     this.g = g;
@@ -30,6 +35,8 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     this.ps = ps;
     this.expected=expected;
     this._computed=null;
+    this.allowedHDurls=allowedHDurls;
+
   }
   public List<Pos> positionOfNonDeterministicError=null;
   public P typeOfNonDetermisticError=null;
@@ -40,6 +47,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
   List<P> ps;
   P expected;
   P _computed=null;
+  final List<String>allowedHDurls;
   public P _computed(){return _computed;}
   void visitExpecting(E e,P newExpected){
     P oldE=expected;
@@ -95,7 +103,64 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
   private boolean tryAlternatives(Stream<P> stream,P computed){
     return stream.anyMatch(pi->p._isSubtype(computed, pi));
     }
+  private void checkHD(MCall e){
+    T t=this.g._of(e.xP());
+    CoreL l=p._ofCore(t.p());    
+    if(l.isInterface()) {
+      throw new EndError.TypeError(e.poss(),ErrMsg.securitySimplicityHd(mainPath()));
+      }
+    var ok=l.poss().stream().anyMatch(pi->
+      allowedHDurls.stream().anyMatch(s->
+        ok(pi.fileName(),s)));
+    if(ok){return;}
+    var actual=l.poss().stream().map(this::actualSrc).toList();
+    throw new EndError.TypeError(e.poss(),ErrMsg.securitySettingsHd(mainPath(),allowedHDurls,actual));
+    }
+  private String actualSrc(Pos p){
+    String res=fromURI(p.fileName());
+    String resNorm=ToNameUrl.of(res,List.of()).fullName();
+    String base=ToNameUrl.of("L42.is/\t",List.of()).fullName();
+    int iTab=base.indexOf("\t");
+    assert iTab!=-1;
+    base=base.substring(0,iTab);
+    if(!resNorm.startsWith(base)){ return res; }
+    //https://github.com/Language42/Language42.github.io/blob/HEAD/testing/ .L42?raw=true
+    //https://github.com/Language42/Language42.github.io/blob/HEAD/testing/FileSystem.L42/FSLib.L42?raw=true
+    resNorm="L42.is/"+resNorm.substring(iTab);
+    if(resNorm.endsWith(".L42?raw=true")){ 
+      resNorm=resNorm.substring(0,resNorm.length()-".L42?raw=true".length());
+      }    
+    return resNorm;
+    }
+  private List<C> mainPath(){
+    var path=p.path();
+    path.add(Resources.currentC);
+    return path;
+  }
+  private String trimRawTrue(String s){
+    if(!s.endsWith(".L42?raw=true")){ return s; }
+    return s.substring(0,s.length()-".L42?raw=true".length());
+    }
+  private String fromURI(URI fileName) {
+    try{
+      Path pi=Path.of(fileName);
+      Path top=Resources.initialPath();
+      return top.relativize(pi).toString();
+      }
+    catch(IllegalArgumentException iae){
+      return fileName.toASCIIString();
+      }
+    }
+  private boolean ok(URI fileName,String s){
+    if(!s.endsWith(".L42")){ s+=".L42"; }
+    String actual=trimRawTrue(ToNameUrl.of(fromURI(fileName),List.of()).fullName());
+    String allowed=trimRawTrue(ToNameUrl.of(s,List.of()).fullName());
+    return actual.equals(allowed) 
+      || actual.startsWith(allowed+"/")
+      || actual.startsWith(allowed+".L42/");
+  }
   @Override public void visitMCall(MCall e){
+    if(this.allowedHDurls!=null && e.s().m().startsWith("#$")){ checkHD(e); }
     P p0=TypeManipulation.guess(g,e.xP());
     CoreL l;try{l=p._ofCore(p0);}
     catch(AssertionError ae){throw new AssertionError(p0.toString(),ae);}

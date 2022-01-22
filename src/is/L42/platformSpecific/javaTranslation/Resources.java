@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -51,7 +52,7 @@ public class Resources {
   public static void setErrHandler(Consumer<String> c){errHandler=c;}
   private static Consumer<String> testHandler=s->{};
   public static void setTestHandler(Consumer<String> c){testHandler=c;}
-  private static Settings settings=null;
+  private static Settings settings=new Settings(Settings.defaultOptions,Map.of());
   public static void setSettings(Settings s){settings=s;}
   public static Settings settings(){return settings;}
   public static void out(String s){

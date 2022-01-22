@@ -29,12 +29,12 @@ DBLib=Load:{reuse [#$L42.is/RawQuery]}
 JavaCode={...}
 DB=DBLib(packageName=S"db",className=S"DB",code=JavaCode(url=S"jdbc:derby:Test1;create=true"),javaServer=J)
 
-TaskDeployJavaServerDocs = ~Web.#$of()
+TaskDeployRawQueryDocs = ~Web.#$of()
    .deployDocs(\"Doc.c")
    .overview(DBLib key=S"OVERVIEW_HERE")
 
 
-Main2=(
+Main=(
   outs=S.List()
   db=DB.#$of()
   (db.execute(query=Queries.drop())

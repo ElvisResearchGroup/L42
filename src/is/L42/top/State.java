@@ -153,7 +153,7 @@ public class State implements Serializable{
     Core.E ce=new InferToCore(i,ctz).compute(he);//propagates errors
     WellFormedness.of(ce.visitable());
     Deps deps=new Deps();
-    P pRes=wellTyped(p,ce,deps,allNCs);//propagate errors //ncs is passed just to provide better errors
+    P pRes=wellTyped(p,c0,ce,deps,allNCs);//propagate errors //ncs is passed just to provide better errors
     Core.E e=adapt(ce,pRes);
     Coherence.coherentAllPs(p,deps.cohePs,alreadyCoherent);
     Resources.inferenceHandler().nc(e, p);
@@ -191,11 +191,30 @@ public class State implements Serializable{
     Core.D d=new Core.D(false,P.coreAny.withP(path),x,ce);
     return new Core.Block(ce.pos(),L(d),L(),mCall);
     }
-  private P wellTyped(Program p, Core.E ce,Deps deps,List<Full.L.NC>moreNCs)  throws EndError{
+  private List<String>computeAllowedHDurls(Program p,C c0) {
+    var permissions=Resources.settings().permissions();
+    var path=p.path();
+    path.add(c0);
+    assert path.stream().noneMatch(c->c==null);
+    return permissions.getOrDefault(path,List.of());
+    }
+  private P wellTyped(Program p,C c0, Core.E ce,Deps deps,List<Full.L.NC>moreNCs)  throws EndError{
     var depsV=deps.new DepsV(p){@Override public void visitL(CoreL l){return;}};
     depsV.of(ce.visitable());
     new CircularityIssue(deps.typePs,p,ce,moreNCs).checkNotIllTyped();
-    var pts=new PathTypeSystem(false,p,G.empty(),L(),L(P.pAny),P.pAny);
+    var cau=computeAllowedHDurls(p,c0);
+    assert switch(0){default->{
+      var st=Thread.currentThread().getStackTrace();
+      for (StackTraceElement e :st){
+        var cn=e.getClassName();
+        var found = cn.equals("is.L42.tests.TestCompileAndRunJ")
+          ||cn.equals("is.L42.tests.TestCachingCases");
+        if(found){ cau=null; break;}
+        }
+      yield true;}};
+    var pts=new PathTypeSystem(false,p,G.empty(),L(),L(P.pAny),P.pAny,cau);
+    Resources.currentC=c0;
+    Resources.currentP=p;
     ce.visitable().accept(pts);
     var cmp=pts._computed();
     if(cmp==null){cmp=P.pVoid;}

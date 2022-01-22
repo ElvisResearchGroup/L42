@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -355,6 +356,10 @@ public class ErrMsg {
   "methods "+s+", bridging effectful #$ non determinism have modifier "+mdf+", but only {mut,lent,capsule} are allowed"
   ;}public static String bridgeViolatedByFactory(Object bi,Object fi){return
   "methods "+bi+", bridging effectful #$ non determinism could be invoked through factory "+fi+", that has no #$"
+  ;}public static String securitySettingsHd(List<C> path,List<String> allowed,List<String> actual){return
+  "main "+P.of(0, path).toString().substring("This.".length())+" is not allowed to call an #$ method on code coming from "+actual+". Allowed sources are "+allowed
+  ;}public static String securitySimplicityHd(List<C> path){return
+  "main "+P.of(0, path).toString().substring("This.".length())+" can not call an #$ method on an interface class objects directly"
   ;}public static Supplier<String> nonDetermisticErrorOnlyHD(Object m,Object e){return
   ()->"method "+m+" catches the non deterministic error "+e+". Only #$ methods are allowed to catch non deterministic errors."
   ;}public static String mustHaveCloseState(){return

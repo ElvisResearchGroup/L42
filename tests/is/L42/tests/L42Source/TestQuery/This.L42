@@ -43,7 +43,7 @@ QueryLib=Trait:{reuse [AdamsTowel]
 
 Secret = Trait({...}):{class method S name()='Query}
 Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
-TaskDeployRawQuery = Web.#$of().deployModule( 
+TaskDeployQuery = Web.#$of().deployModule( 
   QueryLib [clear='Top.RawQuery.trait();hide='Top.Source] ['Top.RawQuery=>'Top], 
   nestedName='Top)
   
@@ -52,7 +52,7 @@ J=LoadJ(slaveName=S"dbServer{}")
 LoadQuery=Load:{reuse[#$L42.is/Query]}
 DB=LoadQuery.sql(connectionString=S"jdbc:derby:Test1;create=true",javaServer=J)
 
-QueryDeployDocs = ~Web.#$of().deployDocs(\"Doc.c")
+TaskDeployQueryDocs = ~Web.#$of().deployDocs(\"Doc.c")
   .overview(DB key=S"OVERVIEW_HERE")
 
 ONum=Collection.optional(Num)

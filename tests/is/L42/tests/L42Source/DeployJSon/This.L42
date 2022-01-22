@@ -21,7 +21,7 @@ JsonLibTrait = Trait:{reuse [AdamsTowel]
   }
 Json = Load:Class.Relax:System.extractModule(JsonLibTrait.code(),name='Json)
 
-TestJSon = (
+TestJson = (
   Json.Value v=Json"""
     |[{ "a":12, "b":true, "c":["a","k"] },
     |" hello ",
@@ -44,10 +44,10 @@ TaskDeployJson = Web.#$of().deployModule(JsonLibTrait(), nestedName='Json)
 
 JS=Load:{reuse [#$L42.is/Json]}
   
-TaskDeployJSonDocs = ~Web.#$of().deployDocs(\"Doc.c")
+TaskDeployJsonDocs = ~Web.#$of().deployDocs(\"Doc.c")
   .overview(JS key=S"OVERVIEW_HERE")
 
-TestJSonDeployed = (
+TestJsonDeployed = (
   JS.Value v=JS"""
     |[{ "a":12, "b":true, "c":["a","k"] },
     |" hello ",

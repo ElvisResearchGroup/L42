@@ -1,7 +1,16 @@
 //tasked: js file for ide personalization modularized away
 
-Add settings secuirity to the type system
+Unused security should be an error but it is not now
+in security error when we return the list of required permissions, remove duplicates
+right now Security urls are pretty liberal. Should they not contain the '?' sign?
 
+Bug:nameSecret("L42Source/TestRawQuery"), is satisfied by
+Main=[L42.is/RawQuery],//[AdamsTowel/Trait],[AdamsTowel/Trait$LiftS]
+//but the error mentioned also trait and LiftS ??
+In the same way, why it is sufficient to make
+TaskDeployGuiBuilder=[Secret]
+//main Main is not allowed to call an #$ method on code coming from [L42.is/RawQuery.L42/Trait, L42.is/RawQuery.L42/QueryEngine, AdamsTowel/Trait.L42, AdamsTowel/Trait$LiftS.L42]. Allowed sources are [L42.is/JavaServer]
+however we need both in TaskDeploySifoLib=[L42.is/GitWriter][Secret]
 Right now Resources keeps in memory all the out/err/tests ever happened.
 Those fields of Resources should be removed and the callbacks should be used instead during tests.
  

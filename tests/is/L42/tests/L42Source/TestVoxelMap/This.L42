@@ -8,7 +8,7 @@ Module = Trait : {reuse [AdamsTowel]
 //class method S #$of()=S"ghp_..."
 Secret = Trait({...}):{class method S name()='VoxelMap}
 Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
-TaskDeployJavaServer = Web.#$of().deployModule(Module(), nestedName='VoxelMap)
+TaskDeploy = Web.#$of().deployModule(Module(), nestedName='VoxelMap)
   
 VMT = Load : {reuse [#$L42.is/VoxelMap] }
 VM = Class: VMT : {
@@ -36,7 +36,7 @@ Terra = Class : VM.Physics : {
     }
   }
 
-TaskDeployJavaServerDocs = ~Web.#$of()
+TaskDeployDocs = ~Web.#$of()
    .deployDocs(\"Doc.c")
    .overview(VMT key=S"OVERVIEW_HERE1")
    .overview(VM key=S"OVERVIEW_HERE2")

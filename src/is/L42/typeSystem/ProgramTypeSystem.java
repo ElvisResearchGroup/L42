@@ -146,7 +146,7 @@ public class ProgramTypeSystem {
   private static void typeMethE(Program p,MH mh, E e){
     var g=G.of(mh);
     List<P> ps=L(mh.exceptions().stream().map(t->t.p()));
-    var pts=new PathTypeSystem(true,p,g,L(),ps,mh.t().p());
+    var pts=new PathTypeSystem(true,p,g,L(),ps,mh.t().p(),null);
     e.visitable().accept(pts);
     BodyTypes.checkBody(p, g, mh, e);
     var nde=pts.positionOfNonDeterministicError;

@@ -85,7 +85,7 @@ Base = Trait:{reuse [AdamsTowel]
 //class method S #$of()=S"ghp_..."
 Secret = Trait({...}):{class method S name()='Unit}
 Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
-TaskDeployJavaServer = Web.#$of().deployModule(Base['TraitSI=>'Unit.TraitSI], nestedName='Unit)
+TaskDeployUnit = Web.#$of().deployModule(Base['TraitSI=>'Unit.TraitSI], nestedName='Unit)
 
 UnitLib=Load:{reuse[#$L42.is/Unit]}
 UnitExample = {
@@ -134,7 +134,7 @@ UnitExample = {
     )
   }
  
-TaskDeployJavaServerDocs = ~Web.#$of()
+TaskDeployUnitDocs = ~Web.#$of()
    .deployDocs(\"Doc.c")
    .overview(UnitLib key=S"OVERVIEW_HERE")
    .overview(UnitExample key=S"Example_OVERVIEW_HERE")

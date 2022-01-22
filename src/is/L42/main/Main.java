@@ -37,7 +37,20 @@ public class Main {
       Files.createFile(thisFile);//create an empty This.L42 file in the selected folder
       Files.write(thisFile, defaultMain.getBytes());
       }
-    run(path,isDir,false);      
+    Path settingsFile=path.resolve("Setti.ngs");
+    if(!Files.exists(settingsFile)){
+      Files.createFile(settingsFile);
+      Files.write(settingsFile, "".getBytes());
+      }
+    try { Resources.setSettings(Parse.sureSettings(settingsFile));}
+    catch(EndError ee) {
+      Resources.err("-------------------------");
+      Resources.err("Settings error:");
+      Resources.err("-------------------------");
+      Resources.err(fixMessage(ee.getMessage()));
+      throw ee;
+      }
+    run(path,isDir,false);
     }
   public static void run(Path path,boolean isDir,boolean caching) throws IOException {
     CachedTop c=new CachedTop(L(),L());
@@ -159,7 +172,7 @@ public class Main {
       """;
   //Constants below should be changed accordingly to the secret in is.L42.tests.SecretHolder
   public static final String l42IsRepoPath = "Language42/Language42.github.io"; //Language42/is 
-  public static String l42IsRepoVersion = "d025";//this number should always be the last deployed version
+  public static String l42IsRepoVersion = "d026";//this number should always be the last deployed version
   public static final String testingRepoVersion="testing";
   public static final boolean isTesting(){ return Main.testingRepoVersion==Main.l42IsRepoVersion; }
   }

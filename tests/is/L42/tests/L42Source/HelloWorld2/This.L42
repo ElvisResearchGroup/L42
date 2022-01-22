@@ -3,13 +3,21 @@ reuse [L42.is/AdamsTowel]
 //operations rolling around?
 //--
 //sort, maxindex,popmax etc..
-
+Fs= Load:{reuse [L42.is/FileSystem]}
+Bb= {...}
+CC={...}
+A={B=(
+  ff=Fs.Real.#$of()
+  bb=Bb.#$of()
+  dd=CC.DD.#$of()
+  Debug(S"start")
+  )}
 Rec={class method Void foo(I num)=(
   Debug(num)
   Rec.foo(num=num+1I)
   )}
 
-Main = Rec.foo(num=0I)
+//Main = Rec.foo(num=0I)
 
 /*
 DD = Decorator:Data:{
