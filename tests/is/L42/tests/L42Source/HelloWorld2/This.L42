@@ -4,6 +4,16 @@ reuse [L42.is/AdamsTowel]
 //--
 //sort, maxindex,popmax etc..
 Fs= Load:{reuse [L42.is/FileSystem]}
+J0 = Load:{reuse [L42.is/JavaServer]}
+J = J0(slaveName=S"mySlave{}")
+MainJ=(
+  _=J.#$of()
+  Debug(S"safe enough")
+  )
+MainR=(
+  r=Math.Random.#$random()
+  Debug(S"safe enough2")
+  )
 Bb= {...}
 CC={...}
 A={B=(

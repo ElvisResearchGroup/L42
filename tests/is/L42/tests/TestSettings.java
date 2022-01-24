@@ -59,9 +59,8 @@ public class TestSettings {
   @Test public void sec1(){parseOk("""
       Foo.Bar = [L42.is/FileSystem] [L42.is/bb]
       ""","""
-      Settings[options=-Xss1G -Xms256M -Xmx2G, permissions={
-        [Foo, Bar]=[L42.is/FileSystem, L42.is/bb]
-        }]
+      Settings[options=-Xss1G-Xms256M-Xmx2G,permissions={
+        Foo.Bar=[L42.is/FileSystem,L42.is/bb]}]
       """);}
   @Test public void sec2(){parseOk("""
       Foo.Bar::2 = [L42.is/FileSystem] [L42.is/bb]
@@ -69,8 +68,8 @@ public class TestSettings {
       Foo.Bar::3 = [L42.is/FileSystem]
       ""","""
       Settings[options=-Xss1G-Xms256M-Xmx20G,permissions={
-        [Foo,Bar::3]=[L42.is/FileSystem],
-        [Foo,Bar::2]=[L42.is/FileSystem,L42.is/bb]
+        Foo.Bar::2=[L42.is/FileSystem,L42.is/bb];
+        Foo.Bar::3=[L42.is/FileSystem]
         }]
       """);}
   }

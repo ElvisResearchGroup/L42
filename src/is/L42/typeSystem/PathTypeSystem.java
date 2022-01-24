@@ -109,11 +109,11 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     if(l.isInterface()) {
       throw new EndError.TypeError(e.poss(),ErrMsg.securitySimplicityHd(mainPath()));
       }
-    var ok=l.poss().stream().anyMatch(pi->
+    var ok=l.poss().stream().allMatch(pi->
       allowedHDurls.stream().anyMatch(s->
         ok(pi.fileName(),s)));
     if(ok){return;}
-    var actual=l.poss().stream().map(this::actualSrc).toList();
+    var actual=l.poss().stream().map(this::actualSrc).distinct().toList();
     throw new EndError.TypeError(e.poss(),ErrMsg.securitySettingsHd(mainPath(),allowedHDurls,actual));
     }
   private String actualSrc(Pos p){
@@ -123,13 +123,10 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     int iTab=base.indexOf("\t");
     assert iTab!=-1;
     base=base.substring(0,iTab);
-    if(!resNorm.startsWith(base)){ return res; }
+    if(!resNorm.startsWith(base)){ return removeNoise(res); }
     //https://github.com/Language42/Language42.github.io/blob/HEAD/testing/ .L42?raw=true
     //https://github.com/Language42/Language42.github.io/blob/HEAD/testing/FileSystem.L42/FSLib.L42?raw=true
-    resNorm="L42.is/"+resNorm.substring(iTab);
-    if(resNorm.endsWith(".L42?raw=true")){ 
-      resNorm=resNorm.substring(0,resNorm.length()-".L42?raw=true".length());
-      }    
+    resNorm=removeNoise("L42.is/"+resNorm.substring(iTab));    
     return resNorm;
     }
   private List<C> mainPath(){
@@ -137,9 +134,13 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     path.add(Resources.currentC);
     return path;
   }
-  private String trimRawTrue(String s){
-    if(!s.endsWith(".L42?raw=true")){ return s; }
-    return s.substring(0,s.length()-".L42?raw=true".length());
+  private String removeNoise(String s){
+    s=s.replace(".L42/", "/");
+    var end1="?raw=true";
+    var end2=".L42";
+    if(s.endsWith(end1)){ s=s.substring(0,s.length()-end1.length()); }
+    if(s.endsWith(end2)){ s=s.substring(0,s.length()-end2.length()); }
+    return s;
     }
   private String fromURI(URI fileName) {
     try{
@@ -152,12 +153,13 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
       }
     }
   private boolean ok(URI fileName,String s){
-    if(!s.endsWith(".L42")){ s+=".L42"; }
-    String actual=trimRawTrue(ToNameUrl.of(fromURI(fileName),List.of()).fullName());
-    String allowed=trimRawTrue(ToNameUrl.of(s,List.of()).fullName());
+    //if(!s.endsWith(".L42")){ s+=".L42"; }
+    //L42.is/AdamsTowel(.L42)/A.B
+    String actual=removeNoise(ToNameUrl.of(fromURI(fileName),List.of()).fullPath().toExternalForm());
+    String allowed=removeNoise(ToNameUrl.of(s,List.of()).fullPath().toExternalForm());
+    //System.out.println("actual="+actual+" allowed="+allowed);
     return actual.equals(allowed) 
-      || actual.startsWith(allowed+"/")
-      || actual.startsWith(allowed+".L42/");
+      || actual.startsWith(allowed+"/");
   }
   @Override public void visitMCall(MCall e){
     if(this.allowedHDurls!=null && e.s().m().startsWith("#$")){ checkHD(e); }

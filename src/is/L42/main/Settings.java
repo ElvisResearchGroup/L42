@@ -3,12 +3,21 @@ package is.L42.main;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import is.L42.common.EndError;
 import is.L42.flyweight.C;
 
 public record Settings(Options options,Map<List<C>,List<String>> permissions) implements Serializable{
-  public Settings{ options.invariant(); }  
+  public Settings{ options.invariant(); }
+  public String toString() {
+    String permissions=this.permissions.entrySet().stream().map(e->{
+      var cs=e.getKey().stream().map(k->k+"").collect(Collectors.joining("."));
+      return cs+"="+e.getValue();
+      }).sorted().collect(Collectors.joining(";"));
+    return "Settings[options="+this.options
+      +",permissions={"+permissions+"}]";
+  }
   public static final Options defaultOptions=new Options("1G","256M","2G");
   public static record Options(String maxStackSize,String initialMemorySize,String maxMemorySize) implements Serializable{
     public Options withMaxStackSize(String mss){return new Options(mss,initialMemorySize,maxMemorySize);}

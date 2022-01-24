@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
@@ -124,7 +123,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var tmp=meta.renames.stream().map(a->a.withStar());
     return new L42£Meta(mergeU(renames,L(tmp)));
     }
-  private static Pos noPos=new Pos(URI.create("InternalHidden"),0,0);
+  static public final Pos noPos=new Pos(URI.create("InternalHidden"),0,0);
   public static CoreL libraryCloseAndTyped(String fauxFileName, L42£Library l42Lib, MetaError err){
       CoreL l=l42Lib.unwrap;
       assert l.wf();
@@ -147,52 +146,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       catch(EndError e){
         throw err.throwErr(l42Lib,e.toString());
         }
-      l=l.accept(new CloneVisitor(){//info->typed; pos->anonimized
-        List<Pos>poss(List<Pos>poss){
-          return poss.stream()
-            .<Pos>map(p->p.withFileName(fileName(p.fileName())))
-            .toList();
-          }
-        URI fileName(URI uri){
-          String p=uri.getPath();
-          int i=p.lastIndexOf("/");
-          if(i!=-1) {
-            p=p.substring(i+1);}
-          try{return new URI(fauxFileName+"/"+p);}
-          catch (URISyntaxException e){throw new Error(e);}
-          }
-        public Core.EX visitEX(Core.EX x){return super.visitEX(x.withPos(noPos));}
-        public Core.PCastT visitPCastT(Core.PCastT pCastT){
-          return super.visitPCastT(pCastT.withPos(noPos));
-          }          
-        public Core.EVoid visitEVoid(Core.EVoid eVoid){return eVoid.withPos(noPos);}
-
-        public CoreL visitL(CoreL l){return super.visitL(l.withPoss(poss(l.poss())));}
-
-        public Core.MWT visitMWT(Core.MWT mwt){
-          return super.visitMWT(mwt.withPoss(poss(mwt.poss())));
-          }
-        public Core.NC visitNC(Core.NC nc){
-          return super.visitNC(nc.withPoss(poss(nc.poss())));
-          }
-        public Core.MCall visitMCall(Core.MCall mCall){
-          return super.visitMCall(mCall.withPos(noPos));
-          }          
-        public Core.Block visitBlock(Core.Block block){
-          return super.visitBlock(block.withPos(noPos));
-          }
-        public Core.Loop visitLoop(Core.Loop loop){
-          return super.visitLoop(loop.withPos(noPos));
-          }          
-        public Core.Throw visitThrow(Core.Throw thr){
-          return super.visitThrow(thr.withPos(noPos));
-          }          
-        public Core.OpUpdate visitOpUpdate(Core.OpUpdate opUpdate){
-          return super.visitOpUpdate(opUpdate.withPos(noPos));
-          }
-        @Override public Core.Info visitInfo(Core.Info info){
-          return info.withTyped(true);
-          }});
+      l=l.accept(new PosInfoNormalize(fauxFileName));
       return l;
       }
   public String deployLibraryToBase64(String fauxFileName, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){

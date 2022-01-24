@@ -11,6 +11,14 @@ In the same way, why it is sufficient to make
 TaskDeployGuiBuilder=[Secret]
 //main Main is not allowed to call an #$ method on code coming from [L42.is/RawQuery.L42/Trait, L42.is/RawQuery.L42/QueryEngine, AdamsTowel/Trait.L42, AdamsTowel/Trait$LiftS.L42]. Allowed sources are [L42.is/JavaServer]
 however we need both in TaskDeploySifoLib=[L42.is/GitWriter][Secret]
+
+main MainR is not allowed to call an #$ method on code coming from 
+[L42.is/AdamsTowel.L42/Math$Random]. Allowed sources are []
+[L42.is/AdamsTowel/Math.Random]. Allowed sources are []
+[L42.is/AdamsTowel/Math.Random]
+//We need during deployment to go from [L42.is/AdamsTowel.L42/Math$Random] to [L42.is/AdamsTowel/Math.Random] 
+
+
 Right now Resources keeps in memory all the out/err/tests ever happened.
 Those fields of Resources should be removed and the callbacks should be used instead during tests.
  
