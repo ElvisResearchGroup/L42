@@ -1,5 +1,4 @@
 m4_include(`../CommonHtmlDocumentation/header.h')m4_dnl
-WConversion
 m4_include(`../CommonHtmlDocumentation/postHeader.h')m4_dnl
 OFloatClass(index)
 <div class="rotate90"> Index of Content</div>

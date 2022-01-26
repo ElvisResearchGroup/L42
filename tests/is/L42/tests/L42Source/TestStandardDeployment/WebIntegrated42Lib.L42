@@ -51,6 +51,17 @@ WebIntegrated42Lib = {
     X[res.out().trim()!=S"" msg=S"m4 command silently unsuccessful"]
     DocsBuilder(this,content=res.out())
     )
+  
+  mut method mut DocsBuilder deployContent(S that)[_] =
+    DocsBuilder(this,content=that)
+  
+  mut method Void supportFile(Url localName, S destination)[_] = (
+    (repo,version,name) = This
+    this.gw().write(
+      on=Url"github.com/%repo/%version/%destination",
+      contentBase64=this.fs().readBase64(localName)
+      )
+    )    
   DocsBuilder = Data:{
     mut This1 that
     var S content
@@ -63,7 +74,9 @@ WebIntegrated42Lib = {
       this
       )
     mut method mut This replace(S that, S with)=(
+      //Debug(S"before replace") Debug(this.content())
       \content(\content.replace(that with=with))
+      //Debug(S"after replace") Debug(this.content())
       this
       )
     mut method Void ~()[_] = (
@@ -77,20 +90,15 @@ WebIntegrated42Lib = {
     mut method Void write(Url on)[_] = (
       (repo) = This1
       writer = \#that.gw()
+      //Debug(S"writing") Debug(this.content())
       writer.write(
         on=Url"github.com/%repo/%(on)",
         contentBase64=this.content().encodeBase64() 
         )
       )
     
-    mut method mut This supportFile(Url localName, S destination)[_] = (
-      (repo,version,name) = This1
-      fs = \#that.fs()
-      writer = \#that.gw()
-      writer.write(
-        on=Url"github.com/%repo/%version/%destination",
-        contentBase64=fs.readBase64(localName)
-        )
+    mut method mut This supportFile(Url localName, S destination)[GW.Fail,Fs.Fail] = (
+      this.#that().supportFile(localName=localName,destination=destination)
       this
       )
     }

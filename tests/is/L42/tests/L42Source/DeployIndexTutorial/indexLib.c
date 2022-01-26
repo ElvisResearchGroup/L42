@@ -1,6 +1,4 @@
-m4_include(`../CommonHtmlDocumentation/header.h')
-m4 dnl
-WConversion
+m4_include(`../CommonHtmlDocumentation/header.h')m4_dnl
 m4_include(`../CommonHtmlDocumentation/postHeader.h')m4_dnl
 
 m4_define(`url',`###libraries###/')

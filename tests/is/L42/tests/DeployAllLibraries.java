@@ -58,7 +58,7 @@ public class DeployAllLibraries {
       nameSecret("L42Source/TestJavaServer"),
       nameSecret("L42Source/TestRawQuery"),
       nameSecret("L42Source/TestQuery"),
-      nameSecret("L42Source/TestGuiBuilder"),      
+      nameSecret("L42Source/TestGuiBuilder"),
       nameSecret("L42Source/TestSifoLib"),//Ok deployment by hand until we work on it with Tobias
       nameSecret("L42Source/TestUnit"),
       nameSecret("L42Source/TestVoxelMap"),

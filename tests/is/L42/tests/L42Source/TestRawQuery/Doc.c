@@ -1,7 +1,7 @@
 m4_include(`../CommonHtmlDocumentation/header.h')m4_dnl
 m4_include(`../CommonHtmlDocumentation/postHeader.h')m4_dnl
 
-OFloatClass(index)
+OFloatClass(baseHeight index)
 <div class="rotate90"> Index of Content</div>
 ContinueFloat
 <ol>

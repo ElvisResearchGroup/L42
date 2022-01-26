@@ -2,7 +2,7 @@ reuse [AdamsTowel]
 
 Secret = Trait({...}):{class method S name()=S"IndexAndTutorial"}
 Web = Class:Secret:Load:{reuse [L42.is/WebIntegrated42Lib]}
-
+Fs = Load:{reuse[L42.is/FileSystem]}
 Deploy = {
   class method mut This #$of()=This.#$of::0()
   class method mut This #$of::0()
@@ -10,13 +10,31 @@ Deploy = {
     Web.#$of().deployDocs(\"%(that).c")
     .write(on=\"%(that).xhtml")
   }
+LoadAndDeploy={class method Void (Url that,mut Fs fs, mut Web w)[_]=(
+  pre = S"../../../../../../../L42IDE/src/is/L42/repl"
+  srcF = S"../../../../../../tests/is/L42/tests/L42Source/DeployIndexTutorial/"
+//  S"/u/staff/servetto/git/L42/tests/is/L42/tests/L42Source/DeployIndexTutorial/"
+//  S"/u/staff/servetto/git/L42/out/is/L42/tests/L42Source/DeployIndexTutorial/"
+  content = (
+    cnt = fs.read(\"%pre/%that")
+    fs.write(on=\"%that" content=cnt)
+    fs.write(on=\"%srcF/%that" content=cnt)
+    catch Message.Guard x ( fs.read(that) )
+    cnt
+    )
+  w.deployContent(content).write(on=that)
+  )}
 TaskDeployIndexAndTutorialDocs = (
-  d = Deploy.#$of()
-  d(\"index")
-  d(\"indexLib")
-  Web.#$of().deployDocs(\"indexLib.c")
+  //Deploy indexLib with the right link for the library docs
+  w = Web.#$of() 
+  Debug(S"replacing ###libraries###/")
+  w.deployDocs(\"indexLib.c")
     .replace(S"###libraries###/" with=Web.version()++S"/")
     .write(on=\"indexLib.xhtml")
+  
+  //Deploy all the pages of the tutorial and the landing page
+  d = Deploy.#$of()
+  d(\"index")  
   d(\"tutorial")
   d(\"tutorial_01Basics")
   d(\"tutorial_02ModifiersIntro")
@@ -34,5 +52,13 @@ TaskDeployIndexAndTutorialDocs = (
   d(\"tutorial_14ExampleOfProgram")
   d(\"tutorial_15DeployCode")
   d(\"download")
+    
+  //deploy the css and js
+  fs= Fs.Real.#$of()
+  LoadAndDeploy(\"css/style.css",fs=fs,w=w)
+  LoadAndDeploy(\"js/utils.js",fs=fs,w=w)
+  LoadAndDeploy(\"js/theme-l42_eclipse.js",fs=fs,w=w)
+  //LoadAndDeploy(\"js/theme-l42.js",fs=fs,w=w)//dead?
+  LoadAndDeploy(\"js/mode-l42.js",fs=fs,w=w)
   {}:Test"ALL DONE"(Bool.true())
   )
