@@ -7,10 +7,6 @@ background: #ebebeb;\
 border-right: 1px solid rgb(159, 159, 159);\
 color: rgb(136, 136, 136);\
 }\
-.ace-l42-eclipse .ace_print-margin {\
-width: 1px;\
-background: #ebebeb;\
-}\
 .ace-l42-eclipse .ace_fold {\
 background-color: rgb(60, 76, 114);\
 }\
