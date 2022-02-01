@@ -1,0 +1,10 @@
+/*
+  *** 42 settings ***
+  You can change the stack and memory limitations and add security mappings
+*/
+maxStackSize = 1G
+initialMemorySize = 256M
+maxMemorySize = 2G
+//For example, this would allow MyMain to call #$of() on an FS.Real
+//coming from L42.is/FileSystem
+//MyMain = [L42.is/FileSystem]
