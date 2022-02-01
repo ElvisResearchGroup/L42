@@ -57,13 +57,13 @@ p { padding: 10px;}
 #header {
     height: 85px;
 	background-color: rgb(0, 71, 48);
-    background-image: url('stars.gif');
-    background-repeat: repeat-y;
-    background-attachment: scroll;
-    background-position: center top;
-    background-clip: border-box;
-    background-origin: padding-box;
-    background-size: auto auto;
+    //background-image: url('stars.gif');
+    //background-repeat: repeat-y;
+    //background-attachment: scroll;
+    //background-position: center top;
+    //background-clip: border-box;
+    //background-origin: padding-box;
+    //background-size: auto auto;
     border-radius: 0px  0px 10px 10px;
 	border-style:solid;
     border-color:rgb(0,40,20);
@@ -228,7 +228,8 @@ h1{
 ol {
   counter-reset: olCounter;
   padding-left: 5em;
-  margin-top: -0.5em;
+  margin-top: -0.4em;
+  width:80%;
 }
 ol li:before {
   content: counter(olCounter);
