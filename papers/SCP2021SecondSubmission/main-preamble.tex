@@ -1,0 +1,172 @@
+\usepackage{verbatim}
+%\addbibresource{main.bib}
+\usepackage{wrapfig}
+\usepackage{etoolbox}
+\usepackage{xparse}
+%\usepackage[stable]{footmisc}
+%
+\makeatletter
+% Make code font lighter?
+\DeclareFontSeriesDefault[tt]{md}{l}
+\DeclareFontSeriesDefault[tt]{bf}{m}
+\renewcommand{\ttdefault}{lmtt}
+
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother
+
+\usepackage{mathpartir}
+\usepackage{amsmath}
+
+\ifdefined\proof%
+\else%
+\usepackage{amsthm}
+\theoremstyle{plain}
+\makeatletter
+\newcommand{\providecounter}[1]{%
+  \ifcsname c@#1\endcsname % do nothing, counter allready defined
+  \else
+    \newcounter{#1}%
+  \fi
+}
+\makeatother
+
+
+\newcounter{definition}
+\newtheorem{Definition}[definition]{Definition}
+\fi%
+\usepackage{xspace}
+\newcounter{assumption}
+\newtheorem{Assumption}[assumption]{Assumption}
+\newcounter{llemma} % For some reason 'lemma' dosn't work, so I've called it llemma
+\newtheorem{Lemma}[llemma]{Lemma}
+
+\input{../Def/Def}
+\renewcommand\scaleKw{1} % Turn off the horrible keyword squashing in the formalism
+
+% The following code defines a macro, \markLine that puts it’s argument in the margins on either side of the next line
+% it can be called multiple times for the same line, causing the arguments to placed next to eachother
+\begin{comment} 
+\usepackage{lineno}
+\linenumbers
+\renewcommand\makeLineNumber{}
+\newbox\LeftMarkers \newbox\RightMarkers
+\newcommand{\markLine}[2]{%
+\setbox\LeftMarkers\hbox{#1\unhbox\LeftMarkers}%
+\setbox\RightMarkers\hbox{\unhbox\RightMarkers#1}}
+
+\newcommand{\markLineD}[1]{\markLineD{#1}{#1}} % just a shortcut
+\renewcommand{\makeLineNumber}{%
+\ifvoid\LeftMarkers%
+\else \hss\unhcopy\LeftMarkers\ \rlap{\hskip\textwidth\ \unhbox\RightMarkers}%
+\fi}
+\end{comment}
+
+%\newcommand{\saveSpace}{\vspace{-3px}}
+%\newcommand{\loseSpace}{\vspace{1ex}}
+\newcommand{\etal}{\emph{et~al.}\xspace}
+\newcommand{\REV}[3]{%
+	\NoteColour{red}{#1\NoteText{\footnote{%
+				\textcolor{red}{\textbf{REV#2{:} #3}}}}}}
+			
+\newcommand{\REVm}[1]{\NoteColour{red}{#1\NoteText{\footnotemark}}}
+\newcommand{\REVt}[2]{\footnotetext{\textcolor{red}{\textbf{REV#1{:} #2}}}}
+			
+\newcommand{\subheading}[1]{%
+	\vspace{1ex}%
+	\noindent\textsf{\textbf{#1\\\noindent}}
+}
+
+
+
+\let\origSingleDot=\singleDot % reduce spacing arround the dot operator
+\renewcommand{\singleDot}{\kern-1.2pt\origSingleDot\kern-1.8pt} 
+
+% Hack (see https://tex.stackexchange.com/questions/299798/make-characters-active-via-macro-in-math-mode)
+% this makes '.' in math mode an alias for \singleDot
+\newcommand{\defActiveMathChar}[2]{%
+	\begingroup\lccode`~=`#1\relax%
+	\lowercase{\endgroup\def~}{#2}%
+	\AtBeginDocument{\mathcode`#1="8000}%
+}
+\defActiveMathChar{.}{\singleDot}
+
+\newcommand{\M}[3]{\ensuremath{\Kw{M}\oR{}#1\semiColon{}#2\semiColon{}#3\cR}}
+
+\let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
+\renewcommand{\mapsto}{\mathrel{\origMapsTo\!}}
+\newcommand{\invariant}{\Kw{invariant}\oR\cR}
+\renewcommand\ttfamilywithbold\ttfamily
+\lstset{
+%  basicstyle=\ttfamilywithbold,
+%  keywordstyle=\small\ttfamily\bfseries\color{darkRed},
+  morekeywords={assert, expose, iso, isolated, baloon}
+  }
+\newcommand{\thm}[1]{\textsf{#1}}
+
+%\HideNotes
+
+% Spacing hacks!
+\renewcommand{\SS}[1][0.5]{\vspace{-#1\baselineskip}}
+\newcommand{\LS}[1][0.5]{\vspace{#1\baselineskip}}
+
+\lstset{aboveskip=0.25\baselineskip,belowskip=0.25\baselineskip} % spacing arround lstlistings
+\newcommand{\SSI}{\SS} % spacing before top level itemizes/enumerations
+
+\newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}	}
+\newmathword{\HNO}{headNotObservable}
+\newmathword{\dom}{dom}
+\newmathword{\CNC}{capsuleNotCircular}
+\newmathword{\NCM}{notCapsuleMutating}
+\newmathword{\WE}{wellEncapsulated}
+\newmathword{\rog}{rog}
+\newmathword{\mrog}{mrog}
+\newmathword{\cf}{capsuleFields}
+\newmathword{\OK}{OK}
+\newmathword{\muty}{mutatable}
+\newmathword{\mony}{monitored}
+\newmathword{\valid}{valid}
+\newmathword{\trusted}{trusted}
+\newmathword{\reach}{reachable}
+\newmathword{\error}{error}
+\newmathword{\encap}{encapsulated}
+\newmathword{\immut}{immutable}
+\newmathword{\VS}{validState}
+\renewcommand{\vs}{\ensuremath{\Many{v}}\xspace}
+
+% Too much space arround itemizes used in definitions, so fix that
+\newenvironment{iitemize}{\SS[0.25]\begin{itemize}}{\end{itemize}\SS[0.25]}
+\newenvironment{ienumerate}{\SS[0.25]\begin{enumerate}}{\end{enumerate}\SS[0.25]}
+
+\NewDocumentCommand\ty{o O{\S; \G} O{\vdash} m m}{%
+	\ensuremath{#2; %
+		\IfNoValueTF{#1}{\E}{\ensuremath{\E[#1]}}%
+		#3 #4 : #5}\xspace}
+\NewDocumentCommand\nty{o m m}{\ty[#1][\S; \G][\nvdash]{#2}{#3}}
+\NewDocumentCommand\tyr{o m m}{\ty[#1][\Ss; \emptyset]{#2}{#3}}
+\NewDocumentCommand\ntyr{o m m}{\ty[#1][\Ss; \emptyset][\nvdash]{#2}{#3}}
+
+\renewcommand{\h}{\ensuremath{\square}\xspace}
+%\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
+\providecommand\G{}
+\renewcommand{\G}{\ensuremath{\Gamma}\xspace}
+\newcommand{\EV}{\ensuremath{\ctx_v{}}\xspace}
+\newcommand{\ER}{\ensuremath{\ctx_r{}}\xspace}
+\newcommand{\E}{\ensuremath{\ctx}\xspace}
+\newcommand{\s}{\ensuremath{\sigma}\xspace}
+%\renewcommand{\e}{\ensuremath{\sigma}\xspace}
+%\renewcommand{\l}{\ensuremath{\sigma}\xspace}
+%\renewcommand{\v}{\ensuremath{\sigma}\xspace}
+
+\newcommand{\Ss}{\ensuremath{\Sigma^\sigma}\xspace}
+\renewcommand{\S}{\ensuremath{\Sigma}\xspace}
+\let\@=\undefined % So I don't accidently type it!
+%\HideNotes
+%\NoNotes
+\newcommand{\square}{[]}
+\newcommand{\nvdash}{\not\vdash}
