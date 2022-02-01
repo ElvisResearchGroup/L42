@@ -7,10 +7,6 @@ exports.cssText = "\
 background: #1a0005;\
 color: steelblue\
 }\
-.ace-l42-theme .ace_print-margin {\
-width: 1px;\
-background: #1a1a1a\
-}\
 .ace-l42-theme {\
 background-color: black;\
 color: #DEDEDE\

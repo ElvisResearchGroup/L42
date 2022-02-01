@@ -14,9 +14,7 @@ CFloat
 WBigTitle(A library to write on GitHub)
 WTitle(Importing process and example usage)
 
-The process library allows to run processes from AdamsTowel.
-Wcode(`Process.Real.#$of(..)') creates a capability object permanently connected with a specific
-command and option, but the standard input of the program can be specified by the capability user.
+
 OBCode
 GW = Load:{reuse[L42.is/GitWriter]}
 CCode
@@ -29,4 +27,4 @@ m4_include(`../CommonHtmlDocumentation/footer.h')
 
 WComm build using
 WComm m4 -P Doc.c > Doc.xhtml
-WComm can be seen at https://raw.githack.com/Language42/is/main/testing/Process.xhtml
+WComm can be seen at https://raw.githack.com/Language42/is/main/testing/GitWriter.xhtml
