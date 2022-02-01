@@ -25,7 +25,7 @@ WTitle(Overview under AdamsTowel)
 OFoldedCode
 [OVERVIEW_HERE1]
 CCode
-Exmaple instantiation
+Example instantiation
 OFoldedCode
 [OVERVIEW_HERE2]
 CCode

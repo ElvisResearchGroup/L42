@@ -3,11 +3,12 @@ allDivs=[
   "b",
   "c"
   ];
+
 var doOnLoad=function (){
   hide(allDivs);
   // Get every l42 Div
   setAllAs("l42IDE",{
-    fontSize:"170%",
+    fontSize: style.fontSize,
     maxLines:30000,
     mode:"ace/mode/l42",
     theme:"ace/theme/l42_eclipse",
@@ -41,7 +42,7 @@ var doOnLoad=function (){
     maxLines:3000,
     mode:"ace/mode/html",
     theme:"ace/theme/github"
-    });  
+    });
   setOurMinMax();
   window.onresize=function(){setTimeout(setOurMinMax, 100);};
   }
@@ -110,3 +111,17 @@ var selectDiv=function(id){
   hide(allDivs)
   show(id)
   }
+
+var defaultStyle = {
+  background:"rgb(245,245,245)", font:"monospace", fontColor:"rgb(0,0,0)",
+  fontSize:"170%", sidebarTextColor:"rgb(136, 136, 136)",
+  sidebarBackgroundColor:"rgb(235,235,235)", activeLineBackground:"rgb(232, 242, 254)",
+  activeLineSideBarBackground:"rgb(218,218,218)", errorTextColor:"rgb(255,255,0)",
+  errorBackgroundColor:"rgb(255,0,0)", stringColor:"rgb(42, 0, 255)",
+  commentColor:"rgb(113, 150, 130)", parameterColor:"rgb(0,0,255)",
+  keywordColor:"rgb(127, 0, 85)", objectCallColor:"rgb(0,0,255)",
+  selectedBackground:"rgb(181, 213, 255)", selectedBorder:"rgb(181, 213, 255)",
+  bracketBorder:"rgb(192, 192, 192)", foldBackground:"rgb(60, 76, 114)",
+  cursorColor:"rgb(0,0,0)"
+  };
+var style = (typeof styling!== 'undefined') ? styling : defaultStyle;
