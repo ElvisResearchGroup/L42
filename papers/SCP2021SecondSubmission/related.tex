@@ -1,0 +1,244 @@
+\vspace{-1ex}
+\section[Integration in L42]{Integration in L42}
+\label{s:related}
+\vspace{-1ex}
+In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this articles scope to explain 
+in detail this integration, but the overall idea is that an invariant
+is seen as a \Q@Void@ cached value that is always kept up to date whenever the object is visible. L42 also supports eager cached methods, which get computed in parallel when an instance of the corresponding class is created.
+
+L42 libraries rely on a very expressive form of metaprogramming to generate a lot of boilerplate/redundant code. In L42 many tasks can be  either manually performed by writing code directly, or partially automated by code generation.
+L42 allows writing \Q@class@ methods (similar to a static method in Java) with appropriate parameters instead of \Q!invariant!s method and capsule mutators. The bodies of such methods don't have special restrictions as they cannot see \Q!this!, instead the meta-programming generates appropriate instance methods, conforming to our restrictions, which call the user provided \Q!class! methods.
+
+Our restrictions are also checked by the type system, so even if the user manually writes these methods, instead of relying on the metaprogramming, they still cannot break our invariant protocol.
+
+To make this work more accessible to programmers familiar with Java/C\#, we have shown our examples in a more Java-like syntax. Here you can see our \Q!ShippingList! example from Section \ref{s:immutable} in the full L42 Syntax:
+\begin{lstlisting}
+ShippingList = Data:{
+  capsule Items items
+  @$$Cache.Now
+  class method Void invariant(read Items items) =
+    X[items.weight()<=300Num]
+  @$$Cache.Clear
+  class method Void addItem(mut Items items,Item item) =
+    items.add(item)
+}
+\end{lstlisting}
+In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string.
+The \Q!@$$Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@$$Cache.Clear! method is called.
+Please refer to \url{L42.is/tutorial.xhtml} for more information.
+\vspace{-1ex}
+\section[Related Work]{Related Work}
+\label{s:related}
+\vspace{-1ex}
+\subheading{Reference Capabilities}
+We rely on a combination of RCs supported by at least 3 languages/lines of research:
+L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
+Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
+%each of these works is accompanied by proofs about the properties of those modifiers.
+%\IOComm{The Pony ones have no proofs!}
+%Since such proofs have already been done,
+%in this work we just assume the required properties.
+They all support full/deep interpretation (see page 5), without back doors.
+Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03} (which eventually enabled the work of Gordon \etal)  does not consider promotion and 
+infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
+Other approaches like Javari~\cite{TschantzErnst05,Boyland06}
+and Rust~\cite{matsakis2014rust}
+provide back doors, which are not easily verifiable as being used properly.
+%Many approaches try to preserve purity ~\cite{pearce2011jpure}, but here we also need aliasing control.
+
+Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is a popular form of aliasing control often used as a building block for static verification~\cite{%
+muller2002modular,%
+barnett2011specification%
+}.  However, ownership does not require the whole ROG of an object to be `owned'. This complicates restricting the data accessible by invariants.
+
+\subheading{Object Capabilities}
+In the literature, OCs are used to provide a wide range of guarantees, and many variations are present.
+Object capabilities~\cite{RobustComposition}, in conjunction with reference capabilities, are able to
+ enforce purity of code in a modular way, without requiring the use of monads.
+L42 and Gordon use OCs simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
+However, in order for Joe-E to be a subset of Java, they leverage a simplified model of immutability:
+immutable classes must be final and have only final fields that refer to immutable classes.
+%Instances of immutable classes are immutable objects.
+In Joe-E, every method that only takes instances of immutable classes is pure.
+Thus their model would not allow the verification of purity for invariant methods of mutable objects.
+In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}.
+Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type; in particular, we allow the parameter of such a method to be mutated later on by other code.
+%;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
+
+\subheading{Invariant protocols}
+Invariants are a fundamental part of the design by contract methodology. 
+Invariant protocols differ wildly and can be unsound or complicated, particularly due to re-entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified,meyer2016class}. 
+
+While invariant protocols all check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular approaches include:%
+%literature on class invariant accepts that sometime the object invariant may not hold,
+%and that is exacerbated because of 
+%Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
+%S. Drossopoulou and A. Francalanza and  P. Müller and A. J. Summers: A Unified Framework for Verification Techniques for Object Invariants ECOOP 2008. 
+%There are different options as to what object-invariants are known to hold:
+\begin{itemize}
+\item The invariants of objects in a \textit{steady} state are known to hold: that is when execution is not inside any of the objects' public methods~\cite{Gopinathan:2008:RMO:1483018.1483028}. Invariants need to be constantly maintained between calls to public methods.%~\cite{WikiInvariant}.
+\item 
+%\LINE
+The invariant of the receiver before a public method call and at the end of every public method body needs to be ensured. The invariant of the receiver at the beginning of a public method body and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
+Some approaches ensure the invariant of the receiver of the \emph{calling} method, rather than the \emph{called} method~\cite{DBLP:journals/scp/MullerPL06}.
+JML~\cite{JML} relaxes these requirements for helper methods, whose semantics are the same as if they were inlined.
+%\LINE
+%The invariant of the receiver (some approaches require the invariant of 'this' instead~\cite{?}) before a public (or non-helper~\cite{JML}) method call, and at the end of every method body needs to be ensured. The invariant of the receiver at the beginning of a public method body, and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
+
+
+\item The same as above, but only for the bodies of `selectively exported' (i.e. not instance-private) methods, and only for `qualified' (i.e. not \Q@this@) calls~\cite{meyer2016class}.
+\item The invariant of an object is assumed only when a contract requires the object be `packed'. It is checked after an explicit `pack' operation, and objects can later be `unpacked'~\cite{DBLP:journals/jot/BarnettDFLS04}.
+%\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
+%constantly maintained when the object is \textit{closed};
+%invariant can be manually opened and closed by using special operations; % Add cite here!
+\end{itemize}\SS\LS[0.5]
+\noindent These different protocols can be deceivingly similar.
+Note that all those approaches fail our strict requirements and allow for broken objects to be observed.
+Some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
+
+
+% use the unsound option of assuming one protocol, but actually checking another.
+
+%DONE IN INTRO breaking class invariants = bug in class code
+%braking validation= DEPEND.
+
+%To encode this range of invariant semantics
+%in our approach we can add a boolean \Q@isOpen@ field and add \Q@this.isOpen || ..@
+%in front of the validity condition.
+%Validation can be used to manually encode complex scenarios,
+%for example if a method called on an object needs to break the invariant of another object,
+%it can do so by manually setting the \Q@isOpen@ flag on the other object.
+
+
+%On ownership verification
+%Peter Mueller and Arnd Peotzsch Heffter,  eg Müller, P.: Modular Specification and Verification of Object-Oriented Programs, 2002.
+%M. Barnett and M. Fähndrich and K. R. M. Leino and P. Müller and W. Schulte and H. Venter: Specification and Verification: The Spec# Experience. Communications of the ACM, 2011.
+\newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*${}_{}\,\bullet\,$}
+%
+%\LINE
+\subheading{Security and Scalability}
+Our approach allows verifying an object's invariant independently of the execution context.
+This is in contrast to the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
+Thus, static verification proceeds like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
+%This is less problematic with a type system, since its properties are more coarse grained, simpler and easier to check.
+ Static verification has more flexible and fine-grained annotations and often relies on a fragile theorem prover as a backend.
+
+%\REVComm{
+%To solve this issue, static verification systems are %starting to
+%}{2}{[is this correct?] verification of reference %monitors, gradual typing, and contracts have been %explored for longer}
+To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
+consider a verified core and a runtime verified boundary.
+One can see our approach as an extremely modularized	version of such a system: every class is its
+own verified core, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
+soundly handled by our protocol, independently of the behaviour of code that uses such class or any other surrounding code.
+
+Our approach works both  in a library setting and with the open world assumption.
+Consider for example the work of Parkinson~\cite{parkinson2007class}: he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method respecting its contract. Such assumption is unrealistic in a real-world system with dynamic class loading, and could trivially be broken by a user-defined \Q@EvilSubject@: checking contracts at load time is impractical and is not done by any verification systems we know of.
+
+\subheading{Static Verification}
+AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14} is a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
+
+Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified. It supports invariants with its \Q!{:autocontracts}! annotation, which treats a class's \Q!Valid()! function as the invariant and injects pre and post-conditions following visible state semantics;
+however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
+Dafny is also generally highly restrictive with its rules for mutation and object construction, it also does not provide any means of performing 
+non-deterministic I/O.
+
+Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#. It adds various annotations such as method contracts and class invariants. 
+It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This 
+allows invariants to query owned mutable objects whose ROG is not fully encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
+is insufficient to modify it or call its methods.
+%tells you nothing about it, hindering
+%modification and method calls.
+Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like us, does perform runtime checks for invariants and throws unchecked exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
+
+
+
+
+%Spec\# is statically verified wheras we rely on a type system: we have 4 type-modifiers that can be applied anywhere a type can be used (like a variable declaration) and the type-system uses a small set of fixed deterministic rules.
+%Wheras the static-verification aproach has much more flexible and fine-grained annotations (with meth pre/post conditions) and uses a theoreom prover as a back-end, this can make it harder for users to program as it is not obvious whether the theorom prover will accept a program or not.
+% In addition, the approach of a static-verifier can also be non-modular: changes to the body of one method could affect whether another is verified.
+
+%many works on static verification, such as thoser Spec\#~\cite{??}
+
+
+\subheading{Specification languages}
+Using a specification language based on the mathematical metalanguage and different from the programming language's semantics may seem attractive, since it can express uncomputable concepts, has no mutation or non-determinism, and is often easier to formally reason about.
+However, a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short-circuit semantics and arithmetic exceptions; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should, thanks to short circuiting.
+This study was influential enough to convince JML to change its interpretation of logical expressions
+accordingly~\cite{chalin2008jml}.
+Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets, whereas runtime contexts allow mutation, object allocation and print statements. The semantics of shared constructs (such as short circuiting logic operators) is the same in both contexts.
+Most runtime verification systems, such as ours, use a metacircular approach: specifications are simply code in the underlying language. Since specifications are checked at runtime, they are unable to verify uncomputable contracts.
+
+Ensuring determinism in a non-functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} `\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
+	of functions. The first approach is not scalable, the second overly restrictive and
+	the third unsound}'.
+	They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
+Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:\lstset{morekeywords={assert, bool}}
+%\saveSpace\saveSpace\begin{lstlisting}
+\Q![Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}!\\*
+%\end{lstlisting}
+And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
+As you can see, failing to handle non-determinism jeopardises reasoning.
+A simpler and more restrictive solution to these problems is to restrict `pure' functions so that they can only read final fields and call other pure functions. This is the approach used by~\cite{Flanagan06hybridtypes}. One advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
+
+%We explore our connections with runtime verification in Appendix \ref{s:runtime-verification}.
+
+%allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
+
+% They propose a concept of observational purity, that if completely fleshed out could possibly be a great addition to our proposed system. We speculate that some  primitive language support may be needed, for example implementing the Flyweight pattern as part of the language semantics.
+
+
+% The most friendly aattractive to specify contracts (such as class invariants) in the same source language as the code. This common approach is used by most runtime verification systems, like our work, Eiffel and D. However their
+
+
+
+% What's wrong with using the same language for both specification and implementation?
+% What are peoples approaches
+
+
+
+%${}_{}$\sepItems
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%1 aliasing control
+%  example hamster can be broken with those 2 lines
+%2 I/O /determinism
+%  hamster EvilPoint with random equal is accepted
+%3 exceptions
+%  spec sharp is happy to be unsound with capturing %unchecked exceptions
+%---
+%*TMs, OCs
+%
+%*expand on invariant protocol
+%
+%*RV tool
+%------------
+%*spec# unsond, parkinson critique, and static %verification is like math proof
+%
+%*Soundness or not
+%
+%*C#purity, dedicate spec language
+
+
+
+%\noindent\textit{Theorem provers and SAT solvers}
+%Rather than providing a simple set of rules as to what a \Q@validate@ method can contain,
+%and where to insert calls to it, we could instead rely on implementation-specific static analysis:
+% in which a \Q@validate@ method is valid iff the compiler can prove that it is deterministic
+% and that it’s generated \Q@validate()@ calls are sufficient to enforce validation.
+%Though approaches like this are frequently used such as with unifying Java’s generic-wildcards [], Rust’s ‘borrow checker’, …; we believe that would not produce a good result for our purposes: 
+%\begin{itemize}
+%	\item it would mean that a programmer would have no way of telling whether their code would compile, in particular code compiling would depend on the specific compiler (version) used.
+%	\item the runtime cost of validation would be completely unpridictibable; since it is deterministic there is nothing stopping the compiler from calling \Q@validate@ any number of times, and at any point in time.
+%	\item When a validation error could be throw would likewise be unpredictable, though it should happen after an object is made invalid\footnote{technically our definition of validation technically allows the error to happen sooner, as long as it’s not too late; however pre-emptive errors like this would be extremely hard to debug}, it could happen any time before it’s use. Making matters worse, if multiple object’s would be invalidated before either is used, which one’s error would be thrown is unconstrained
+%	\item This approach will not work well in the pressence of dynamic code loading, in particular it woud likley significantly slow down such loading or spurioslly fail depending on what other code has been loaded
+%\end{itemize}

@@ -1,0 +1,110 @@
+%Conclusions? future work?
+%@StrongExceptionSafety is 
+%a very strong property,
+%and some languages may be unwilling to commit to always preserve it.
+%In particular, depending on the details of a specific language
+% releasing resources as in \Q@finally@ blocks may require
+%some relaxation of @StrongExceptionSafety. Sound releasing of resources could be interesting
+%future work.
+
+\section{Conclusions and Future Work}
+\label{s:conclusion}
+In this paper we (1) identified the essential language features that support representation invariants in object-oriented verification; (2) presented a full formalism for our approach with capabilities that is proved to be sound and guarantees that all objects involved in execution are valid; (3) conducted extensive case studies
+%, of which the GUI one is highlighted in the paper,
+ showing that we require many order of magnitude less runtime checking than \textit{visible state semantics} and three times less annotation burden than an equivalent version in Spec\#. We hope that as a result of this work, the software verification community will make more use of the advanced general purpose language features, such as capabilities, appearing in modern languages to achieve its goals.
+
+Our approach follows the principles of \emph{offensive programming}%
+~\cite{stephens2015beginning} where
+no attempt to fix or recover an invalid object is performed. 
+Failures (unchecked exceptions)
+		are raised close to their cause: at the end of constructors creating invalid objects and immediately after field updates and instance methods that invalidate their receivers.
+
+%}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.    
+%		\item
+%	\end{itemize}
+
+
+%The aim of our work is only to enforce object invariants, so we do not present complexities unnecessary for this purpose.
+Our work builds on a specific form of RCs and OCs, whose
+popularity is growing, and we expect future languages to support some variation of these.
+Crucially, any language already designed with such support
+can also support our invariant protocol with minimal added complexity.
+
+
+
+% \IOComm{Mention flexible ownership types as a potential solution? (Assuming it is)}
+
+% To verify those data-structures, in future work
+% we may investigate a special kind of field that
+% could be accessed only using a \Q@mut@ receiver.
+% Such fields would be allowed to refer to not encapsulated state, 
+% and they would be unreachable from the invariant code,that starts from a \Q@read this@.
+
+% \LINE
+% The language we presented here restricts the form of \Q@invariant()@ and capsule mutator methods. 
+% We have shown that such restrictions, albeit strong, allow sound and efficient injection of invariant checks. 
+% While our restrictions do not hamper writing invariants over immutable data, invariants over complex mutable % data require the box pattern.  We believe the box pattern, although verbose, is simple and understandable, but % could be improved with syntax sugar.
+
+% Our goals of simplicity and efficiency come at the cost of expressivity: we are unable to express invariants % over non-encapsulated mutable structures, 
+% though a more complex and fragile type system may reduce such limitations. However we believe we have % demonstrated that our limitations are not too severe and that we have achieved our goals.
+% \LINE
+
+%, however such a language is unlikely to be easily understood by programmers;
+%being able to predict whether code would be well typed allows programmers
+%to better take advantage of the language.
+
+For an implementation of our work to be sound, catching exceptions like stack overflows or out of memory
+cannot be allowed in \Q@invariant()@ methods, since they are not deterministically thrown.
+%For an implementation of our work to be sound, non-deterministic exceptions like stack overflows or out of memory
+%errors cannot be caught in invariants.
+%this
+%use exception catching as a non deterministic conditional choice, 
+%allowing non deterministic behaviour.
+L42 allows catching them only as a capability operation, which thus can't be used inside an invariant.
+% Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap sizes.
+
+%Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box pattern, as well as type modifier inference.
+
+%Our work, in comparison to previous RV techniques,
+%aims to be efficient by limiting the number of validation calls, however we have \REVComm{no empirical evaluation of our approach's performance}{3}{\label{CONTRA1}contradictory to [see footnote \ref{CONTRA2}]}.
+%To improve efficiency it could be worth investigating elision of unnecessary validation calls
+%or even only validating parts of objects (by running the part of \Q@invariant()@ that could fail).
+
+\begin{comment}
+In literature, both static and runtime verification discuss
+the correctness of common programming patterns in conventional languages.
+Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object-oriented programming.
+ Here instead we build on languages using RCs and OCs to tame the use of imperative features. In this way
+we have a fresh start where static variables are disallowed, unchecked exceptions require care to be captured, and I/O is allowed only when an opportune capability object is reachable.
+Following those restrictions allow simpler reasoning.
+The philosophy of our approach is to be like an extended type system: 
+It is the programmer's decision
+to annotate a field with a certain type,
+or the class with a certain \validate.
+If the program is well-typed, they are not questioned in their intent.
+During execution the system is solely responsible for soundly enforcing the invariant protocol.
+This is in sharp contrast with most work in RV, that is often conceived more as a tool to ease debugging:
+both deciding properties and enforcing them is controlled by the programmers.
+This is also different from static verification,
+%where the properties are ensured instead of enforced.
+where the properties are ensured ahead of time instead of being enforced during execution.
+%Static verification is very heavy weight, and often impractical/restrictive.
+
+%Both static and runtime verification
+%aim to monitor a wide range of properties; to this aim they accept a 
+%great deal of complexity, and require the programmer to develop a deep understanding
+%over the behaviour and the structure of code.
+%For example, the specification of method’s pre and post-conditions
+%encode a generalization of the program behaviour in the dedicated specification language.
+%This means that, even in the best case scenario, 
+%using pre/post-conditions the user is required to specify the program semantics twice:
+%first in the specification language and then in the underlying programming language.
+%In comparison, our approach aims to only verify conditions on immutable or well encapsulated state.
+%This makes our approach \emph{ultra-lightweight}:
+%the programmer specifies only the desired \Q@invariant()@ method.
+
+Moreover, our approach does not aim to replace static or run-time verification,
+but is a building block they can rely upon.
+\end{comment}
+
+%\noindent\textit{Our approach:}

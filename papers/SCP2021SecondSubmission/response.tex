@@ -1,0 +1,402 @@
+We would like to thank all four reviewers for their insightful reviews!
+
+======================================================================
+We start by addressing the four crucial points raised by Reviewer D.
+======================================================================
+
+
+- convince me the restrictions are not so severe
+------------------------------------------------
+
+Our solution proposes using the Box and the Transform patterns, which makes the restrictions of our systems not so severe. Specifically, when it comes to the following concerns:
+
+1. "no shortage of code knowingly violating invariants"(and fixing them later)
+2. "batch invariant checking in order to do it less often"
+3. "to implement a binary tree" "use a separate wrapper"
+4. "spec# can (with user guidance) check only once"
+5. "in a simulation step"
+
+We can resolve them all using the Box pattern: a separate wrapper object storing data whose invariant
+is only meaningful when checked together.
+
+At the end of this response, we include code examples demonstrating how to address points 1-2-3-4-5.
+
+In particular we show a sample implementation of a Binary Sorted Tree including 'add' and 'delete' as queried by the reviewer.
+
+Our experimentation shows that Spec# also requires the Box pattern when
+invariants over cyclic object structures are needed; such as the SafeMovable in GUI.
+The Box pattern replaces the "expose" block of Spec#.
+Where Spec# provides special syntax, we instead require adding new methods/wrapper
+objects. In this way we get a level of control very similar to the one of Spec#
+but without adding and formalising special syntax/features.
+Our system is designed to keep the restrictions simple, and to minimise additional constructs and concepts.
+We believe that our restrictions are simple enough that users can apply and understand them.
+
+As we said in the paper, on Line 162, page 4: 'we needed to write a separate moveTo method, since we do not want to burden our language with extra constructs such as Spec#’s expose.' But we indeed should make this much more clear in the introduction.
+
+
+- why the children() call in the GUI type checks
+------------------------------------------------
+
+This point is connected to the comments: "leak out a mut alias to the capsule field" and "differs in such important ways"
+
+We agree that our explanation of capsule fields is indeed lacking.
+
+Capsule expressions and local variables are identical in Pony, Microsoft and L42.
+Linear types ensure that variables are used only once.
+Capsule fields in Pony, Microsoft and L42 must be initialised and updated with capsule expressions.
+However using destructive reads in Pony and Microsoft a capsule field access produces a capsule reference.
+L42 also requires to initialise and update capsule fields using capsule expressions,
+but it supports many ways to access capsule fields.
+
+One relevant way to access capsule field is as follows: require 'this.f' to have the modifier of the receiver
+(i.e. if 'this' is 'mut', 'this.f' is 'mut'; if 'this' is 'read', 'this.f' is 'read'; if 'this' is 'capsule', 'this.f' is 'capsule').
+Moreover, any 'mut method' accessing a capsule field must satisfy the requirements of capsule mutators.
+Those access requirements are designed to avoid representation exposure.
+This is formally encoded in the appendix as Assumptions 4 and 5.
+
+We will cite "Flexible recovery of uniqueness and immutability" 
+pg 169 doi:10.1016/j.tcs.2018.09.001 where variations on these restrictions are discussed.
+Such paper shows that capsule fields can be formalised/encoded as mut fields whose use is restricted by applying syntactic restrictions to class code in isolation.
+Thus, also Pony and Microsoft could have this kind of encapsulated fields.
+
+**We will improve the paper by explaining the difference between capsule fields and capsule local variables better.**
+
+
+So to answer the question regarding "read method read Widgets children(){return this.box.c;}":
+
+'this.box' is a capsule field accessed on a read 'this'. 'this.box' will return a read reference
+and 'this.box.c' is also read.
+
+Note that this behaviour is sound because thanks to Assumption 5 we know that the reachable object graph
+of this.box does not contain "this".
+
+
+- there is more generality to the GUI case study
+------------------------------------------------
+
+The GUI is an application of the Composite programming pattern - one of the most common OO patterns.
+We also included two more case studies in the appendix.
+
+Here a summary of our 4 case studies:
+* The `Hamster`: Section 1, Pages 2-4, 
+* The `Gui`: Section 7,
+* The `Family`: Appendix C, pages 38-40,
+  designed as a worst case for the performance compared to visible state semantics
+* The Spec# Papers: Appendix C, pages 40-41,
+  here we looked at three papers on Spec# ("if the limitations of a system aren't encountered in an evaluation, why not?")
+ *  We encoded all examples from 'Verification of Object-Oriented Programs with Invariants'[5]
+ *  We can not encode examples from papers 'Object Invariants in Dynamic Contexts'[46] and
+   'Friends Need a Bit More: Maintaining Invariants Over Shared State'[6]:
+   they verify invariants over state that is *not* encapsulated.
+
+
+- inheritance and syntactic checks in invariant bodies
+------------------------------------------------------
+We fear our syntactic checks may have been misunderstood:
+invariant methods can only access capsule and immutable fields over 'this';
+but expressions are allowed over the result of the field access.
+Thus 'this.f.bar()' is allowed if 'f' is 'capsule' or 'imm'. 
+
+A simple solution to support conventional inheritance would be to require the invariant to only
+access final methods, plus the syntactic checks already required and the considerations under line 407.
+
+Overriding methods called by the invariant can be very confusing.
+Consider the following example:
+
+```
+class A{
+  Int f;
+  read method int f(){return this.f;}
+  read method Bool invariant(){this.f()>0;}
+}
+class B extends A {
+  method int f(){return -this.f;}
+}
+```
+
+Class B is changing the meaning of the invariant method in A because it overrides f().
+Is this intentional? Preventing such behaviour seems like a reasonable precaution.
+
+
+======================================================================
+We now give answers to the two explicit questions raised by Reviewer C.
+======================================================================
+
+
+- Does Boogy/Spec# rely on object immutability as well?
+-------------------------------------------------------
+
+Spec# offers immutable classes. In 'Flexible Immutability with Frozen Objects'[46] they expand Spec# to also consider immutable instances of non-immutable classes. Spec# supports two kinds of invariants: ownership based invariants and visibility based invariants.
+They both limit what kind of what data can be accessed in the invariant. Both kinds of invariants can access immutable data; ownership based invariants can also access owned data. Visibility based invariants can reason over non encapsulated state, but runtime checking has not been implemented, as it would require implementing 'ghost' state. 
+
+
+- Why do we care for reducing checks
+------------------------------------
+
+As shown in the GUI, the checks in the visible state semantics can explode
+exponentially, making the code unusable even for debugging.
+On the other hand, if the cost of runtime checks is low,
+it becomes feasible to keep those checks running in production,
+to capture invariant failure exceptions and provide alternative behaviour.
+
+This has implications for security.
+For example, if all the objects that are able to perform Database actions had invariants,
+our system statically ensures that Database methods are only called from objects whose invariant holds.
+If we could prove that the invariant only allows for a valid DB transaction, we would have a system
+that make guarantees about transactions.
+
+Additional Note: We agree with Reviewer C that we should have clarified more that our model essentially imposes the Box and the Transform patterns.
+
+
+======================================================================
+We now provide our responses to the other comments by Reviewer D.
+======================================================================
+
+- soundness concerns:
+---------------------
+
+In the formal calculus all errors are "unchecked exceptions".
+strong exception safety requires that if a try-catch captures an unchecked exception then the body of the try
+is type-checked using "read" instead of "mut" for all the local variables.
+To transfer this knowledge from local variables to object locations, we annotate the try with
+the set of preserved locations.
+
+Thus, if "l" was visible from outside, then it could not be mutated, thus 'l.f=v' would not type check.
+On the other hand, if 'l.f=v' type checked, it means that l is not visible outside.
+
+Having that constraint as a syntactic well-formedness or as a typing requirement just moves 
+where the proof has to take care of it: progress (in our case) or subject reduction
+(in the variant proposed by the reviewer).
+
+This reasoning is hidden in the paper under Assumption 1 (progress), since any type system
+supporting Assumption 1 would have to take care of this detail.
+
+- the system can no longer be used for concurrency
+--------------------------------------------------
+
+Concurrency is about what types of references can be passed to different threads/actors,
+not what fields objects can have.
+In 42 a capsule field access does not always give a capsule reference,
+so it cannot be easily passed to another thread, thus we are not violating any concurrency properties.
+
+- There are no redundant checks in the capsule mutators:
+----------------------------------------------------------------------------------------
+
+ since 'this' is used only once, 'this' cannot also appear in the form 'this.x=e' (thus a second invariant check cannot be triggered)
+
+- "invariant can only access capsule and imm fields":
+-----------------------------------------------------
+
+See previous answer about "Does Boogie/Spec# rely on object immutability as well?"
+
+-line 685 and capsule fields access:
+line 683 contains the definition of the method makeBox(c).
+As noticed by RevC, there is a typo in our code 'cs' should be 'c' all the times.
+makeBox(c) works as follows
+* It creates a new mut Box passing 'c', which is 'mut' by subtyping.
+This is sound since the type system prevents the 'c' variable from being used again.
+* It modifies the 'mut Box b'; the fact that 'c' was 'capsule' is not relevant here.
+* it returns 'b' as a 'capsule'.  This is sound, as the only parameter 
+of makeBox(c) is 'capsule'. This mechanism work the same in L42/Pony/Microsoft.
+
+-"would a different annotation of the Spec# version lead to soundly checking the invariant with fewer invocations of the invariant method?"
+---------------------------------------------------
+
+We tried many different ways to encode the GUI example in Spec#, in particular we tried very hard to find a solution that did not require to use the Box pattern (in addition of the expose block).
+In none of our attempt we managed to reduce the number of invocations.
+
+- reference capability
+----------------------
+
+If the reviewers think it is more appropriate,
+we will change the terminology to use reference capability.
+We were not intentionally attempting to change the terminology used by the field.
+
+-externally unique
+----------------------------
+
+Neither the work of Microsoft, Pony or L42 supports external uniqueness.
+Isolated and capsule objects provides a much stronger encapsulation guarantee (separate uniqueness).
+A good explanation of this common misconception can be found in
+Capabilities for Uniqueness and Borrowing, Philipp Haller and Martin Odersky pg 360 fig3,
+where the arrow 's' is allowed in external uniqueness but not in separate uniqueness.
+
+- prevent any clear class of these pathologies
+----------------------------------------------
+
+We are not sure what the reviewer means here: L42 has no 'null' and if an invariant call
+somehow throws an error (unchecked exception) then according to our definition,
+such invariant does not hold, but the invariant implementation is not 'wrong'.
+We would expect the user to throw personalised error messages instead of just returning false
+in order to produce better error messages.
+
+- how this allows for an invariant to be violated for a non trivial period of time
+----------------------------------------------------------------------------------
+
+The invariant must hold for all the objects involved in execution.
+If an object is not in the ROG of any parameter (including this) of the *current* method,
+clearly such object is not involved in execution and its invariant can be freely broken.
+'this' can be used only once in capsule mutators, so 'this' is not visible after such first use.
+See the code snippet for cases 1-2 at the end of this response.
+
+
+======================================================================
+We now provide our responses to the other comments by Reviewer B.
+======================================================================
+
+Firstly, we thank the reviewer for their positive comments of our paper and that "it will make a nice addition to Ecoop".
+Answering some of their particular points: 
+
+"y=this x=this y.f=x" is allowed by our system and the resulting object would have a circular object graph.
+Such object can be promoted/recovered as imm, and the whole ROG would be immutable.
+(L42 has no static fields)
+
+Object capabilities control non-determinism and I/O. They are essential in the discussion after line 530
+
+
+======================================================================
+Code examples showing how to handle points 1-5
+======================================================================
+
+1,2: violating invariants and fixing it later, or executing the invariants in batch
+
+```
+  class ABox{int a;int b;}
+  class A{
+    capsule ABox box;
+    read method Bool invariant(){this.box.a>this.box.b;}
+    mut method Void play(){//this is a capsule mutator
+      mut ABox inner=this.box; //the only use of 'this'
+      inner.a=5;///may break invariant
+      inner.b=3;///fix invariant
+      //invariant checked here
+    }
+  }
+```
+
+3: binary trees. We provide here the full code that would support sorted binary trees.
+Note how the annotation burden is quite low. We thanks the reviewer for suggesting this problem.
+If the reviewers think it is a good example, we could add it as an additional case study in the appendix.
+
+Note how the invariant can reason on the overall shape of the Node, and
+how Node.delete() can perform multiple field updates,
+and even violate sortedness, without any invariant checks.
+However, the Tree object is not visible while Node.delete() executes.
+Any time a Tree is visible, it is guaranteed to be sorted;
+any method call mutating the contained Nodes will invoke an invariant check.
+This is similar to Spec# `NoDefaultContract`, allowing methods to take in input
+objects whose invariant is not known to hold:
+in this example the Tree correspond to a Spec# Tree where the invariant
+is known to hold, while the TreeBox correspond to a Spec# Tree where the invariant is not known to hold.
+In actual L42 the code could be much more compact, but we show the solution in the language of our paper,
+that is more verbose since it is more similar to Java.
+
+``` 
+class Tree {
+  capsule TreeBox box;
+
+  Tree(){this.box=new TreeBox();}//invariant check after constructor
+
+  mut method Void add(Int value) {//this is a capsule mutator
+    TreeBox b=this.box;//only use of 'this' is here
+    b.root=b.root.add(value);//invariant check after this line is completed
+  }
+  read method Bool isEmpty() {return this.box.root.isEmpty();}
+  mut method Void delete(Int value) {//this is a capsule mutator
+    TreeBox b=this.box;//only use of 'this' is here
+     b.root=b.root.delete(value);//invariant check after this line is completed
+  }
+  read method Bool invariant() {return this.box.root.sorted();}
+}
+
+class TreeBox{ mut Node root; TreeBox(){this.root=new EmptyNode();} }
+
+interface Node{//L42 has no null; we must use subtyping or library support for optional types
+  read method Bool isEmpty();
+  mut method mut FullNode get();
+  mut method mut Node add(Int value);
+  mut method mut Node delete(Int value);
+  read method Bool sorted();
+}
+class EmptyNode implements Node{
+  read method Bool isEmpty() {return true;}
+  mut method mut FullNode get() {throw new Error();}
+  mut method mut Node add(Int value) {return new FullNode(value,this,this);}
+  mut method mut Node delete(Int value) {return this;}
+  read method Bool sorted() {return true;}
+}
+class FullNode implements Node{
+  read method Bool isEmpty() {return false;}
+  mut method mut FullNode get() {return this;}
+  mut method mut FullNode add(Int value) {
+    if (value < this.value) {this.left = this.left.add(value);}
+    else if (value > this.value) {this.right =this.right.add(value);}
+    return this;
+  }
+  mut method mut Node delete(Int value) {
+    if (value < this.value) {this.left = this.left.delete(value);}
+    if (value > this.value) {this.right = this.right.delete(value);}
+    if(value!=this.value) {return this;}
+    if (this.left.isEmpty() && this.right.isEmpty()) {return this.left;}
+    if (this.right.isEmpty()) {return this.left;}
+    if (this.left.isEmpty()){return this.right;}
+    this.value = this.right.get().min();
+    this.right = this.right.delete(this.value);
+    return this;
+  }
+  read method Int min() {
+    if(this.left.isEmpty()) {return this.value;}
+    return this.left.get().min();
+  }
+  read method Int max() {
+    if(this.right.isEmpty()) {return this.value;}
+    return this.right.get().max();
+  }
+  read method Bool sorted() {
+    if(!this.right.isEmpty() && this.right.get().min()<=this.value) {return false;}
+    if(!this.left.isEmpty() && this.left.get().max()>=this.value) {return false;}
+    return this.right.sorted() && this.left.sorted();
+  }
+  Int value;
+  mut Node left;
+  mut Node right;
+  FullNode(Int value, mut Node left, mut Node right) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
+  }
+}
+```  
+
+4:in Spec# the user may write 
+
+```
+    Void a() {
+      this.doA();
+      expose(this){this.doB(); this.doC();}
+      this.doD();
+    }
+```
+
+in L42 they would need to write the more verbose
+
+```
+    mut method Void a() {
+      this.readState().doA();
+      this.capsuleMutator();
+      this.readState().doD();
+    }
+    read method read Box readState(){return this.state;}//get the capsule state a read
+    mut method Void capsuleMutator() {
+      mut Box box=this.state;
+      box.doB(); box.doC();//here 'this' is not visible, also 'this' not inside ROG(box)
+      }
+```
+    
+Where 'this.state' is the capsule field of the box pattern.
+As you can see, the user can still guide the invariant checking, by using programming patterns
+instead of a dedicated syntax.
+
+5:About 5, consider the Family example of Appendix C: the box pattern triggers the
+invariant only after a complete simulation step.
