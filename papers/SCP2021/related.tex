@@ -55,7 +55,7 @@ barnett2011specification%
 In the literature, OCs are used to provide a wide range of guarantees, and many variations are present.
 Object capabilities~\cite{RobustComposition}, in conjunction with reference capabilities, are able to
  enforce purity of code in a modular way, without requiring the use of monads.
-L42 and Gordon use OCs simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
+L42 and Gordon \textit{et al.} use OCs simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
 However, in order for Joe-E to be a subset of Java, they leverage a simplified model of immutability:
 immutable classes must be final and have only final fields that refer to immutable classes.
 %Instances of immutable classes are immutable objects.

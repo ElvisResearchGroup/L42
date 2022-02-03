@@ -57,7 +57,8 @@ class BoxRange{//no invariant in BoxRange
     this.min = min; this.max = max;
   }
 }
-class Range{ private field box; //box contains a BoxRange
+class Range{
+  private field box; //box contains a BoxRange
   Range(min, max){ this.box = new BoxRange(min, max); }
   method invariant(){ return this.box.min < this.box.max; }
   method set(min, max){ return this.box.set(min,max); }
@@ -80,7 +81,7 @@ With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is acc
 Invariant protocols allow for objects to make necessary changes that might make their invariant temporarily broken.
 In visible state semantics any object that has an active method call anywhere on the call stacks is potentially invalid;
 arguably not a very useful guarantee as observed by
-Gopinathan \etal's.~\cite{Gopinathan:2008:RMO:1483018.1483028}
+Gopinathan \etal's work.~\cite{Gopinathan:2008:RMO:1483018.1483028}
 Approaches such as \textit{pack/unpack}~\cite{DBLP:journals/jot/BarnettDFLS04} 
 represent potentially invalid objects in the type system; this
 encumbers the type system and the syntax with features whose only purpose is to distinguish objects with broken invariants.

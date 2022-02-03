@@ -189,6 +189,9 @@ static method Void zoom(mut Widget w) {
   w.width(w.width() / 2); ...; w.top(w.top() / 2); }
 \end{lstlisting}
 
+In the context of reference capabilities, \Q@imm@ lambdas/closures will only be allowed to capture \Q@imm@ local variables.
+Note that the \Q@Transformer@ is \Q@imm@ and the method \Q@Trasformer.apply@ takes an \Q@imm@ receiver.
+
 % One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
 
 % \begin{lstlisting}[escapechar=\%]
@@ -304,7 +307,7 @@ As you can see, both methods rely on the transform pattern.
 These transformation operations are very general since they
 can access the \Q@mut Nodes@ of the \Q@Graph@ and 
 any \Q@capsule@ or \Q@imm@ data from outside.
-Note how in the lambda in \Q@connectWith(other,g)@, we can neither see the \Q@read this@ nor the \Q@read other@, but we get their (immutable) indexes 
+Note how the body of the \Q@imm@ lambda in \Q@connectWith(other,g)@, can not cpature the \Q@read this@ nor the \Q@read other@, but we get their (immutable) indexes 
 and recover the concrete objects from the \Q@mut Nodes ns@ object.
 In this way, we also obtain more useful \Q@mut@ references to those nodes.
 On the other hand, note how in \Q@addToGraph(g)@ we use the reference to the \Q@capsule this@ within the lambda.
