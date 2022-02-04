@@ -21,7 +21,7 @@ We additionally assume the following:
 	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$ within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
 	\item Memory, $\s : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
 	We use the notation $\s[l.f=v]$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$ (
-only used in our proofs since our small step reduction does not need to delete individual locations).
+this is only used in our proofs since our small step reduction does not need to delete individual locations).
 	\item The main expression is reduced in the context of a memory and program.
 	\item A typing relation, $\S;\G;\E\vdash e:T$, where 
 	the expression $e$ can contain locations and free variables. The types of locations are encoded in 
@@ -245,7 +245,7 @@ To allow the \Q!invariant()! method to be called on an invalid object, and acces
 Note that $\trusted(\ER[l])$ only holds when the very next reduction we are about to perform is $l.\invariant$ or $l\singleDot f$.
 As we discuss in our proof of $\thm{Soundness}$,
 any such $l\singleDot f$ expression came from the body of the $\invariant$ method itself, since $l$ can not occur in the $\rog$ of any of its fields mentioned in the $\invariant$ method.\footnote{
-Invariants only see \Q@imm@ and \Q@capsule@ fields (as \Q@read@), neither of which can alias
+Invariants only see \Q@imm@ and \Q@capsule@ fields (as \Q@read@), which we so as not being able to alias
   the current object.}
 
 We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:\\

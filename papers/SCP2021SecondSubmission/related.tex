@@ -62,7 +62,7 @@ immutable classes must be final and have only final fields that refer to immutab
 In Joe-E, every method that only takes instances of immutable classes is pure.
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
 In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}.
-Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} as parameter/receiver is pure, regardless of their class type; in particular, we allow the parameter of such a method to be mutated later on by other code.
+Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} receivers and parameters is pure, regardless of their class type; in particular, we allow the parameter of such a method to be mutated later on by other code.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \subheading{Invariant protocols}

@@ -44,11 +44,12 @@ Immutable objects in the ROG of a capsule reference are not constrained, and can
 %This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
 %\end{itemize}
 \noindent That is, there are only two kinds of objects: mutable and immutable, but there are more kinds of RCs.
+\IOComm{didn't a reviewer dislike this statement?}
 
 RCs are different to field or variable qualifiers like Java's \Q@final@: RCs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
 On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@A* const@ (like \Q@final@) and \Q@const A*@ (like \Q@read@), where \Q@const A* const@ is like \Q@final read@.}
 
-RCs are applied to all types. This includes types in method parameters and the method receiver.
+RCs are applied to all types. This includes types in the receiver and parameters of methods.
 A \Q!mut! method is a method where \Q@this@ is typed \Q!mut!;
 An \Q!imm! method is a method where \Q@this@ is typed \Q!imm!, and so on for all the other RCs.
 
@@ -184,8 +185,7 @@ is in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.
 }
 \begin{itemize}
 \item Code inside a \Q@try@ block that captures unchecked exceptions is typed as 
-if all variables declared outside of the block are \Q@final@ and
-all \Q@mut@ variables declared outside of the block are \Q@read@ and \Q@final@.
+if all variables declared outside of the block are \Q@final@ and all those of a \Q@mut@ type were \Q@read@.
 \item Only \Q@imm@ objects may be thrown as unchecked exceptions.
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
