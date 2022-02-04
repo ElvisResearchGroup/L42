@@ -7,7 +7,10 @@
 \label{s:protocol}
 All classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant()! method is explicitly present, a trivial one returning \Q!true! is assumed.
 
-Our protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}: if you can use an object, calling \Q@invariant()@ on it is guaranteed to return \Q@true@ in a finite number of steps.
+Our protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}: if you can use an object, \emph{manually} calling \Q@invariant()@ on it is guaranteed to return \Q@true@ in a finite number of steps.\footnote{
+  We will show later how we satisfy this constraint without 
+  solving the halting problem or requiring all \Q@invariant()@ methods to be total.
+  }
 
 %Our protocol is designed only to verify invariants over immutable and encapsulated state.
 As the \Q!invariant()! is used to determine whether \Q!this! is broken, it may receive a broken \Q@this@; however this will only occur for calls to \Q!invariant()! inserted by our approach. User written calls to \Q!invariant()! are guaranteed to receive a valid \Q!this!.
@@ -111,7 +114,7 @@ where we could consider an object to be the `owner' of all the mutable objects i
 
 More preciselly, if a reference to an object in the ROG of a capsule field $o.f$ is involved in execution as \Q!mut!, then:
 (1) no reference to $o$ is involved in execution,
-(2) a call to a \Q!mut! method for $o$ is above the current stack frame,
+(2) a call to a \Q!mut! method for $o$ is present in a previous stack frame,
 (3) mutable references to the ROG of $o.f$ are not leaked out of such method execution, either as return values, exception values, or stored in the ROG of a parameter, or in any other field of the method's receiver.
 
 
@@ -122,7 +125,7 @@ Note that a field \emph{update} of a \Q@capsule@ field (instead of a field acces
 
 The following rules define our novel \Q!capsule! fields:
 \begin{itemize}
-\item A \Q!capsule! field can only be initialised/updated with a \Q!capsule! expression.
+\item A \Q!capsule! field can only be initialised/updated using the result of an expression with  \Q!capsule! type.
 \item A \Q!capsule! field access will return a:
 \begin{itemize}
 \item \Q!mut! reference, when accessed on \Q!this! within a capsule mutator,

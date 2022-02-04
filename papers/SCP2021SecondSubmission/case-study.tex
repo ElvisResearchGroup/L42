@@ -214,6 +214,7 @@ Consider for example the Spec\# pre-condition on \Q@SafeMovable@'s constructor: 
 \noindent The Spec\# code also required us to deviate from the code style shown in our simplified version: we could not write a usable \Q@children()@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only indirection we had to do in L42 was creating \Q@Box@es by using 
 an additional variable in a nested scope.
 This is needed to delineate scopes for promotions.
-Based on these results, we believe our system is significantly simpler and easier to use.
+Based on these results, we believe our system is significantly simpler and easier to use
+in comparision with Spec\#, that is more verbose but supports a wider range of verification applications.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 

@@ -110,15 +110,11 @@ constructive feedback for improvement.
   second every time I read ROG. We should optimize for reading,
   not for writing!
 //TODO: list what abbreviations to remove?
-
-- 20: The term involved in execution is defined (italicized)
-  after being used.
-//True, but it is in the same paragraph and it is needed for the sentence to flow.
-
+ -remove ROG, RC, OC
 
 - 26: Consider using boldface for keywords to make the source
   code listing more legible when printed black and white.
-//?it is already boldface!
+//?it is already boldface! TODO USE DARKER RED
 
 - 45: It looks to me like what this clever little pattern is
   achieving is setting up a context where `this` can be used for
@@ -137,9 +133,7 @@ constructive feedback for improvement.
   calls that leak `this` are preceded by invariant checks to
   ensure that it is indeed not broken. Would aliasing of `this` be
   a problem though? Is it a problem in the current system?
-//I'm not sure how to further clarify here: we stated ""That is, the Range object
-is not in the ROG of the receiver or the parameters of BoxRange.set(min,max).""
-Also.. there are two thisses here:BoxRange and Range; what is the this he is worried about?
+//TODO: large problem of box vs un/packed, make a unified responste for those 3 notes
 
 - 71: How big is the actual gain between having `Range` and
   `BoxRange` vs. having `Range` and `unpacked Range`? A nice thing
@@ -147,7 +141,7 @@ Also.. there are two thisses here:BoxRange and Range; what is the this he is wor
   handling a `Range` and that there are no discrepancies between
   the classes representing the different states (packed and
   unpacked) of the object.
-//start--------
+//start-------- TODO: same explanation box/unpacked part 2
 In a language design only focusing on invariant supports having a language level 'unpacked' support feels tempting.
 But, in a fully fledged language it would be yet another language feature to consider, and it would interact with all the other features.
 Moreover, where do we stop?
@@ -165,26 +159,11 @@ Using patterns to express concepts also shows programmers how using patterns can
 //Right now, 42 does support unobservable parallelism, so invariants are already enforced also in a parallel setting.
 
 ** Section 2
-- 89: I don't think automated theorem proving is the go-to
-  solution for reasoning about OO programs!
-///Here I think rev1 just mean that he agree with us? so nothing to address?
-
-- 97: Is 2012 really "recently"?
-//Well, Rust is still stuck with the old design..
-
-- 147: "...will contain a mutable object" -- That depends on what
-  you mean by mutable! The field will not necessarily hold an
-  object that allows mutation.
-//What does rev1 means here?
-
 - 148: "This is different with respect to many other approaches"
   -- Which approaches are these? Later in the sentence you mention
   passing around type parameters, which makes me think you are
   thinking about Ownership Types, but this is not clear.
 //all the former work before gordon, so fractional permissions, universe types, islands.
-
-- 154: What does "used" mean here?
-//how is this not clear here?
 
 - 155: I don't know what you mean by "the result [of accessing a
   capsule variable] will not be a capsule reference". The rest of
@@ -218,6 +197,8 @@ Using patterns to express concepts also shows programmers how using patterns can
   with the rest of your claims about the system).
 //This is exactly our claim, the other systems are either more involved or they offer a more involved surface language and encode that on simpler forms internally.
 //Here we have a minimal type system with just the simple form.
+//We changed a sentence to make it more clear
+
 
 - 161: Whether a capsule field contains a capsule reference or not
   comes down to how you define capsuleness. If one allows `iso!`
@@ -228,6 +209,7 @@ Using patterns to express concepts also shows programmers how using patterns can
   borrowing).
 //No, wherever a capsule field holds a capsule reference depends on how we chose to use terminology in our lanugage.
 I think rev1 is arguing on what capsule fields 'could be' not that we are wrong on our current setting.
+//This is going to be solved in the global capsule field renaming
 
 - 163: I do not get how a capsule field can *never* contain a
   capsule reference if it is initialized with one. Isn't it a
@@ -235,53 +217,11 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   Maybe this will be made clear later.
 //same, it is never a capsule reference because we define it that way.
 
-- 182: "Then, at a later stage, another programmer may still be
-  able to encapsulate those data structures into an imm or capsule
-  reference" -- I do not think this is true in general. If you
-  only have `mut` references to work with, recovering uniqueness
-  (capsule) or immutability is hard since you have, as you say,
-  rampant aliasing preventing you from reasoning globally about
-  mutable aliases.
-//I think that the issuw was a confusion between object and type: I'm proposing to change as follow (and explain the misunderstanding in the response)
--From a usability perspective, this improvement means that these RCs are opt-in: a programmer can write *many classes* simply using mut types and be free to have rampant aliasing. Then, at a later stage,
-another programmer may still be able to encapsulate instances of those data structures into an imm or capsule reference.
+- 182: "Then, at a later stage,[...]
 -Response about line 182: We changed the sentence a little to clarify the distinction between instances and classes(lines.. in the new version). Indeed, as discussed just two lines above "any expression ([..]) of a mut type that has no mut or read free variables can be implicitly promoted to capsule", thus no matter how complex and full of internally aliased mut objects a data structure is, if we can create an instance without using any mut, the whole instance can be a capsule/imm.
 //--------
 
-- 191: [..][I later
-  understood that *checked* exceptions can be thrown without restrictions]
-//I clarified a little bit anyway, expecially since also rev2 got in trouble here.
-
-- 220: The section on object capabilities is nice! Does it need
-  the part on foreign function calls though? It seems quite
-  language specific.
-//any language needs a way to do foreign function calls.
-
-- 223: A difference that may be interesting to note (but probably
-  not here) is that Gordon et al. do not allow isolated (capsule)
-  as the receiver capability of a method. Instead
-  recovery/promotion is used to call, e.g., `mut` methods on
-  capsule references.
-//we did the same in some early version of the 42 type system, but it does not seams relevant for this paper
-
 ** Section 3
-- 230: "calling `invariant()` on it is guaranteed to return `true`
-  in a finite number of steps" -- This surprised me! Both that the
-  result is always `true` (why call it if it is always true?) and
-  that you seem to have solved the halting problem. [Later I
-  understood that this is because `invariant` checks are inserted
-  automatically at every point where it may have been broken,
-  meaning it would have failed (or got stuck in a loop?) already]
-//How can we twist the wordings here so that more readers 'trust us enough' to read the rest when the finally can understand?
-
-- 272: "...above the current stack frame" -- I had to think about
-  this. I assume you mean "in a stack frame for a function from
-  which the function of the current stack frame was (transitively)
-  called", i.e. that the call stack grows downwards.
-//Yes... should we fix anything? 'above' is arbitrary indeed... 'older' would work better? an 'older' stack frame?
-
-- 281: I do not know what a capsule expression is at this point.
-//Yes, still... what can we do about it?
 
 - 290: My intuition for capsule mutators is that they "pretend"
   that `this` is linear by requiring it to be used exactly once to
@@ -297,22 +237,13 @@ another programmer may still be able to encapsulate instances of those data stru
   non-linear thing as linear?
 // we need to read this paper
 
-- 307: This is where I understood what I brought up for 230 above.
-  I would have preferred to have this section much earlier (even
-  if it would contain a forward reference to capsule mutators).
-  Still unsure about termination of the `invariant` method. Is the
-  following method valid?
-
-    method bool invariant() { return invariant(); }
-//I think we could put a foot note in 230 asking to 'suspend the disbelif, yes we can do it, no it does not require to solve the halting problem'.
-
 - 381: `return counter++;` should not be in a comment? Or is it
   because the example is invalid? (there is also no `counter`
   field in the class)
 //Yes, the idea is that just doing counter++ would probably not be enough, that should be some hypotetical unexistant 'backdoor syntax' around it.
+//We changed the example with some hypotetical syntax to make it more concrete
 
-- 463: I liked this section! It did a good job to clarify and
-  confirm intuitions about the system. Some details and concepts
+- 463: Some details and concepts
   are still unclear, for example capability expressions,
   capability classes and why capsule fields never hold capsule
   references. Hopefully this is cleared up in the semantics
@@ -331,25 +262,9 @@ another programmer may still be able to encapsulate instances of those data stru
   method calls have multiple arguments[..]  Featherweight Java also has no sequencing[..]
 >Yes, in minimalistic FJ inspired languages we often use methods with multiple arguments to encode sequencing.
 
-  I also can't see anything about capability classes or capability
-  expressions.
->how can we be more clear that in the formal core we just rely on Cap?
-
-- 526: Not sure why factory methods have special treatment. Maybe
-  L42 has no regular constructors, and this is what is used
-  instead?
-//Exactly, as explained later in the same paragraph. Should we just ignore this note then?
-
-- 558: "Our setting does ensure termination of the invariant of
-  any l in a redex" -- I am not convinced by this. My intuition
-  about Theorem 1 is similar to partial correctness: either
-  ($valid(\sigma, l)$) we can run the invariant to completion or
-  ($trusted(\mathcal{E}_r[l])$) we are "still" running the
-  invariant. Is the result that it will terminate when called
-  outside of a monitor, because if it didn't terminate we would
-  have gotten stuck in an earlier monitor? If so, this is a less
+- 558: "Our setting does ensure termination of the invariant of[..]so, this is a less
   interesting property (albeit not uninteresting) in my opinion.
-//Yes, it terminates because of determinism+altready terminated. How can we write it more clearly?
+//Yes, solving the halting problem would have been much more interesting but would deserve a paper of its own. Here, more modesly, we just show that it terminates because of determinism+altready terminated. We are unsure how to clarify this better in the paper.
 
 
 - 564: I'm a little bit dissapointed in the formalism section. It
@@ -364,16 +279,6 @@ another programmer may still be able to encapsulate instances of those data stru
   favour of tracking (im)mutability, but not necessarily the whole
   reference capability approach.
 //Yes, any kind of purity verification solves the exponential explosion, as you can see later for Spec#, the RC approach is a kind of purity verification that is so much simpler to use than the Spec# approach.
-
-- 690: I think the comparison to Spec# is slightly unfair since
-  that machinery has a broader scope than L42. Spec# supports
-  static reasoning about inline asserts, loop invariants, etc. I
-  agree that the L42 code is simpler, but it should be mentioned
-  that the language is also less powerful.
-// Both Spec# and 42 have a broader scope then just verifying invariants. Here we are not comparing with all the possible kinds of Spec# annotations, only the ones needed for invariant checking.
-
-- 744: This last note is a very nice observation that I think could be made more prominent in the presentation!
-//TODO: how??
 
 - 809: I think this section does a good job of motivating why
   reference capabilities should be of interest for people doing
@@ -404,9 +309,6 @@ With 'unpacked' types in the type system, the unpacked type would always exists 
   support. I'm just not sure that it is better to not have it.
 //While we should not fight the rev1 about this too much/too openly, for me it would be promoting learned helplessness
 
-- 1190: Again, types for the closure parameters would be helpful.
-//I think the note added before is sufficient.
-
 - 1205: "Note how in the lambda in connectWith(other,g), we can
   neither see the read this nor the read other, but we get their
   (immutable) indexes and recover the concrete objects from the
@@ -426,8 +328,7 @@ We need to discuss how to change this example!
   is visible" -- I do not understand this at all. Why is the
   invariant cached if it is always expected to return `true`? The
   only times it is interesting to calculate the invariant is when
-  the value may have changed, and then having a cached value is
-  not helpful.
+  the value may have changed, and then having a cached value is not helpful.
 //We were unsure how much of this to insert in the paper since it is more of an extension of the current work: the point is that a generalization of invariants is caching: 
 -both caches and invariants have to be recomputed every time something in the ROG changes.
 -So if we allow for a meaninful result instead of just 'true' we can use the exact same mechanism of invariants in order to encode caching.
@@ -436,7 +337,7 @@ We need to discuss how to change this example!
 - 1237: "recomputed every time a @Cache.Clear method is called" --
   Does this mean that capsule mutators are not identified
   automatically?[..]
-//No, it means that the programmer have to mark them to avoid a type error. While it could be possible to simply infer them, in the full 42 language they are required to be marked.
+//No, it means that the programmer have to mark them to avoid a type error. While it could be possible to simply infer them, in the full 42 language they are required to explicitly be marked.
 
 - 1239: This whole section was not very useful and in my opinion
   it raised more questions than it answered.
@@ -448,31 +349,13 @@ We need to discuss how to change this example!
   whole paper.
 //indeed. Do we have other citations? should we move up?
 
-- 1253: "without requiring the use of monads" -- Why would monads
-  be the goto alternative here? For an object-oriented setting, I
-  would rather think of effects (or reference capabilities) than
-  monads if the goal was to enforce purity.
-//added 'effects or monads'
-//one of our other (unpublished yet) works is attempting to build a bisumulation between a monadic language and an object capability language
-
-- 1386: It seems unfair to say that a system that makes no mention
-  of a feature is unsound if such a feature is added.
-//they claim that their work applicable to real world programs, this implies IO
-
 ** Section 10
 - 1402: I strongly disagree that you have presented a full
   formalism, since you have left out the type system and several
   key definitions. I also take issue with the claim that it is
   proved to be sound, since I would expect this to mean typeh
   soundness (but here I see what the authors mean at least).
-//We can tone down this sentence, plus by adding the example formalism our statements here also become more valid.
-
-- 1417: I generally agree with the takeaways of the conclusion,
-  but I would have liked a stronger finish instead of a random
-  detail about catching certain exceptions. Also, there is no
-  mention of future work even though it is in the heading.
-//Yes, that part should be moved in the 'exceptions' section
-
+//We have toned down this sentence, plus by adding the example formalism our statements here also become more valid.
 
 ---------
 

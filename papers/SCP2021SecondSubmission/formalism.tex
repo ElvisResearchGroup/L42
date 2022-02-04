@@ -39,6 +39,10 @@ a variable environment, $\G : x\rightarrow T$. \E encodes the location, relative
 	\item \Q@Cap@'s \Q@invariant()@ method is defined to have a body of `\Q!true!', and
 	\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods will have a non-deterministic body, i.e. calls to them may have multiple possible reductions.
 \end{itemize}
+We only model a single \Q@Cap@ capability class for simplicity, as modelling user-definiable capability classes as described in section[???] is unneccesary for the soundness of our invariant protocol.
+\Q@Cap@ represents the set of capability classes, and the \Q@mut@ methods of \Q@Cap@ could be a foreign method.
+
+
 For simplicity, we do not formalise actual exception objects, rather we have \error{}s, which correspond to expressions which are currently  `throwing' an exception; 
 in this way there is no value associated with an \error.
 Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (unchecked) exceptions, formalising exceptions in such way would not cause any interesting variation of our proof.

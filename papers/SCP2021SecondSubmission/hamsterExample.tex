@@ -61,6 +61,7 @@ This technique loosely corresponds to an implicit pack and unpack: we `unpack' \
 
 Note: since only \Q@Cage@ has an invariant,
  only the code of \Q@Cage@ needs to be handled carefully; allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
+Thus our verification approach is more self contained and modular.
  This contrasts with Spec\#: all code involved in  verification needs to be designed with verification in mind~\cite{barnett2011specification}.
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.

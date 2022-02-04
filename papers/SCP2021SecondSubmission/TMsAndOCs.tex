@@ -16,7 +16,7 @@ While studying those languages, we discovered an elegant way to enforce invarian
 % [dynamic class loading],
 
 \subheading{Reference Capabilities}
-RCs, as used in this paper, are a type system feature that allows reasoning about aliasing and mutation. Recently a new design for them has emerged that radically improves their usability;
+RCs, as used in this paper, are a type system feature that allows reasoning about aliasing and mutation. A more recent design for them has emerged that radically improves their usability;
 three different research languages are being independently developed relying on this new design: the language of Gordon \etal, Pony, and L42.
 These projects are quite large: several million lines of code are written in Gordon \etal's language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the RCs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
@@ -32,6 +32,8 @@ Reference capabilities
 \item Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object}.
 Any other object is a \emph{mutable object}.
 All objects are born mutable and may later become immutable.
+Thus, an object can be classified as \emph{mutable} even if it has no fields that can be updated or mutated.
+
 
 %\noindent\rule{1.2ex}{1.2ex}
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can be observed. Readonly references can refer to both mutable and immutable objects, as \Q!read! types are supertypes of both their \Q!imm! and \Q!mut! variants.
@@ -89,8 +91,8 @@ Another common misconception is the belief that \Q!capsule! fields and \Q!capsul
 How \Q!capsule! local variables are handled differs widely in the literature:
 
 %\noindent
-In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (similar to linear and affine types~\cite{boyland2001alias}). 
-Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however the result will not be a \Q!capsule! reference and can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
+In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be read only once (similar to linear and affine types~\cite{boyland2001alias}). 
+Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however in those cases the result will not be a \Q!capsule! reference but another kind of reference that can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
 %Later on, we discuss \Q!capsule! fields, which behave differently to \Q@capsule@ local variables.
 Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature, however they must always be initialised and updated with \Q!capsule! references. In order for access to a \Q!capsule! field to safely produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
@@ -148,10 +150,10 @@ This requires the absence of \Q!read! and \Q!mut! \emph{global/static} variables
 %}}
 This is the main improvement on the flexibility of RCs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
-these RCs are opt-in: a programmer can write large sections of code
+these RCs are opt-in: a programmer can write many classes
 simply using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
-be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ reference.
+be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@capsule@ reference.
 
 %\loseSpace
 \subheading{Exceptions}\label{s:exceptions}
@@ -264,9 +266,13 @@ moreover, the only \Q@System@ instance would be the one created by the runtime s
 This design has been explored by Joe-E~\cite{finifter2008verifiable}.
 
 
-OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. However, since
-L42 allows user code to perform foreign calls without going through a predefined standard library, 
-the OC pattern is enforced by the type system:
+OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. 
+
+However, L42 has no predefined standard library, but many can be defined by the community.
+Thus, the only way to perform I/O operations is via foreign function calls.
+Since enforcing the OC pattern can not be done via a unique standard library, the type system of L42 directly enforces the OC pattern as follows:
+
+
 %To reason about determinism, L42 connects RCs with the OC style as follows: % style by requiring:
 \begin{itemize}
 \item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability operations}.

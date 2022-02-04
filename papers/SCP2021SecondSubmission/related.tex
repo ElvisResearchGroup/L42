@@ -4,7 +4,9 @@
 \vspace{-1ex}
 In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this articles scope to explain 
 in detail this integration, but the overall idea is that an invariant
-is seen as a \Q@Void@ cached value that is always kept up to date whenever the object is visible. L42 also supports eager cached methods, which get computed in parallel when an instance of the corresponding class is created.
+is seen as a \Q@Void@ pre-cached value that is always kept up to date whenever the object is visible.
+That is, invariants are supported with a mechanism similar to the one required to compute and keep caches up to date.
+ L42 also supports other kinds of cached methods, which get computed in parallel when an instance of the corresponding class is created.
 
 L42 libraries rely on a very expressive form of metaprogramming to generate a lot of boilerplate/redundant code. In L42 many tasks can be  either manually performed by writing code directly, or partially automated by code generation.
 L42 allows writing \Q@class@ methods (similar to a static method in Java) with appropriate parameters instead of \Q!invariant!s method and capsule mutators. The bodies of such methods don't have special restrictions as they cannot see \Q!this!, instead the meta-programming generates appropriate instance methods, conforming to our restrictions, which call the user provided \Q!class! methods.

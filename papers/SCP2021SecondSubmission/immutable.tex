@@ -67,7 +67,8 @@ The example class \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
 class MagicCounter {//INVALID EXAMPLE
-  method Int incr(){/*return counter++; using internal mutability*/}}
+  Int counter = 0;
+  method Int incr(){return unsafe{counter++}; /*using internal mutability*/}}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
@@ -162,6 +163,9 @@ The following variant is instead well typed, since \Q@bob@ is now declared insid
 try { mut Person bob = new Person("Bob");    bob.name(""); } 
 catch (Error t) { }
 \end{lstlisting}
+
+Note how soundly catching exceptions like stack overflows or out of memory cannot be allowed in \Q@invariant()@ methods, since they are not deterministically thrown.
+L42 allows catching them only as a capability operation, which thus can't be used inside an invariant.
 
 %Recovering from an invariant failure in this way is unsound and would break our protocol.
 %Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
