@@ -46,7 +46,7 @@ Immutable objects in the ROG of a capsule reference are not constrained, and can
 %This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
 %\end{itemize}
 \noindent That is, there are only two kinds of objects: mutable and immutable, but there are more kinds of RCs.
-\IOComm{didn't a reviewer dislike this statement?}
+%\IOComm{didn't a reviewer dislike this statement?}\MSComm{rev1 said it was out of place, so I moved it.}
 
 RCs are different to field or variable qualifiers like Java's \Q@final@: RCs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
 On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@A* const@ (like \Q@final@) and \Q@const A*@ (like \Q@read@), where \Q@const A* const@ is like \Q@final read@.}
