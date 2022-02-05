@@ -67,7 +67,7 @@ Thus our verification approach is more self contained and modular.
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
 
 \subheading{Comparison with Spec\#}
-We now show our hamster example in Spec\#. The system most similar to ours:
+We now show our hamster example in the system most similar to ours, Spec\#:
 %or \small or \footnotesize etc.
 \begin{lstlisting}[
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
@@ -132,7 +132,7 @@ Cage c=new Cage(new Hamster(new Point(0,0)),List.of(new Point(0,0),new Point(0,1
 
 %3 read 2 capsule 3 mut extra method moveTo
 %----
-In Spec\#, we had to add $10$ different annotations, of $8$ different kinds, some of which being quite involved.
+In Spec\#, we had to add $10$ different annotations, of $8$ different kinds, some of which are quite involved.
 In comparison, our approach requires only $8$ simple keywords of $3$ different kinds. However, we needed to write 
 separate \Q@pos()@ and \Q@moveTo(p)@ methods.
 %  Moreover we had been unable to reuse 

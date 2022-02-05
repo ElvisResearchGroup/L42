@@ -122,8 +122,8 @@ More preciselly, if a reference to an object in the ROG of a capsule field $o.f$
 To show how our \Q@capsule@ fields ensure these properties, we first define some terminology:
 \Q@x.f@ is a \emph{field access}, \Q@x.f=e@ is a \emph {field update},\footnote{Thus a field update \Q@x.f=e@ is not a field access followed by an assignment.}
 a \Q@mut@ method with a field access on a capsule field of \Q!this! is a \emph{capsule mutator}. 
-Note that a method performing a field \emph{update} of a \Q@capsule@ field (instead of a field access) is not a capsule mutator, but just a normal method calling a field update.
-Capsule mutators handle the more subtile case where the fields of the object with invariant are not updated but the invariant may still be broken because of mutations deep in the ROG.
+Note that a method performing a field \emph{update} of a \Q@capsule@ field (instead of a field access) is not a capsule mutator, but just a normal method performing a field update.
+Capsule mutators handle the more subtle case where the fields of an object with invariant are not updated, but a mutation deep within their ROG may potentially break the invariant.
 
 The following rules define our novel \Q!capsule! fields:
 \begin{itemize}

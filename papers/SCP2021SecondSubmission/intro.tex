@@ -25,7 +25,7 @@ An object is \emph{involved in execution} when it is in the ROG of any of the ob
 Our strict protocol supports easier reasoning: an object can never be observed broken. However 
 at first glance it may look overly restrictive, preventing useful program behaviour.
 Consider the iconic example of a \Q@Range@ class, with a \Q@min@ and \Q@max@
-value, where the invariant requires that \Q@min<=max@:
+value, where the invariant requires that \Q@min<max@:
 % ISAAC: I changed the example to not use getters and setters as our latter examples often don't and it dosn't add anything extra; in addition, this may fall foul of some visibile state semantics of the setters are considered public.
 \begin{lstlisting}
 class Range{ 
