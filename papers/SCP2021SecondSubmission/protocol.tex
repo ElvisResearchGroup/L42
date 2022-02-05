@@ -27,7 +27,7 @@ but the \Q@invariant()@ method is unable to access the list's nodes, since they 
 There is a line of work~\cite{DBLP:conf/mpc/BarnettN04} striving to allow invariants over other forms of state.
 %It would not be technically difficult to 
 %integrate the solutions of those works, but 
-We have not tried to integrate such solutions into our work as we believe it would make our system more complex and ad hoc, probably requiring numerous specialised kinds of RCs.
+We have not tried to integrate such solutions into our work, as we believe it would make our system more complex and ad hoc, probably requiring numerous specialised kinds of RCs.
 Thus we have traded some expressive power in order to preserve safety and simplicity.
 
 \subheading{Purity}\label{s:purity}
@@ -101,7 +101,8 @@ their only parameter (the receiver) is \Q!read!.
 \subheading{Capsule Fields}
 %As we discussed before, while most approaches agree on the exact properties of a capsule reference,
 %capsule fields are handled in different ways in different approaches. 
-Former work on L42 discusses ``depending on how we expose the owned data, we can closely model both \emph{owners-as-dominators}[...] and \emph{owners-as-qualifiers}[...]''\cite{GIANNINI2019145}, and  ``\Q!lent! getter[s], a third variant''\cite{GIANNINI2019145}%Flexible recovery of uniqueness and immutability
+Former work on L42 discusses ``depending on how we expose the owned data, we can closely model both \emph{owners-as-dominators}[...] and \emph{owners-as-qualifiers}[...]''\cite{GIANNINI2019145}, and  ``\Q!lent! getter[s], a third variant''\cite{GIANNINI2019145}.%Flexible recovery of uniqueness and immutability
+
 Those informal considerations have then influenced the L42 language design,
 bringing to the creation of syntactic sugar and programming patterns to represent various kinds of \Q@capsule@ fields aimed to model various forms of ownership. Under the hood, all those forms of \Q@capsule@ fields are just private \Q@mut@ fields with some extra restrictions. Describing in the details those restrictions would be outside of the scope of this paper.
 
@@ -110,18 +111,19 @@ a private \Q@mut@ fields with extra restrictions.} (which can coexist with other
 enforcing the following key property:
 the ROG of a capsule field $o.f$ can only be mutated under the control of a \Q@mut@ method of $o$, and during such mutation, $o$ itself cannot be seen.
 This is similar to owner-as-modifier~\cite{Dietl05universes:lightweight,10.1007/978-3-540-92188-2_4}, 
-where we could consider an object to be the `owner' of all the mutable objects in the ROG of its \Q!capsule! fields; but with the extra restriction that the owner is unobservable during mutation of this ROG.
+where we could consider an object to be the `owner' of all the mutable objects in the ROG of its \Q!capsule! fields, but with the extra restriction that the owner is unobservable during mutation of this ROG.
 
 More preciselly, if a reference to an object in the ROG of a capsule field $o.f$ is involved in execution as \Q!mut!, then:
 (1) no reference to $o$ is involved in execution,
-(2) a call to a \Q!mut! method for $o$ is present in a previous stack frame,
+(2) a call to a \Q!mut! method for $o$ is present in a previous stack frame, and
 (3) mutable references to the ROG of $o.f$ are not leaked out of such method execution, either as return values, exception values, or stored in the ROG of a parameter, or in any other field of the method's receiver.
 
 
 To show how our \Q@capsule@ fields ensure these properties, we first define some terminology:
 \Q@x.f@ is a \emph{field access}, \Q@x.f=e@ is a \emph {field update},\footnote{Thus a field update \Q@x.f=e@ is not a field access followed by an assignment.}
 a \Q@mut@ method with a field access on a capsule field of \Q!this! is a \emph{capsule mutator}. 
-Note that a field \emph{update} of a \Q@capsule@ field (instead of a field access) does not make a method a capsule mutator.
+Note that a method performing a field \emph{update} of a \Q@capsule@ field (instead of a field access) is not a capsule mutator, but just a normal method calling a field update.
+Capsule mutators handle the more subtile case where the fields of the object with invariant are not updated but the invariant may still be broken because of mutations deep in the ROG.
 
 The following rules define our novel \Q!capsule! fields:
 \begin{itemize}
@@ -149,7 +151,7 @@ $o$ will not be in the ROG of $o.f$ and
 only a capsule mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way to mutate the ROG of $o.f$ is through such methods. 
 %When a capsule mutator is not executing, no object in the ROG of $o.f$ can be seen as \Q!mut! or \Q!capsule!. 
 %(using any sequence of field accesses on a local variable).
-If execution is (indirectly) in a capsule mutator, then $o$ is only used as the receiver of the \Q!this.f! expression in the capsule mutator.
+If execution is (indirectly) in a capsule mutator, than $o$ is only used as the receiver of the \Q!this.f! expression in the capsule mutator.
 Thus we can be sure that the ROG of $o.f$ will only be mutated within a capsule mutator, and only after the single use of $o$ to access $o.f$.
 Since such mutation could invalidate the invariant of $o$, we call the \Q@invariant()@ method at the end of the capsule mutator body; before $o$ can be used again. Provided that the invariant is re-established before a capsule mutator returns, no invariant failure will be thrown, even if the invariant was temporarily broken \emph{during} the body of the method.
 

@@ -84,7 +84,7 @@ Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus
 A common misconception of this line of work is that a \Q!mut! field will always refer to a mutable object.
 Classes declare RCs for their methods and field types, but  what kinds of object is stored in a field also depends on the kind of the object: a \Q!mut! field of a mutable object will contain a mutable object; but a \Q!mut! field of an immutable object will contain an immutable object.
 This is different with respect to many other approaches, where the
-declaration fully determines what values can be stored; in those other approaches, any contextual information must be explicitly passed through the type system, for example, with a generic RC parameter.
+declaration fully determines what values can be stored. In those other approaches, any contextual information must be explicitly passed through the type system, for example, with a generic RC parameter.
 
 
 Another common misconception is the belief that \Q!capsule! fields and \Q!capsule! local variables always hold \Q!capsule! references.
@@ -106,7 +106,7 @@ L42 is even more radical: an L42 \Q@capsule@ field never contains a \Q!capsule! 
 Pony and L42's \Q!capsule! fields
 % do not prevent representation exposure.
 %These forms of \Q!capsule! fields
- are useful for safe parallelism but not invariant checking. \footnote{It may seem surprising that 
+ are useful for safe parallelism, but not invariant checking. \footnote{It may seem surprising that 
 those weaker forms of encapsulation are still sufficient to ensure safe parallelism. 
 The detailed way L42 parallelism works is unrelated to the presented work.
 Please see \url{L42.is/tutorial.xhtml} (specifically, section 5 and 6) for more information on parallelism in L42.
@@ -157,7 +157,7 @@ be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@
 
 %\loseSpace
 \subheading{Exceptions}\label{s:exceptions}
-In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown while mutating an object, what state is that object in? Does its invariant hold?
+In most languages exceptions may be thrown at any point. Combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown while mutating an object, what state is that object in? Does its invariant hold?
 The concept of \emph{strong exception safety}~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
 if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated; this prevents exposing objects whose invariant was left broken in the middle of mutations.
 %\LINE
@@ -183,7 +183,7 @@ We are not aware of how Gordon \etal handles exceptions, however to have sound u
 }
 in the following way:\footnote{%
 Formal proof that these restriction are sufficient
-is in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.
+is in the work of Lagorio and Servetto~\cite{JOT:issue_2011_01/article1}.
 }
 \begin{itemize}
 \item Code inside a \Q@try@ block that captures unchecked exceptions is typed as 

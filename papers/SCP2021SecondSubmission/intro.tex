@@ -72,9 +72,11 @@ unreachable, and thus not involved in execution.
 That is, the \Q@Range@ object is not in the ROG of the receiver or the parameters of \Q@BoxRange.set(min,max)@.
  Thus \Q@Range.set(min,max)@ can temporarily break the \Q@Range@'s invariant.
 By using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the object \Q@Range@ is modified.%
-\footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator, but with a different goal.
+\footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator pattern, but with a different goal.
 While in very specific situations the overhead of creating such additional box object may be unacceptable, we designed our work for environments where such fine performance differences are negligible.
-Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}}
+Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}
+This is even more applicable in languages with inlined structs, like C++ or C\#.
+}
 With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution.
 
 \subheading{Contributions}

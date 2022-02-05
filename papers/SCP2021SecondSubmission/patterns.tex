@@ -12,7 +12,7 @@ In particular, as we show, in order to use our approach to ensure invariants, on
 We showed how the box pattern can be used to write invariants over cyclic mutable object graphs, the latter also shows how a complex mutation can be done in an `atomic' way, with a single invariant check. However the box pattern is much more powerful.
 
  Suppose we want to pass a temporarily `broken' object to other code as well as perform multiple field updates with a single invariant check. 
-Instead of adding new features to the language, like an \Q!invalid! modifier (denoting an object whose invariant need not hold), and an \Q!expose! statement like Spec\#, we can use a `box' class and a capsule mutator to the same effect:
+Instead of adding new features to the language, like an \Q!invalid! modifier (denoting an object whose invariant does not need to hold), and an \Q!expose! statement like Spec\#, we can use a `box' class and a capsule mutator to the same effect:
 \begin{lstlisting}
 interface Person{ mut method Bool accept(read Account a,read Transaction t); }
 interface Transaction{ mut method ImmList<Transfer> compute(); }
@@ -75,15 +75,17 @@ In the former example, this means that
 if you can refer to an \Q!Account!, you can be sure that its \Q!income >= expenses!;
 if you have an \Q!AccountBox! then you can be sure that either \Q!income >= expenses! or 
 a capsule mutator of the corresponding \Q@Account@ object is currently active.
-This closely resemble some visible state semantic protocols, aiming to ensure that  
+This closely resembles some visible state semantic protocols, aiming to ensure that  
 either an object's invariant holds, or one of its methods is currently active.
 
 
-Another interesting and natural application of the sub invariant pattern would be to support a version of the GUI such that when a \Q@Widget@'s position is updated, the \Q@Widget@ can in turn update the coordinates of its parent \Q@Widget@s, in order to re-establish their \Q@subInvariants@.
+Another interesting and natural application of the sub invariant pattern would be to support a version of the GUI such that, when a \Q@Widget@'s position is updated, the \Q@Widget@ can in turn update the coordinates of its parent \Q@Widget@s, in order to re-establish their \Q@subInvariants@.
 This would also make the GUI follow the versions of the composite pattern were objects have references to their `parent' nodes.
 The main idea is to define an interface \Q@HasSubInvariant@, that denotes \Q@Widgets@ with a \Q@subInvariant()@ method. Then, \Q@WidgetWithInvariant@ is a decorator over a \Q@Widget@; the invariant method of a \Q@WidgetWithInvariant@ checks the \Q@subInvariant()@ of each widget in its ROG.
 
-We define \Q@SafeMovable@ as a \Q@Widget@ and \Q@HasSubInvariant@; since \Q@subInvariant()@ methods don't have the restrictions of invariant methods, it allows \Q@SafeMovable@ to be significantly simpler than the version shown before in Section~\ref{s:case-study}.
+%How to apply "Widget; the invariant method of a Widget This Invariant-->Widget and its invariant method" here?
+
+We define \Q@SafeMovable@ as a \Q@Widget@ and \Q@HasSubInvariant@. Since \Q@subInvariant()@ methods don't have the restrictions of invariant methods, it allows \Q@SafeMovable@ to be significantly simpler than the version shown before in Section~\ref{s:case-study}.
 \begin{lstlisting}
 interface HasSubInvariant{ read method Bool subInvariant(); }
 class SafeMovable implements Widget,HasSubInvariant {
@@ -278,7 +280,7 @@ Here we define a \Q@MyNode@ class, where the \Q@subInvariant(nodes)@ can express
 
 We can define methods in \Q@MyNode@ to add our nodes
 to graphs and to connect them with other nodes.
-Note that the method \Q@addToGraph(g)@ is marked as \Q@capsule@; this ensures that the node is not in any other graph.
+Note that the method \Q@addToGraph(g)@ is marked as \Q@capsule@: this ensures that the node is not in any other graph.
 In contrast, the method \Q@connectWith(other, g)@ is marked as \Q@read@, even though it is clearly intend to modify the ROG of \Q@this@.
 It works by recovering a \Q@mut@ reference to \Q@this@ from the \Q@mut Graph@.
 
