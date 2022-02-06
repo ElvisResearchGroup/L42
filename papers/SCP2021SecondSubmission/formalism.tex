@@ -275,7 +275,7 @@ In particular, no method call (other than \emph{injected} invariant checks thems
 This is a very strong statement because $\valid(\s,l)$ requires 
 the invariant of $l$ to deterministically terminate, and termination is a difficult 
 property to ensure.
-Our setting does ensure termination of the invariant of any $l$ in a redex.
+Our setting does ensure termination of the invariant of any $l$ that is now within a redex (as opposed to an $l$ that is on the heap or is being monitored).
 This works because non terminating \Q@invariant()@ methods would cause the monitor expression to never terminate. Thus, an
 $l$ with a non terminating \Q@invariant()@ is never involved in an untrusted redex.
 Invariants are deterministic computations in function of the state of $l$.

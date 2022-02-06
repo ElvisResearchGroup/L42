@@ -171,15 +171,15 @@ A simple and practical solution would be to define a \Q@transform(t)@ method in 
 like so:
 %\footnote{A more general transformer could return a generic \Q@read R@.}
 \begin{lstlisting}[escapechar=\%]
-interface Transformer<T> { method Void apply(mut T elem); }
+interface Transformer<T> { capsule method Void apply(mut T elem); }
 interface Widget { ...
   mut method Void top(Int that); // setter for immutable data
   // transformer for possibly encapsulated data
-  mut method read Void transform(Transformer<Widgets> t);
+  mut method read Void transform(capsule Transformer<Widgets> t);
 }
-class SafeMovable { ...
+class SafeMovable implements Widget { ...
   // A well typed capsule mutator
-  mut method Void transform(Transformer<Widgets> t) {t.apply(this.box.c);}}
+  mut method Void transform(capsule Transformer<Widgets> t) {t.apply(this.box.c);}}
 \end{lstlisting}
 % Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
@@ -191,9 +191,45 @@ static method Void zoom(mut Widget w) {
   w.width(w.width() / 2); ...; w.top(w.top() / 2); }
 \end{lstlisting}
 
-In the context of reference capabilities, \Q@imm@ lambdas/closures will only be allowed to capture \Q@imm@ local variables.
-Note that the \Q@Transformer@ is \Q@imm@ and the method \Q@Trasformer.apply@ takes an \Q@imm@ receiver.
+In the context of reference capabilities, \Q@imm@ lambdas/closures will only be allowed to capture \Q@imm@ and \Q@capsule@ local variables.
+Note that the \Q@Transformer@ parameter to \Q@transform@ is \Q@capsule@ and the method \Q@Trasformer.apply@ takes an \Q@capsule@ receiver. In particular, this means that \Q@transform@ will be able to call the lambda at most once,
+and lambdas cannot be saved and passed to multiple calls to \Q@transform@.
+However, we could instead make \Q@transform@ take an \Q@imm@ \Q@Transformer@, and make \Q@Transformer.apply@ be an \Q@imm@ method, this would allow lambdas to be freely copied and called multiple times, however they would not be able to capture pre-existing mutable objects.
 
+\begin{comment} % this is annoying, I'm just going to make it take a capsule
+To allow capturing mutable state, we can add a separate \Q@CapTransformer@ \Q@interface@ with a \Q@capsule@ \Q@apply@ method:
+\begin{lstlisting}[escapechar=\%]
+interface CapTransformer<T> {
+	capsule method Void capApply(mut T elem); 
+}
+interface Widget { ... // as before
+	mut method read Void capTransform(CapTransformer<Widgets> t);
+}
+class SafeMovable implements Widget { ... // as before
+	mut method Void capTransform(capsule CapTransformer<Widgets> t) {
+		// same body as before
+		t.capApply(this.box.c);}}
+\end{lstlisting}
+This is sound because the \Q@t@ parameter to \Q@capTransform@ cannot possible alias the \Q@SafeMovable@ \Q@this@, thus the call to \Q@apply@ cannot observe a broken \Q@SafeMoveable@. Note that because \Q@CapTransformer@'s \Q@capApply@ method takes a \Q@capsule@ this, it can only be called once, since the receiver will be the only copy of \Q@this@.
+\IOComm{This is not true!! You could have an implementation of \Q@capApply@ that does \Q@this.capApply(...)@ right? What about saving \Q@this@ in the heap somewhere, and later on recovering it back as a capsule?}
+
+For example, we can use \Q@capTransform@ to move a \Q@Widget@ into another \Q@Widget@, without having to clone the \Q@Widget@:
+\begin{lstlisting}
+capsule Widget myWidget = ...;
+mut Widget parent = ...;
+parent.capTransform(ws -> ws.add(myWidget));
+\end{lstlisting}
+The lambda, \Q@ws -> ws.add(myWidget)@ can be typed as a \Q@capsule@ \Q@CapTransformer<Widgets>@ since it's only free variable, \Q@myWidget@, is also \Q@capsule@.
+
+Note that a \Q@Transformer<T>@ can be trivially made into a \Q@CapTransformer@, e.g. by using Java 8's default interface methods:
+\begin{lstlisting}
+interface Transformer<T> implements CapTransformer<T> {
+	method Void apply(mut T elem);
+	capsule method Void capApply(mut T elem) {
+		// promotes the capsule 'this' to imm
+		this.apply(elem) }}
+\end{lstlisting}
+\end{comment}
 % One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
 
 % \begin{lstlisting}[escapechar=\%]
@@ -254,7 +290,7 @@ class Graph{
   }
 }
 \end{lstlisting}
-We now show how our \Q@Graph@ library allows the invariant of the various \Q@Node@s to be customized by the library user, and arbitrary transformations can be performed on the \Q@Graph@s. This is a generalization of the example proposed by~\cite{Summers:2009:NFO:1562154.1562160}(section 4.2) as one of the hardest problems when it comes to enforcing invariants.
+We now show how our \Q@Graph@ library allows the invariant of the various \Q@Node@s to be customised by the library user, and arbitrary transformations can be performed on the \Q@Graph@s. This is a generalisation of the example proposed by~\cite{Summers:2009:NFO:1562154.1562160}(section 4.2) as one of the hardest problems when it comes to enforcing invariants.
 
 Note how there are only a minimal set of operations defined in the above code, 
 others can be freely defined by the user code, as demonstrated below:
@@ -286,30 +322,29 @@ It works by recovering a \Q@mut@ reference to \Q@this@ from the \Q@mut Graph@.
 
 These methods can be implemented like this:
 \begin{lstlisting}
-  read method Void connectWith(read Node other,mut Graph g){
-    Int i1=g.getNodes().indexOf(this);
-    Int i2=g.getNodes().indexOf(other);
-    if(i1==-1 || i2==-1){throw /*error nodes not in g*/;}
-    g.transform(ns->{
-      mut Node n1=ns.get(i1);
-      mut Node n2=ns.get(i2);
-      n1.directConnections().add(n2);
-    });
-  }
-  capsule method read MyNode addToGraph(mut Graph g){
-    return g.transform(ns->{
-      mut MyNode n1=this;//single usage of capsule 'this'
-      ns.add(n1);
-      return n1;
-    });
-  }
+read method Void connectWith(read Node other,mut Graph g){
+	Int i1=g.getNodes().indexOf(this);
+	Int i2=g.getNodes().indexOf(other);
+	if(i1==-1 || i2==-1){throw /*error nodes not in g*/;}
+	g.transform(ns->{
+		mut Node n1=ns.get(i1);
+		mut Node n2=ns.get(i2);
+		n1.directConnections().add(n2);
+	});
+}
+capsule method read MyNode addToGraph(mut Graph g){
+	return g.capTransform(ns->{
+	mut MyNode n1=this;//single usage of capsule 'this'
+	ns.add(n1);
+	});
+}
 \end{lstlisting}
 As you can see, both methods rely on the transform pattern.
 
 These transformation operations are very general since they
 can access the \Q@mut Nodes@ of the \Q@Graph@ and 
 any \Q@capsule@ or \Q@imm@ data from outside.
-Note how the body of the \Q@imm@ lambda in \Q@connectWith(other,g)@, can not capture the \Q@read this@ or the \Q@read other@, but we get their (immutable) indexes 
+Note how the body of the \Q@capsule@ lambda in \Q@connectWith(other,g)@, can not capture the \Q@read this@ or the \Q@read other@, but we get their (immutable) indexes 
 and recover the concrete objects from the \Q@mut Nodes ns@ object.
 In this way, we also obtain more useful \Q@mut@ references to those nodes.
-On the other hand, note how in \Q@addToGraph(g)@ we use the reference to the \Q@capsule this@ within the lambda.
+On the other hand, note how in \Q@addToGraph(g)@ we use the reference to the \Q@capsule this@ within the lambda, this allows the lambda to be safely typed as \Q@capsule@, since there can be no other aliases to \Q@this@, and the \Q@this@ variable cannot be used again in the method.
