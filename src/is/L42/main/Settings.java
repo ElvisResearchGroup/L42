@@ -18,7 +18,7 @@ public record Settings(Options options,Map<List<C>,List<String>> permissions) im
     return "Settings[options="+this.options
       +",permissions={"+permissions+"}]";
   }
-  public static final Options defaultOptions=new Options("1G","256M","2G");
+  public static final Options defaultOptions=new Options("128M","256M","2G");
   public static record Options(String maxStackSize,String initialMemorySize,String maxMemorySize) implements Serializable{
     public Options withMaxStackSize(String mss){return new Options(mss,initialMemorySize,maxMemorySize);}
     public Options withInitialMemorySize(String ims){return new Options(maxStackSize,ims,maxMemorySize);}
