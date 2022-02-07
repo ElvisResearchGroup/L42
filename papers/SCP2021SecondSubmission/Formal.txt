@@ -1,0 +1,268 @@
+Grammar
+e::= x | true | false | e.m(es) 
+  | this.f | this.f = e | new C(es)
+  | try {e1} catch {e2}
+  | L | L.f | L.f = e | M(l;e1;e2) 
+  | tryσ{e1} catch {e2}
+L ::=µ l
+v ::= L | true | false
+σ ::= l1:C1{vs1}..ln:Cn{vsn}
+Ev::= [] | Ev.m(e) | v.m(v1, Ev, e2) 
+  | v.f = Ev | new C(v1, Ev, e2) | M(l;Ev;e)
+  | M(l;v;Ev) | tryσ{Ev} catch {e}
+E ::= [] | E.m(es) | e.m(es1, E, es2) 
+  | E.f | E.f = e | e.f = E | new C(es1, E, es2)
+  | M(l;E;e) | M(l;e;E) | tryσ?{E} catch {e} 
+  | tryσ?{e} catch {E}
+CD::= class C implements C{F M} 
+  | interface C implements C{M}
+F ::= T f;
+M ::= µ method T m(T1 x1,..., Tn xn) e?
+µ ::= mut | imm | capsule | read
+T ::= µ C
+Er::= Ev[[].m(v)] | Ev[v.m(v1, [], v2)] 
+  | Ev[[].f ] | Ev[[].f = v] | Ev[v.f = []]
+  | Ev[new C(v1, [], v2)]
+error ::= Ev[M(l;v;false)],
+  where Ev not of form Ev′[tryσ?{Ev′′} catch { }]
+
+Big question: 
+-does the language above support subject reduction?
+
+Well-formedness
+1-after desugaring, all fields are either imm or mut
+So capsule fields are desugared away and read fields never existed.
+
+2- the reduction form σ;E|e is well formed if there are no dangling pointers, that is,
+forall l in E[e] l in dom(σ)
+forall l in σ(_) l in dom(σ)
+
+3-capsules are used at most once
+formally S;G|-e:T is well formed iff capsOnce(G,e) is defined.
+
+capsOnce(G,e) = G'
+capsOnce(G,x) = x:G(x)
+capsOnce(G,true) = capsOnce(G,false) = x:G(x)
+capsOnce(G,e0.m(e1..en))
+  = capsOnce(G,e0) U .. U capsOnce(G,en)
+capsOnce(G,e.f) = capsOnce(G,e)
+capsOnce(G,new C(e1..en))
+  = capsOnce(G,e1) U .. U capsOnce(G,en)
+capsOnce(G,tryσ?{e1} catch {e2})
+  = capsOnce(G,e1) U capsOnce(G,e2)
+capsOnce(G,M(l;e1;e2))
+  = capsOnce(G,e1) U capsOnce(G,e2)
+  | tryσ{e1} catch {e2}
+  
+4-G U G' well defined only if 
+  forall x in dom(G) cup dom(G') G(x)=G'(x) and G(x) not of form capsule _
+
+Reduction
+
+(update)
+σ;E|mut l.f = v
+→ σ[l.f = v];E|M(l;mut l;(read l).invariant())
+//σ[l.f = v] will also adjust the µ inside v
+
+(new)
+σ;E|new C(vs) 
+→ σ, l:C{vs};E|M(l;mut l;(read l).invariant())
+
+(mcall)
+σ;E|L.m(v1,..,vn) → σ|e'
+  e=e[this=L:µ C,x1=v1:T1,..,xn=vn:Tn]
+  σ(L) = C{_} //implicitally extracts the l from L
+  C.m = µ method T m(T1 x1..Tn xn) e
+  !capsMutator(C.m)
+#Define v:T = v'
+  true:imm Bool = true
+  false:imm Bool = false
+  µ l :µ' C = µ' l iff µ<µ'
+
+(mcallInv)//To fix as above
+σ;E|l.m(v1,..,vn) → σ;E|M(l;e;l.invariant())[this=l,x1=v1,..,xn=vn]
+  σ(l) = C{_}
+  C.m = µ method T m(T1 x1..Tn xn) e
+
+(monitor exit)
+σ;E|M(l;v;true) → σ;E|v
+
+(ctxv)
+σ0;E|Ev[e0] → σ1|Ev[e1]
+  σ0;E[Ev]|e0 → σ1;E[Ev]|e1
+
+(try enter)
+σ;E|try {e1} catch {e2} 
+→ σ;E[Ev]|tryσ{e1} catch {e2}
+
+(try ok)
+σ, σ′;E|tryσ{v} catch {_} → σ, σ′;E|v
+
+(try error)
+σ, σ′;E|tryσ{error} catch {e} → σ, σ′;E|e
+
+(access)
+σ;E|(µ l).f → σ;E|µ.µ' l'
+  l'=σ[l.f]
+  σ(l)=C{_}
+  C.f = µ' C'
+
+(capsPromotion)
+σ;E|mut l→ σ|capsule l
+  encapsulated(σ,E,l)
+
+#Define encapsulated(σ,E,l)
+forall E',µ such that E'[µ l]=E[true]
+  µ = read
+σ/mutROG(σ,l);[]|true is well formed
+
+//This seams to be different from the current definition of encapsulated. We need to check this issue.
+
+#Define capsMutator(C.m)
+capsMutator(C.m)
+  C.m = µ method T m(T1 x1..Tn xn) e
+  µ = mut 
+  Exists f such that C.f = capsule
+  and e = E[this.f]
+//in the proofs we write " if C.m is a capsule mutator" in a formal sense. Is that actually a notation already?
+
+Sugar //note fields are this private anyway
+[class C implements C{Fs Ms}] 
+= class C implements C{Fs Ms}
+  if capsule C f notin Fs
+[class C implements C{Fs capsule C f Fs' Ms}]
+=
+[class C implements C{Fs mut C f Fs' Ms' Ms[f]}]
+Ms'=
+  read method read C f() this.f
+  mut method Void f(capsule C that) this.f=that
+Mi=µ method T m(T1 x1..Tn xn) e
+
+//Ms[f] trivially propagates on the subexpressions
+//and replaces e of form this.f / this.f = e
+M1..Mn[f]=M1[f]..Mn[f]
+(µ method T m(T1 x1..Tn xn) e)[f]
+= µ method T m(T1 x1..Tn xn) (e[f])
+
+x[f] = x
+true[f] = true
+false[f] = false
+e.m(e1..en)[f] = e[f].m(e1[f]..en[f])
+this.f[f] = this.f()
+this.f'[f] = this.f' if f'!=f
+(this.f=e)[f] = this.f(e[f])
+(this.f'=e)[f] = this.f'=(e[f])  if f'!=f
+new C(e1..en)[f] = new C(e1[f]..en[f])
+try{e1}catch{e2}[f] = try{e1[f]}catch{e2[f]}
+
+
+Assumptions
+Assumption 1 (Subject Reduction)
+  ok
+Assumption 2 (Type Consistency)
+  method bodies are typed inside as outside
+  //challenging
+  the formal text is just a bunch of ok implicit type rules, but the informal one worries me
+Assumption 3 (Method Consistency).
+Assumption 4 (Imm Consistency).
+Assumption 5 (Mut Consistency).
+Assumption 6 (Capsule Consistency).
+  We require that a capsule reference be encapsulated; and require that capsule is a subtype of mut:
+  Trivialish//explicitly proved in paper Cone
+Assumption 7 (Mut Update)
+  We require that field updates only be performed on mut receivers:
+  Trivial
+Assumption 8 (Mut Access)
+  We additionally require that field accesses only be typed as mut, if their receiver is also mut:
+  Trivial
+Assumption 9 (Read Consistency)
+Assumption 10 (Strong Exception Safety).
+  Trivial? I remember discussing back and forth if Assumption 10 was already included in progress since our reduction is stuck if the 'preserved' memory is ever twisted.
+
+
+Typing
+
+G ::=x1:T1..xn:Tn //gamma
+S ::=l1:C1..ln:Cn //Sigma (memory type)
+
+(subs)
+S;G|- e:T
+  S;G|- e:T'
+  T<T'
+
+(var)
+S;G|-x :G(x)
+
+(location)
+S;G|- µ l: µ S(l)
+
+(bTrue)
+S;G|-true: imm Bool
+
+(bFalse)
+S;G|-true: imm Bool
+
+(mCall)
+S;G|-e0.m(e1..en):T
+  S;G|-ei:Ti
+  T0.m = µ method T m(T1 x1..Tn xn)_
+
+(fAcc)
+S;G|-e0.f: µ0.µ C
+  S;G|-e0:µ0 C0
+  C0.f = µ C
+
+#Define µ0.µ=µ1 
+  read.mut=read
+  read.imm=imm
+  capsule.mut=mut
+  capsule.imm=imm
+  imm.µ=imm
+  mut.µ=µ
+//can be made more compact, 
+//but this is more explicit
+
+(fUpt)
+S;G|-e0.f=e1
+  S;G|-e0:mut C0
+  S;G|-e1:µ C1
+  C0.f = µ C
+
+(newC)
+S;G|-new C(e1..en): mut C
+  S;G|-ei:Ti
+  C.fi = Ti
+
+(unTry)  
+S;G|-tryσ?{e1} catch {e2} :T//both forms of try
+  S;G[mut=read]|-e1:T
+  S;G|-e2:T
+  σ? either empty of well formed wrt S
+
+(monitor)
+S;G|-M(l;e1;e2):T
+  l in dom(S)
+  S;G|-e1:T
+  S;G|-e2:imm Bool  
+
+(capsPromotion)
+S;G|-e:capsule C
+  S;G[mut=read]|-e:mut C
+
+#Define G[mut=read]
+(x1:T1..xn:Tn)[mut=read] 
+= x1:T1[mut=read]..xn:Tn[mut=read]
+mut C[mut=read] = read C
+µ C[mut=read] = µ C iff µ!=mut
+
+//T.m also checks that the mdf of T is
+//a subtype of the methd modifier
+
+
+
+
+//Typos:
+that catch checked exceptions doe not this restriction.
+*doe->does
+
+v ::= µ l | true | false //This was only l in the formal
