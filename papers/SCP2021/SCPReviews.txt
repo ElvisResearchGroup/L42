@@ -99,8 +99,10 @@ constructive feedback for improvement.
 
 ** Highlights
 - "magnitudo" -> magnitude
+// ISAAC: WHERE?? I can't find this in the original
 
 - "Much less annotation burden" -- lighter annotation burden?
+// ISAAC: WHERE?? I can't find this in the original
 
 ** Section 1
 
@@ -109,12 +111,7 @@ constructive feedback for improvement.
   Reachable Object Graph means, but I needed to pause for half a
   second every time I read ROG. We should optimize for reading,
   not for writing!
-//TODO: list what abbreviations to remove?
- -remove ROG, RC, OC
-
-- 26: Consider using boldface for keywords to make the source
-  code listing more legible when printed black and white.
-//?it is already boldface! TODO USE DARKER RED
+//TOCHANGE: Large change, remove ROG, RC, OC
 
 - 45: It looks to me like what this clever little pattern is
   achieving is setting up a context where `this` can be used for
@@ -133,7 +130,7 @@ constructive feedback for improvement.
   calls that leak `this` are preceded by invariant checks to
   ensure that it is indeed not broken. Would aliasing of `this` be
   a problem though? Is it a problem in the current system?
-//TODO: large problem of box vs un/packed, make a unified responste for those 3 notes
+//TORESPOND: large problem of box vs un/packed, make a unified responste for those 3 notes
 
 - 71: How big is the actual gain between having `Range` and
   `BoxRange` vs. having `Range` and `unpacked Range`? A nice thing
@@ -141,6 +138,7 @@ constructive feedback for improvement.
   handling a `Range` and that there are no discrepancies between
   the classes representing the different states (packed and
   unpacked) of the object.
+//TOFIND: a good place to mention this?
 //start-------- TODO: same explanation box/unpacked part 2
 In a language design only focusing on invariant supports having a language level 'unpacked' support feels tempting.
 But, in a fully fledged language it would be yet another language feature to consider, and it would interact with all the other features.
@@ -157,6 +155,7 @@ Using patterns to express concepts also shows programmers how using patterns can
   thinking Gordon et al., Pony, LaCasa, Kappa, etc.).
 //We would like to explore this in future work.
 //Right now, 42 does support unobservable parallelism, so invariants are already enforced also in a parallel setting.
+// TOFIND: a place to put this clarrification in the paper
 
 ** Section 2
 - 148: "This is different with respect to many other approaches"
@@ -198,7 +197,7 @@ Using patterns to express concepts also shows programmers how using patterns can
 //This is exactly our claim, the other systems are either more involved or they offer a more involved surface language and encode that on simpler forms internally.
 //Here we have a minimal type system with just the simple form.
 //We changed a sentence to make it more clear
-
+//TOFIND: a place to mention this particular detail?
 
 - 161: Whether a capsule field contains a capsule reference or not
   comes down to how you define capsuleness. If one allows `iso!`
@@ -210,6 +209,7 @@ Using patterns to express concepts also shows programmers how using patterns can
 //No, wherever a capsule field holds a capsule reference depends on how we chose to use terminology in our lanugage.
 I think rev1 is arguing on what capsule fields 'could be' not that we are wrong on our current setting.
 //This is going to be solved in the global capsule field renaming
+//TOCHANGE: rename capsule fields, this is a major change so I'll do it latter
 
 - 163: I do not get how a capsule field can *never* contain a
   capsule reference if it is initialized with one. Isn't it a
@@ -235,7 +235,7 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   again. Is there a connection to Fähndrich and DeLine's Focus
   operation [Fändrich & DeLine, 2002], which allows temporarily viewing a
   non-linear thing as linear?
-// we need to read this paper
+//TOREAD: we need to read this paper
 
 - 381: `return counter++;` should not be in a comment? Or is it
   because the example is invalid? (there is also no `counter`
@@ -257,6 +257,7 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   is not looking great for clearing up the things I do not
   understand...
 //added immaginary appendix with a concrete type system.
+//TOCHANGE: actually address this point properly
 
 - 505: [..]sequence expressions in the language[..]you could abuse the fact that
   method calls have multiple arguments[..]  Featherweight Java also has no sequencing[..]
@@ -265,13 +266,14 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
 - 558: "Our setting does ensure termination of the invariant of[..]so, this is a less
   interesting property (albeit not uninteresting) in my opinion.
 //Yes, solving the halting problem would have been much more interesting but would deserve a paper of its own. Here, more modesly, we just show that it terminates because of determinism+altready terminated. We are unsure how to clarify this better in the paper.
-
+//TOFIND: mention how FJ-like languages can encode other language forms like sequencing and give a citation
 
 - 564: I'm a little bit dissapointed in the formalism section. It
   feels like it fleshes out the unexpected stuff and leaves the
   interesting things informal by referring back to previous
   (informal) sections. I still have most of my questions from
   before the section.
+//TOFIND: go through this section and find such references and expand them out more formally?
 
 ** Section 6
 - 664: [..]Would you get the same pathological numbers if you removed the checks
@@ -279,11 +281,6 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   favour of tracking (im)mutability, but not necessarily the whole
   reference capability approach.
 //Yes, any kind of purity verification solves the exponential explosion, as you can see later for Spec#, the RC approach is a kind of purity verification that is so much simpler to use than the Spec# approach.
-
-- 809: I think this section does a good job of motivating why
-  reference capabilities should be of interest for people doing
-  less-than-full-blown software verification.
-//We should use somewhere the term "less-than-full-blown software verification"
 
 - 829: There is the static inner class I thought about before
 //yes, by making it private we can avoid client code to even see the inner 'Box' type.
@@ -295,6 +292,7 @@ With 'unpacked' types in the type system, the unpacked type would always exists 
   setting outside of reasoning about parallelism and data races
   (which is arguably the main focus of Pony and Gordon et al.).
 //Thanks. Should we write this in the intro?
+//TOFIND: where do we say that Spec# peforms less checks?
 
 ** Section 7
 - 1000: I am not sure it would be a bad thing with type-system
@@ -490,7 +488,7 @@ This is needed for the most important promotion rule of 42: any expression that 
 
 - p11 first line: Could also cite the Detlefs rep exposure paper
 //?? what paper??
-
+//TOREAD: https://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-156.pdf
 - p15 line ~42: I appreciate that this paper's type system has not required any backdoors to the type system, but it seems worth noting that the case studies described in this paper do not touch on the kinds of use cases where prior work needed those escape hatches.
 //So? ignore?
 
@@ -519,9 +517,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p1, l32: representation invariants are not limited to OO languages. They also exist in other languages in which they are usually called type invariants.
 //.. anything to do here? just ignore?
-
-- p2, l8: min <= max --> min < max
-//??? can we model non empty ranges?
+//TOCHANGE: Mention they are also caled "refinment types" in other languages (make sure it doesn't imply that it's OO specific).
 
 - p2, l21: the execution of this.min = min will --> use "would" (this line of code is actually never executed)
 
@@ -535,6 +531,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p4, l45-51: examples for mut and capsule variables would be welcome
 //we have mut, I'm not sure what capsule can show here....
+//ISAAC: I'll add some?
 
 - p5, Promotion and Recovery: at this point, it is not clear why this paragraph is relevant for this paper
 //ignore?
@@ -565,12 +562,6 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 //So this is literally the first time you see a small step reduction for an imperative OO language? in that case you are going great!
 
 
-- p12, l32: "locations": this word is never defined (I have a formal definition in mind that seems to fit yours, but it would be better clarified).
-//? "location, l" is the definition of location: an l. As usual in this field we consider all undiscussed non terminals to be elements of countable sets, like x, m, f, C and so on.
-
-- p12, l38: "We use \Sigma^\sigma to trivially extract the corresponding \Sigma from a \sigma": please, provide the formal definition
-//Do we lack a ton of grammar? I can not find Sigma, sigma and Gamma.
-
 - p12, l57: "Most of our expressions are standard". It is true. Yet, each of them should be (quickly) introduced to have a self-contained paper readable by a non-expert of the field.
 //will do
 
@@ -590,6 +581,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p13, l46: "They are standard" --> true, yet present your notation and introduce each of the presented rules and add a reference to a general presentation
 //We can add a 'discussion anyway', may be in the appendix?
+//ISAAC: explain CTX v and brefily the otherse?
 
 - p13, l49: "For example, in L42 we implement [...]" --> do not mix the formal presentation with implementation details. Instead, you could add this remark in Section 8.
 //You just asked us to add examples in our formal stuff 4 times over!
@@ -597,9 +589,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p16, l56: The verifier available online [...] behaves differently: please add explanations here (and maybe as plain text and not as a footnote).
 //We are sorry, but we do not know all the details, those online verifiers are liable to change and it is not very well documented how they differ from the official releases.
-
-- p17, l27: the number of characters is meaningless (e.g., it is debatable which keyword is better between 'mut' and 'mutable'). I am not even sure whether the number of tokens is relevant (liking verbosity or not is a matter of taste)
-//ignore?
+//ISAAC: try and rember what the problem was?
 
 - p18, l15: the 'moveTo' method seems to break the invariant (when not called from 'move'). Could you elaborate here?
 //It would not be able to break the invariant.
@@ -628,9 +618,11 @@ That is why we considered tokens to be a better metric.
 
 - p35, l47: what is \Epsilon[\Epsilon]?
 //we need to study a comprehensive explanation text for rev3 discussing the main ways the FJ style work
+//ISAAC: this may get deleted when I change the typing judgment form
 
 - p38, l40: non-CTXV reduction rule --> the rule CTXV has never been introduced
 //check, and add
+//ISAAC: just add a trivial case for CtxV?
 
 - p38, l42: l.f --> l.f_i
 //can not find l.f on that line
