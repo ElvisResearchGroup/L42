@@ -94,6 +94,7 @@ We require that if something was not \muty, that it remains that way; this preve
 \item If \ty{e}{\Kw{capsule}\,C}, then \ty{e}{\Kw{mut}\,C}.
 \end{ienumerate}
 \end{Assumption}%
+Note that the type-system's idea of ``capsuleness'' may in fact be stronger then \encap, but \encap is sufficient for our invariant protocol.
 
 \noindent We require that field updates only be performed on \Q!mut! receivers:%
 \SS\begin{Assumption}[Mut Update]\rm If \ty{e.f \equals e'}{T}, then \ty[\h.f \equals e']{e}{\Kw{mut}\,\_}.

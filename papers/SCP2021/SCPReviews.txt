@@ -155,7 +155,7 @@ Using patterns to express concepts also shows programmers how using patterns can
   thinking Gordon et al., Pony, LaCasa, Kappa, etc.).
 //We would like to explore this in future work.
 //Right now, 42 does support unobservable parallelism, so invariants are already enforced also in a parallel setting.
-// TOFIND: a place to put this clarrification in the paper
+//TOFIND: a place to put this clarrification in the paper
 
 ** Section 2
 - 148: "This is different with respect to many other approaches"
@@ -314,6 +314,7 @@ With 'unpacked' types in the type system, the unpacked type would always exists 
   1119 (closures are immutable and so may only capture
   immutables), but this is still an assumption. It would be nice
   with a clarification here or earlier.
+//TOCHANGE: Fix this section!
 //WHOOPS this was unsound!!
 //note how in addToGraph(g) we use the reference to the capsule this within the lambda.
 No!!! if an imm lambda could capture a capsule we could make a non deterministic imm object.
@@ -336,16 +337,19 @@ We need to discuss how to change this example!
   Does this mean that capsule mutators are not identified
   automatically?[..]
 //No, it means that the programmer have to mark them to avoid a type error. While it could be possible to simply infer them, in the full 42 language they are required to explicitly be marked.
+//ISAAC: I think I fixed the text here, so we shouldn't need to clarify in the reveiwer response itself
 
 - 1239: This whole section was not very useful and in my opinion
   it raised more questions than it answered.
 //should we simply remove it?
+//ISAAC: yes, delete
 
 ** Section 9
 - 1252: "Object capabilities [56]" -- Strange to introduce a
   citation here when you have been using the term throughout the
   whole paper.
 //indeed. Do we have other citations? should we move up?
+//ISAAC: we first cite OC's when we actually talk about them on page 6
 
 ** Section 10
 - 1402: I strongly disagree that you have presented a full
@@ -354,7 +358,7 @@ We need to discuss how to change this example!
   proved to be sound, since I would expect this to mean typeh
   soundness (but here I see what the authors mean at least).
 //We have toned down this sentence, plus by adding the example formalism our statements here also become more valid.
-
+//TOCHANGE: update the text here when we fix the type system
 ---------
 
 Reviewer #2: 
@@ -366,7 +370,7 @@ Reviewer #2:
 //?? no?
 
 - The informal Java-like discussion raises questions about soundness issues that don't appear to be present in the formal system
-
+//TOCHANGE: make sure we have enough clarification of variables and statement-try/catchs vs our formal model
 - It's impossible to tell if the soundness questions apply to L42 itself, which seems to be the main context of this work, but for which no significant specifics are ever provided
 
 - The paper gives a nice overview of work on reference capabilities for data race free concurrency, including detailed discussions of iso/isolated/capsule differences in Pony/Gordon-et-al./L42, but stopping short of enough detail to fully explain the differences with regard to that work's notions of "capsule" (including earlier versions of L42)
@@ -376,15 +380,18 @@ As a result, I'm not fully confident in the formal results, because I can't tell
 
 I think this paper really needs to (1) include a concrete type system for the core language, and (2) switch the informal "Java-like" intuitions in the start to be closer to the "Featherweight L42." Ideally (though less critically) the related work could use some enhancement as well.
 //Yes about the formal. I'm not sure about removing the Java like, 42 is quite alien in this sense. THe rev also said that it would settle for less later on.
+//ISAAC: should be fixed when we change the capsule field terminology?
 
 ## Need for Formalized types
 
 I understand not simply wanting to repeat a formalization of L42's type system, since it's been proven sound and data race free, etc. But this paper is proposing *new changes to that type system*, so those properties don't automatically carry over!  This paper pitches a new interpretation of capsule fields (p7).  So the paper simultaneously claims (a) there's no need to formalize the type system because several systems exist, but (b) a new novel treatment of capsule fields is necessary for this paper's results.  Without a formalization, of this change, it's not possible to fully understand the details of this paper's assumptions on capsule fields, *and* it's not automatic that these capsule tweaks (and some of the other things in the assumption list) are really compatible with these ideas. The extensive prose does not get the job done, nor does the list of formal assumptions in the appendices. These assumptions in the appendices about the semantics of capsule fields do help,
 but they're not precise enough to actually nail down this paper's apparently-novel form of capsule, or to know that they're actually sound.  Of course it's possible I've misunderstood or missed something, but I've read the paper multiple times and still have these concerns, so at a minimum additional clarity is required.
 //former 42 literature is what has been misunderstood. 42 never had any kind of field allowing to return a capsule value. You need destructive reads for that and 42 never had those.
+//TOCHANGE: clarify when we change capsule field terminology
 
 The contextual typing judgments this paper assumes, where the typing judgment depends on the enclosing context, is not a form I've ever seen before, despite having worked in this area.
 //Isaac, do you want to expan on this?
+//TOCHANGE: change the way we abstract over the type-system
 
 I'd settle for a clear formalization of an example type system alongside a convincing prose argument that it's "close enough" to an existing type system, if that argument can be made satisfactorily.  (I recognize there are reasons for not wanting to get side-tracked with an additional type safety proof, and this paper already reflects a significant amount of work.) The tricky bit there would be making an argument about the capsule treatment. For that I'd expect to see formal type rules dealing with capsule fields for this paper's work, the corresponding rules in L42 (those known to be sound and to have specific characterizations) that would be different, and a clear argument for why this paper's treatment doesn't weaken any of L42's major guarantees (including safe concurrency, see next paragraph).
 
@@ -398,12 +405,14 @@ Included in this concern about needing formalization to remedy lack of detail is
 
 - Minor technicality: Assumption 6 part 2 doesn't actually imply capsule is a subtype of mut, only that mut is also derivable.
 //True, and that is all we need.
+//TORESPOND: no, Assumption 6 is indead saying that it is a subtype: every capsule is a mut.
 
 - The paper's formal definition of encapsulated, used to give semantic meaning to capsule, at first glance looks quite reasonable, But reading carefully, it says that a location l is encapsulated in an evaluation context E if everything reachable as mutatable from l in E[l] becomes unreachable in just E. This sort of addresses the first point about lack of clarify on what an isolated expression is, but doesn't directly control heap structure.
 //Again, this is all it is needed, this assumption just underline that a more rigid control of the heap is not needed. Also, both heap and stack need to be took in consideration to talk about encapsulation.
 
  It also seems at odds with the paper's own comment noted in the concurrency discussion above, that it's possible to read a capsule field of another object and get a 'read' RC. Let's say that's applied to x.f. At the moment the field dereference is reduced, the resulting value is still reachable (and mutatable) via x (assuming it's been substituted in somewhere else in E later in program order), but will also be reachable (only as 'read') via the reference produced from that field read.
 //I can not understand the issue here.
+//ISAAC: this should be clarified once we change the terminology of capsule fields
 
 I'll note that I'm not fundamentally opposed to the way this paper tries to make its results depend on the *semantics* of types rather than a specific type system; it's reminiscent of the semantic type soundness techniques used for Gordon et al.'s system, Jung et al.'s RustBelt work, and so on, and as the paper points out offers a way to *potentially* transfer this paper's results to a family of type systems rather than a specific one. That is a great strategy that I'm tempted to try myself.  But I think because the paper hasn't actually applied this to a fully worked out semantics for types, the paper ends up at the very least not explaining its assumptions clearly, and is possibly making mutually inconsistent assumptions. I'm optimistic it's the former, but the paper should support itself clearly enough that my optimism shouldn't be required.
 
