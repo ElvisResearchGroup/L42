@@ -1,31 +1,17 @@
 reuse [L42.is/AdamsTowel]
+
+Person = Data:{
+  S name
+  S.List allergies
+  @Cache.Now class method Void invariant(S name, S.List allergies)=X[
+    name.size()>0I;
+    allergies.size()<=10I
+    ]  
+  }
 //Matrix: near 4, near 8 iterators given a point?
 //operations rolling around?
 //--
 //sort, maxindex,popmax etc..
-Fs= Load:{reuse [L42.is/FileSystem]}
-J0 = Load:{reuse [L42.is/JavaServer]}
-J = J0(slaveName=S"mySlave{}")
-MainJ=(
-  _=J.#$of()
-  Debug(S"safe enough")
-  )
-MainR=(
-  r=Math.Random.#$random()
-  Debug(S"safe enough2")
-  )
-Bb= {...}
-CC={...}
-A={B=(
-  ff=Fs.Real.#$of()
-  bb=Bb.#$of()
-  dd=CC.DD.#$of()
-  Debug(S"start")
-  )}
-Rec={class method Void foo(I num)=(
-  Debug(num)
-  Rec.foo(num=num+1I)
-  )}
 
 //Main = Rec.foo(num=0I)
 

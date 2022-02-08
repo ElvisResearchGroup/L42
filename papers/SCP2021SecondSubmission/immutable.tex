@@ -5,7 +5,7 @@ we will show examples of using our system, and how relaxing any of our requireme
 In our examples and in L42, the reference capability \Q@imm@ is the default, and so it can be omitted.
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
 However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to emphasise this. 
-To save space we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
+To save space, we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
 
 First we consider
 \Q@Person@: it has a single immutable (and non final) field \Q@name@.
@@ -41,7 +41,7 @@ Consider this use of person; where \Q@myPerson.invariant()@ may randomly return 
 \begin{lstlisting}[morekeywords={assert}]
 class EvilString extends String {//INVALID EXAMPLE
   @Override read method Bool isEmpty() { return new Random().bool(); }
-}//Creates a new capability out of thin air
+}//Creates a new object capability out of thin air
 ...
 method mut Person createPersons(String name) {
   // we can not be sure that name is not an EvilString
@@ -51,11 +51,11 @@ method mut Person createPersons(String name) {
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
 Despite the code for \Q@Person.invariant()@ intuitively looking correct and deterministic (\Q@!name.isEmpty()@), the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
-In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
+In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through object capabilities, and 
 restricts their creation, the above example is prevented.
 
 Moreover, since our system allows  
-non-determinism only through \Q@mut@ methods on capability objects, 
+non-determinism only through \Q@mut@ methods on object capabilities, 
 even if an object has a \Q@capsule@ field referring to a ``file'' object, it would be unable to read such file during an invariant, since a \Q@mut@ reference would be required, but only a \Q@read@ reference would be available.
 
 \subheading{Allowing Internal Mutation Through Back Doors?}
@@ -67,7 +67,8 @@ The example class \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
 class MagicCounter {//INVALID EXAMPLE
-  method Int incr(){/*return counter++; using internal mutability*/}}
+  Int counter = 0;
+  method Int incr(){return unsafe{counter++}; /*using internal mutability*/}}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
@@ -138,7 +139,7 @@ without the need for back doors.
 %\end{comment}
 
 \subheading{No Strong Exception Safety?}
-The ability to catch and recover from invariant failures allows programs to take corrective action.
+The ability to catch and recover from invariant failures allows programs to take corrective actions.
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try@--\Q@catch@.
 %\REVComm{
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
@@ -162,6 +163,9 @@ The following variant is instead well typed, since \Q@bob@ is now declared insid
 try { mut Person bob = new Person("Bob");    bob.name(""); } 
 catch (Error t) { }
 \end{lstlisting}
+
+Note how soundly catching exceptions like stack overflows or out of memory cannot be allowed in \Q@invariant()@ methods, since they are not deterministically thrown.
+L42 allows catching them only as a capability operation, which thus can't be used inside an invariant.
 
 %Recovering from an invariant failure in this way is unsound and would break our protocol.
 %Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.

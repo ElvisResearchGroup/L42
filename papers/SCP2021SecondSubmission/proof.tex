@@ -20,7 +20,7 @@ To express our type system assumptions, we first need some auxiliary definitions
 \noindent We define the \mrog of an $l$ to be the locations reachable from $l$ by traversing through any number of \Q!mut! and \Q!capsule! fields:\\
 \indent $l' \in \mrog(\s, l)$ iff:%
 \begin{iitemize}
-	\item $l' = l$ or
+	\item $l' = l$; or
 	\item $\exists f$ such that $\Ss(l).f \in \{\Kw{capsule}\,\_, \Kw{mut}\,\_\}$, and $l' \in \mrog(\s, \s[l.f])$
 \end{iitemize}
 
@@ -39,7 +39,7 @@ That is, a location $l$ found in a context $\E$ is encapsulated if all $\muty$ o
 That single use of $l$ is the connection preventing those $\muty$ objects from being garbage collectable.
 
 \subheading{Axiomatic Type Properties}
-Here we assume a slight variation of the usual \thm{Subject Reduction}: a (sub) expression obtained using any number of reductions, from a well-typed and well-formed initial $\s_0|e_0$, is also well-typed:
+Here we assume a slight variation of the usual \thm{Subject Reduction}\cite{pierce2002types}: a (sub) expression obtained using any number of reductions, from a well-typed and well-formed initial $\s_0|e_0$, is also well-typed:
 \SS\begin{Assumption}[Subject Reduction]\rm
 	If $\VS(\s, \E[e])$, then $\Ss; \emptyset; \E \vdash e : T$.
 \end{Assumption}
@@ -257,7 +257,7 @@ In the inductive case, we assume our theorem holds for a $\VS$ and prove it for 
 		\item Now consider any $f' \in \cf(\s, l')$, with $l'.f' \neq l.f$; by the above, $l$ is \CNC and so $l \notin \rog(\s, \s[l'.f'])$. If $f$ was a \Q!mut! or \Q!capsule! field, by \thm{Type Consistency} and \thm{Capsule Consistency}, $v$ was \Q!mut!, so by \WE, $v \notin \rog(\s, \s[l'.f'])$; thus we can't have made $\rog(\s, \s[l'.f'])$ \muty through $l.f$; so $l'.f'$ can't now be \muty through $l$. By \thm{Mut Consitency}, we couldn't have have made $l'.f'$ \muty some other way, so $l'$ is still \WE.
 		\item As in the above cases, \NCM is preserved as we haven't introduced any monitor expressions or field accesses.
 	\end{itemize}
-	\item By the inductive hypothesis, any $l'$ which was not \WE and \NCM, was \HNO; we haven't removed any monitor expression or field-accesses, nor have we made anything \reach that wasn't before, so each such $l'$ is still \HNO.
+	\item By the inductive hypothesis, any $l'$ which was not \WE and \NCM, was \HNO. We haven't removed any monitor expression or field-accesses, nor have we made anything \reach that wasn't before, so each such $l'$ is still \HNO.
 \end{enumerate}
 
 \item (\textsc{monitor exit}) $\s|\EV[\M{l}{v}{\Kw{true}}]\rightarrow \s|\EV[v]$:
@@ -289,7 +289,7 @@ In the inductive case, we assume our theorem holds for a $\VS$ and prove it for 
 	\item Consider any $l'$ that was not \WE and \NCM, by the inductive hypothesis it must have been \HNO:
 	\begin{itemize}
 		\item If $l' \neq l$. If $l'$ was in $\s_0$, then by \thm{Strong Exception Safety} we haven't modified $\s_0$, and so \HNO is preserved. Otherwise, by \thm{Strong Exception Safety}, $l'$ is no longer \reach, and so this theorem imposes no requirements on it.
-		\item If $l' = l$, then by our reduction rules, we were previously in state $\s_0|\EV[\Kw{try}\ \oC e_0\cC\ \Kw{catch}\ \oC e \cC]$. By \thm{Unmonitored Try}, $l \notin \dom(\s_0)$, and so $l$ was not \reach from $\EV[\Kw{try}\ \oC e_0\cC\ \Kw{catch}\ \oC e \cC]$. By \thm{Strong Exception Safety}, we have that nothing in $\s_0$  has changed, so we must still have that $l$ is not \reach from $\EV[e]$: thus it's status is irrelevant.
+		\item If $l' = l$, then by our reduction rules, we were previously in state $\s_0|\EV[\Kw{try}\ \oC e_0\cC\ \Kw{catch}\ \oC e \cC]$. By \thm{Unmonitored Try}, $l \notin \dom(\s_0)$, and so $l$ was not \reach from $\EV[\Kw{try}\ \oC e_0\cC\ \Kw{catch}\ \oC e \cC]$. By \thm{Strong Exception Safety}, we have that nothing in $\s_0$  has changed, so we must still have that $l$ is not \reach from $\EV[e]$: thus its status is irrelevant.
 	\end{itemize}
 \end{enumerate}
 
@@ -365,7 +365,7 @@ Now we assume that everything reachable from the previous \VS was \valid or \mon
 
 	\item (\textsc{monitor exit}) $\s|\M{l}{v}{\Kw{true}}\rightarrow \s|v$:
 	\begin{itemize}
-	\item[] By \VS and our well-formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started off as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \valid. This rule does not modify pre-existing memory, introduce pre-existing $l$s into the main expression, nor remove monitors on other $l$s, thus every other pre-existing $l'$ is still \valid (due to \thm{Determinism}), or \mony.
+	\item[] By \VS and our well-formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the third expression started off as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \valid. This rule does not modify pre-existing memory, introduce pre-existing $l$s into the main expression, nor remove monitors on other $l$s, thus every other pre-existing $l'$ is still \valid (due to \thm{Determinism}), or \mony.
 	\end{itemize}
 
 		\item (\textsc{new}) $\s|\EV[\Kw{new}\ C\oR\vs\cR]\rightarrow \s,l\mapsto C\{\vs\}|\EV[ \M{l}{l}{l.\invariant}]$:

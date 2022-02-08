@@ -2,9 +2,11 @@
 \section[Integration in L42]{Integration in L42}
 \label{s:related}
 \vspace{-1ex}
-In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this articles scope to explain 
+In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this article's scope to explain 
 in detail this integration, but the overall idea is that an invariant
-is seen as a \Q@Void@ cached value that is always kept up to date whenever the object is visible. L42 also supports eager cached methods, which get computed in parallel when an instance of the corresponding class is created.
+is seen as a \Q@Void@ pre-cached value that is always kept up to date whenever the object is visible.
+That is, invariants are supported with a mechanism similar to the one required to compute and keep caches up to date.
+ L42 also supports other kinds of cached methods, which get computed in parallel when an instance of the corresponding class is created.
 
 L42 libraries rely on a very expressive form of metaprogramming to generate a lot of boilerplate/redundant code. In L42 many tasks can be  either manually performed by writing code directly, or partially automated by code generation.
 L42 allows writing \Q@class@ methods (similar to a static method in Java) with appropriate parameters instead of \Q!invariant!s method and capsule mutators. The bodies of such methods don't have special restrictions as they cannot see \Q!this!, instead the meta-programming generates appropriate instance methods, conforming to our restrictions, which call the user provided \Q!class! methods.
@@ -31,7 +33,7 @@ Please refer to \url{L42.is/tutorial.xhtml} for more information.
 \label{s:related}
 \vspace{-1ex}
 \subheading{Reference Capabilities}
-We rely on a combination of RCs supported by at least 3 languages/lines of research:
+We rely on a combination of RCs supported by at least three languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
 Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
 %each of these works is accompanied by proofs about the properties of those modifiers.
@@ -39,7 +41,7 @@ Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12
 %Since such proofs have already been done,
 %in this work we just assume the required properties.
 They all support full/deep interpretation (see page 5), without back doors.
-Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03} (which eventually enabled the work of Gordon \etal)  does not consider promotion and 
+Former works~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03} (which eventually enabled the work of Gordon \etal)  do not consider promotion and 
 infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
 Other approaches like Javari~\cite{TschantzErnst05,Boyland06}
 and Rust~\cite{matsakis2014rust}
@@ -54,22 +56,22 @@ barnett2011specification%
 \subheading{Object Capabilities}
 In the literature, OCs are used to provide a wide range of guarantees, and many variations are present.
 Object capabilities~\cite{RobustComposition}, in conjunction with reference capabilities, are able to
- enforce purity of code in a modular way, without requiring the use of monads.
-L42 and Gordon use OCs simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
+ enforce purity of code in a modular way, without requiring the use of effects or monads.
+L42 and Gordon \textit{et al.} use OCs simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
 However, in order for Joe-E to be a subset of Java, they leverage a simplified model of immutability:
 immutable classes must be final and have only final fields that refer to immutable classes.
 %Instances of immutable classes are immutable objects.
 In Joe-E, every method that only takes instances of immutable classes is pure.
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
 In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}.
-Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type; in particular, we allow the parameter of such a method to be mutated later on by other code.
+Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} receivers and parameters is pure, regardless of their class type. In particular, we allow the parameter of such a method to be mutated later on by other code.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \subheading{Invariant protocols}
 Invariants are a fundamental part of the design by contract methodology. 
 Invariant protocols differ wildly and can be unsound or complicated, particularly due to re-entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified,meyer2016class}. 
 
-While invariant protocols all check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular approaches include:%
+While invariant protocols all check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes. Popular approaches include:%
 %literature on class invariant accepts that sometime the object invariant may not hold,
 %and that is exacerbated because of 
 %Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
@@ -129,8 +131,8 @@ Thus, static verification proceeds like a mathematical proof: a program is valid
 To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
 consider a verified core and a runtime verified boundary.
 One can see our approach as an extremely modularized	version of such a system: every class is its
-own verified core, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
-soundly handled by our protocol, independently of the behaviour of code that uses such class or any other surrounding code.
+own verified core, and the rest of the code could have Byzantine behaviour. Our proofs show that every class that compiles/type checks is 
+soundly handled by our protocol, independently of the behaviour of code that uses such a class or any other surrounding code.
 
 Our approach works both  in a library setting and with the open world assumption.
 Consider for example the work of Parkinson~\cite{parkinson2007class}: he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method respecting its contract. Such assumption is unrealistic in a real-world system with dynamic class loading, and could trivially be broken by a user-defined \Q@EvilSubject@: checking contracts at load time is impractical and is not done by any verification systems we know of.
@@ -138,8 +140,8 @@ Consider for example the work of Parkinson~\cite{parkinson2007class}: he verifie
 \subheading{Static Verification}
 AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14} is a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
 
-Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified. It supports invariants with its \Q!{:autocontracts}! annotation, which treats a class's \Q!Valid()! function as the invariant and injects pre and post-conditions following visible state semantics;
-however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
+Dafny~\cite{DBLP:conf/sigada/Leino12} is a language where all code is statically verified. It supports invariants with its \Q!{:autocontracts}! annotation, which treats a class's \Q!Valid()! function as the invariant and injects pre and post-conditions following visible state semantics.
+However it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
 Dafny is also generally highly restrictive with its rules for mutation and object construction, it also does not provide any means of performing 
 non-deterministic I/O.
 
@@ -149,7 +151,7 @@ allows invariants to query owned mutable objects whose ROG is not fully encapsul
 is insufficient to modify it or call its methods.
 %tells you nothing about it, hindering
 %modification and method calls.
-Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like us, does perform runtime checks for invariants and throws unchecked exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
+Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like our approach, does perform runtime checks for invariants and throws unchecked exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
 
 
 
@@ -163,7 +165,7 @@ Spec\# also works with existing .NET libraries by annotating them with contracts
 
 \subheading{Specification languages}
 Using a specification language based on the mathematical metalanguage and different from the programming language's semantics may seem attractive, since it can express uncomputable concepts, has no mutation or non-determinism, and is often easier to formally reason about.
-However, a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short-circuit semantics and arithmetic exceptions; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should, thanks to short circuiting.
+However, a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underlying language, including short-circuit semantics and arithmetic exceptions; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should, thanks to short circuiting.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
 Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets, whereas runtime contexts allow mutation, object allocation and print statements. The semantics of shared constructs (such as short circuiting logic operators) is the same in both contexts.

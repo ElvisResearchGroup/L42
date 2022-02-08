@@ -17,8 +17,8 @@ Our example is particularly relevant since, as with most GUI frameworks, it uses
 %-be inside the container 
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
-Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
-the \Q@SafeMovable@ class has an invariant to ensure that its children are graphically contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ are stored in a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched; such queries are also used in \Q@SafeMovable@'s invariant.
+Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s.
+The \Q@SafeMovable@ class has an invariant to ensure that its children are graphically contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface, which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ are stored in a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched. Such queries are also used in \Q@SafeMovable@'s invariant.
 Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at \url{http://l42.is/InvariantArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@ and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
 \begin{lstlisting}
 class SafeMovable implements Widget {
@@ -31,7 +31,7 @@ class SafeMovable implements Widget {
   @Override mut method Void dispatch(Event e) {
     for (Widget w:this.box.c) { w.dispatch(e); }
   }
-  read method Bool invariant() {..}
+  read method Bool invariant() {../* presented later */..}
   SafeMovable(capsule Widgets c) { this.box = makeBox(c); }
   static method capsule Box makeBox(capsule Widgets c) {
     mut Box b = new Box(5, 5, c);
@@ -59,7 +59,9 @@ Our example shows how to encode interactive GUI programs, where widgets may circ
 In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either RCs or OCs.
 
 \subheading{The Invariant}
-\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch(e)@ method (which is a capsule mutator). There are no other checks inserted since we never do a direct field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
+\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch(e)@ method (which is a capsule mutator). There are no other checks inserted since we never do a direct field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:\footnote{
+We could make the code sigtly more efficient by avoiding comparing twice each pair of widgets. Code efficiency is not the priority here.
+}
 \begin{lstlisting}
 read method Bool invariant() {
   for(Widget w1 : this.box.c) {
@@ -73,6 +75,7 @@ read method Bool invariant() {
 \end{lstlisting}
 
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!capsule! fields.
+
 \subheading{Our Experiment}
 As shown in the figure below, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
@@ -132,7 +135,7 @@ Concluding, we have shown that when an invariant check queries other objects wit
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
 \subheading{Spec\# Comparison}
-We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behaves differently.}; that relies on pack/unpack; also called inhale/exhale or the boogie methodology.
+We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behaves differently.}; that relies on pack/unpack; also called inhale/exhale or the Boogie methodology.
 In pack/unpack, an object's invariant is checked only by the explicit pack operations.
 In order for this to be sound, some form of aliasing and/or mutation control is necessary. Spec\# uses a theorem prover, together with source code annotations.
 Spec\# can be used for full static verification, but it conveniently allows invariant checks to be performed at runtime, whilst statically verifying aliasing, purity and other similar standard properties.
@@ -140,13 +143,13 @@ This allows us to closely compare our approach with Spec\#.
 
 As the back-end of the L42 GUI library is written in Java, we did not port it to Spec\#, rather we just simulated it, and don't actually display a GUI in Spec\#.
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which only gave us $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array bounds. %. and value presence.
-This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch(e)@ method. Thus, like our system, Spec\# checks the invariant
+This aligns the code with L42, which also performs such checks at runtime.}, because the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch(e)@ method. Thus, like our system, Spec\# checks the invariant
 at those two points at runtime. Thus the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.
 
 While the same numbers of checks are performed, we do not have the same guarantee provided by our approach:  Spec\#/Boogie does not soundly handle the non-deterministic impact of I/O, thus 
 it does not properly prevent us from writing unsound
 invariants that may be non-deterministic.
-We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also calls the invariant $77$ times; however Code Contract does not enforce the
+We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also calls the invariant $77$ times. However Code Contract does not enforce the
 encapsulation of \Q@children()@, thus this approach is even less sound than Spec\#.
 
 % Assuming that Spec\#'s verifier is sound, this means that our code is equally verified in Spec\# and L42, providing a reasonable comparison.
@@ -188,7 +191,7 @@ To encode the GUI example in L42, the only annotations we needed were the 3 refe
 % , for a total of 
 % $19$ annotations (one token each, $74$ characters in total).
 Our Spec\# code requires purity, immutability, ownership, method pre/post-conditions and method modification annotations. In addition, it requires the use of 4 different ownership functions including explicit ownership assignments. In total we used 18 different kinds of annotations in Spec\#.
-In the table we present token and character counts to compare against Spec\#'s annotations, which can be quite long and involved, whereas ours are just single keywords.
+The table presents token and character counts to compare against Spec\#'s annotations, which can be quite long and involved, whereas ours are just single keywords.
 Consider for example the Spec\# pre-condition on \Q@SafeMovable@'s constructor: \\
 \indent\Q@requires Owner.Same(Owner.ElementProxy(children), children);@
 
@@ -213,6 +216,7 @@ Consider for example the Spec\# pre-condition on \Q@SafeMovable@'s constructor: 
 \noindent The Spec\# code also required us to deviate from the code style shown in our simplified version: we could not write a usable \Q@children()@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only indirection we had to do in L42 was creating \Q@Box@es by using 
 an additional variable in a nested scope.
 This is needed to delineate scopes for promotions.
-Based on these results, we believe our system is significantly simpler and easier to use.
+Based on these results, we believe our system is significantly simpler and easier to use
+in comparision with Spec\#, that is more verbose but supports a wider range of verification applications.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 

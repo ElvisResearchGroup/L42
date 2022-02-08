@@ -16,7 +16,7 @@ While studying those languages, we discovered an elegant way to enforce invarian
 % [dynamic class loading],
 
 \subheading{Reference Capabilities}
-RCs, as used in this paper, are a type system feature that allows reasoning about aliasing and mutation. Recently a new design for them has emerged that radically improves their usability;
+RCs, as used in this paper, are a type system feature that allows reasoning about aliasing and mutation. A more recent design for them has emerged that radically improves their usability;
 three different research languages are being independently developed relying on this new design: the language of Gordon \etal, Pony, and L42.
 These projects are quite large: several million lines of code are written in Gordon \etal's language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the RCs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
@@ -32,10 +32,11 @@ Reference capabilities
 \item Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object}.
 Any other object is a \emph{mutable object}.
 All objects are born mutable and may later become immutable.
+Thus, an object can be classified as \emph{mutable} even if it has no fields that can be updated or mutated.
+
 
 %\noindent\rule{1.2ex}{1.2ex}
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can be observed. Readonly references can refer to both mutable and immutable objects, as \Q!read! types are supertypes of both their \Q!imm! and \Q!mut! variants.
-There are only two kinds of objects: mutable and immutable, but there are more kinds of RCs.
 
 %\noindent\rule{1.2ex}{1.2ex}
 \item Encapsulated (\Q@capsule@):
@@ -44,11 +45,13 @@ Immutable objects in the ROG of a capsule reference are not constrained, and can
 \end{itemize}
 %This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
 %\end{itemize}
+\noindent That is, there are only two kinds of objects: mutable and immutable, but there are more kinds of RCs.
+%\IOComm{didn't a reviewer dislike this statement?}\MSComm{rev1 said it was out of place, so I moved it.}
 
-\noindent RCs are different to field or variable qualifiers like Java's \Q@final@: RCs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
+RCs are different to field or variable qualifiers like Java's \Q@final@: RCs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
 On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@A* const@ (like \Q@final@) and \Q@const A*@ (like \Q@read@), where \Q@const A* const@ is like \Q@final read@.}
 
-As you can see, RCs are applied to all types. This of course includes types in method parameters and the method receiver.
+RCs are applied to all types. This includes types in the receiver and parameters of methods.
 A \Q!mut! method is a method where \Q@this@ is typed \Q!mut!;
 An \Q!imm! method is a method where \Q@this@ is typed \Q!imm!, and so on for all the other RCs.
 
@@ -80,16 +83,16 @@ Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus
 \end{itemize}
 A common misconception of this line of work is that a \Q!mut! field will always refer to a mutable object.
 Classes declare RCs for their methods and field types, but  what kinds of object is stored in a field also depends on the kind of the object: a \Q!mut! field of a mutable object will contain a mutable object; but a \Q!mut! field of an immutable object will contain an immutable object.
-This is different with respect to many other approaches, where the
-declaration fully determines what values can be stored; in those other approaches, any contextual information must be explicitly passed through the type system, for example, with a generic RC parameter.
+This is different with respect to work prior to Gordon \etal's~\cite{GordonEtAl12}, where the
+declaration fully determines what values can be stored. In those other approaches, any contextual information must be explicitly passed through the type system, for example, with a generic RC parameter.
 
 
-Another common misconception is the belief that \Q!capsule! fields and \Q!capsule! local variables always hold \Q!capsule! references.
+Another common misconception is the belief that \Q!capsule! fields and \Q!capsule! local variables always hold \Q!capsule! references, i.e. the referenced object cannot be reached except via that field/variable.
 How \Q!capsule! local variables are handled differs widely in the literature:
 
 %\noindent
-In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (similar to linear and affine types~\cite{boyland2001alias}). 
-Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however the result will not be a \Q!capsule! reference and can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
+In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be read only once (similar to linear and affine types~\cite{boyland2001alias}). 
+Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however in those cases the result will not be a \Q!capsule! reference but another kind of reference, that can be promoted to \Q!capsule!, but only under certain conditions. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
 %Later on, we discuss \Q!capsule! fields, which behave differently to \Q@capsule@ local variables.
 Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature, however they must always be initialised and updated with \Q!capsule! references. In order for access to a \Q!capsule! field to safely produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
@@ -103,7 +106,7 @@ L42 is even more radical: an L42 \Q@capsule@ field never contains a \Q!capsule! 
 Pony and L42's \Q!capsule! fields
 % do not prevent representation exposure.
 %These forms of \Q!capsule! fields
- are useful for safe parallelism but not invariant checking. \footnote{It may seem surprising that 
+ are useful for safe parallelism, but not invariant checking. \footnote{It may seem surprising that 
 those weaker forms of encapsulation are still sufficient to ensure safe parallelism. 
 The detailed way L42 parallelism works is unrelated to the presented work.
 Please see \url{L42.is/tutorial.xhtml} (specifically, section 5 and 6) for more information on parallelism in L42.
@@ -147,14 +150,14 @@ This requires the absence of \Q!read! and \Q!mut! \emph{global/static} variables
 %}}
 This is the main improvement on the flexibility of RCs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
-these RCs are opt-in: a programmer can write large sections of code
+these RCs are opt-in: a programmer can write many classes
 simply using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
-be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ reference.
+be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@capsule@ reference.
 
 %\loseSpace
 \subheading{Exceptions}\label{s:exceptions}
-In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown while mutating an object, what state is that object in? Does its invariant hold?
+In most languages exceptions may be thrown at any point. Combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown while mutating an object, what state is that object in? Does its invariant hold?
 The concept of \emph{strong exception safety}~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
 if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated; this prevents exposing objects whose invariant was left broken in the middle of mutations.
 %\LINE
@@ -172,6 +175,7 @@ if a \Q@try@--\Q@catch@ block caught an exception, the state visible before exec
 %Other authors have identified the concept of SES as
 % a general issue when reasoning about objects state after catching an exception.
 % while we need it to soundly capture invariant failures.
+
 L42 enforces strong exception safety for unchecked exceptions using RCs\footnote{%
 This is needed to support safe parallelism. Pony takes a drastic approach and not support exceptions. 
 We are not aware of how Gordon \etal handles exceptions, however to have sound unobservable parallelism it must have some restrictions.%
@@ -179,10 +183,11 @@ We are not aware of how Gordon \etal handles exceptions, however to have sound u
 }
 in the following way:\footnote{%
 Formal proof that these restriction are sufficient
-is in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.
+is in the work of Lagorio and Servetto~\cite{JOT:issue_2011_01/article1}.
 }
 \begin{itemize}
-\item Code inside a \Q@try@ block that captures unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
+\item Code inside a \Q@try@ block that captures unchecked exceptions is typed as 
+if all variables declared outside of the block are \Q@final@ and all those of a \Q@mut@ type were \Q@read@.
 \item Only \Q@imm@ objects may be thrown as unchecked exceptions.
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
@@ -190,6 +195,12 @@ is in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.
 This strategy does not restrict when exceptions can be \emph{thrown}, but only restricts when unchecked exceptions can be \emph{caught}.
 Strong exception safety allows us to throw invariant failures as unchecked exceptions: if an object's ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since strong exception safety guarantees that no object mutated within a try block is visible when it catches an unchecked exception.%
 \footnote{Transactions are another way of enforcing strong exception safety, but they require specialised and costly run time support.}
+
+Similarly to Java, L42 distinguishes between checked and unchecked exceptions,
+and \Q@try-catch@es over checked exceptions impose no limits on object mutation during the \Q@try@.
+That is, strong exception safety is only enforced for unchecked exceptions.
+%Similarly to what happens in Java, the L42 type system simply restricts where checked exceptions can be thrown, but does not enforce strong exception safety for checked exceptions. 
+
 %For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
 
 %The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.(DUPLICATED)
@@ -255,13 +266,18 @@ moreover, the only \Q@System@ instance would be the one created by the runtime s
 This design has been explored by Joe-E~\cite{finifter2008verifiable}.
 
 
-OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. However, since
-L42 allows user code to perform foreign calls without going through a predefined standard library, 
-the OC pattern is enforced by the type system:
+OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. 
+
+However, L42 has no predefined standard library, but many can be defined by the community.
+Thus, the only way to perform I/O operations is via foreign function calls.
+Since enforcing the OC pattern can not be done via a unique standard library, the type system of L42 directly enforces the OC pattern as follows:
+
+
 %To reason about determinism, L42 connects RCs with the OC style as follows: % style by requiring:
 \begin{itemize}
-\item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability operations}.%
-\item Constructors of \emph{capability classes} are also \emph{capability operations}.
+\item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability operations}.
+\item Classes containing capability operations are \emph{capability classes}.
+\item Constructors of capability classes are also \emph{capability operations}.
 \item Capability operations can only be called by other capability operations or \Q@mut@/\Q@capsule@ methods of capability classes.
 \item In L42 there is no \Q@main@ method, rather it has several \emph{main expressions}; such expressions can also call capability operations, thus they can instantiate OCs and pass them around to the rest of the program.
 % \item Any method that uses non deterministic primitive operations (such as native calls or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.

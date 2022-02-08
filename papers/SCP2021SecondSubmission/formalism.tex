@@ -9,6 +9,7 @@ of its own, and indeed many such papers exist in the literature%
 ~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,JOT:issue_2011_01/article1}.
 Thus we are assuming that we already have an expressive and sound type system enforcing the properties we need, and instead focus on invariant checking.
 We clearly list in \ref{s:proof} the assumptions we make on such a type system, so that any language satisfying them, such as L42, can soundly support our invariant protocol.
+In Appendix?? we show an example type system that soundly supports all our assumptions, but conceptually our approach can parametrically be applied to any type system supporting those.
 To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01};
 we model an OO language where receivers are always specified explicitly,
  and the receivers of field accesses and updates in method bodies are always \Q!this!; that is, all fields are instance-private.
@@ -17,9 +18,12 @@ We do not model custom constructors and traditional subclassing since this would
 
 We additionally assume the following:
 \begin{itemize}
+	\item Class, method, variable, and field names are denoted by $C$, $m$, $x$, and $f$, respectively.
+	\item Memory locations are denoted by $l$.
 	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$ within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
 	\item Memory, $\s : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
-	We use the notation $\s[l.f=v]$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$.
+	We use the notation $\s[l.f=v]$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$ (
+this is only used in our proofs since our small step reduction does not need to delete individual locations).
 	\item The main expression is reduced in the context of a memory and program.
 	\item A typing relation, $\S;\G;\E\vdash e:T$, where 
 	the expression $e$ can contain locations and free variables. The types of locations are encoded in 
@@ -27,16 +31,20 @@ a memory environment,
 $\S : l\rightarrow C$,
 	while the types of free variables are encoded in
 a variable environment, $\G : x\rightarrow T$. \E encodes the location, relative to the top-level expression we are typing, where $e$ was found; this is needed so that locations can be typed with different reference capabilities when in different positions.
-	\item We use \Ss to trivially extract the corresponding \S from a \s.
+	\item We use \Ss to trivially extract the corresponding \S from a \s, i.e. $\S(l) = C$ iff $\s(l) = C\{\Many{v}\}$.
 \end{itemize}
 
-\noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading/writing. In order to simplify our proof, we assume that:
+\noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location can be used in the main expression and would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading/writing. In order to simplify our proof, we assume that:
 \begin{itemize}
 	\item \Q@Cap@ has no fields,
 	\item instances of \Q@Cap@ cannot be created with a \Q@new@ expression,
 	\item \Q@Cap@'s \Q@invariant()@ method is defined to have a body of `\Q!true!', and
 	\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods will have a non-deterministic body, i.e. calls to them may have multiple possible reductions.
 \end{itemize}
+We only model a single \Q@Cap@ capability class for simplicity, as modelling user-definiable capability classes as described in section[???] is unneccesary for the soundness of our invariant protocol.
+\Q@Cap@ represents the set of capability classes, and the \Q@mut@ methods of \Q@Cap@ could be a foreign method.
+
+
 For simplicity, we do not formalise actual exception objects, rather we have \error{}s, which correspond to expressions which are currently  `throwing' an exception; 
 in this way there is no value associated with an \error.
 Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (unchecked) exceptions, formalising exceptions in such way would not cause any interesting variation of our proof.
@@ -129,8 +137,8 @@ Most of our expressions are standard.
 \emph{Monitor expressions}
 are the syntactic representation of our injected invariant checks.
 They are of the form \M{l}{e_1}{e_2}, they 
-are runtime expressions and thus are not present in method bodies, rather they are generated by our reduction rules inside the main expression. Here, $l$ refers to the object being monitored, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.\invariant$; $e_1$ will be evaluated to a value, and the $e_2$ will be further evaluated, if $e_2$ evaluated to \Q!false! or an \error, then $l$'s invariant failed to hold; such a monitor expression corresponds to the throwing of an unchecked exception.
-In addition, our reduction rules will annotate \Q@try@ expressions with
+are runtime expressions and thus are not present in method bodies, rather they are generated by our reduction rules inside the main expression. Here, $l$ refers to the object being monitored, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of the $l.\invariant$ expression; $e_1$ will be evaluated to a value, and the $e_2$ will be further evaluated, if $e_2$ evaluated to \Q!false! or an \error, then $l$'s invariant failed to hold. Such a monitor expression corresponds to the throwing of an unchecked exception.
+In addition, our reduction rules annotate \Q@try@ expressions with
 the original state of memory. This is used in our type-system assumptions (see \ref{s:proof}) to model the guarantee of strong exception safety, that is, the annotated memory will not be mutated by executing the body of the \Q@try@.
 Note: this strong limitation is only needed for unchecked exceptions, in particular, invariant failures. Our calculus only models unchecked exceptions/errors, however L42 also supports
 checked exceptions, and \Q@try-catch@es over them impose no limits on object mutation during the \Q@try@.
@@ -242,7 +250,11 @@ To allow the \Q!invariant()! method to be called on an invalid object, and acces
 %\loseSpace
 Note that $\trusted(\ER[l])$ only holds when the very next reduction we are about to perform is $l.\invariant$ or $l\singleDot f$.
 As we discuss in our proof of $\thm{Soundness}$,
-any such $l\singleDot f$ expression came from the body of the $\invariant$ method itself, since $l$ can not occur in the $\rog$ of any of its fields mentioned in the $\invariant$ method.
+any such $l\singleDot f$ expression came from the body of the $\invariant$ method itself, since $l$ can not occur in the $\rog$ of any of its fields mentioned in the $\invariant$ method.\footnote{
+%Your egnlis was broken here, so I restored what it was... what is the way you want this sentence to be?
+%Invariants only see \Q@imm@ and \Q@capsule@ fields (as \Q@read@),  which we so as not being able to alias the current object.
+Invariants only see \Q@imm@ and \Q@capsule@ fields (as \Q@read@), neither of which can alias the current object.
+}
 
 We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:\\
 \indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^+ \s|e$, for some $e_0$ with:
@@ -257,13 +269,13 @@ If $\VS(\s, \ER[l])$, then either $\valid(\s,l)$ or $\trusted(\ER[l])$.
 \end{theorem}
 %Every object referenced by any untrusted redex, within a \VS, is valid.
 Except for the injected invariant checks (and fields directly accessed),
-any redex in the execution of a well typed program takes in input only valid objects.
+any redex in the execution of a well typed program takes as input only valid objects.
 In particular, no method call (other than \emph{injected} invariant checks themselves) can see an object which is being checked for validity.
 
 This is a very strong statement because $\valid(\s,l)$ requires 
 the invariant of $l$ to deterministically terminate, and termination is a difficult 
 property to ensure.
-Our setting does ensure termination of the invariant of any $l$ in a redex.
+Our setting does ensure termination of the invariant of any $l$ that is now within a redex (as opposed to an $l$ that is on the heap or is being monitored).
 This works because non terminating \Q@invariant()@ methods would cause the monitor expression to never terminate. Thus, an
 $l$ with a non terminating \Q@invariant()@ is never involved in an untrusted redex.
 Invariants are deterministic computations in function of the state of $l$.
