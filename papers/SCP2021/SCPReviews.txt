@@ -111,8 +111,7 @@ constructive feedback for improvement.
   Reachable Object Graph means, but I needed to pause for half a
   second every time I read ROG. We should optimize for reading,
   not for writing!
- -remove ROG, RC, OC
-// TODO: Large change, do this latter
+//TOCHANGE: Large change, remove ROG, RC, OC
 
 - 45: It looks to me like what this clever little pattern is
   achieving is setting up a context where `this` can be used for
@@ -131,7 +130,7 @@ constructive feedback for improvement.
   calls that leak `this` are preceded by invariant checks to
   ensure that it is indeed not broken. Would aliasing of `this` be
   a problem though? Is it a problem in the current system?
-//TODO: large problem of box vs un/packed, make a unified responste for those 3 notes
+//TORESPOND: large problem of box vs un/packed, make a unified responste for those 3 notes
 
 - 71: How big is the actual gain between having `Range` and
   `BoxRange` vs. having `Range` and `unpacked Range`? A nice thing
@@ -156,9 +155,39 @@ Using patterns to express concepts also shows programmers how using patterns can
   thinking Gordon et al., Pony, LaCasa, Kappa, etc.).
 //We would like to explore this in future work.
 //Right now, 42 does support unobservable parallelism, so invariants are already enforced also in a parallel setting.
-// TOFIND: a place to put this clarrification in the paper
+//TOFIND: a place to put this clarrification in the paper
 
 ** Section 2
+- 148: "This is different with respect to many other approaches"
+  -- Which approaches are these? Later in the sentence you mention
+  passing around type parameters, which makes me think you are
+  thinking about Ownership Types, but this is not clear.
+//all the former work before gordon, so fractional permissions, universe types, islands.
+
+- 155: I don't know what you mean by "the result [of accessing a
+  capsule variable] will not be a capsule reference". The rest of
+  the sentence ("and can only be used in limited ways") is also
+  very unclear! It makes it sound as if capsule references in
+  Gordon et al. and Pony are more limited than L42's, and in my
+  limited understanding of L42 so far, it seems like enforcing
+  affineness is more restrictive.
+
+  Since Gordon et al. use flow sensitive typing, reading a capsule
+  variable consumes it from the context, allowing it to be
+  transferred to other variables or passed to functions with the
+  capsule capability intact (I believe some recovery/promotion is
+  happening under the hood here, but in the end you get this
+  behaviour). Using recovery, one can read or write fields of
+  capsule references without losing the capsule capability (type
+  and capability restrictions apply), as well as call `mut`
+  methods (with some restrictions on parameter and return types).
+  Note that it is always possible to permanently lose the capsule
+  capability following an arbitrary operation requiring a `mut`
+  capability.
+//--
+//That is exacly what we mean: while in 42 any way to read a capsule local variable gives you a capsule reference, in the other approaches the situation is more involved (in order to be more expressive) and sometime reading the capsule variable can give you some other kind of stuff, as you said.
+//--
+
   In Pony, calling a method on an `iso` (capsule) reference yields
   a `this` reference with capability `iso!`, meaning an `iso`
   which is aliased elsewhere
@@ -168,7 +197,7 @@ Using patterns to express concepts also shows programmers how using patterns can
 //This is exactly our claim, the other systems are either more involved or they offer a more involved surface language and encode that on simpler forms internally.
 //Here we have a minimal type system with just the simple form.
 //We changed a sentence to make it more clear
-// TOFIND: a place to mention this particular detail?
+//TOFIND: a place to mention this particular detail?
 
 - 161: Whether a capsule field contains a capsule reference or not
   comes down to how you define capsuleness. If one allows `iso!`
@@ -180,7 +209,7 @@ Using patterns to express concepts also shows programmers how using patterns can
 //No, wherever a capsule field holds a capsule reference depends on how we chose to use terminology in our lanugage.
 I think rev1 is arguing on what capsule fields 'could be' not that we are wrong on our current setting.
 //This is going to be solved in the global capsule field renaming
-// TODO: rename capsule fields, this is a major change so I'll do it latter
+//TOCHANGE: rename capsule fields, this is a major change so I'll do it latter
 
 - 163: I do not get how a capsule field can *never* contain a
   capsule reference if it is initialized with one. Isn't it a
@@ -206,7 +235,13 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   again. Is there a connection to Fähndrich and DeLine's Focus
   operation [Fändrich & DeLine, 2002], which allows temporarily viewing a
   non-linear thing as linear?
-// TODO: we need to read this paper
+//TOREAD: we need to read this paper
+
+- 381: `return counter++;` should not be in a comment? Or is it
+  because the example is invalid? (there is also no `counter`
+  field in the class)
+//Yes, the idea is that just doing counter++ would probably not be enough, that should be some hypotetical unexistant 'backdoor syntax' around it.
+//We changed the example with some hypotetical syntax to make it more concrete
 
 - 463: Some details and concepts
   are still unclear, for example capability expressions,
@@ -222,19 +257,23 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   is not looking great for clearing up the things I do not
   understand...
 //added immaginary appendix with a concrete type system.
-// TODO: actually address this point properly
+//TOCHANGE: actually address this point properly
 
 - 505: [..]sequence expressions in the language[..]you could abuse the fact that
   method calls have multiple arguments[..]  Featherweight Java also has no sequencing[..]
 >Yes, in minimalistic FJ inspired languages we often use methods with multiple arguments to encode sequencing.
-// TODO: mention how FJ-like languages can encode other language forms like sequencing and give a citation.
+
+- 558: "Our setting does ensure termination of the invariant of[..]so, this is a less
+  interesting property (albeit not uninteresting) in my opinion.
+//Yes, solving the halting problem would have been much more interesting but would deserve a paper of its own. Here, more modesly, we just show that it terminates because of determinism+altready terminated. We are unsure how to clarify this better in the paper.
+//TOFIND: mention how FJ-like languages can encode other language forms like sequencing and give a citation
 
 - 564: I'm a little bit dissapointed in the formalism section. It
   feels like it fleshes out the unexpected stuff and leaves the
   interesting things informal by referring back to previous
   (informal) sections. I still have most of my questions from
   before the section.
-// TOFIND: go through this section and find such references and expend them out more formally?
+//TOFIND: go through this section and find such references and expand them out more formally?
 
 ** Section 6
 - 664: [..]Would you get the same pathological numbers if you removed the checks
@@ -242,7 +281,6 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   favour of tracking (im)mutability, but not necessarily the whole
   reference capability approach.
 //Yes, any kind of purity verification solves the exponential explosion, as you can see later for Spec#, the RC approach is a kind of purity verification that is so much simpler to use than the Spec# approach.
-// TOFIND: where do we say that Spec# peforms less checks?
 
 - 829: There is the static inner class I thought about before
 //yes, by making it private we can avoid client code to even see the inner 'Box' type.
@@ -254,7 +292,7 @@ With 'unpacked' types in the type system, the unpacked type would always exists 
   setting outside of reasoning about parallelism and data races
   (which is arguably the main focus of Pony and Gordon et al.).
 //Thanks. Should we write this in the intro?
-// TOFIND: a good place in the intro to mention this
+//TOFIND: where do we say that Spec# peforms less checks?
 
 ** Section 7
 - 1000: I am not sure it would be a bad thing with type-system
@@ -276,6 +314,7 @@ With 'unpacked' types in the type system, the unpacked type would always exists 
   1119 (closures are immutable and so may only capture
   immutables), but this is still an assumption. It would be nice
   with a clarification here or earlier.
+//TOCHANGE: Fix this section!
 //WHOOPS this was unsound!!
 //note how in addToGraph(g) we use the reference to the capsule this within the lambda.
 No!!! if an imm lambda could capture a capsule we could make a non deterministic imm object.
@@ -298,16 +337,19 @@ We need to discuss how to change this example!
   Does this mean that capsule mutators are not identified
   automatically?[..]
 //No, it means that the programmer have to mark them to avoid a type error. While it could be possible to simply infer them, in the full 42 language they are required to explicitly be marked.
+//ISAAC: I think I fixed the text here, so we shouldn't need to clarify in the reveiwer response itself
 
 - 1239: This whole section was not very useful and in my opinion
   it raised more questions than it answered.
 //should we simply remove it?
+//ISAAC: yes, delete
 
 ** Section 9
 - 1252: "Object capabilities [56]" -- Strange to introduce a
   citation here when you have been using the term throughout the
   whole paper.
 //indeed. Do we have other citations? should we move up?
+//ISAAC: we first cite OC's when we actually talk about them on page 6
 
 ** Section 10
 - 1402: I strongly disagree that you have presented a full
@@ -316,7 +358,7 @@ We need to discuss how to change this example!
   proved to be sound, since I would expect this to mean typeh
   soundness (but here I see what the authors mean at least).
 //We have toned down this sentence, plus by adding the example formalism our statements here also become more valid.
-
+//TOCHANGE: update the text here when we fix the type system
 ---------
 
 Reviewer #2: 
@@ -328,7 +370,7 @@ Reviewer #2:
 //?? no?
 
 - The informal Java-like discussion raises questions about soundness issues that don't appear to be present in the formal system
-
+//TOCHANGE: make sure we have enough clarification of variables and statement-try/catchs vs our formal model
 - It's impossible to tell if the soundness questions apply to L42 itself, which seems to be the main context of this work, but for which no significant specifics are ever provided
 
 - The paper gives a nice overview of work on reference capabilities for data race free concurrency, including detailed discussions of iso/isolated/capsule differences in Pony/Gordon-et-al./L42, but stopping short of enough detail to fully explain the differences with regard to that work's notions of "capsule" (including earlier versions of L42)
@@ -338,15 +380,18 @@ As a result, I'm not fully confident in the formal results, because I can't tell
 
 I think this paper really needs to (1) include a concrete type system for the core language, and (2) switch the informal "Java-like" intuitions in the start to be closer to the "Featherweight L42." Ideally (though less critically) the related work could use some enhancement as well.
 //Yes about the formal. I'm not sure about removing the Java like, 42 is quite alien in this sense. THe rev also said that it would settle for less later on.
+//ISAAC: should be fixed when we change the capsule field terminology?
 
 ## Need for Formalized types
 
 I understand not simply wanting to repeat a formalization of L42's type system, since it's been proven sound and data race free, etc. But this paper is proposing *new changes to that type system*, so those properties don't automatically carry over!  This paper pitches a new interpretation of capsule fields (p7).  So the paper simultaneously claims (a) there's no need to formalize the type system because several systems exist, but (b) a new novel treatment of capsule fields is necessary for this paper's results.  Without a formalization, of this change, it's not possible to fully understand the details of this paper's assumptions on capsule fields, *and* it's not automatic that these capsule tweaks (and some of the other things in the assumption list) are really compatible with these ideas. The extensive prose does not get the job done, nor does the list of formal assumptions in the appendices. These assumptions in the appendices about the semantics of capsule fields do help,
 but they're not precise enough to actually nail down this paper's apparently-novel form of capsule, or to know that they're actually sound.  Of course it's possible I've misunderstood or missed something, but I've read the paper multiple times and still have these concerns, so at a minimum additional clarity is required.
 //former 42 literature is what has been misunderstood. 42 never had any kind of field allowing to return a capsule value. You need destructive reads for that and 42 never had those.
+//TOCHANGE: clarify when we change capsule field terminology
 
 The contextual typing judgments this paper assumes, where the typing judgment depends on the enclosing context, is not a form I've ever seen before, despite having worked in this area.
 //Isaac, do you want to expan on this?
+//TOCHANGE: change the way we abstract over the type-system
 
 I'd settle for a clear formalization of an example type system alongside a convincing prose argument that it's "close enough" to an existing type system, if that argument can be made satisfactorily.  (I recognize there are reasons for not wanting to get side-tracked with an additional type safety proof, and this paper already reflects a significant amount of work.) The tricky bit there would be making an argument about the capsule treatment. For that I'd expect to see formal type rules dealing with capsule fields for this paper's work, the corresponding rules in L42 (those known to be sound and to have specific characterizations) that would be different, and a clear argument for why this paper's treatment doesn't weaken any of L42's major guarantees (including safe concurrency, see next paragraph).
 
@@ -360,12 +405,14 @@ Included in this concern about needing formalization to remedy lack of detail is
 
 - Minor technicality: Assumption 6 part 2 doesn't actually imply capsule is a subtype of mut, only that mut is also derivable.
 //True, and that is all we need.
+//TORESPOND: no, Assumption 6 is indead saying that it is a subtype: every capsule is a mut.
 
 - The paper's formal definition of encapsulated, used to give semantic meaning to capsule, at first glance looks quite reasonable, But reading carefully, it says that a location l is encapsulated in an evaluation context E if everything reachable as mutatable from l in E[l] becomes unreachable in just E. This sort of addresses the first point about lack of clarify on what an isolated expression is, but doesn't directly control heap structure.
 //Again, this is all it is needed, this assumption just underline that a more rigid control of the heap is not needed. Also, both heap and stack need to be took in consideration to talk about encapsulation.
 
  It also seems at odds with the paper's own comment noted in the concurrency discussion above, that it's possible to read a capsule field of another object and get a 'read' RC. Let's say that's applied to x.f. At the moment the field dereference is reduced, the resulting value is still reachable (and mutatable) via x (assuming it's been substituted in somewhere else in E later in program order), but will also be reachable (only as 'read') via the reference produced from that field read.
 //I can not understand the issue here.
+//ISAAC: this should be clarified once we change the terminology of capsule fields
 
 I'll note that I'm not fundamentally opposed to the way this paper tries to make its results depend on the *semantics* of types rather than a specific type system; it's reminiscent of the semantic type soundness techniques used for Gordon et al.'s system, Jung et al.'s RustBelt work, and so on, and as the paper points out offers a way to *potentially* transfer this paper's results to a family of type systems rather than a specific one. That is a great strategy that I'm tempted to try myself.  But I think because the paper hasn't actually applied this to a fully worked out semantics for types, the paper ends up at the very least not explaining its assumptions clearly, and is possibly making mutually inconsistent assumptions. I'm optimistic it's the former, but the paper should support itself clearly enough that my optimism shouldn't be required.
 
@@ -449,10 +496,8 @@ This is needed for the most important promotion rule of 42: any expression that 
 //In all version of 42 the only way to get a capsule reference out of a capsule field is by using a capsule receiver.
 
 - p11 first line: Could also cite the Detlefs rep exposure paper
-//TODO read https://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-156.pdf
-
-
-
+//?? what paper??
+//TOREAD: https://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-156.pdf
 - p15 line ~42: I appreciate that this paper's type system has not required any backdoors to the type system, but it seems worth noting that the case studies described in this paper do not touch on the kinds of use cases where prior work needed those escape hatches.
 //So? ignore?
 
@@ -481,11 +526,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p1, l32: representation invariants are not limited to OO languages. They also exist in other languages in which they are usually called type invariants.
 //.. anything to do here? just ignore?
-// Mentione they are also caled "refinment types" in other languages (make sure it doesn't imply that it's OO specific).
-
-
-- p2, l8: min <= max --> min < max
-//??? can we model non empty ranges?
+//TOCHANGE: Mention they are also caled "refinment types" in other languages (make sure it doesn't imply that it's OO specific).
 
 - p2, l21: the execution of this.min = min will --> use "would" (this line of code is actually never executed)
 
@@ -499,13 +540,13 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p4, l45-51: examples for mut and capsule variables would be welcome
 //we have mut, I'm not sure what capsule can show here....
+//ISAAC: I'll add some?
 
 - p5, Promotion and Recovery: at this point, it is not clear why this paragraph is relevant for this paper
 //ignore?
 
 - p5, l29: what does "opt-in" mean?
 //reading comprehension? it is define directly after?
-//I'll add one?
 
 - p7, Purity: what about (deterministic) I/O?
 //There is no such thing as deterministic IO: what we read always depends on what other processes may be doing, what we write can still non deterministically go in error if the HD fails or it is full, for example.
@@ -529,6 +570,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 - p12, l30: "The main expression is reduced in the context of a memory and a program": it is not crystal clear (even if I eventually understood what you mean here)
 //So this is literally the first time you see a small step reduction for an imperative OO language? in that case you are going great!
 
+
 - p12, l57: "Most of our expressions are standard". It is true. Yet, each of them should be (quickly) introduced to have a self-contained paper readable by a non-expert of the field.
 //will do
 
@@ -548,7 +590,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p13, l46: "They are standard" --> true, yet present your notation and introduce each of the presented rules and add a reference to a general presentation
 //We can add a 'discussion anyway', may be in the appendix?
-//explain CTX v and brefily the otherse?
+//ISAAC: explain CTX v and brefily the otherse?
 
 - p13, l49: "For example, in L42 we implement [...]" --> do not mix the formal presentation with implementation details. Instead, you could add this remark in Section 8.
 //You just asked us to add examples in our formal stuff 4 times over!
@@ -556,7 +598,7 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p16, l56: The verifier available online [...] behaves differently: please add explanations here (and maybe as plain text and not as a footnote).
 //We are sorry, but we do not know all the details, those online verifiers are liable to change and it is not very well documented how they differ from the official releases.
-//ISAAC: Maybe I can rember what happened?
+//ISAAC: try and rember what the problem was?
 
 - p18, l15: the 'moveTo' method seems to break the invariant (when not called from 'move'). Could you elaborate here?
 //It would not be able to break the invariant.
@@ -585,12 +627,11 @@ That is why we considered tokens to be a better metric.
 
 - p35, l47: what is \Epsilon[\Epsilon]?
 //we need to study a comprehensive explanation text for rev3 discussing the main ways the FJ style work
-//this may get deleted when I change the typing judgment form
+//ISAAC: this may get deleted when I change the typing judgment form
 
 - p38, l40: non-CTXV reduction rule --> the rule CTXV has never been introduced
 //check, and add
-//Can we just add a trivial case for CtxV?
-
+//ISAAC: just add a trivial case for CtxV?
 
 - p38, l42: l.f --> l.f_i
 //can not find l.f on that line
