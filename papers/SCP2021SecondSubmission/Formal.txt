@@ -57,6 +57,19 @@ capsOnce(G,M(l;e1;e2))
 4-G U G' well defined only if 
   forall x in dom(G) cup dom(G') G(x)=G'(x) and G(x) not of form capsule _
 
+5-σ;E|e well formed iff
+ forall E' such that e=E'[capsule l]
+   encapsulated(σ,E[E'],l)
+ forall E' such that e=E'[imm l]
+   immutable(σ,E[E'],l)
+
+immutable(σ,E,l)
+  Ls={ L |exists E' such that E'[L]=E[imm l] }
+  forall µ l' in Ls  
+    if l' in {mut,capsule} then 
+      ROG(σ,l) disj mutRog(σ,l')
+    if l' in ROG(σ,l) then µ in {imm,read}//redundant?
+    
 Reduction
 
 (update)
