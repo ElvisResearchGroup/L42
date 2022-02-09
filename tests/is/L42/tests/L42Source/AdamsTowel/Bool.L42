@@ -10,8 +10,16 @@ method This or(This0 that)=native{trusted:OP|} error void
   
 read method This1.S toS()=native{trusted:toS} error void
 
+@{
+This operation returns true iff this = that, in the common mathematical interpretation.}
 read method This readEquality(read This that)=native{trusted:OP==} error void
+
+@{
+This operation returns true iff this = that, in the common mathematical interpretation.}
 method This #equalequal0(This that)=this.readEquality(that=that)
+
+@{
+This operation returns false iff this = that, in the common mathematical interpretation.}
 method This #bangequal0(This that)=(This tmp=this.#equalequal0(that=that) tmp.not())
 
 #norm{nativeKind=Bool

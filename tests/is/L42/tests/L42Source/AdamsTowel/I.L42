@@ -4,7 +4,7 @@ The constant zero.}
 class method This zero()
 
 @{Conversion method.
-Parse the string a produce the corresponding number.
+Parse the string and produce the corresponding number.
 throws error @This1.S$ParseError if the string is not a valid int32.}
 class method This #apply(This1.S string)=string.toI()
 
@@ -37,7 +37,7 @@ Signed Int32 integer reminder. a - ((a/b)*b) = a.mod(b)}
 method This mod(This that)=native{trusted:mod} error void
 
 @{Optimized Signed Modular Arithmetic Operation.
-This operation returns -1, 0 or 1 if the receiver is negative, zero or positive, respectivelly.}
+This operation returns -1, 0 or 1 if the receiver is negative, zero or positive, respectively.}
 method This signum()=native{trusted:signum} error void
 
 @{Optimized Signed Modular Arithmetic Relation.
