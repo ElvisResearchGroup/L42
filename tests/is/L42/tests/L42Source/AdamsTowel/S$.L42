@@ -1,11 +1,13 @@
 class method S (This string)
-@This1.Public method This subString(I that,I to) = (
+@Public method This subString(I that,I to) = (
   res = this._subString(that to=to)
   catch error Message m ( 
     error Collection$OutOfBounds(m.text())
     ) 
   res
   )
+@{True if the size of the current string is zero}
+@Public method Bool isEmpty()=\size==0I
 method This _subString(I that,I to)
 method Bool startsWith(This that)
 method I indexOf(This that, I from)
