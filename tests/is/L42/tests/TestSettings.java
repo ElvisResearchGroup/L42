@@ -15,17 +15,17 @@ public class TestSettings {
     }
   @Test public void empty0(){parseOk("""
     ""","""
-    Settings[options=-Xss1G -Xms256M -Xmx2G, permissions={}]
+    Settings[options=-Xss128M -Xms256M -Xmx2G, permissions={}]
     """);}
   @Test public void empty1(){parseOk("""
       //nothing
       ""","""
-      Settings[options=-Xss1G -Xms256M -Xmx2G, permissions={}]
+      Settings[options=-Xss128M -Xms256M -Xmx2G, permissions={}]
       """);}
   @Test public void empty2(){parseOk("""
       /*nothing*/,,
       ""","""
-      Settings[options=-Xss1G -Xms256M -Xmx2G, permissions={}]
+      Settings[options=-Xss128M -Xms256M -Xmx2G, permissions={}]
       """);}
   @Test public void opt1(){parseOk("""
       maxStackSize = 10M
@@ -35,12 +35,12 @@ public class TestSettings {
   @Test public void opt2(){parseOk("""
       maxMemorySize = 20G
       ""","""
-      Settings[options=-Xss1G -Xms256M -Xmx20G, permissions={}]
+      Settings[options=-Xss128M -Xms256M -Xmx20G, permissions={}]
       """);}
   @Test public void opt3(){parseOk("""
       initialMemorySize = 300M
       ""","""
-      Settings[options=-Xss1G -Xms300M -Xmx2G, permissions={}]
+      Settings[options=-Xss128M -Xms300M -Xmx2G, permissions={}]
       """);}
   @Test public void opt4(){parseOk("""
       maxStackSize = 10M
@@ -59,7 +59,7 @@ public class TestSettings {
   @Test public void sec1(){parseOk("""
       Foo.Bar = [L42.is/FileSystem] [L42.is/bb]
       ""","""
-      Settings[options=-Xss1G-Xms256M-Xmx2G,permissions={
+      Settings[options=-Xss128M-Xms256M-Xmx2G,permissions={
         Foo.Bar=[L42.is/FileSystem,L42.is/bb]}]
       """);}
   @Test public void sec2(){parseOk("""
@@ -67,7 +67,7 @@ public class TestSettings {
       maxMemorySize = 20G
       Foo.Bar::3 = [L42.is/FileSystem]
       ""","""
-      Settings[options=-Xss1G-Xms256M-Xmx20G,permissions={
+      Settings[options=-Xss128M-Xms256M-Xmx20G,permissions={
         Foo.Bar::2=[L42.is/FileSystem,L42.is/bb];
         Foo.Bar::3=[L42.is/FileSystem]
         }]
