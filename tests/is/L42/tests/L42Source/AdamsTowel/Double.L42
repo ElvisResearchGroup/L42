@@ -9,59 +9,59 @@ throws error @This1.S$ParseError if the string is not a valid Double.}
 class method This #apply(This1.S string)=string.toDouble()
 
 @{Conversion method.
-Rounds the parameter (floor) to the nearest Double.}
+Rounds the parameter to the nearest 64bit Floating Point.}
 class method This #apply(This1.Num num)=native{trusted:fromNum} error void
 
 @{Conversion method.
-Result = receiver/denominator.}
+Turns the receiver into its Num representation.}
 method This1.Num toNum()=This1.S<:class This1.S.doubleToNum(that=this)
 
-@{Optimized Signed Modular Arithmetic Operation.
-Double addition, beware of overflows/underflows.}
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point addition, beware of numeric approximations.}
 method This #plus0(This that)=native{trusted:OP+} error void
 
-@{Optimized Signed Modular Arithmetic Operation.
-Double multiplication, beware of overflows/underflows.}
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point multiplication, beware of numeric approximations.}
 method This #times0(This that)=native{trusted:OP*} error void
 
-@{Optimized Signed Modular Arithmetic Operation.
-Double division, beware of overflows/underflows.}
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point division, beware of numeric approximations.}
 method This #divide0(This that)=native{trusted:OP/} error void
 
-@{Optimized Signed Modular Arithmetic Operation.
-Double subtraction, beware of overflows/underflows.}
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point subtraction, beware of numeric approximations.}
 method This #minus0(This that)=native{trusted:OP-} error void
 
-@{Optimized Signed Modular Arithmetic Relation.
+@{Optimized Floating Point Arithmetic Relation.
 This operation returns true iff this < that, in the common mathematical interpretation.}
 method This1.Bool #lt0(This that)=native{trusted:OP<} error void
 
-@{Optimized Signed Modular Arithmetic Relation.
+@{Optimized Floating Point Arithmetic Relation.
 This operation returns true iff this > that, in the common mathematical interpretation.}
 method This1.Bool #gt0(This that)=that.#lt0(that=this)
 
-@{Optimized Signed Modular Arithmetic Relation.
+@{Optimized Floating Point Arithmetic Relation.
 This operation returns true iff this <= that, in the common mathematical interpretation.}
 method This1.Bool #ltequal0(This that)=native{trusted:OP<=} error void
 
-@{Optimized Signed Modular Arithmetic Relation.
+@{Optimized Floating Point Arithmetic Relation.
 This operation returns true iff this >= that, in the common mathematical interpretation.}
 method This1.Bool #gtequal0(This that)=that.#ltequal0(that=this)
 
-@{Optimized Signed Modular Arithmetic Relation.
+@{Optimized Floating Point Arithmetic Relation.
 This operation returns true iff this = that, in the common mathematical interpretation.}
 read method This1.Bool readEquality(read This that)=native{trusted:OP==} error void
 
-@{Optimized Signed Modular Arithmetic Relation.
+@{Optimized Floating Point Arithmetic Relation.
 This operation returns true iff this = that, in the common mathematical interpretation.}
 method This1.Bool #equalequal0(This that)=this.readEquality(that=that)
 
-@{Optimized Signed Modular Arithmetic Relation.
+@{Optimized Floating Point Arithmetic Relation.
 This operation returns false iff this = that, in the common mathematical interpretation.}
 method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 
 @{Optimized Trigonometric Arithmetic Operation.
-Double power, raises the receiver by exp}
+64bit Floating Point power operation, raises the receiver by exp}
 method This pow(This exp)=native{trusted:mathPow} error void
 
 @{Optimized Trigonometric Arithmetic Operation.
