@@ -5,7 +5,6 @@ exports.cssClass = "ace-l42-eclipse";
 exports.cssText = ".ace-l42-eclipse {\
 background: " + style.background + ";\
 color: " + style.fontColor + ";\
-font-family:'" + style.font + "';\
 }\
 .ace-l42-eclipse .ace_gutter {\
 background: " + style.sidebarBackgroundColor + ";\

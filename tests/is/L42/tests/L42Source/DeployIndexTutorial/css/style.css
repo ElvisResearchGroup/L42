@@ -37,9 +37,9 @@ body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 13px;
     color:#333;
-	background: rgb(245,245,245);
-}
-
+    background: rgb(235,245,255);
+  }
+a { text-decoration:none; }
 p { padding: 10px;}
 
 #wrapper {
@@ -56,7 +56,7 @@ p { padding: 10px;}
 
 #header {
     height: 85px;
-	background-color: rgb(0, 71, 48);
+	background-color: rgb(20, 40, 100);
     //background-image: url('stars.gif');
     //background-repeat: repeat-y;
     //background-attachment: scroll;
@@ -68,7 +68,6 @@ p { padding: 10px;}
 	border-style:solid;
     border-color:rgb(0,40,20);
     border-width: 0px 0px 3px 0px;
-    margin: 5px;
 }
 
 #contentwrap {
@@ -81,7 +80,7 @@ p { padding: 10px;}
 #content {
     background: white;
     border-radius: 10px;
-    border: 1px solid #a1a1a1;
+    border: 1px solid rgb(100,100,150);//rgb(100,130,200);
     margin: 5px;
     text-size-adjust: 200%;
     }
@@ -97,10 +96,10 @@ p { padding: 10px;}
     background: rgb(245,245,245);
     border-radius: 10px  10px 0px 0px;
     border-style:solid;
-    border-color:rgb(200,200,200);
-    border-width: 3px 0px 0px 0px;
+    border-color:rgb(150,150,150);
+    border-width: 3px 1px 0px 1px;
     color: rgb(150,150,150);
-    margin: 5px;
+    margin: 5px 0px 0px;
 }
 #footer a, #footer a:link, #footer a:visited, #footer a:active, #footer a:hover {
     color: rgb(150,150,150);
@@ -158,6 +157,7 @@ h2{padding: 10px;font-size: 110%;font-weight: bold;}
 h1{
   padding: 15px;
   padding-left: 3em;
+  margin-right: 1ex;
   font-size: 150%;
   font-weight: bold;
   color: rgb(45,45,45);
@@ -168,14 +168,13 @@ h1{
   border-left-width: 0.0em;
   border-top-style:solid;
   border-left-style:solid;
-  width:85%;
   }
 
 .code{font-family:monospace; font-weight: bold; color: rgb(10,10,55);}
 
 
 .button {
-    background-color: rgb(100, 200,100);
+    background-color: rgb(90, 150,200);
     border: none;
     color: black;
     font-weight: bold;
@@ -187,30 +186,34 @@ h1{
     font-size: 1.1em;
     border-style: solid;
     border-color: darkgray;
-    border-top: 0.5em solid rgb(50, 200,50);
-    border-right: 0.3em solid rgb(100, 200, 200);
-    border-left: 0.3em solid rgb(100, 200, 200);
-    border-bottom:0.3em solid rgb(80, 180, 180);
+    border-top: 0.5em solid rgb(50, 100,200);
+    border-right: 0.3em solid rgb(60, 110, 190);
+    border-left: 0.3em solid rgb(60, 110, 190);
+    border-bottom:0.3em solid rgb(80, 130, 180);
     border-top-right-radius: 1em;
     border-top-left-radius: 1em;
     border-bottom-right-radius: 0.1em;
     border-bottom-left-radius: 0.1em;
     margin-top:1em;
-
+    margin-bottom:1em;
 }
 .button:hover  {
-   padding-top:1.5em;
-   margin-top:0.5em;
+   padding-top:1.1em;
+   margin-top:0.9em;
+   padding-bottom: 1.1em;
+   margin-bottom: 0.9em;
+   background-color: rgb(70, 130,190);
+   border-top: 0.5em solid rgb(40, 75,150);
+   border-right: 0.3em solid rgb(45, 80, 140);
+   border-left: 0.3em solid rgb(45, 80, 140);
+   border-bottom:0.3em solid rgb(50, 60, 130);
    }
 .button:active  {
-  padding-top:0.5em;
-  margin-top:1.5em;
-  background-color: rgb(70, 150,70);
-  border-top:0.5em solid rgb(30, 170,30);
-  border-right: 0.3em solid rgb(70, 170, 170);
-  border-left: 0.3em solid  rgb(70, 170, 170);
-  border-bottom: 0.3em solid rgb(40, 140, 140);
-
+  padding-top:0.9em;
+  margin-top:1.1em;
+  padding-bottom: 0.9em;
+  margin-bottom: 1.1em;
+  background-color: rgb(60, 100,150);
   }
 
 .ace_editor {
@@ -250,7 +253,7 @@ ol li {
   border: 0.1em;
   border-left-style: solid;
   border-top-style: solid;
-  border-color: darkgray;
+  border-color: rgb(100,100,150);
   }
 
 table,td,th,tr {
@@ -265,7 +268,7 @@ table,td,th,tr {
   border-bottom:2px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  border-color: #a1a1a1;
+  border-color: rgb(100,100,150);
   border-style: solid;
   white-space: nowrap;
   width:60%;
