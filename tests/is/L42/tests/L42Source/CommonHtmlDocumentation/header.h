@@ -8,9 +8,9 @@ m4_include(`../CommonHtmlDocumentation/macro.h')m4_dnl
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
     <link rel="stylesheet" type="text/css" href="/css/style.css" media="all"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="css/fav/apple-touch-icon.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="css/fav/favicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="css/fav/favicon-16x16.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/css/fav/apple-touch-icon.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="/css/fav/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="/css/fav/favicon-16x16.png"/>
     <meta name="msapplication-TileColor" content="#da532c"/>
     <meta name="theme-color" content="#ffffff"/>
     <script src="/js/ace.js"></script>
