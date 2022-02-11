@@ -1,18 +1,55 @@
 [This1.HasToS]
+@{Meta-programming friendly method.
+The constant zero.}
 class method This zero()
+
+@{Conversion method.
+Parse the string and produce the corresponding number.
+throws error @This1.S$ParseError if the string is not a valid Num.}
 class method This #apply(This1.S string)=string.toNum()
+
+@{Optimized Signed Modular Arithmetic Operation.
+Num addition, beware of overflows/underflows.}
 method This #plus0(This that)=native{trusted:OP+} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+Num multiplication, beware of overflows/underflows.}
 method This #times0(This that)=native{trusted:OP*} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+Num division, beware of overflows/underflows.}
 method This #divide0(This that)=native{trusted:OP/} error void
+
+@{Optimized Signed Modular Arithmetic Operation.
+Num subtraction, beware of overflows/underflows.}
 method This #minus0(This that)=native{trusted:OP-} error void
 
+@{Optimized Modular Arithmetic Relation.
+This operation returns true iff this < that, in the common mathematical interpretation.}
 method This1.Bool #lt0(This that)=native{trusted:OP<} error void
+
+@{Optimized Modular Arithmetic Relation.
+This operation returns true iff this > that, in the common mathematical interpretation.}
 method This1.Bool #gt0(This that)=that.#lt0(that=this)
+
+@{Optimized Modular Arithmetic Relation.
+This operation returns true iff this <= that, in the common mathematical interpretation.}
 method This1.Bool #ltequal0(This that)=native{trusted:OP<=} error void
+
+@{Optimized Modular Arithmetic Relation.
+This operation returns true iff this >= that, in the common mathematical interpretation.}
 method This1.Bool #gtequal0(This that)=that.#ltequal0(that=this)
 
+@{Optimized Modular Arithmetic Relation.
+This operation returns true iff this = that, in the common mathematical interpretation.}
 read method This1.Bool readEquality(read This that)=native{trusted:OP==} error void
+
+@{Optimized Modular Arithmetic Relation.
+This operation returns true iff this = that, in the common mathematical interpretation.}
 method This1.Bool #equalequal0(This that)=this.readEquality(that=that)
+
+@{Optimized Modular Arithmetic Relation.
+This operation returns false iff this = that, in the common mathematical interpretation.}
 method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 
 read method This1.S toS()=native{trusted:toS} error void
@@ -20,6 +57,9 @@ read method This1.S toS()=native{trusted:toS} error void
   This1.S s=stringLiteral.toS()
   s.toNum()
   )
+  
+@{Conversion method.
+Turns the receiver into its nearest double representation.}
 method This1.Double toDouble() = This1.Double<:class This1.Double.#apply(num=this)
 
 @{Meta-programming friendly method.

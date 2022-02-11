@@ -1,26 +1,83 @@
 [This1.HasToS]
+@{Meta-programming friendly method.
+The constant zero.}
 class method This zero()
+
+@{Conversion method.
+Parse the string and produce the corresponding number.
+throws error @This1.S$ParseError if the string is not a valid Double.}
 class method This #apply(This1.S string)=string.toDouble()
+
+@{Conversion method.
+Rounds the parameter to the nearest 64bit Floating Point.}
 class method This #apply(This1.Num num)=native{trusted:fromNum} error void
+
+@{Conversion method.
+Turns the receiver into its Num representation.}
 method This1.Num toNum()=This1.S<:class This1.S.doubleToNum(that=this)
+
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point addition, beware of numeric approximations.}
 method This #plus0(This that)=native{trusted:OP+} error void
+
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point multiplication, beware of numeric approximations.}
 method This #times0(This that)=native{trusted:OP*} error void
+
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point division, beware of numeric approximations.}
 method This #divide0(This that)=native{trusted:OP/} error void
+
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point subtraction, beware of numeric approximations.}
 method This #minus0(This that)=native{trusted:OP-} error void
 
+@{Optimized Floating Point Arithmetic Relation.
+This operation returns true iff this < that, in the common mathematical interpretation.}
 method This1.Bool #lt0(This that)=native{trusted:OP<} error void
+
+@{Optimized Floating Point Arithmetic Relation.
+This operation returns true iff this > that, in the common mathematical interpretation.}
 method This1.Bool #gt0(This that)=that.#lt0(that=this)
+
+@{Optimized Floating Point Arithmetic Relation.
+This operation returns true iff this <= that, in the common mathematical interpretation.}
 method This1.Bool #ltequal0(This that)=native{trusted:OP<=} error void
+
+@{Optimized Floating Point Arithmetic Relation.
+This operation returns true iff this >= that, in the common mathematical interpretation.}
 method This1.Bool #gtequal0(This that)=that.#ltequal0(that=this)
 
+@{Optimized Floating Point Arithmetic Relation.
+This operation returns true iff this = that, in the common mathematical interpretation.}
 read method This1.Bool readEquality(read This that)=native{trusted:OP==} error void
+
+@{Optimized Floating Point Arithmetic Relation.
+This operation returns true iff this = that, in the common mathematical interpretation.}
 method This1.Bool #equalequal0(This that)=this.readEquality(that=that)
+
+@{Optimized Floating Point Arithmetic Relation.
+This operation returns false iff this = that, in the common mathematical interpretation.}
 method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 
+@{Optimized Floating Point Arithmetic Operation.
+64bit Floating Point power operation, raises the receiver by exp}
 method This pow(This exp)=native{trusted:mathPow} error void
+
+@{Optimized Trigonometric Arithmetic Operation.
+Turns the receiver into the sine value of it as a radian angle}
 method This sin()=native{trusted:mathSin} error void
+
+@{Optimized Trigonometric Arithmetic Operation.
+Turns the receiver into the cosine value of it as a radian angle}
 method This cos()=native{trusted:mathCos} error void
+
+@{Optimized Trigonometric Arithmetic Operation.
+Turns the receiver into the tangent value of it as a radian angle}
 method This tan()=native{trusted:mathTan} error void
+
+@{Optimized Trigonometric Arithmetic Operation.
+Turns the receiver into the 2 arg arc-tangent value of it as a radian angle}
 method This atan2(This that)=native{trusted:mathATan2} error void
 
 read method This1.S toS()=native{trusted:toS} error void
@@ -29,14 +86,46 @@ read method This1.S toS()=native{trusted:toS} error void
   s.toDouble()
   )
 
+@{Meta-programming friendly method.
+Returns the nearest int64 less than the parameter
+}
 method This1.Long floorLong()=native{trusted:mathFloorLong} error void
+
+@{Meta-programming friendly method.
+Returns the nearest int32 less than the parameter
+}
 method This1.I floor()=native{trusted:mathFloorInt} error void
+
+@{Meta-programming friendly method.
+Returns the nearest int64 greater than the parameter
+}
 method This1.Long ceilLong()=native{trusted:mathCeilLong} error void
+
+@{Meta-programming friendly method.
+Returns the nearest int32 greater than the parameter
+}
 method This1.I ceil()=native{trusted:mathCeilInt} error void
+
+@{Meta-programming friendly method.
+Returns the nearest int32
+}
 method This1.I round()=native{trusted:mathRoundInt} error void
+
+@{Meta-programming friendly method.
+Returns the nearest int64
+}
 method This1.Long roundLong()=native{trusted:mathRoundLong} error void
+
+@{Meta-programming friendly method.
+For this class it just returns the receiver.}
 method This1.Double toDouble()=this
+
+@{Conversion method.
+Turns the receiver into its int32 representation.}
 method This1.I toI()=native{trusted:mathFloorInt} error void
+
+@{Conversion method.
+Turns the receiver into its int64 representation.}
 method This1.Long toLong()=native{trusted:mathFloorLong} error void
 
 @{Meta-programming friendly method.
