@@ -97,13 +97,6 @@ think that it deserves to be in better shape before it is
 published. Hopefully, the detailed comments below can provide
 constructive feedback for improvement.
 
-** Highlights
-- "magnitudo" -> magnitude
-// ISAAC: WHERE?? I can't find this in the original
-
-- "Much less annotation burden" -- lighter annotation burden?
-// ISAAC: WHERE?? I can't find this in the original
-
 ** Section 1
 
 - 2: Unless space limitation is an issue, I am a strong proponent
@@ -425,6 +418,7 @@ Consider this variant of the example on page 10:
 [..]So, I can see two possibilities for fixing this in a Java-like language:
 Option 1: the references from outside the try-catch are also marked final.
 //Done, sorry, we forgot to write this in the paper. This was already part of how 42 dealt with strong error safety fron its inception.
+//ISAAC: check that it's clear now!
 
 [..]there's *no* way to actually get data out of a try-catch directly
 42 is an expression based language, and try-catches are expressions in the style of [] (similar to python/ruby try-catch-else). They can return mutable data if it is created inside one of the catch bodies or if the try block completes successfully.
@@ -464,7 +458,7 @@ This approach sort of makes sense if I assume the intended framing of the relate
 //Clarify exeption example and show example with expression based try-catch
 
 - Slightly more nuanced discussion in related work about similarities between this work and some other approaches, rather than completely disregarding those similarities under the banner of "others allow observing objects in broken-invariant states".
-//HELP!
+//TOREAD: related work again and compare properlly
 
 - Please explain in more detail why distinguishing checked vs. unchecked exceptions makes any difference in the restrictions on try blocks (page 13, line ~37. In either case, an exception thrown while an invariant doesn't hold has the potential to leave an object reachable from outside the try block and mutated by that code in an invalid state. I see clearly how the restrictions in the formal calculus ensure no broken invariants are exposed, but I cannot see any reason a checked exception would justify relaxing all of those restrictions. (I can image *different* restrictions might work, but none seems unsound).
 //""an exception thrown while an invariant doesn't hold has the potential to""
@@ -472,6 +466,7 @@ This approach sort of makes sense if I assume the intended framing of the relate
 -if a factory leaks a checked exception, the created object is now unreachable
 -settes, capsule mutators and invariant methods can not throw checked exceptions.
 We wonder if this is unobvious enough to make it worty to prove that this is the case by modelling also checked exceptions in our calculus.
+//TOFIND: where have we not made this clear?
 
 ## Other miscellaneous comments
 
@@ -480,6 +475,7 @@ Using the submission PDF page numbers at the bottom of each page:
 - p5, lines ~8/9: "Pony does not guarantee that capsule fields contain a capsule reference at all times, as it provides non-destructive reads" This is either incorrect, or a highly misleading characterization of Pony's 'tag' RC. In Pony, reading an iso field non-destructively results in a 'tag' RC, which may not be dereferenced, and therefore does not affect reachability paths.
 //The other rev is pointed out ISO!, that is more similar to what we was discussing.
 //As we can see, the more complex treatements of isolated fields can create confusions.
+//TOCHANGE: make this clear
 
 - p7 line ~40: I find this terminology VERY confusing. A capsule mutator may read the field but not modify the capsule field? After reading further it makes a little more sense, but at least when introducing, maybe it makes sense to highlight that the name means 'capsule mutators' may modify the existing capsule in place but may not "replace" the capsule?
 //We just said "Note that a field update of a capsule field (instead of a field access) does not make a method a capsule mutator."
@@ -491,6 +487,7 @@ This is needed for the most important promotion rule of 42: any expression that 
 
 - late p7 early p8: This bit could use some clarifying code examples
 //I think we are example heavy already...
+//TOCHANGE: add more examples?
 
 - p8 lines 21/22: "we do not need to prevent arbitrary read aliases to the ROG of a capsule field" this is completely at odds with data race freedom if capsules are sent to other threads???
 //In all version of 42 the only way to get a capsule reference out of a capsule field is by using a capsule receiver.
@@ -498,16 +495,13 @@ This is needed for the most important promotion rule of 42: any expression that 
 - p11 first line: Could also cite the Detlefs rep exposure paper
 //?? what paper??
 //TOREAD: https://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-156.pdf
-- p15 line ~42: I appreciate that this paper's type system has not required any backdoors to the type system, but it seems worth noting that the case studies described in this paper do not touch on the kinds of use cases where prior work needed those escape hatches.
-//So? ignore?
-
 
 Reviewer #3: *** General Comments
 
 However, the precise contributions of the paper are not clearly stated, in particular with respect to the author's previous work, and the related work is not up-to-date.[..]
 The contribution are not clearly presented. It should be crystal clear what is the current contribution on top of the author's previous work.
 //What does it mean??
-
+//TOCHANGE: add a dot point list
 
  In particular, I think that the structure of Sections 1-4[..]
  //Will not do, it would require rewiting the paper
@@ -517,88 +511,76 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 
 - related work[..]only refers to non-recent papers [..] the authors do not compare their notion of invariants to invariants of other (non-OO) specification language such as ACSL, Spark2014 and WhyML.
+//TOREAD: look at these and compare?
 
 - The formal part of the paper is not self-contained since neither it defines a turing-complete language, nor explains all the introduce notations and rules.
 //It is turing complete
-
-- While well-written, the punctuation could be largely improved (as a general advice, avoid ';' and contracted forms)
-//avoiding ROG will help on the contracted forms? should we remove a couple of ';' to show that we tried?
 
 - p1, l32: representation invariants are not limited to OO languages. They also exist in other languages in which they are usually called type invariants.
 //.. anything to do here? just ignore?
 //TOCHANGE: Mention they are also caled "refinment types" in other languages (make sure it doesn't imply that it's OO specific).
 
 - p2, l21: the execution of this.min = min will --> use "would" (this line of code is actually never executed)
+//MINOR: check this
 
 - p2, l29: at this point, the reader cannot understand the advantage of using the Box pattern (as opposed to its drawbacks, which are easy to see)
+//TOCHANGE: add a few words to adress this?
 //why 2 rev over 3 use page local line number?
 //anyway, ignore?
 
-- p2, l46: With appropriate type annotations --> which ones?
-//ignore? we are tring to be abstract here?
-
-
 - p4, l45-51: examples for mut and capsule variables would be welcome
 //we have mut, I'm not sure what capsule can show here....
-//ISAAC: I'll add some?
+//TOCHANGE: add some examples
 
 - p5, Promotion and Recovery: at this point, it is not clear why this paragraph is relevant for this paper
 //ignore?
-
-- p5, l29: what does "opt-in" mean?
-//reading comprehension? it is define directly after?
+//TOCHANGE: add a sentence justifying this section?
 
 - p7, Purity: what about (deterministic) I/O?
 //There is no such thing as deterministic IO: what we read always depends on what other processes may be doing, what we write can still non deterministically go in error if the HD fails or it is full, for example.
 
-- p7, Capsule Fields: an example would be welcome
-//I think this is just because he wrote this while reading the paper, examples are coming later all right. Indeed he did not mention 'more examples please' in the overall considerations.
-
 - p10, l33: "it is guaranteed to be garbage collectable" --> "so it is out of scope when checking the invariant" (being guaranteed to be garbage collectable does not offer any strong guarantee since one cannot be sure that the GC will indeed collect it)
 //Actual collection is not important here. We are certaint that it is never going to be involved in execution ever again.
 
-- p11, Formal Language Model: it should be clear from the introduction of this section that it handles OC and I/O.
-//? what we should about this comment?
-
 - p12, Fig. 1: your formal language should be a bit more expressive and include the necessary expressions to cover your example (a bit of integer arithmetic and Boolean expressions beyond 'true' and 'false', conditionals and loops). As such, your language is not even Turing-complete...
 //...
-
-- p12, l29: the notation '\sigma \setminus l' looks to be only used in the Appendix. Therefore, it should be introduced there and not in the core paper.
-//we modify the text about it, should we actually move the notation itself?
-
+//TOCHANGE: give a citation showing how OO is turing complete....
 
 - p12, l30: "The main expression is reduced in the context of a memory and a program": it is not crystal clear (even if I eventually understood what you mean here)
 //So this is literally the first time you see a small step reduction for an imperative OO language? in that case you are going great!
-
+//TOCHANGE: this ought to be fixed when we put the new reduction rules in place
 
 - p12, l57: "Most of our expressions are standard". It is true. Yet, each of them should be (quickly) introduced to have a self-contained paper readable by a non-expert of the field.
-//will do
+//TOCHANGE: do this
 
 - p13, Fig.2: several rules are missing. At the least, a complete set of rules should be provided in Appendix. For instance, no (presented) rule introduces \Epsilon and \Epsilon_v, so the presented set of rules is hardly understandable without having in mind the missing rules (assuming that the reader knows them, what is a quite strong assumption)
 //Is Epsilon the context? so this guy have no clue of the standard contextual rules?
-
+// TOCHANGE: explain how they use and give a citations
 
 - p13, Fig.2, rule New: 'l fresh' should be an hypothesis of this rule
 //we could add/we added it for more clarity, but it is not strictly needed, the map o,l->.. would not be well formed otherwise.
-
+// TOCHANGE: make sure we did add it
 
 - p13, Fig.2, rule MCall: instead of having a 'if-then-otherwise', you should split this rule in two different rules (one for each case).
 //we can try and see how it looks
+// TORESPOND: No, it's going to get bigger now, so this will be horrible
 
 - p13, l27: an example for M(l;e1;e2) would be welcome, as well as another one for the strong exception safety remark.
 //? whwre is line 27 on that page?
+// TOCHANGE: add an example instead of just describing how it works
 
 - p13, l46: "They are standard" --> true, yet present your notation and introduce each of the presented rules and add a reference to a general presentation
 //We can add a 'discussion anyway', may be in the appendix?
-//ISAAC: explain CTX v and brefily the otherse?
+// TOCHANGE: explain CTX v and brefily the otherse?
 
 - p13, l49: "For example, in L42 we implement [...]" --> do not mix the formal presentation with implementation details. Instead, you could add this remark in Section 8.
 //You just asked us to add examples in our formal stuff 4 times over!
 //However, we could more this text, but we need to discuss it together
+// ISAAC: ignore this?
 
 - p16, l56: The verifier available online [...] behaves differently: please add explanations here (and maybe as plain text and not as a footnote).
 //We are sorry, but we do not know all the details, those online verifiers are liable to change and it is not very well documented how they differ from the official releases.
-//ISAAC: try and rember what the problem was?
+// TODO: try and rember what the problem was?
 
 - p18, l15: the 'moveTo' method seems to break the invariant (when not called from 'move'). Could you elaborate here?
 //It would not be able to break the invariant.
@@ -612,18 +594,22 @@ For example, in the GUI case study, nothing prevents up to attempt moving the wi
 - p30, l18: a study [19] discovered that developers expect specification languages to follow the semantics of the underlying language --> written this way, this statement is just wrong even though the two examples that follow are correct. For instance, a previous study (*) from the same author (P. Chalin) concludes that "there is a semantic gap between user expectations and the current language design and semantics of JML numeric types" (the semantics of JML numeric types at that time was the one of Java) and it contributes to modify this semantics that comes from Java (even if it is still possible to activate it).
   (*) Patrice Chalin. JML Support for Primitive Arbitrary Precision Numeric Types: Definition and Semantics. Journal of Object Technology, 2004.
 //We need to discuss this
+// TOREAD: paper 19 and see what it says wrt. to the older paper,
+// maybe give actual quotes from 19 so he can't say we are wrong?
 
 - p30, l46: a survey by Voigt et al. [76] and the extensive MOP project [52] --> these references are quite old. There are more recent references and tools, see for instance (*)(*) Yliès Falcone, Srdan Krstic, Giles Reger, Dmitriy Traytel. A taxonomy for classifying runtime verification tools. International Journal on Software Tools for Technology Transfer, 2021.
 //sure, we will cite also your paper, no problem!
-
+// TOCHANGE: add the citations
 - p31, l46: three times less annotation burden than [...] Spec# --> I do not agree with this conclusion if you only look at the number of annotations (which is the most meaningful measure IMO)
 // some Spec# annotations are very involved,
 consider this single annotation:
 "Owner.Same(Owner.ElementProxy(children), children)"
 That is why we considered tokens to be a better metric.
+// TOCHANGE: clarify this in the text
 
 - p35, l28: the formal definition of 'rog' is missing
 //sure, lets' add that one too
+// TOCHANGE: add this
 
 - p35, l47: what is \Epsilon[\Epsilon]?
 //we need to study a comprehensive explanation text for rev3 discussing the main ways the FJ style work
@@ -631,7 +617,9 @@ That is why we considered tokens to be a better metric.
 
 - p38, l40: non-CTXV reduction rule --> the rule CTXV has never been introduced
 //check, and add
-//ISAAC: just add a trivial case for CtxV?
+// TOCHANGE: just add a trivial case for CtxV?
+
+// ISAAC: I will go through these
 
 - p38, l42: l.f --> l.f_i
 //can not find l.f on that line
