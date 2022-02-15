@@ -86,7 +86,7 @@ In 42, when a class has a WEmph(`most important') method, it is conventional to 
 WBR
 In 42, Strings and numbers need to be created using their type, as in
 Wcode(S"Hello world") or Wcode(12Num).
-Indeed Wcode(12Num) is just a convenience syntax equivalent to Wcode(Num"1"); the syntax with quotes is needed to express negative or fractional number literals, as for example Wcode(Num"-12")
+Indeed Wcode(12Num) is just a convenient syntax equivalent to Wcode(Num"12"); the syntax with quotes is needed to express negative or fractional number literals, as for example Wcode(Num"-12")
  or Wcode(Num"53/21").
 
 WP
