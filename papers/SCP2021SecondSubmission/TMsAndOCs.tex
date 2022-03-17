@@ -228,7 +228,7 @@ That is, strong exception safety is only enforced for unchecked exceptions.
 
 % Intro to OCs
 
-\subheading{Object Capabilities}
+\subheading{Object Capabilities}\label{s:OCs}
 OCs, which L42, Pony, and Gordon \etal's work have, are a widely used~\cite{miller2003capability,noble2016abstract,karger1988improving} programming technique where access rights to resources are encoded as references to objects. When this style
 is respected, 
 code 
@@ -248,7 +248,7 @@ by carefully designing their implementation.
 
 \lstset{language=Java}
  For example, in Java, \Q@System.in@%
- \lstset{language=FortyTwo}
+ \lstset{language=FortyThree}
  is a \emph{capability object} that provides access to the standard input resource. However, since it is globally accessible it completely prevents reasoning about determinism. 
  % In contrast, in the object capability style, one would not have-global variables but have the main por
 % a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
@@ -257,7 +257,7 @@ In contrast, if Java were to respect the object capability style, the \Q@main@ m
 \begin{lstlisting}
 public static void main(System s){... s.in().read() ...}
 \end{lstlisting}
-\lstset{language=FortyTwo}
+\lstset{language=FortyThree}
 Calling methods on that \Q@System@ instance would be the only way to perform I/O;
 moreover, the only \Q@System@ instance would be the one created by the runtime system before calling \Q@main(s)@. % would have no usable constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
 % Other non deterministic operations would also work this.

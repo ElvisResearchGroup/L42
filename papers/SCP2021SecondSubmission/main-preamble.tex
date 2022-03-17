@@ -22,12 +22,20 @@
 
 \usepackage{mathpartir}
 \usepackage{amsmath}
+\usepackage{amssymb}
 
 \ifdefined\proof%
 \else%
 \usepackage{amsthm}
-\theoremstyle{plain}
+\usepackage{thm-restate}
+%\theoremstyle{plain}
 \makeatletter
+\newtheoremstyle{romansans} % Based on plain, with upright body and sans serif note
+	{\topsep}{\topsep}  % Space above/below (plain)
+	{\upshape}{}        % Body font & indent (changed to upright)
+	{\bfseries}{.}      % Theorem head font  (plain) and punctuation (plain)
+	{.5em}{\thmhead@plain{#1}{#2}{\textsf{#3}}} % Space after theorem head (plain) and head formatting (custom note shape)
+\theoremstyle{romansans}
 \newcommand{\providecounter}[1]{%
   \ifcsname c@#1\endcsname % do nothing, counter allready defined
   \else
@@ -41,12 +49,15 @@
 \newtheorem{Definition}[definition]{Definition}
 \fi%
 \usepackage{xspace}
-\newcounter{assumption}
-\newtheorem{Assumption}[assumption]{Assumption}
+\newcounter{requirement}
+\newtheorem{Requirement}[requirement]{Requirement}
 \newcounter{llemma} % For some reason 'lemma' dosn't work, so I've called it llemma
 \newtheorem{Lemma}[llemma]{Lemma}
 
+\let\origMapsTo=\mapsto % save it as Def redefines it
 \input{../Def/Def}
+\let\mapsto=\origMapsTo % undo changes
+%\renewcommand{\mapsto}{\mathrel{\origMapsTo\!}}
 \renewcommand\scaleKw{1} % Turn off the horrible keyword squashing in the formalism
 
 % The following code defines a macro, \markLine that puts it’s argument in the margins on either side of the next line
@@ -96,17 +107,34 @@
 }
 \defActiveMathChar{.}{\singleDot}
 
-\newcommand{\M}[3]{\ensuremath{\Kw{M}\oR{}#1\semiColon{}#2\semiColon{}#3\cR}}
+% Just to ensure consistency amongst the various syntactic forms when we use them in maths
+\newcommand{\M}[3]{\ensuremath{\Kw{M}\oR{}#1\semiColon\,#2\semiColon\,#3\cR}}
+\newcommand{\prom}[2]{\ensuremath{#1\ \Kw{promote}\ \oC#2\cC}}
+\newcommand{\cprom}[1]{\prom{\Kw{capsule}}{#1}}
+\newcommand{\call}[3]{#1\singleDot#2\oR#3\cR}
+\newcommand{\new}[2]{\Kw{new}\ #1\oR#2\cR}
+\newcommand{\field}[3]{#1\,#2\,#3}
+\newcommand{\try}[2]{\Kw{try}\ \oC#1\cC\ \Kw{catch}\ \oC#2\cC}
+\newcommand{\clazz}[4]{\Kw{class}\ #1\ \Kw{implements}\ #2\ \oC#3\semiColon#4\cC}
+\newcommand{\iclazz}[3]{\Kw{interface}\ #1\ \Kw{implements}\ #2\ \oC#3\cC}
+\newcommand{\amethod}[4]{#1\,\Kw{method}\,#2\,#3\oR#4\cR}
+\newcommand{\method}[5]{\amethod{#1}{#2}{#3}{#4}\,#5}
+\newcommand{\trys}[3]{\Kw{try}^{#1}\oC#2\cC\ \Kw{catch}\ \oC#3\cC}
 
-\let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
-\renewcommand{\mapsto}{\mathrel{\origMapsTo\!}}
-\newcommand{\invariant}{\Kw{invariant}\oR\cR}
+\newcommand{\fmdf}{\V\kappa} % field modifier metavariable, I'm open to different letters
+
+\newcommand{\invariant}[1]{\call{\Kw{read}\,#1}{\Kw{invariant}}{}}
 \renewcommand\ttfamilywithbold\ttfamily
 \lstset{
 %  basicstyle=\ttfamilywithbold,
 %  keywordstyle=\small\ttfamily\bfseries\color{darkRed},
-  morekeywords={assert, expose, iso, isolated, baloon}
+  morekeywords={assert, expose, iso, isolated, baloon, rep}
   }
+
+\lstdefinelanguage{FortyThree}[]{FortyTwo}{morekeywords={rep,promote}} % 42 but with rep keyword
+\lstdefinelanguage{FortyFour}[]{FortyThree}{basicstyle=\small\ttfamilywithbold\bfseries} % 43 but all code in bold, for use in math sections
+\lstset{language=FortyThree}
+
 \newcommand{\thm}[1]{\textsf{#1}}
 
 %\HideNotes
@@ -121,12 +149,12 @@
 \newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}	}
 \newmathword{\HNO}{headNotObservable}
 \newmathword{\dom}{dom}
-\newmathword{\CNC}{capsuleNotCircular}
-\newmathword{\NCM}{notCapsuleMutating}
-\newmathword{\WE}{wellEncapsulated}
+\newmathword{\RNC}{repNotCircular}
+\newmathword{\NRM}{notRepMutating}
+\newmathword{\ENR}{encapsulatedRep}
 \newmathword{\rog}{rog}
 \newmathword{\mrog}{mrog}
-\newmathword{\cf}{capsuleFields}
+\newmathword{\rf}{repFields}
 \newmathword{\OK}{OK}
 \newmathword{\muty}{mutatable}
 \newmathword{\mony}{monitored}
@@ -137,19 +165,30 @@
 \newmathword{\encap}{encapsulated}
 \newmathword{\immut}{immutable}
 \newmathword{\VS}{validState}
-\renewcommand{\vs}{\ensuremath{\Many{v}}\xspace}
+
+\let\f=\undefined
+\let\m=\undefined
+\let\T=\undefined
+\let\Many=\undefined
+
+\newcommand{\CD}{\mathit{CD}}
+\renewcommand{\vs}{\mathit{vs}}
+\newcommand{\ws}{\mathit{ws}}
+\renewcommand{\es}{\mathit{es}}
+\newcommand{\Cs}{\mathit{Cs}}
+\newcommand{\Ms}{\mathit{Ms}}
+\newcommand{\Fs}{\mathit{Fs}}
+\newcommand{\Ps}{\mathit{Ps}}
+\newcommand{\As}{\mathit{As}}
 
 % Too much space arround itemizes used in definitions, so fix that
 \newenvironment{iitemize}{\SS[0.25]\begin{itemize}}{\end{itemize}\SS[0.25]}
 \newenvironment{ienumerate}{\SS[0.25]\begin{enumerate}}{\end{enumerate}\SS[0.25]}
 
-\NewDocumentCommand\ty{o O{\S; \G} O{\vdash} m m}{%
-	\ensuremath{#2; %
-		\IfNoValueTF{#1}{\E}{\ensuremath{\E[#1]}}%
-		#3 #4 : #5}\xspace}
-\NewDocumentCommand\nty{o m m}{\ty[#1][\S; \G][\nvdash]{#2}{#3}}
-\NewDocumentCommand\tyr{o m m}{\ty[#1][\Ss; \emptyset]{#2}{#3}}
-\NewDocumentCommand\ntyr{o m m}{\ty[#1][\Ss; \emptyset][\nvdash]{#2}{#3}}
+\NewDocumentCommand\ty{O{\s} O{\G} O{\vdash} m m}{\ensuremath{#1; #2 #3 #4 : #5}\xspace}
+\NewDocumentCommand\nty{O{\s} O{\G} m m}{\ty[#1][#2][\nvdash]{#3}{#4}}
+\NewDocumentCommand\tyr{O{\s} m m}{\ty[#1][\emptyset]{#2}{#3}}
+\NewDocumentCommand\ntyr{O{\s} m m}{\nty[#1][\emptyset]{#2}{#3}}
 
 \renewcommand{\h}{\ensuremath{\square}\xspace}
 %\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
@@ -163,10 +202,38 @@
 %\renewcommand{\l}{\ensuremath{\sigma}\xspace}
 %\renewcommand{\v}{\ensuremath{\sigma}\xspace}
 
-\newcommand{\Ss}{\ensuremath{\Sigma^\sigma}\xspace}
-\renewcommand{\S}{\ensuremath{\Sigma}\xspace}
 \let\@=\undefined % So I don't accidently type it!
 %\HideNotes
 %\NoNotes
-\newcommand{\square}{[]}
-\newcommand{\nvdash}{\not\vdash}
+%\newcommand{\square}{[]} % use an actual square as it's more standard
+%\newcommand{\nvdash}{\not\vdash}
+
+\newcommand{\C}[2][\s]{\ensuremath{\mathrm{C}^{#1}_{#2}}}
+\newcommand{\mread}[2]{\ensuremath{#2{::}#1}}
+\newcommand{\derep}[1]{\widetilde{#1}}
+
+\renewcommand{\equals}{\,\Kw{=}\,} % Because there are usually modifies on both the left and right, it looks better with spaces
+\renewcommand{\Terminale}[1]{\text{\lstinline|#1|}}
+%\newcommand{\WT}[2][\s]{#1 \vdash #2}
+
+
+\NewDocumentCommand\rangeX{O{,} m m}{\ensuremath{#2 #1 \ldots #1 #3}}
+
+% For dot dot dot expantions \range[<sep>][<start>][<end>]{<body>} == <body>_<start> <sep>...<sep> <body>_<end>
+% Using the default parameter vlaues, this is "<body>_1 , ..., <body>_n"
+\NewDocumentCommand\range{O{,} O{1} O{n} m}{\rangeX[#1]{#4_{#2}}{#4_{#3}}}
+% Similarly, but with two bodiies:   <body1>_1 <body2>_1 ,..., <body2>_n <body2>_n
+% This automatically add a space beetween the <body1>_i and <body2>_i, so start <body2> with a \! to supress this (e.g. if <body2> starts with an operator, and so comes with it's own spacing)
+\NewDocumentCommand\drange{O{,} O{1} O{n} m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}}{#4_{#3}\,#5_{#3}}}
+% Ditto, but with 3 bodies
+\NewDocumentCommand\trange{O{,} O{1} O{n} m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6_{#2}}{#4_{#3}\,#5_{#3}\,#6_{#3}}}
+
+% Like \drange, but the second body does not get a subscript:  <body1>_1 <body2> ... <body2>_n <body2>
+% Usefull for symbols or constants
+\NewDocumentCommand\drangex{O{,} O{1} O{n} m m}{\rangeX[#1]{#4_{#2}\,#5}{#4_{#3}\,#5}}
+% Like \trange, but the 3rd argument doesn't get a subscript
+\NewDocumentCommand\trangex{O{,} O{1} O{n} m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6}{#4_{#3}\,#5_{#3}\,#6}}
+
+% Reduction rule: \rrule{<name>}{<s1>}{<e1>}{<s2>}{<e2>}
+% Just put side conditions after it in \text{...}
+\newcommand{\rrule}[5]{\textsc{(#1)}\ #2|\EV[#3] \rightarrow #4|\EV[#5]}

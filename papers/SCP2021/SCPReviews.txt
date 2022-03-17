@@ -250,7 +250,7 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
   is not looking great for clearing up the things I do not
   understand...
 //added immaginary appendix with a concrete type system.
-//TOCHANGE: actually address this point properly
+//TORESPOND: explain what we've done
 
 - 505: [..]sequence expressions in the language[..]you could abuse the fact that
   method calls have multiple arguments[..]  Featherweight Java also has no sequencing[..]
@@ -259,14 +259,6 @@ I think rev1 is arguing on what capsule fields 'could be' not that we are wrong 
 - 558: "Our setting does ensure termination of the invariant of[..]so, this is a less
   interesting property (albeit not uninteresting) in my opinion.
 //Yes, solving the halting problem would have been much more interesting but would deserve a paper of its own. Here, more modesly, we just show that it terminates because of determinism+altready terminated. We are unsure how to clarify this better in the paper.
-//TOFIND: mention how FJ-like languages can encode other language forms like sequencing and give a citation
-
-- 564: I'm a little bit dissapointed in the formalism section. It
-  feels like it fleshes out the unexpected stuff and leaves the
-  interesting things informal by referring back to previous
-  (informal) sections. I still have most of my questions from
-  before the section.
-//TOFIND: go through this section and find such references and expand them out more formally?
 
 ** Section 6
 - 664: [..]Would you get the same pathological numbers if you removed the checks
@@ -381,10 +373,6 @@ I understand not simply wanting to repeat a formalization of L42's type system, 
 but they're not precise enough to actually nail down this paper's apparently-novel form of capsule, or to know that they're actually sound.  Of course it's possible I've misunderstood or missed something, but I've read the paper multiple times and still have these concerns, so at a minimum additional clarity is required.
 //former 42 literature is what has been misunderstood. 42 never had any kind of field allowing to return a capsule value. You need destructive reads for that and 42 never had those.
 //TOCHANGE: clarify when we change capsule field terminology
-
-The contextual typing judgments this paper assumes, where the typing judgment depends on the enclosing context, is not a form I've ever seen before, despite having worked in this area.
-//Isaac, do you want to expan on this?
-//TOCHANGE: change the way we abstract over the type-system
 
 I'd settle for a clear formalization of an example type system alongside a convincing prose argument that it's "close enough" to an existing type system, if that argument can be made satisfactorily.  (I recognize there are reasons for not wanting to get side-tracked with an additional type safety proof, and this paper already reflects a significant amount of work.) The tricky bit there would be making an argument about the capsule treatment. For that I'd expect to see formal type rules dealing with capsule fields for this paper's work, the corresponding rules in L42 (those known to be sound and to have specific characterizations) that would be different, and a clear argument for why this paper's treatment doesn't weaken any of L42's major guarantees (including safe concurrency, see next paragraph).
 
@@ -544,34 +532,11 @@ should be put in a single place (either in Section 9 as in the paper, or earlier
 
 - p12, Fig. 1: your formal language should be a bit more expressive and include the necessary expressions to cover your example (a bit of integer arithmetic and Boolean expressions beyond 'true' and 'false', conditionals and loops). As such, your language is not even Turing-complete...
 //...
-//TOCHANGE: give a citation showing how OO is turing complete....
-
-- p12, l30: "The main expression is reduced in the context of a memory and a program": it is not crystal clear (even if I eventually understood what you mean here)
-//So this is literally the first time you see a small step reduction for an imperative OO language? in that case you are going great!
-//TOCHANGE: this ought to be fixed when we put the new reduction rules in place
-
-- p12, l57: "Most of our expressions are standard". It is true. Yet, each of them should be (quickly) introduced to have a self-contained paper readable by a non-expert of the field.
-//TOCHANGE: do this
-
-- p13, Fig.2: several rules are missing. At the least, a complete set of rules should be provided in Appendix. For instance, no (presented) rule introduces \Epsilon and \Epsilon_v, so the presented set of rules is hardly understandable without having in mind the missing rules (assuming that the reader knows them, what is a quite strong assumption)
-//Is Epsilon the context? so this guy have no clue of the standard contextual rules?
-// TOCHANGE: explain how they use and give a citations
-
-- p13, Fig.2, rule New: 'l fresh' should be an hypothesis of this rule
-//we could add/we added it for more clarity, but it is not strictly needed, the map o,l->.. would not be well formed otherwise.
-// TOCHANGE: make sure we did add it
+//TORESPOND: give a citation showing how OO is turing complete....
 
 - p13, Fig.2, rule MCall: instead of having a 'if-then-otherwise', you should split this rule in two different rules (one for each case).
 //we can try and see how it looks
 // TORESPOND: No, it's going to get bigger now, so this will be horrible
-
-- p13, l27: an example for M(l;e1;e2) would be welcome, as well as another one for the strong exception safety remark.
-//? whwre is line 27 on that page?
-// TOCHANGE: add an example instead of just describing how it works
-
-- p13, l46: "They are standard" --> true, yet present your notation and introduce each of the presented rules and add a reference to a general presentation
-//We can add a 'discussion anyway', may be in the appendix?
-// TOCHANGE: explain CTX v and brefily the otherse?
 
 - p13, l49: "For example, in L42 we implement [...]" --> do not mix the formal presentation with implementation details. Instead, you could add this remark in Section 8.
 //You just asked us to add examples in our formal stuff 4 times over!
@@ -606,18 +571,6 @@ consider this single annotation:
 "Owner.Same(Owner.ElementProxy(children), children)"
 That is why we considered tokens to be a better metric.
 // TOCHANGE: clarify this in the text
-
-- p35, l28: the formal definition of 'rog' is missing
-//sure, lets' add that one too
-// TOCHANGE: add this
-
-- p35, l47: what is \Epsilon[\Epsilon]?
-//we need to study a comprehensive explanation text for rev3 discussing the main ways the FJ style work
-//ISAAC: this may get deleted when I change the typing judgment form
-
-- p38, l40: non-CTXV reduction rule --> the rule CTXV has never been introduced
-//check, and add
-// TOCHANGE: just add a trivial case for CtxV?
 
 // ISAAC: I will go through these
 

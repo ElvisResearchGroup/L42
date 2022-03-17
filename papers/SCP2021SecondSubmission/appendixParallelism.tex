@@ -60,9 +60,10 @@ The name \emph{non-mutable computation} comes from the fact that, even if the ca
 
 More in general, \Q|$@$Cache.ForkJoin| works only on methods whose body is exactly a round parenthesis block, with some local variable initialization expressions and a conclusive expression.
 Thus, fork-join methods will follow this specific syntactic pattern:
-\begin{lstlisting}
-$@$Cache.ForkJoin $\mdf$ method $T_0$ $\m$($T_1 x_1,\ldots,T_n x_n$) = (  $T'_0$ $x_0$=$e_0$  $\ldots$  $T'_k$ $x_k$=$e_k$  e )
-\end{lstlisting}
+\IOComm{TODO!!! The following code won't compile anymore!}
+%\begin{lstlisting}
+%$@$Cache.ForkJoin $\mdf$ method $T_0$ $\m$($T_1 x_1,\ldots,T_n x_n$) = (  $T'_0$ $x_0$=$e_0$  $\ldots$  $T'_k$ $x_k$=$e_k$  e )
+%\end{lstlisting}
 where the varius expressions $e_0...e_k$ are execuited in parallel, and the final expression $e$ is executed after all of $e_0...e_k$.
 Different forms of parallelism impose different requirements on the free variables that expressions $e_0...e_k$ can use.
 
