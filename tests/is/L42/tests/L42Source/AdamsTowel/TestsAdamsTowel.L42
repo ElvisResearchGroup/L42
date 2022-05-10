@@ -17,6 +17,9 @@ TestQuote=(
   ss=S.List['hi()]
   {}:Test"quote"(S"hi()"==ss.left())
   )
+TestS_IsEmpty=(
+  {}:Test""(S"".isEmpty())
+  )
 OptS=Collection.optional(S)
 OptSize=Collection.optional(I)
 TestOptS=(

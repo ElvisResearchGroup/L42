@@ -125,7 +125,7 @@ Turns the receiver into its nearest double representation.}
 method This1.Double toDouble()=native{trusted:longToDouble} error void
 
 #norm{nativeKind=Long, nativePar=This1.Math$ArithmeticError
-  typeDep=This,This1.Num,This1.S,This1.I,This1.Double,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call, This1.Math$ArithmeticError
+  typeDep=This,This1.Num,This1.S,This1.I,This1.Double,This1.Bool,This1.S$StringBuilder,This1.S$ParseError,This1.HasToS,This1.AbstractTowel,This1.Cache.Call, This1.Math$ArithmeticError
   coherentDep=This,This1.Num,This1.Bool,This1.S,This1.I,This1.Double, This1.Math$ArithmeticError
   usedMethods=This1.S.toLong(),This1.S.longToNum(that,denominator), This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()

@@ -137,7 +137,7 @@ The predecessor operation. Simply subtracts 1}
 method This pred()=native{trusted:pred} error void
 
 #norm{nativeKind=Double
-  typeDep=This,This1.I,This1.Long,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
+  typeDep=This,This1.I,This1.Long,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.S$ParseError,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
   coherentDep=This,This1.I,This1.Long,This1.Num,This1.Bool,This1.S
   usedMethods=This1.S.toDouble(),This1.S.doubleToNum(that),This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()
