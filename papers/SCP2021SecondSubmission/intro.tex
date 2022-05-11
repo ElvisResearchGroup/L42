@@ -2,7 +2,7 @@
 \label{s:intro}
 %\newpage
 %\LINE
-Representation invariants (sometimes called class invariants, object invariants, and type refinements) are
+Representation invariants (sometimes called class invariants, object invariants, or type refinements) are
 a useful concept when reasoning about software correctness, particularly with OO (Object Oriented) languages. Such invariants are predicates on the state of an object and its ROG (Reachable Object Graph).
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a method called \Q@invariant()@
@@ -20,7 +20,6 @@ Some interpretations of the visible state are more permissive, requiring the inv
 In the pack-unpack approach, objects are either in a `packed' or `unpacked' state, 
 the invariant of `packed' objects must hold, whereas unpacked objects can be broken.
 To complicate matters further, OO languages often permit rampant aliasing of mutable state, thus any mutation may inadvertently break the invariant of an arbitrary object.
-To be feasible, most runtime verification systems only require that an invariant holds of an object immediately after creation, a field update, or a `pack` operation; the invariant of an object may later be broken whenever an arbitrary object in its ROG is mutated.
 
 %------------
 In this paper we propose a much stricter invariant protocol: at all times, the invariant of every object involved in execution must hold; thus they can be broken when the object is not (currently) involved in execution. 
@@ -51,7 +50,7 @@ However, if \Q@min@ is $\geq$ \Q@this.max@, \Q@set@ will violate our stricter ap
 \Q@Do.stuff(this);@ between the two field updates, arbitrary user code could observe a broken object; 
   adding such a call is however allowed by visible state semantics.
 
-In this paper, we illustrate a \emph{box pattern}, where we can provide a modified
+In this paper, we illustrate the \emph{box pattern}, where we can provide a modified
 \Q@Range@ class with the desired client interface, while respecting the principles of our strict protocol:
 \begin{lstlisting}
 class BoxRange{//no invariant in BoxRange
