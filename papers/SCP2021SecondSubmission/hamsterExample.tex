@@ -19,7 +19,7 @@ class Point { Double x; Double y; Point(Double x, Double y) {..}
 }
 class Hamster { Point pos; Hamster(Point pos) {..} }//pos is imm by default
 class Cage {
-  capsule Hamster h;
+  rep Hamster h;
   List<Point> path; //path is imm by default
   Cage(capsule Hamster h, List<Point> path) {..}
   read method Bool invariant() { return this.path.contains(this.h.pos); }
@@ -31,12 +31,12 @@ class Cage {
 }
 \end{lstlisting}
 
-The \Q@invariant()@ method on \Q@Cage@ simply verifies that the \Q@pos@ of \Q@this.h@ is within the \Q@this.path@ list. This is accepted by our invariant protocol since \Q@path@ is an \Q@imm@ field (hence deeply immutable) and \Q@h@ is a \Q@capsule@ field (hence fully encapsulated). The \Q@path.contains@ call is accepted by our type system as it only needs \Q@read@ access: it merely needs to be able to access each element of the list and call \Q@Point@'s equal method, which takes a \Q@read@ receiver and parameter.
-The \Q@move@ method actually moves the hamster along the path, but to ensure that our restrictions on \Q@capsule@ fields are respected we forwarded some of the behaviour to separate methods: \Q@pos()@ which returns the position of \Q@h@ and \Q@moveTo(p)@ which updates the position of \Q@h@.
-The \Q@pos@ method is needed since \Q@move()@ is a \Q@mut@ method, and so any direct \Q@this.h@ access would cause it to be a capsule mutator, which would make the program erroneous as \Q@move()@ uses \Q@this@ multiple times.
-Similarly, we need the \Q@moveTo(p)@ method to modify the ROG of the \Q@h@ field, this must be done within a capsule mutator that uses \Q@this@ only once.
+The \Q@invariant()@ method on \Q@Cage@ simply verifies that the \Q@pos@ of \Q@this.h@ is within the \Q@this.path@ list. This is accepted by our invariant protocol since \Q@path@ is an \Q@imm@ field (hence deeply immutable) and \Q@h@ is a \Q@rep@ field (hence fully encapsulated). The \Q@path.contains@ call is accepted by our type system as it only needs \Q@read@ access: it merely needs to be able to access each element of the list and call \Q@Point@'s equal method, which takes a \Q@read@ receiver and parameter.
+The \Q@move@ method actually moves the hamster along the path, but to ensure that our restrictions on \Q@rep@ fields are respected we forwarded some of the behaviour to separate methods: \Q@pos()@ which returns the position of \Q@h@ and \Q@moveTo(p)@ which updates the position of \Q@h@.
+The \Q@pos@ method is needed since \Q@move()@ is a \Q@mut@ method, and so any direct \Q@this.h@ access would cause it to be a rep mutator, which would make the program erroneous as \Q@move()@ uses \Q@this@ multiple times.
+Similarly, we need the \Q@moveTo(p)@ method to modify the ROG of the \Q@h@ field, this must be done within a rep mutator that uses \Q@this@ only once.
 
-As our \Q@path@ and \Q@h@ fields are never themselves updated, the only point where the ROG of our \Q@Cage@ can mutate is in the \Q@moveTo(p)@ capsule mutator, thus 
+As our \Q@path@ and \Q@h@ fields are never themselves updated, the only point where the ROG of our \Q@Cage@ can mutate is in the \Q@moveTo(p)@ rep mutator, thus 
 our invariant protocol will insert runtime invariant checks only here and at the end of the constructor.
 
 \begin{comment}
@@ -104,9 +104,9 @@ Though we don't want either \Q@pos@ or \Q@path@ to ever mutate, Spec\# currently
 Note that this prevents multiple \Q@Cage@s from sharing the same point instance in their \Q@path@.
 %, unless they are owned by the same object (such as a \Q@DoubleCage@ containing two \Q@Hamster@s).  
 Had we made \Q@Point@ an immutable class, we would get no such restriction. A similar problem applies to our \Q@pos@ field: the \Q@pos@ of \Q@Hamster@s in different  \Q@Cage@s cannot be the same \Q@Point@ instance.
-Note how if we consider being in the ROG of an object's capsule fields as being `owned' by the object, our \Q@capsule@ fields behave like \Q@Rep@ fields; similarly, \Q@mut@ fields (that are in the ROG of a \Q@capsule@ field) behave like \Q@Peer@ fields.
+Note how if we consider being in the ROG of an object's \Q!rep! fields as being `owned' by the object, our \Q@rep@ fields behave like \Q@Rep@ fields; similarly, \Q@mut@ fields (that are in the ROG of a \Q@rep@ field) behave like \Q@Peer@ fields.
 
-The \Q@expose(this)@ block is needed, since in Spec\# in order to modify a field of an object (like \Q@this.h.pos@), we must first ``expose'' its owner (the \Q@Cage@). During an \Q@expose@ block, Spec\# will not assume the invariant of the exposed object, but will ensure it is re-established at the end of the block. This is similar to our concept of capsule mutators (like our \Q@moveTo@ method above), however it is supported by adding an extra syntactic construct (the \Q@expose@ block), which we avoid.
+The \Q@expose(this)@ block is needed, since in Spec\# in order to modify a field of an object (like \Q@this.h.pos@), we must first ``expose'' its owner (the \Q@Cage@). During an \Q@expose@ block, Spec\# will not assume the invariant of the exposed object, but will ensure it is re-established at the end of the block. This is similar to our concept of rep mutators (like our \Q@moveTo@ method above), however it is supported by adding an extra syntactic construct (the \Q@expose@ block), which we avoid.
 
 Finally, note the custom \Q@Equal(x,y)@ method on \Q@Point@: this is needed since we can't overload the usual \Q@Object.Equals(other)@ method because it is marked as \Q@Reads(ReadsAttribute.Reads.Nothing)@, which requires the method not read any fields, even those of its receiver.
 We resorted to making our own \Q@Equal(x,y)@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@Pure@, this requires that it can only read fields of objects owned by the \emph{receiver} of the method, so a method \Q@[Pure] bool Equal(Point that)@ can read the fields of \Q@this@, but not the fields of \Q@that@. Of course this would make the method unusable in \Q@Cage@ since the \Q@Point@s we are comparing equality against do not own each other. As such, the simplest solution is to just pass the fields of the other point to the method.

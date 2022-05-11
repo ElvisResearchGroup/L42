@@ -105,7 +105,7 @@ This technique however does not monitor the effects of aliasing, as such they ma
 %the invariant code at the start and end of every public
 %method; this even include trivial getters.
 %In  our approach, we call the \Q@invariant()@ method
-%one time at the end of each setter, capsule mutator method and constructor.
+%one time at the end of each setter, rep mutator method and constructor.
 %We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
 %Of course, \Q@invariant()@ can still be called indirectly, for example by calling a setter.
 %We expect our approach to result in a dramatic reduction over the number of required checks,

@@ -2,20 +2,25 @@
 \label{s:intro}
 %\newpage
 %\LINE
-Representation invariants (sometimes called class invariants or object invariants) are
-a useful concept when reasoning about software correctness in OO (Object Oriented) languages. Such invariants are predicates on the state of an object and its ROG (Reachable Object Graph).
+Representation invariants (sometimes called class invariants, object invariants, and type refinements) are
+a useful concept when reasoning about software correctness, particularly with OO (Object Oriented) languages. Such invariants are predicates on the state of an object and its ROG (Reachable Object Graph).
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a method called \Q@invariant()@
 that returns a boolean.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
+In a purely functional setting, sound runtime checking is trivial: the runtime simply needs to check the invariant each time a value/object is created (or in the case of refinement types, converted to such a type).
 
-Invariants are designed to hold most of the time, however it is commonly required to (temporarily) violate invariants while performing complex sequences of mutations.
+In an impure setting, like most OO languages, 
+operations on data structures are often implemented as complex sequences of mutations,
+where the invariant is temporarily broken.
 To support this behaviour, most invariant protocols present in the literature allow invariants to be broken and observed broken.
 The two main forms of invariant protocols are \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Pack-Unpack/Boogie methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}.
 In visible state semantics, invariants can be broken when a method on the object is active (that is, currently executing).
 Some interpretations of the visible state are more permissive, requiring the invariants of receivers to hold only before and after every public method call, and after constructors. 
 In the pack-unpack approach, objects are either in a `packed' or `unpacked' state, 
 the invariant of `packed' objects must hold, whereas unpacked objects can be broken.
+To complicate matters further, OO languages often permit rampant aliasing of mutable state, thus any mutation may inadvertently break the invariant of an arbitrary object.
+To be feasible, most runtime verification systems only require that an invariant holds of an object immediately after creation, a field update, or a `pack` operation; the invariant of an object may later be broken whenever an arbitrary object in its ROG is mutated.
 
 %------------
 In this paper we propose a much stricter invariant protocol: at all times, the invariant of every object involved in execution must hold; thus they can be broken when the object is not (currently) involved in execution. 
@@ -46,7 +51,7 @@ However, if \Q@min@ is $\geq$ \Q@this.max@, \Q@set@ will violate our stricter ap
 \Q@Do.stuff(this);@ between the two field updates, arbitrary user code could observe a broken object; 
   adding such a call is however allowed by visible state semantics.
 
-Using the \emph{box pattern}, we can provide a modified
+In this paper, we illustrate a \emph{box pattern}, where we can provide a modified
 \Q@Range@ class with the desired client interface, while respecting the principles of our strict protocol:
 \begin{lstlisting}
 class BoxRange{//no invariant in BoxRange
@@ -78,6 +83,7 @@ Also note that many VMs and compilers can optimize away wrapper objects in many 
 This is even more applicable in languages with inlined structs, like C++ or C\#.
 }
 With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution.
+In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
 
 \subheading{Contributions}
 Invariant protocols allow for objects to make necessary changes that might make their invariant temporarily broken.
@@ -86,8 +92,7 @@ arguably not a very useful guarantee as observed by
 Gopinathan \etal's work.~\cite{Gopinathan:2008:RMO:1483018.1483028}
 Approaches such as \textit{pack/unpack}~\cite{DBLP:journals/jot/BarnettDFLS04} 
 represent potentially invalid objects in the type system; this
-encumbers the type system and the syntax with features whose only purpose is to distinguish objects with broken invariants.
-%, while (at least in the case of Spec\#) still not soundly supporting I/O and exceptions.
+encumbers the type system and the syntax with features whose only purpose is to distinguish objects with broken invariants. %, while (at least in the case of Spec\#) still not soundly supporting I/O and exceptions.
 The core insight behind our work 
 is that we can use a small number of decorator-like design patterns to avoid exposing those potentially invalid objects 
 in the first place, thus avoiding the need for representing them at the type level.
@@ -104,17 +109,15 @@ in the first place, thus avoiding the need for representing them at the type lev
 %On the other hand, approaches such as \textit{pack/unpack}~\cite{SpecSharp} modify the type system with features that serve no general purpose other than help expose the semantics behind broken object invariants.
 %The core insight behind our work is that we can design a general purpose language as presented in this paper that does not require any \emph{invariant-specific} language mechanisms but instead we show how a clever use of capabilities and small number of design patterns (Decorator-like \textit{Box} and \textit{Transformer}) is sufficient to capture invariant guarantees that are comparable to the state of the art object-oriented verification systems.
 
-In the remainder of this paper, we discuss how to combine runtime checks and capabilities
+In this paper, we discuss how to combine runtime checks and capabilities
 to soundly enforce our strict invariant protocol.
 Our solution only requires 
 that all code is well-typed, and works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.
 
-We formalise our approach and, in \ref{s:proof}, prove that our use of Reference and Object Capabilities soundly enforces our invariant protocol.
-
-We have fully implemented our protocol in L42\footnote{
+We formalise and prove our approach sound, and have fully implemented our protocol in L42\footnote{
 Our implementation is implemented by checking that a given class conforms to our protocol, and injecting invariant checks in the appropriate places.
 An anonymised version of L42, supporting the protocol described in this paper, together with the full code of our case studies, is available at \url{http://l42.is/InvariantArtifact.zip}. %We believe it would be easy to port our work on Pony and Gordon \etal's language.
-}, we used this implementation to implement many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic.
+}, and used it to run our various case studies.
 It is important to note that unlike most prior work, we soundly handle catching of invariant failures and I/O.
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
@@ -124,9 +127,20 @@ It is important to note that unlike most prior work, we soundly handle catching 
 %Sections \ref{s:immutable} and \ref{s:encapsulated} explain and motivate how our protocol can handle invariants over immutable and encapsulated mutable data, respectively.
 %Section \ref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#: they performed 5 orders of magnitude more invariant checks, and required 60\% more annotations, respectively.
 %Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclusions.
-We describe our case studies in Section~\ref{s:case-studyAll}.
-Our approach may seem very restrictive;
-the programming patterns in Section~\ref{s:patterns} show how our approach does not hamper expressiveness; in particular we show how batch mutation operations can be performed with a single invariant check, and how the state of a `broken' object can be safely passed around.
+
+The remainder of this paper proceeds as follows:
+\begin{itemize}
+	\item Section \ref{s:TMsAndOCs} explains background information necessary to understand our approach
+	\item Section \ref{s:protocol} fully explains our novel invariant protocol, and our novel field type for mutable data
+	\item Section \ref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the L42 (and similar) type systems
+	\item Section \ref{s:formalism} formalises our runtime invariant checking, and what it means it to soundly enforce our invariant protocol
+	\item Section \ref{s:case-studyAll} many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic
+	\item Section \ref{s:patterns} show how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around
+	\item Section \ref{s:L42} summarises how we have implemented our protocol in L42
+	\item Section \ref{s:related} presents related work, and Section \ref{s:conclusion} concludes
+	\item Section \ref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in Section \ref{s:formalism} sound
+	\item Section \ref{s:typesystem} presents a simple L42-inspired type system and proves that it satisfies the requirements in Section \ref{s:proof}	
+\end{itemize}
 
 %We proposed our approach for integration in the L42 language, and after minor reworking it has been accepted, and the current version of L42 integrated our 
 %invariant checking protocol in a cohesive way with the support for caching and parallelism.

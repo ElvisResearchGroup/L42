@@ -40,7 +40,7 @@
 %if there was an invariant with visible state semantic on \Q@List@, calling \Q@List.size()@ would require 
 %calling \Q@List.invariant()@ before and after the method execution. If the list has more then one element, the recursive \Q@size@ call would also call the invariant twice.
 %We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. This approach allows the validation of many interesting and practically useful data-structures.
-%However the limitations of capsule mutator methods mean that any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters, or returning \Q@mut@, cannot be trivially forwarded.
+%However the limitations of rep mutator methods mean that any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters, or returning \Q@mut@, cannot be trivially forwarded.
 %% since they necessitate mutating a \Q@capsule@, instead complicated and involved forwarding would be needed, if it is even possible.
 %Our example is about a list of immutable objects.
 %To instead validate a list of \Q@mut@ objects we would need to use our box pattern not just around the list,
@@ -125,7 +125,7 @@ class Family {
       for(Person p : this.parents) { p.processDay(dayOfYear); }
     }
   }
-  capsule Box box;
+  rep Box box;
   Family(capsule List<Person> ps,capsule List<Person> cs){this.box=new Box(ps,cs);}
   mut method Void processDay(Int dayOfYear) { this.box.processDay(dayOfYear); }
   mut method Void addChild(capsule Person child) { this.box.children.add(child); }
@@ -143,7 +143,7 @@ Note how we created a \Q!Box! class to hold the \Q!parents! and \Q!children!.
 Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay(dayOfYear)!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!processDay(dayOfYear)! is atomic: it updates all its contained \Q!Person!s together.
 %This capture the intention of consistently calling \Q@Person.processDay@ once for all the persons as an atomic operation.
 %This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
-Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause semantic problems if, for example, a child was updated before their parent.
+Had we instead made the \Q!parents! and \Q!children! \Q!rep! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause semantic problems if, for example, a child was updated before their parent.
 
 %\loseSpace
 We have a simple test case that calls \Q!processDay(dayOfYear)! on a \Q!Family! $1{,}095$ ($3\times365$) times.

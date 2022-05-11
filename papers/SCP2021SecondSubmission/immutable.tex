@@ -56,7 +56,7 @@ restricts their creation, the above example is prevented.
 
 Moreover, since our system allows  
 non-determinism only through \Q@mut@ methods on object capabilities, 
-even if an object has a \Q@capsule@ field referring to a ``file'' object, it would be unable to read such file during an invariant, since a \Q@mut@ reference would be required, but only a \Q@read@ reference would be available.
+even if an object has a \Q@rep@ field referring to a ``file'' object, it would be unable to read such file during an invariant, since a \Q@mut@ reference would be required, but only a \Q@read@ reference would be available.
 
 \subheading{Allowing Internal Mutation Through Back Doors?}
 Rust~\cite{matsakis2014rust} and Javari~\cite{TschantzErnst05}

@@ -15,10 +15,11 @@ Our protocol guarantees that the whole ROG of any object involved in execution (
 %Our protocol is designed only to verify invariants over immutable and encapsulated state.
 As the \Q!invariant()! is used to determine whether \Q!this! is broken, it may receive a broken \Q@this@; however this will only occur for calls to \Q!invariant()! inserted by our approach. User written calls to \Q!invariant()! are guaranteed to receive a valid \Q!this!.
 
-We restrict \Q@invariant()@ methods so that they represent a predicate over the receiver's \Q!imm! and \Q!capsule! fields. To ensure that \Q!invariant()! methods do not expose a potentially broken \Q!this! to the other objects, we require that all occurrences of \Q!this!\footnote{Some languages allow the \Q@this@ receiver to be implicit. For clarity in this work we require \Q@this@ to be always used explicit.} 
-%(as a sub-expression) 
-in the \Q!invariant()!'s body are the receiver of a field access (\Q!this.f!) of an \Q!imm!/\Q!capsule! field, or the receivers of a method call (\Q!this.m(..)!) of a final (non-virtual) method that in turn satisfies these restrictions. No other uses of \Q!this! are allowed, such as as the right hand side of a variable declaration, or an argument to a method.
-An equivalent alternative design could instead rely on static \Q@invariant(..)@ methods taking each \Q!imm! and \Q!capsule! field as a parameter.
+We restrict \Q@invariant()@ methods so that they represent a predicate over the receiver's \Q!imm! and \Q!rep! fields. To ensure that \Q!invariant()! methods do not expose a potentially broken \Q!this! to the other objects, we require that all occurrences of \Q!this!\footnote{Some languages allow the \Q@this@ receiver to be implicit. For clarity in this work we require \Q@this@ to be always used explicit.} 
+%(as a sub-expression)
+
+in the \Q!invariant()!'s body are the receiver of a field access (\Q!this.f!) of an \Q!imm!/\Q!rep! field, or the receivers of a method call (\Q!this.m(..)!) of a final (non-virtual) method that in turn satisfies these restrictions. No other uses of \Q!this! are allowed, such as as the right hand side of a variable declaration, or an argument to a method.
+An equivalent alternative design could instead rely on static \Q@invariant(..)@ methods taking each \Q!imm!/\Q!rep! field as an \Q!imm!/\Q!read! parameter.
 
 Invariants can only refer to immutable and encapsulated state. Thus while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
@@ -83,8 +84,8 @@ their only parameter (the receiver) is \Q!read!.
 %Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
 %For the first case, we can type the field access as \Q@read@, but in the second case we
 %need to type it as \Q@mut@. 
-%We call `capsule mutators' a method accessing as \Q@mut@ a \Q!capsule! field referenced in the invariant.
-%We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
+%We call `rep mutators' a method accessing as \Q@mut@ a \Q!capsule! field referenced in the invariant.
+%We will show how rep mutators are analogous of the pack/unpack/expose~\cite{???}.
 %In order for a class to have an invariant under our protocol,
 %\Q@invariant()@ method the form 
 % Can  a program write say mut method invariant or is it syntactically [???]
@@ -98,7 +99,7 @@ their only parameter (the receiver) is \Q!read!.
 %(see Section \ref{s:immutable}). 
 
 %To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %
-\subheading{Capsule Fields}
+\subheading{Rep Fields}
 %As we discussed before, while most approaches agree on the exact properties of a capsule reference,
 %capsule fields are handled in different ways in different approaches. 
 Former work on L42 discusses ``depending on how we expose the owned data, we can closely model both \emph{owners-as-dominators}[...] and \emph{owners-as-qualifiers}[...]''\cite{GIANNINI2019145}, and  ``\Q!lent! getter[s], a third variant''\cite{GIANNINI2019145}.%Flexible recovery of uniqueness and immutability
@@ -106,69 +107,69 @@ Former work on L42 discusses ``depending on how we expose the owned data, we can
 Those informal considerations have then influenced the L42 language design,
 bringing to the creation of syntactic sugar and programming patterns to represent various kinds of \Q@capsule@ fields aimed to model various forms of ownership. Under the hood, all those forms of \Q@capsule@ fields are just private \Q@mut@ fields with some extra restrictions. Describing in the details those restrictions would be outside of the scope of this paper.
 
-Here we present a novel kind of \Q!capsule! field\footnote{As for the other kinds of \Q@capsule@ fields, our new kind is also just 
-a private \Q@mut@ fields with extra restrictions.} (which can coexist with other kinds of \Q!capsule! fields),
+Here we present a novel kind of \Q!Rep! field\footnote{As for the other kinds of \Q@capsule@ fields, our new kind is also just 
+a private \Q@mut@ fields with extra restrictions.} (which can coexist with other kinds of \Q!rep! fields),
 enforcing the following key property:
-the ROG of a capsule field $o.f$ can only be mutated under the control of a \Q@mut@ method of $o$, and during such mutation, $o$ itself cannot be seen.
+the ROG of a \Q!rep! field $o.f$ can only be mutated under the control of a \Q@mut@ method of $o$, and during such mutation, $o$ itself cannot be seen.
 This is similar to owner-as-modifier~\cite{Dietl05universes:lightweight,10.1007/978-3-540-92188-2_4}, 
-where we could consider an object to be the `owner' of all the mutable objects in the ROG of its \Q!capsule! fields, but with the extra restriction that the owner is unobservable during mutation of this ROG.
+where we could consider an object to be the `owner' of all the mutable objects in the ROG of its \Q!rep! fields, but with the extra restriction that the owner is unobservable during mutation of this ROG.
 
-More preciselly, if a reference to an object in the ROG of a capsule field $o.f$ is involved in execution as \Q!mut!, then:
+More preciselly, if a reference to an object in the ROG of a \Q!rep! field $o.f$ is involved in execution as \Q!mut!, then:
 (1) no reference to $o$ is involved in execution,
 (2) a call to a \Q!mut! method for $o$ is present in a previous stack frame, and
 (3) mutable references to the ROG of $o.f$ are not leaked out of such method execution, either as return values, exception values, or stored in the ROG of a parameter, or in any other field of the method's receiver.
 
 
-To show how our \Q@capsule@ fields ensure these properties, we first define some terminology:
+To show how our \Q@rep@ fields ensure these properties, we first define some terminology:
 \Q@x.f@ is a \emph{field access}, \Q@x.f=e@ is a \emph {field update},\footnote{Thus a field update \Q@x.f=e@ is not a field access followed by an assignment.}
-a \Q@mut@ method with a field access on a capsule field of \Q!this! is a \emph{capsule mutator}. 
-Note that a method performing a field \emph{update} of a \Q@capsule@ field (instead of a field access) is not a capsule mutator, but just a normal method performing a field update.
-Capsule mutators handle the more subtle case where the fields of an object with invariant are not updated, but a mutation deep within their ROG may potentially break the invariant.
+a \Q@mut@ method with a field access on a \Q!rep! field of \Q!this! is a \emph{rep mutator}. 
+Note that a method performing a field \emph{update} of a \Q@rep@ field (instead of a field access) is not a rep mutator, but just a normal method performing a field update.
+Rep mutators handle the more subtle case where the fields of an object with invariant are not updated, but a mutation deep within their ROG may potentially break the invariant.
 
-The following rules define our novel \Q!capsule! fields:
+The following rules define our novel \Q!rep! fields:
 \begin{itemize}
-\item A \Q!capsule! field can only be initialised/updated using the result of an expression with  \Q!capsule! type.
-\item A \Q!capsule! field access will return a:
+\item A \Q!rep! field can only be initialised/updated using the result of an expression with  \Q!capsule! type.
+\item A \Q!rep! field access will return a:
 \begin{itemize}
-\item \Q!mut! reference, when accessed on \Q!this! within a capsule mutator,
+\item \Q!mut! reference, when accessed on \Q!this! within a rep mutator,
 \item \Q!read! reference, when accessed on any other \Q!mut! receiver,
 \item \Q!imm! if the receiver is \Q!imm!, \Q!read! if the receiver is \Q!read!, or \Q@capsule@ if the receiver is
 \Q!capsule!. This last case is safe since a \Q@capsule@ receiver object will then be garbage collectable, so we do not need to preserve its invariant.
 \end{itemize}
-\item A capsule mutator must:
+\item A rep mutator must:
 \begin{itemize}
-\item use \Q!this! exactly once: to access the \Q!capsule! field,
+\item use \Q!this! exactly once: to access the \Q!rep! field,
 \item have no \Q!mut! or \Q!read! parameters (except the \Q!mut! receiver),
 \item not have a \Q!mut! return type,
-\item not throw any checked exceptions\footnote{To allow capsule mutators to leak checked exceptions, we would need to check the invariant when such exceptions are leaked. However, this would make the runtime semantics of checked exceptions inconsistent with unchecked ones.}.
+\item not throw any checked exceptions\footnote{To allow rep mutators to leak checked exceptions, we would need to check the invariant when such exceptions are leaked. However, this would make the runtime semantics of checked exceptions inconsistent with unchecked ones.}.
 \end{itemize}
 \end{itemize}	
 
 	
-\noindent The above rules ensure that capsule mutators control the mutation of the ROG of capsule fields, and 
+\noindent The above rules ensure that rep mutators control the mutation of the ROG of \Q!rep! fields, and 
  ensures our points (1), (2), and (3):
 $o$ will not be in the ROG of $o.f$ and
-only a capsule mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way to mutate the ROG of $o.f$ is through such methods. 
-%When a capsule mutator is not executing, no object in the ROG of $o.f$ can be seen as \Q!mut! or \Q!capsule!. 
+only a rep mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way to mutate the ROG of $o.f$ is through such methods. 
+%When a rep mutator is not executing, no object in the ROG of $o.f$ can be seen as \Q!mut! or \Q!capsule!. 
 %(using any sequence of field accesses on a local variable).
-If execution is (indirectly) in a capsule mutator, than $o$ is only used as the receiver of the \Q!this.f! expression in the capsule mutator.
-Thus we can be sure that the ROG of $o.f$ will only be mutated within a capsule mutator, and only after the single use of $o$ to access $o.f$.
-Since such mutation could invalidate the invariant of $o$, we call the \Q@invariant()@ method at the end of the capsule mutator body; before $o$ can be used again. Provided that the invariant is re-established before a capsule mutator returns, no invariant failure will be thrown, even if the invariant was temporarily broken \emph{during} the body of the method.
+If execution is (indirectly) in a rep mutator, than $o$ is only used as the receiver of the \Q!this.f! expression in the rep mutator.
+Thus we can be sure that the ROG of $o.f$ will only be mutated within a rep mutator, and only after the single use of $o$ to access $o.f$.
+Since such mutation could invalidate the invariant of $o$, we call the \Q@invariant()@ method at the end of the rep mutator body; before $o$ can be used again. Provided that the invariant is re-established before a rep mutator returns, no invariant failure will be thrown, even if the invariant was temporarily broken \emph{during} the body of the method.
 
 %As the expression is \Q!capsule!, we can be sure that the object being initialised/updated will have the only external alias to the ROG of the field's new value. In addition, since the reference was \Q!capsule!, the initialised/updated object could not already alias it, thus after the initialisation/update, the initilised/updated \Q!capsule! field will not alias the object.
 
-These properties are stronger then those of the pre-existing \Q!capsule! fields of L42, but still
-\emph{weaker} than those of \Q!capsule! \emph{references}: we do not need to prevent arbitrary \Q!read! aliases to the ROG of a \Q!capsule! field, and we do allow arbitrary \Q!mut! aliases  to exist during the execution of a capsule mutator. In particular, our rules allow unrestricted read only access to our \Q!capsule! fields.
+In contrast, L42's pre-existing \Q!capsule! fields do not have our rep mutator restrictions, in particular, other objects can mutate them, although storing references to them on the heap is highly restricted.
+These properties are also \emph{weaker} than those of \Q!capsule! \emph{references}: we do not need to prevent arbitrary \Q!read! aliases to the ROG of a \Q!rep! field, and we do allow arbitrary \Q!mut! aliases to exist during the execution of a rep mutator. In particular, our rules allow unrestricted read only access to our \Q!rep! fields.
 
-%In particular, unrestricted readonly access to \Q!capsule! fields can be allowed by writing getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already fundamental in L42~\cite{DBLP:journals/programming/AroraSO19}. Such a method can be called on a \Q!mut! \Q!this!, without making the method a capsule mutator. % ISAAC: WRong since you've now made capsule fields non-instance private
+%In particular, unrestricted readonly access to \Q!capsule! fields can be allowed by writing getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already fundamental in L42~\cite{DBLP:journals/programming/AroraSO19}. Such a method can be called on a \Q!mut! \Q!this!, without making the method a rep mutator. % ISAAC: WRong since you've now made capsule fields non-instance private
 
 %Note that methods with a \Q@capsule@ \Q@this@
-%which perform a \Q@capsule@ field access are not capsule mutators: since \Q!capsule! variables can only be used once, \Q!this! will be garbage collectable immediately after the single use of \Q!this! to read the \Q!capsule! field.
+%which perform a \Q@capsule@ field access are not rep mutators: since \Q!capsule! variables can only be used once, \Q!this! will be garbage collectable immediately after the single use of \Q!this! to read the \Q!capsule! field.
 % ISAAC: Redundent, I say this allready in a footnote above
 
-%\subheading{Capsule mutators}
-%\IODel{In order to allow complex mutations of objects with invariants we, introduce the notion of \emph{capsule mutator}}. A \emph{capsule mutator} can perform an arbitrarily complex mutation of the ROG of a \Q!capsule! field. We use TMs to ensure that the object containing the \Q!capsule! field is not usable whilst the field's ROG is mutated, and its invariant is checked immediately afterwards. 
-%Formally, \emph{capsule mutators} are \Q@mut@ methods whose body accesses a \Q@capsule@ field. 
+%\subheading{Rep mutators}
+%\IODel{In order to allow complex mutations of objects with invariants we, introduce the notion of \emph{rep mutator}}. A \emph{rep mutator} can perform an arbitrarily complex mutation of the ROG of a \Q!capsule! field. We use TMs to ensure that the object containing the \Q!capsule! field is not usable whilst the field's ROG is mutated, and its invariant is checked immediately afterwards. 
+%Formally, \emph{rep mutators} are \Q@mut@ methods whose body accesses a \Q@capsule@ field. 
 
 
 %\end{itemize}
@@ -185,7 +186,7 @@ The language runtime will automatically perform calls to \Q!invariant()!, if suc
 \begin{itemize}
 	\item After a constructor call, on the newly created object.
 	\item After a field update, on the receiver.
-	\item After a capsule mutator method returns, on the receiver of the method\footnote{The invariant is not checked if the call was terminated via an an unchecked exception, since strong exception safety guarantees the object will be unreachable.}.
+	\item After a rep mutator method returns, on the receiver of the method\footnote{The invariant is not checked if the call was terminated via an an unchecked exception, since strong exception safety guarantees the object will be unreachable.}.
 \end{itemize}
 \noindent In Section \ref{s:formalism}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that the invariants of all objects involved in execution hold. %(except the invariant of \Q!this! when used to access fields in a runtime-generated call to the \Q!invariant()! method itself).
 

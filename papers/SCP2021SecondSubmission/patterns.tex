@@ -12,7 +12,7 @@ In particular, as we show, in order to use our approach to ensure invariants, on
 We showed how the box pattern can be used to write invariants over cyclic mutable object graphs, the latter also shows how a complex mutation can be done in an `atomic' way, with a single invariant check. However the box pattern is much more powerful.
 
  Suppose we want to pass a temporarily `broken' object to other code as well as perform multiple field updates with a single invariant check. 
-Instead of adding new features to the language, like an \Q!invalid! modifier (denoting an object whose invariant does not need to hold), and an \Q!expose! statement like Spec\#, we can use a `box' class and a capsule mutator to the same effect:
+Instead of adding new features to the language, like an \Q!invalid! modifier (denoting an object whose invariant does not need to hold), and an \Q!expose! statement like Spec\#, we can use a `box' class and a rep mutator to the same effect:
 \begin{lstlisting}
 interface Person{ mut method Bool accept(read Account a,read Transaction t); }
 interface Transaction{ mut method ImmList<Transfer> compute(); }
@@ -30,14 +30,14 @@ class AccountBox{
   //we may observe income >= expenses
 }
 class Account{
-  capsule AccountBox box; mut Person holder;
+  rep AccountBox box; mut Person holder;
   read method Bool invariant(){ return this.box.subInvariant(); }
   // `h' could be aliased elsewhere in the program
   Account(mut Person h){ this.holder=h; this.box=new AccountBox(); }
   mut method Void transfer(mut Transaction ts){
     if(this.holder.accept(this, ts)){ this.transferInner(ts.compute()); }
   }
-  // capsule mutator, like an `expose(this)' statement
+  // rep mutator, like an `expose(this)' statement
   private mut method Void transferInner(ImmList<Transfer> ts){
      mut AccountBox b = this.box;
      for (Transfer t : ts) { t.execute(b); }
@@ -45,14 +45,14 @@ class Account{
 }
 \end{lstlisting}
 The idea here is that \Q!transfer(ts)! will first check to see if the account holder wishes to accept the transaction, it will then compute the full transaction (which could cache the result and/or do some I/O), and then execute each transfer in the transaction. We specifically want to allow an individual \Q!Transfer! to raise the \Q!expenses! field by more than the \Q!income!, however we don't want an entire \Q!Transaction! to do this. 
-Our capsule mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q!expose! block: during its body (the \Q!for! loop) we don't know or care if \Q!this.invariant()! is \Q!true!, but at the end it will be checked. For this to make sense, we make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!: it cannot assume that the invariant of \Q!Account! holds, and it is allowed to modify the fields of \Q!that! without needing to check it. Though capsule mutators can be used to perform batch operations like the above, they can only take immutable and capsule objects. This means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such a batch operation.
+Our rep mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q!expose! block: during its body (the \Q!for! loop) we don't know or care if \Q!this.invariant()! is \Q!true!, but at the end it will be checked. For this to make sense, we make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!: it cannot assume that the invariant of \Q!Account! holds, and it is allowed to modify the fields of \Q!that! without needing to check it. Though rep mutators can be used to perform batch operations like the above, they can only take immutable and capsule objects. This means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such a batch operation.
 
 As you can see, adding support for features like \Q!invalid! and \Q!expose! is unnecessary, and would likely require making the type system significantly more complicated as well as burdening the language with more core syntactic forms.
 
 In particular, the above code demonstrates that our system can:
 \begin{itemize}
 \item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the \Q!invariant()! method.
-\item Wrap normal methods over capsule mutators: \Q!transfer! is not a capsule mutator, so it can use \Q!this! multiple times and take a \Q!mut! parameter.
+\item Wrap normal methods over rep mutators: \Q!transfer! is not a rep mutator, so it can use \Q!this! multiple times and take a \Q!mut! parameter.
 \item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner(ts)! can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant()! will only be checked at the end of the loop.
 \item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before the end of the loop.
 \item Pass the state of an `invalid' object around, in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not the invariant method.
@@ -66,15 +66,15 @@ The sub invariant pattern offers interesting guarantees:
 any object `\Q@a@' with a \Q@subInvariant()@ method that is checked by the \Q@invariant()@ method of an object `\Q@b@'
 will respect its \Q@subInvariant()@ in all contexts where `\Q@b@' is involved in execution.
 This is because whenever `\Q@b@' is involved in execution, its invariant holds.
-Moreover, \Q@a@'s \Q@subInvariant()@ can be observed as \Q@false@ only if a capsule mutator of `\Q@b@' is currently active (that is, being executed),
+Moreover, \Q@a@'s \Q@subInvariant()@ can be observed as \Q@false@ only if a rep mutator of `\Q@b@' is currently active (that is, being executed),
 or \Q@b@ is now garbage collectable.
 Thus, even when there is no reachable reference to \Q@b@ in the current stack frame,
-if no capsule mutator on \Q@b@ is active, \Q@a@'s \Q@subInvariant()@ will hold.
+if no rep mutator on \Q@b@ is active, \Q@a@'s \Q@subInvariant()@ will hold.
 
 In the former example, this means that
 if you can refer to an \Q!Account!, you can be sure that its \Q!income >= expenses!;
 if you have an \Q!AccountBox! then you can be sure that either \Q!income >= expenses! or 
-a capsule mutator of the corresponding \Q@Account@ object is currently active.
+a rep mutator of the corresponding \Q@Account@ object is currently active.
 This closely resembles some visible state semantic protocols, aiming to ensure that  
 either an object's invariant holds, or one of its methods is currently active.
 
@@ -120,7 +120,7 @@ class MoveAction implements Action{
   }
 }
 class WidgetWithInvariant implements Widget{
-  capsule Widget w;
+  rep Widget w;
   @Override read method Int left(){ return this.w.left; }
   @Override read method Int top(){ return this.w.top; }
   @Override read method Int width(){ return this.w.width; }
@@ -142,7 +142,7 @@ class WidgetWithInvariant implements Widget{
 mut Widget top=new WidgetWithInvariant(new SafeMovable(...))
 Gui.#$\$$().display(top);
 \end{lstlisting}
-In this way, the method \Q@WidgetWithInvariant.dispatch()@ is the only capsule mutator, hence the only invariant checks will be at the end of \Q@WidgetWithInvariant@'s constructor and dispatch methods.
+In this way, the method \Q@WidgetWithInvariant.dispatch()@ is the only rep mutator, hence the only invariant checks will be at the end of \Q@WidgetWithInvariant@'s constructor and dispatch methods.
 
 Importantly, this allows the graph of widgets to be cyclic and for each to freely mutate each
 other, even if such mutations (temporarily) violate their \Q@subInvariant@'s.
@@ -158,12 +158,12 @@ reason as to when \Q@Widgets@ are valid, as we described above.
 
 \subheading{The Transform Pattern}
 Recall the GUI case study from Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements \Q!Widget!.
-% A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
+% A rep mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
 Suppose we want to allow \Q@Widget@s to be scaled, we could add \Q@mut@ setters for \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children()@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom(w)@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, 
 to mention their \Q!children()! in their \Q!invariant()!.
-% In the above \Q@SafeMovable@ we only had one capsule mutator: \Q@dispatch@. However suppose a \Q@Widget@ wants to directly mutate it's descendents, however it can't do that since \Q@Widget.children@ returns a \Q@read Widgets@, if it returned a \Q@mut Widgets@ then \Q@SafeMovable@ could not be implement, as it's children are contained inside a capsule-field. 
-% At first glance, it may seem that capsule mutators allow only very limited kinds %of mutation.
+% In the above \Q@SafeMovable@ we only had one rep mutator: \Q@dispatch@. However suppose a \Q@Widget@ wants to directly mutate it's descendents, however it can't do that since \Q@Widget.children@ returns a \Q@read Widgets@, if it returned a \Q@mut Widgets@ then \Q@SafeMovable@ could not be implement, as it's children are contained inside a capsule-field. 
+% At first glance, it may seem that rep mutators allow only very limited kinds %of mutation.
 % This is however not the case. 
 % Consider the following
 % simple pattern to allow flexible use of encapsulated content: define a
@@ -178,10 +178,10 @@ interface Widget { ...
   mut method read Void transform(capsule Transformer<Widgets> t);
 }
 class SafeMovable implements Widget { ...
-  // A well typed capsule mutator
+  // A well typed rep mutator
   mut method Void transform(capsule Transformer<Widgets> t) {t.apply(this.box.c);}}
 \end{lstlisting}
-% Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
+% Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus  it is \emph{not} a rep mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other \Q!capsule! fields.
 The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom(w)@ function could be simply written as:
@@ -192,7 +192,7 @@ static method Void zoom(mut Widget w) {
 \end{lstlisting}
 
 In the context of reference capabilities, \Q@imm@ lambdas/closures will only be allowed to capture \Q@imm@ and \Q@capsule@ local variables.
-Note that the \Q@Transformer@ parameter to \Q@transform@ is \Q@capsule@ and the method \Q@Trasformer.apply@ takes an \Q@capsule@ receiver. In particular, this means that \Q@transform@ will be able to call the lambda at most once,
+Note that the \Q@Transformer@ parameter to \Q@transform@ is \Q@capsule@ and the method \Q@Trasformer.apply@ takes a \Q@capsule@ receiver. In particular, this means that \Q@transform@ will be able to call the lambda at most once,
 and lambdas cannot be saved and passed to multiple calls to \Q@transform@.
 However, we could instead make \Q@transform@ take an \Q@imm@ \Q@Transformer@, and make \Q@Transformer.apply@ be an \Q@imm@ method, this would allow lambdas to be freely copied and called multiple times, however they would not be able to capture pre-existing mutable objects.
 
@@ -248,7 +248,7 @@ interface Transformer<T> implements CapTransformer<T> {
 %\Comment{}%this.exposeItems().add(i)
 
 %Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus
-%it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
+%it is \emph{not} a rep mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system
 %as if it was atomic.%
 %,  i.e. they can't see or update the other \Q!capsule! fields.
@@ -277,11 +277,11 @@ class Nodes{//just an ordered set of nodes
   mut method mut Node get(Int index){..}
 }
 class Graph{ 
-  capsule Nodes nodes; //box pattern
+  rep Nodes nodes; //box pattern
   Graph(capsule Nodes nodes){..}
   read method read Nodes getNodes(){ return this.nodes; }
   <T> mut method read T transform(Transform<T> t){
-    mut Nodes ns=this.nodes;//capsule mutator with a single use of 'this'
+    mut Nodes ns=this.nodes;//rep mutator with a single use of 'this'
     return t.apply(ns);
   }
   read method Bool invariant(){
@@ -343,7 +343,7 @@ As you can see, both methods rely on the transform pattern.
 
 These transformation operations are very general since they
 can access the \Q@mut Nodes@ of the \Q@Graph@ and 
-any \Q@capsule@ or \Q@imm@ data from outside.
+any \Q@rep@ or \Q@imm@ data from outside.
 Note how the body of the \Q@capsule@ lambda in \Q@connectWith(other,g)@, can not capture the \Q@read this@ or the \Q@read other@, but we get their (immutable) indexes 
 and recover the concrete objects from the \Q@mut Nodes ns@ object.
 In this way, we also obtain more useful \Q@mut@ references to those nodes.

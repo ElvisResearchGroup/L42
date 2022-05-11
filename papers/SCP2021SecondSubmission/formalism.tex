@@ -190,7 +190,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (
 \subheading{Grammar}
 The grammar is defined in Figure \ref{f:grammar}.
 
-We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. Recall that we don't model traditional \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values.
+We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. We don't model traditional \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values. If \Q!capsule! fields where added, they would not make our invariant protocol more interesting, as long as they do not provide a backdoor to create improper \Q!capsule! references.
 
 We use $v$, of form $\mdf\,l$, to keep track of the reference capabilities in the runtime, as it allows multiple references to the same location to co-exist with different reference capabilities; however $\mdf$'s are not stored in memory.
 The reduction rules do not change behaviour based on these $\mdf$'s, they are merely used by our proofs to keep track of the guarantees enforced by the typesystem.
@@ -431,7 +431,7 @@ Note that as with most OO languages, an expression $e$ can always be reduced, un
 However, invalid use of reference capabilities (e.g. having both an \Q!imm! and \Q!mut! reference to the same location) does \emph{not} cause reduction to get stuck, instead, in \ref{s:proof} we explicitly require that the typesystem prevents such things from happening, which our example type system in \ref{s:typesytem} proves to be the case.
 
 Note that the monitor expressions are only a proof device, they need not be implemented directly as presented.
-For example, in L42 they are implemented by statically injecting calls to \Q!invariant()! at the end of setters (for \Q@imm@ and \Q@rep@ fields), factory methods, and capsule mutators; this works as L42 follows the uniform access principle, so it does not have primitive expression forms for field updates and constructors, rather they are uniformly represented as method calls.
+For example, in L42 they are implemented by statically injecting calls to \Q!invariant()! at the end of setters (for \Q@imm@ and \Q@rep@ fields), factory methods, and rep mutators; this works as L42 follows the uniform access principle, so it does not have primitive expression forms for field updates and constructors, rather they are uniformly represented as method calls.
 
 \subheading{Statement of Soundness}
 %

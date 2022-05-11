@@ -1,17 +1,18 @@
 \vspace{-1ex}
 \section[Integration in L42]{Integration in L42}
+\label{s:L42}
 \vspace{-1ex}
 In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this article's scope to explain 
 in detail this integration, but the overall idea is that an invariant
 is seen as a \Q@Void@ \Q!@Cache.Now! method, who's result is pre-computed.
 The language ensures that \Q!@Cache.Now! methods are recomputed whenever their result may change; any exceptions are propagated immediately, and are not cached.
-The type-system requires that any method that could alter the result of a \Q!Cache.Now! method (except via a field update) must be marked with \Q!@Cache.Clear! and respect our capsule-mutator restrictions.
+The type-system requires that any method that could alter the result of a \Q!Cache.Now! method (except via a field update) must be marked with \Q!@Cache.Clear! and respect our rep mutator restrictions.
 L42 requires an explicit \Q!@Cache.Clear! so as to make it clear in the code that such methods has special type-system restrictions.
 This is more general than invariant checking however, as \Q!Cache.Now! methods can return a meaningful result, and not simply success or exception.
 L42 also supports other kinds of cached methods, which get computed in parallel when an instance of the corresponding class is created, or when their result may be altered.
 
 L42 libraries rely on a very expressive form of metaprogramming to generate a lot of boilerplate/redundant code. In L42 many tasks can be  either manually performed by writing code directly, or partially automated by code generation.
-L42 allows writing \Q@class@ methods (similar to a static method in Java) with appropriate parameters instead of \Q!invariant!s method and capsule mutators. The bodies of such methods don't have special restrictions as they cannot see \Q!this!, instead the meta-programming generates appropriate instance methods, conforming to our restrictions, which call the user provided \Q!class! methods.
+L42 allows writing \Q@class@ methods (similar to a static method in Java) with appropriate parameters instead of \Q!invariant!s method and rep mutators. The bodies of such methods don't have special restrictions as they cannot see \Q!this!, instead the meta-programming generates appropriate instance methods, conforming to our restrictions, which call the user provided \Q!class! methods.
 
 Our restrictions are also checked by the type system, so even if the user manually writes these methods, instead of relying on the metaprogramming, they still cannot break our invariant protocol.
 
@@ -27,7 +28,7 @@ ShippingList = Data:{
     items.add(item)
 }
 \end{lstlisting}
-In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string.
+In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. \IOComm{Talk to marco about how the \Q!capsule! field is treated, in particular, how do you make different kinds of \Q!capsule! fields}
 The \Q!@$$Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@$$Cache.Clear! method is called.
 The \Q!X[...]! notation used in \Q!invariant! is an assert statement: it throws an unchecked exception if it's argument is false.
 Please refer to \url{L42.is/tutorial.xhtml} for more information.

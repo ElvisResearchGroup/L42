@@ -22,7 +22,7 @@ The \Q@SafeMovable@ class has an invariant to ensure that its children are graph
 Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at \url{http://l42.is/InvariantArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@ and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
 \begin{lstlisting}
 class SafeMovable implements Widget {
-  capsule Box box; Int width = 300; Int height = 300;
+  rep Box box; Int width = 300; Int height = 300;
   @Override read method Int left() { return this.box.l; }
   @Override read method Int top() { return this.box.t; }
   @Override read method Int width() { return this.width; }
@@ -59,7 +59,7 @@ Our example shows how to encode interactive GUI programs, where widgets may circ
 In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either RCs or OCs.
 
 \subheading{The Invariant}
-\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch(e)@ method (which is a capsule mutator). There are no other checks inserted since we never do a direct field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:\footnote{
+\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch(e)@ method (which is a rep mutator). There are no other checks inserted since we never do a direct field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:\footnote{
 We could make the code sigtly more efficient by avoiding comparing twice each pair of widgets. Code efficiency is not the priority here.
 }
 \begin{lstlisting}
@@ -74,7 +74,7 @@ read method Bool invariant() {
 }
 \end{lstlisting}
 
-Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!capsule! fields.
+Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!rep! fields.
 
 \subheading{Our Experiment}
 As shown in the figure below, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
@@ -187,7 +187,7 @@ Characters (with minimal whitespace)
 \end{center}
 \lstset{morekeywords={requires}}
 
-To encode the GUI example in L42, the only annotations we needed were the 3 reference capabilities: \Q@mut@, \Q@read@, and \Q@capsule@.
+To encode the GUI example in L42, the only annotations we needed were the 3 reference capabilities: \Q@mut@, \Q@read@, and \Q@capsule@ (\Q!rep! fields in the actual L42 language use the \Q!capsule! keywords to minimise language complexity);
 % , for a total of 
 % $19$ annotations (one token each, $74$ characters in total).
 Our Spec\# code requires purity, immutability, ownership, method pre/post-conditions and method modification annotations. In addition, it requires the use of 4 different ownership functions including explicit ownership assignments. In total we used 18 different kinds of annotations in Spec\#.
