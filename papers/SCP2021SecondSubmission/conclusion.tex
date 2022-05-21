@@ -25,7 +25,7 @@ Failures (unchecked exceptions)
 
 
 %The aim of our work is only to enforce object invariants, so we do not present complexities unnecessary for this purpose.
-Our work builds on a specific form of RCs and OCs, whose
+Our work builds on a specific form of reference and object capabilities, whose
 popularity is growing, and we expect future languages to support some variations of these.
 Crucially, any language already designed with such a support
 can also support our invariant protocol with minimal added complexity.
@@ -74,7 +74,7 @@ can also support our invariant protocol with minimal added complexity.
 In literature, both static and runtime verification discuss
 the correctness of common programming patterns in conventional languages.
 Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object-oriented programming.
- Here instead we build on languages using RCs and OCs to tame the use of imperative features. In this way
+ Here instead we build on languages using reference and object capabilities to tame the use of imperative features. In this way
 we have a fresh start where static variables are disallowed, unchecked exceptions require care to be captured, and I/O is allowed only when an opportune capability object is reachable.
 Following those restrictions allow simpler reasoning.
 The philosophy of our approach is to be like an extended type system: 

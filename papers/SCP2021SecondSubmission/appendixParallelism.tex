@@ -30,12 +30,14 @@ Indeed, in 42, as in Pony or Gordon, we can make fork-join where the parallel br
 The difference is that in 42 those variables will not be able to come from reading encapsulated fields of \Q@mut@ objects.
 Note that this is because, as a research question, the 42 developers are trying to understand how far they can go without resorting to destructive reads.
 They could easely add a primitive datatype working as a \emph{consumable} mutable box storing a true capsule. Such a primitive data type would behave exactly like the \Q@Box@ type above.
-Then, a 42 user could chose to use those boxes to recover all the parallelism expressive power (and risks) of destructive reads.
+Then, a 42 user could chose to use those boxes to recover all the expressive power (and risks) of destructive reads.
 Doing so would however make it much harder to claim that 42 supports expressive automatic parallelism without the need of destructive reads, since destructive reads would now be avaible on demand.
 
 \subsection*{Parallel patterns in 42}
 
 The current version of 42 relies on the annotation \Q|$@$Cache.ForkJoin| and the \Q@Data@ decorator to activate varius forms of (unobservable) automatic parallelism. We show those forms below.
+Of course, the invariant protocol described in this paper does work also in the context of \Q|$@$Cache.ForkJoin|, thus it is impossible to observe a broken invariant, even when using parallelism. This is a direct result of the fact that parallelism in 42 is unobservable: the semantic of parallel code is equivalent to the semantic of the corresponding sequential code, only the performance change.
+
 
 \subsection*{Non-Mutable computation}
 This is the simplest 42 parallel pattern.
@@ -71,7 +73,7 @@ Different forms of parallelism impose different requirements on the free variabl
 Some readers find suprising that in the \emph{non-mutable computation} pattern \Q@read@ references can be freely used, since there can be \Q@mut@ references to those same objects.
 However, those \Q@mut@ references are all unreachable from inside our fork-join. This is because the whole
 mutROG of all the \Q@capsule@ rerefences is encapsulated and other \Q@mut@ references are not allowed.
-How the mutROG of \Q@capsule@ fields can be shared is not important here because in 42 there is no way to go from a \Q@capsule@ field back to a \Q@capsule@ reference.
+%How the mutROG of \Q@capsule@ fields can be shared is not important here because in 42 there is no way to go from a \Q@capsule@ field back to a \Q@capsule@ reference.
 
 This form of parallelism is the only one proposed by Gordon; it is very expressive in their setting with destructive reads, but it is quite limited in 42. However 42 offers other forms of parallelism, as shown below.
 
@@ -110,7 +112,7 @@ mut S.List data = S.List[S"a";S"b";S"c";S"d";S"e";]
 UpdateList.of(data)
 Debug(data)//["aa"; "bb"; "cc"; "dd"; "ee"]
 \end{lstlisting}
-As you can see, we do not need to ever copy the whole list. We can update the elements in place one by one.
+As you can see, we do not need to copy the whole list. We can update the elements in place one by one.
 If the operation \Q@map(that)@ is complex enough, running it in parallel could be beneficial.
 You can equivalently read this code either as a fork join or as sending the computation \Q@this.map(elem)@ to be run on a separate worker, while
 the computation     \Q@this.of(current=current+1I,data=data)@ is executed on the current thread.
@@ -119,9 +121,9 @@ As you can see, it is trivial to adapt that code to explore other kinds of colle
 The visit of the tree will be performed recursivelly but sequentially in the current thread, and workers will be spowned at all recursive layers and their results will be composed at the end of the recursion.
 
 
-Those two forms of parallelism where already possible on the 42 model before our work on invariants and our new form of \Q@capsule@ fields.
+Those two forms of parallelism where already possible on the 42 model before our work on invariants and our \Q@rep@ fields.
 We think that it is pretty impressive that this kind of parallelism can be obtained without destructive reads.
-Building on top of our new form of \Q@capsule@ fields and on the concept of \emph{capsule mutators}, a new form of parallel fork-join computation was recently added:
+Building on top of our the \Q@rep@ fields and on the concept of \emph{rep mutators}, a new form of parallel fork-join computation was recently added:
 \emph{This-Mutable computation}.
 
 \subsection*{This-Mutable computation}
@@ -130,9 +132,9 @@ The method must be declared \Q@mut@, and the
 initialization expressions can not
 use \Q@mut@, \Q@lent@ or \Q@read@ parameters.
 However, the \Q@mut@ parameter \Q@this@ can be used to directly call
-capsule mutator methods (marked by \Q|$@$Cache.Clear| in the 42 syntax).
-Since a capsule mutator can mutate the ROG of a capsule field, and the mutROG from different capsule fields is disjoint, 
-different initialization expressions must use capsule mutators updating different \Q@capsule@ fields.
+rep mutator methods (marked by \Q|$@$Cache.Clear| in the 42 syntax).
+Since a rep mutator can mutate the reachable object graph of a \Q@rep@ field, and the mutROG from different \Q@rep@ fields is disjoint, 
+different initialization expressions must use rep mutators updating different \Q@rep@ fields.
 In this way, 42 can express parallel computation processing arbitrary complex mutable objects inside well encapsulated data structures.
 Consider the following example, where instances of \Q@Foo@ could be arbitrarily complex; containing complex (possibly circular) graphs of mutable objects.
 \begin{lstlisting}
@@ -141,7 +143,7 @@ Foo=Data:{.. /*mut method Void op(I a, S b)*/ ..}
 Tree={interface [HasToS]    mut method Void op(I a, S b) }
 
 Node = Data:{[Tree] 
-  capsule Tree left, capsule Tree right
+  rep Tree left, rep Tree right //the 42 syntax uses 'capsule' instead of 'rep'
   $@$Cache.ForkJoin mut method Void op(I a, S b) = (
     unused1=this.leftOp(a=a,b=b)
     unused2=this.rightOp(a=a,b=b)
@@ -151,7 +153,7 @@ Node = Data:{[Tree]
     $@$Cache.Clear class method Void rightOp(mut Tree right,I a, S b) = right.op(a=a,b=b)
     }
 Leaf = Data:{[Tree]
-  capsule Foo label
+  rep Foo label
   $@$Cache.Clear class method Void op(mut Foo label,I a, S b) = label.op(a=a,b=b)
   }
 //usage
@@ -168,7 +170,7 @@ mut Tree top = Node(
 top.op(a=15I b=S"hello")
 \end{lstlisting}
 
-This pattern relies on the fact that using \Q@capsule@ fields we can define arbitrary complex data structures composed of disjointed mutable object graphs.
+This pattern relies on the fact that using \Q@rep@ fields we can define arbitrary complex data structures composed of disjointed mutable object graphs.
 Note that \Q@read@ aliases to parts of the data structure can be visible outside.
 This is safe since we can not access them when the forkjoin is open. The declarations can not use \Q@read@ parameters.
 
@@ -177,15 +179,14 @@ This is safe since we can not access them when the forkjoin is open. The declara
 This form of parallelism is limited to start only from fully immutable data.
 This annotation can be used only on no args methods of objects that are born immutable.
 Parallel workers are used to eagerly compute the result of those methods and cache the result in the object.
-This form of parallelism allows to express computation in a very declarative style, but it does not interact with our capsule fields or capsule mutators, so an in-dept discussion of 
-\Q|$@$Cache.Eager| is out of scope.
+This form of parallelism allows to express computation in a very declarative style, but it does not interact with capsule references, our rep fields or rep mutators, so an in-dept discussion of \Q|$@$Cache.Eager| is out of scope.
 
 \subsection*{Parallelism in older versions of the 42 type system}
 42 has been undergoing many changes across the years.
 The earlier version of the 42 type system was based on [??],
 where you could see many more modifiers, including
 \Q@fresh@ and \Q@baloon@.
-In that version \Q@fresh@ is similar to the current 42 \Q@capsule@ references and \Q@baloon@ is similar to one of the various kinds of available 42 \Q@capsule@ fields.
+In that version \Q@fresh@ is similar to the current 42 \Q@capsule@ references and \Q@baloon@ is similar to one of the various kinds of  \Q@capsule@ fields available in 42 before our work on \Q@rep@ fields.
 That work was then summarized in a short 6 pages paper [??], that
 refers to both \Q@fresh@ and \Q@baloon@ as \Q@baloon@; using the different context (reference, local variable, field) to make change the meaning of the single keword \Q@baloon@, to cover both roles of \Q@fresh@ and \Q@baloon@ in [..].
 Even in those earlier works there was no way to recover a \Q@fresh@ from a \Q@baloon@, and a \Q@baloon@ was basically a kind of encapsulated reference that allowed other restricted kinds of references (\Q@external@ and \Q@external readonly@) to point inside of it. Looking back to those earlier work it is clear to us that the current 42 type system is much more minimal and elegant.

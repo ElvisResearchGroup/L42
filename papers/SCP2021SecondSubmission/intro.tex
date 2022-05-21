@@ -3,7 +3,7 @@
 %\newpage
 %\LINE
 Representation invariants (sometimes called class invariants, object invariants, or type refinements) are
-a useful concept when reasoning about software correctness, particularly with OO (Object Oriented) languages. Such invariants are predicates on the state of an object and its ROG (Reachable Object Graph).
+a useful concept when reasoning about software correctness, particularly with Object Oriented (OO) languages. Such invariants are predicates on the state of an object and its  reachable object graph ($\rog$).
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a method called \Q@invariant()@
 that returns a boolean.
@@ -23,7 +23,7 @@ To complicate matters further, OO languages often permit rampant aliasing of mut
 
 %------------
 In this paper we propose a much stricter invariant protocol: at all times, the invariant of every object involved in execution must hold; thus they can be broken when the object is not (currently) involved in execution. 
-An object is \emph{involved in execution} when it is in the ROG of any of the objects mentioned in the method call, field access, or field update that is about to be reduced; we state this more formally later in the paper.
+An object is \emph{involved in execution} when it is in the reachable object graph of any of the objects mentioned in the method call, field access, or field update that is about to be reduced; we state this more formally later in the paper.
 
 %Our strict invariant protocol clearly supports easier reasoning; however 
 Our strict protocol supports easier reasoning: an object can never be observed broken. However 
@@ -58,7 +58,8 @@ class BoxRange{//no invariant in BoxRange
   BoxRange(min, max){ this.set(min, max); }
   method Void set(min, max){
     if(min>=max){ throw new Error(/**/); }
-    this.min = min; this.max = max;
+    this.min = min;
+    this.max = max;
   }
 }
 class Range{
@@ -69,11 +70,11 @@ class Range{
 }
 \end{lstlisting}
 The code of \Q@Range.set(min,max)@ does not violate our protocol.
-% since \Q@this@ is not in the ROG of \Q@this.box@, \Q!min!, or \Q!max!. 
+% since \Q@this@ is not in the reachable object graph of \Q@this.box@, \Q!min!, or \Q!max!. 
 The call to
 \Q@BoxRange.set(min,max)@ works in a context where the \Q@Range@ object is
 unreachable, and thus not involved in execution.
-That is, the \Q@Range@ object is not in the ROG of the receiver or the parameters of \Q@BoxRange.set(min,max)@.
+That is, the \Q@Range@ object is not in the reachable object graph of the receiver or the parameters of \Q@BoxRange.set(min,max)@.
  Thus \Q@Range.set(min,max)@ can temporarily break the \Q@Range@'s invariant.
 By using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the object \Q@Range@ is modified.%
 \footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator pattern, but with a different goal.
@@ -82,7 +83,9 @@ Also note that many VMs and compilers can optimize away wrapper objects in many 
 This is even more applicable in languages with inlined structs, like C++ or C\#.
 }
 With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution.
-In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
+%In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
+%No, I looked again at this text, it is just broken.
+%For example, you can have many methods taking a box and mutating it without the invariant being recheched.
 
 \subheading{Contributions}
 Invariant protocols allow for objects to make necessary changes that might make their invariant temporarily broken.
@@ -110,8 +113,8 @@ in the first place, thus avoiding the need for representing them at the type lev
 
 In this paper, we discuss how to combine runtime checks and capabilities
 to soundly enforce our strict invariant protocol.
-Our solution only requires 
-that all code is well-typed, and works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.
+Our sound solution only requires 
+that all code is well-typed. Our approach works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.
 
 We formalise and prove our approach sound, and have fully implemented our protocol in L42\footnote{
 Our implementation is implemented by checking that a given class conforms to our protocol, and injecting invariant checks in the appropriate places.
@@ -133,12 +136,12 @@ The remainder of this paper proceeds as follows:
 	\item Section \ref{s:protocol} fully explains our novel invariant protocol, and our novel field type for mutable data
 	\item Section \ref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the L42 (and similar) type systems
 	\item Section \ref{s:formalism} formalises our runtime invariant checking, and what it means it to soundly enforce our invariant protocol
-	\item Section \ref{s:case-studyAll} many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic
+	\item Section \ref{s:case-studyAll} contains many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic
 	\item Section \ref{s:patterns} show how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around
 	\item Section \ref{s:L42} summarises how we have implemented our protocol in L42
 	\item Section \ref{s:related} presents related work, and Section \ref{s:conclusion} concludes
-	\item Section \ref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in Section \ref{s:formalism} sound
-	\item Section \ref{s:typesystem} presents a simple L42-inspired type system and proves that it satisfies the requirements in Section \ref{s:proof}	
+	\item \ref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in Section \ref{s:formalism} sound
+	\item \ref{s:typesystem} presents a simple L42-inspired type system and proves that it satisfies the requirements in Section \ref{s:proof}	
 \end{itemize}
 
 %We proposed our approach for integration in the L42 language, and after minor reworking it has been accepted, and the current version of L42 integrated our 

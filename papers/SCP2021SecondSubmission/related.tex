@@ -4,10 +4,10 @@
 \vspace{-1ex}
 In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this article's scope to explain 
 in detail this integration, but the overall idea is that an invariant
-is seen as a \Q@Void@ \Q!@Cache.Now! method, who's result is pre-computed.
-The language ensures that \Q!@Cache.Now! methods are recomputed whenever their result may change; any exceptions are propagated immediately, and are not cached.
-The type-system requires that any method that could alter the result of a \Q!Cache.Now! method (except via a field update) must be marked with \Q!@Cache.Clear! and respect our rep mutator restrictions.
-L42 requires an explicit \Q!@Cache.Clear! so as to make it clear in the code that such methods has special type-system restrictions.
+is seen as a \Q@Void@ \Q!$@$Cache.Now! method, who's result is pre-computed.
+The language ensures that \Q!$@$Cache.Now! methods are recomputed whenever their result may change; any exceptions are propagated immediately, and are not cached.
+The type-system requires that any method that could alter the result of a \Q!Cache.Now! method (except via a field update) must be marked with \Q!$@$Cache.Clear! and respect our rep mutator restrictions.
+L42 requires an explicit \Q!$@$Cache.Clear! so as to make it clear in the code that such methods has special type-system restrictions.
 This is more general than invariant checking however, as \Q!Cache.Now! methods can return a meaningful result, and not simply success or exception.
 L42 also supports other kinds of cached methods, which get computed in parallel when an instance of the corresponding class is created, or when their result may be altered.
 
@@ -28,16 +28,21 @@ ShippingList = Data:{
     items.add(item)
 }
 \end{lstlisting}
-In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. \IOComm{Talk to marco about how the \Q!capsule! field is treated, in particular, how do you make different kinds of \Q!capsule! fields}
+In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. 
+In particular, note how the current concrete 42 syntax uses the keyword \Q@capsule@ to represent a varius kinds of restrictions over fields.
+The language relies on the presence of annotations or other specific methods
+to decide what restrictions to apply. In this case, the presence of the \Q!@$$Cache.Now! annotation clarifies that the field \Q@capsule Items items@
+is actually a \Q@rep@ field as discussed in our work.
+%\IOComm{Talk to marco about how the \Q!capsule! field is treated, in particular, how do you make different kinds of \Q!capsule! fields}
 The \Q!@$$Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@$$Cache.Clear! method is called.
 The \Q!X[...]! notation used in \Q!invariant! is an assert statement: it throws an unchecked exception if it's argument is false.
-Please refer to \url{L42.is/tutorial.xhtml} for more information.
+Please refer to \url{Forty2.is} for more information.
 \vspace{-1ex}
 \section[Related Work]{Related Work}
 \label{s:related}
 \vspace{-1ex}
 \subheading{Reference Capabilities}
-We rely on a combination of RCs supported by at least three languages/lines of research:
+We rely on a combination of reference capabilities supported by at least three languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
 Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
 %each of these works is accompanied by proofs about the properties of those modifiers.
@@ -55,13 +60,13 @@ provide back doors, which are not easily verifiable as being used properly.
 Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is a popular form of aliasing control often used as a building block for static verification~\cite{%
 muller2002modular,%
 barnett2011specification%
-}.  However, ownership does not require the whole ROG of an object to be `owned'. This complicates restricting the data accessible by invariants.
+}.  However, ownership does not require the whole reachable object graph of an object to be `owned'. This complicates restricting the data accessible by invariants.
 
 \subheading{Object Capabilities}
-In the literature, OCs are used to provide a wide range of guarantees, and many variations are present.
-Object capabilities~\cite{RobustComposition}, in conjunction with reference capabilities, are able to
+In the literature, object capabilities are used to provide a wide range of guarantees, and many variations are present.
+Object capabilities, in conjunction with reference capabilities, are able to
  enforce purity of code in a modular way, without requiring the use of effects or monads.
-L42 and Gordon \textit{et al.} use OCs simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
+L42 and Gordon \textit{et al.} use object capabilities simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using object capabilities (but not reference capabilities) over a subset of Java in order to reason about determinism.
 However, in order for Joe-E to be a subset of Java, they leverage a simplified model of immutability:
 immutable classes must be final and have only final fields that refer to immutable classes.
 %Instances of immutable classes are immutable objects.
@@ -151,7 +156,7 @@ non-deterministic I/O.
 
 Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#. It adds various annotations such as method contracts and class invariants. 
 It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This 
-allows invariants to query owned mutable objects whose ROG is not fully encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
+allows invariants to query owned mutable objects whose reachable object graph is not fully encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
 is insufficient to modify it or call its methods.
 %tells you nothing about it, hindering
 %modification and method calls.
@@ -222,7 +227,7 @@ A simpler and more restrictive solution to these problems is to restrict `pure' 
 %3 exceptions
 %  spec sharp is happy to be unsound with capturing %unchecked exceptions
 %---
-%*TMs, OCs
+%*TMs, object capabilities
 %
 %*expand on invariant protocol
 %

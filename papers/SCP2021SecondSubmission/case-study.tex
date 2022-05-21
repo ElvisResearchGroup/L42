@@ -50,13 +50,13 @@ class MoveAction implements Action {
 Gui.#$\$$().display(new SafeMovable(...));
 \end{lstlisting}% ISAAC: 
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
-\Q@left@, \Q@top@, and \Q@children@. Also note how the ROG of \Q@Box@ is cyclic: since
+\Q@left@, \Q@top@, and \Q@children@. Also note how the reachable object graph of \Q@Box@ is cyclic: since
 the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box@ in order to move it.
 Even though the children of \Q@SafeMovable@s are fully encapsulated, we can still easily dispatch events to them using \Q@dispatch(e)@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID, it will call its \Q@Action@'s \Q@process(e)@ method. 
 
 %Our main function uses a capability-object to display the top-level \Q@Widget@ and its \Q@children@, as well as dispatch events to it. 
 Our example shows how to encode interactive GUI programs, where widgets may circularly reference other widgets.
-In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either RCs or OCs.
+In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either reference or object capabilities.
 
 \subheading{The Invariant}
 \Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch(e)@ method (which is a rep mutator). There are no other checks inserted since we never do a direct field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:\footnote{
@@ -130,7 +130,7 @@ Concluding, we have shown that when an invariant check queries other objects wit
 % In literature there is attention to prevent method called from an invariant to call public methods on \Q@this@; it would cause the system to go in loop.
 % However when calling methods on other objects is allowed, if those objects have invariant, this cause the aforementioned explosion. 
 
-% Our example also shows that the restrictions of TM's and OC's are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
+% Our example also shows that the restrictions of TM's and object capabilities's are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
 % In order to perform this case study, we had to first implemented a simple Gui Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events.
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 

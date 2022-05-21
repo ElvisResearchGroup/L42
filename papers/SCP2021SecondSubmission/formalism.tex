@@ -221,6 +221,8 @@ The three other expressions are:
 		evaluate $e$, and if successful, return its result, otherwise if $e$ is an $\error$, evaluation will reduce to $e'$.
 	%\Q!try {return $e$;} catch(Throwable t) {return $e'$;}!
 	During reduction, \Q!try!--\Q!catch! expressions will be annotated as $\trys{\s}{e}{e'}$, where $\s$ is the state of the memory before the body of the \Q!try! block begins execution. This annotation has no effect on the runtime, but is used by the proofs to model strong exception safety: objects in $\s$ are not mutated by the body of the \Q!try!. Note that as mentioned before, this strong limitation is only needed for unchecked exceptions, in particular, invariant failures. Our calculus only models unchecked exceptions/errors, however L42 also supports checked exceptions, and \Q@try-catch@es over them impose no limits on object mutation during the \Q@try@.
+    This is safe since checked exceptions can not leak out of invariant methods or ref mutators: in both cases our protocol requires their \Q@throws@ clause to be empty.
+
 \end{itemize}
 
 We say that an $e$ is an $\error$ if it represents an uncaught invariant failure, i.e. a runtime-injected invariant check that has failed and is not enclosed in a \Q!try! block:\\

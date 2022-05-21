@@ -45,7 +45,7 @@
 %Our example is about a list of immutable objects.
 %To instead validate a list of \Q@mut@ objects we would need to use our box pattern not just around the list,
 %but around a section of data encapsulating both the list and all the contained elements.
-%This is because our simple \Q@capsule@ modifier requires the whole ROG to be encapsulated.
+%This is because our simple \Q@capsule@ modifier requires the whole reachable object graph to be encapsulated.
 %Conceptually, it would be better for the list (of mutable objects) to be validated by its
 %head, since the behaviour of the contained objects is transparent to the validation criteria. 
 %Our limitation relates to full encapsulation and contrasts with flexible encapsulation as in 
