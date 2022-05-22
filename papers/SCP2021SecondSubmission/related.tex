@@ -4,7 +4,8 @@
 \vspace{-1ex}
 In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this article's scope to explain 
 in detail this integration, but the overall idea is that an invariant
-is seen as a \Q@Void@ \Q!$@$Cache.Now! method, who's result is pre-computed.
+is seen as a \Q@Void@ \Q!$@$Cache.Now! method.
+%, who's result is pre-computed.
 The language ensures that \Q!$@$Cache.Now! methods are recomputed whenever their result may change; any exceptions are propagated immediately, and are not cached.
 The type-system requires that any method that could alter the result of a \Q!Cache.Now! method (except via a field update) must be marked with \Q!$@$Cache.Clear! and respect our rep mutator restrictions.
 L42 requires an explicit \Q!$@$Cache.Clear! so as to make it clear in the code that such methods has special type-system restrictions.
@@ -29,7 +30,7 @@ ShippingList = Data:{
 }
 \end{lstlisting}
 In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. 
-In particular, note how the current concrete 42 syntax uses the keyword \Q@capsule@ to represent a varius kinds of restrictions over fields.
+In particular, note how the current concrete 42 syntax uses the keyword \Q@capsule@ to represent varius kinds of restrictions over fields.
 The language relies on the presence of annotations or other specific methods
 to decide what restrictions to apply. In this case, the presence of the \Q!@$$Cache.Now! annotation clarifies that the field \Q@capsule Items items@
 is actually a \Q@rep@ field as discussed in our work.
@@ -73,7 +74,7 @@ immutable classes must be final and have only final fields that refer to immutab
 In Joe-E, every method that only takes instances of immutable classes is pure.
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
 In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}.
-Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} receivers and parameters is pure, regardless of their class type. In particular, we allow the parameter of such a method to be mutated later on by other code.
+Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} as receivers and parameters is pure, regardless of their class type. In particular, we allow the parameter of such a method to be mutated later on by other code.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \subheading{Invariant protocols}

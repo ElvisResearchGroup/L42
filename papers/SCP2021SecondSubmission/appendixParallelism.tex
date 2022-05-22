@@ -1,12 +1,12 @@
 \section{Safe Parallelism in 42, without destructive reads}
 \label{s:parallelism}
-\IOComm{Update to use our new \Q!rep! field terminology; Also rewrite this entire appendix}
+
 This section discuss the relation between our work and the 42 support for safe unobservable parallelism.
 
 From its inception, the work on 42 tried to build a system supporting flexible, elegant and soundly unobservable parallelism without the need of relying on destructive reads.
 42 uses  the same kind of reference and object capabilities used by Pony and Gordon, but while they allow for \emph{true} isolated fields with destructive reads, 42 avoids them.
 That is: in Pony/Gordon we can easy define a class boxing a capsule references as follows
-\begin{lstlisting}
+\begin{lstlisting}[morekeywords={iso}]
 class Box{ //pseudocode for clarity
   iso Foo foo;//isolated field
   Box(iso Foo foo){this.foo=foo;}//initialized with an iso reference
@@ -43,7 +43,7 @@ Of course, the invariant protocol described in this paper does work also in the 
 This is the simplest 42 parallel pattern.
 %This is more expressive than Wcode(Cache.Eager) since it allows us to run parallel code on Wcode(read) references of mutable objects.
 Consider the following code in 42:
-\begin{lstlisting}
+\begin{lstlisting}[deletekeywords=label]
 Example = Data:{
   $@$Cache.ForkJoin class method 
   capsule D foo(capsule A a, capsule B b, imm C c, read D d) = (
@@ -64,7 +64,7 @@ The name \emph{non-mutable computation} comes from the fact that, even if the ca
 More in general, \Q|$@$Cache.ForkJoin| works only on methods whose body is exactly a round parenthesis block, with some local variable initialization expressions and a conclusive expression.
 Thus, fork-join methods will follow this specific syntactic pattern:
 \IOComm{TODO!!! The following code won't compile anymore!}
-%\begin{lstlisting}
+%\begin{lstlisting}[deletekeywords=label]
 %$@$Cache.ForkJoin $\mdf$ method $T_0$ $\m$($T_1 x_1,\ldots,T_n x_n$) = (  $T'_0$ $x_0$=$e_0$  $\ldots$  $T'_k$ $x_k$=$e_k$  e )
 %\end{lstlisting}
 where the varius expressions $e_0...e_k$ are execuited in parallel, and the final expression $e$ is executed after all of $e_0...e_k$.
@@ -93,7 +93,7 @@ Consider for example this code computing in parallel
 new immutable string values for all of
 the entries in a mutable list:
 
-\begin{lstlisting}
+\begin{lstlisting}[deletekeywords=label]
 UpdateList = Data:{
   class method S map(S that) = that++that//could be any user defined code
   class method Void of(mut S.List that) = this.of(current=0I,data=that)  
@@ -137,24 +137,28 @@ Since a rep mutator can mutate the reachable object graph of a \Q@rep@ field, an
 different initialization expressions must use rep mutators updating different \Q@rep@ fields.
 In this way, 42 can express parallel computation processing arbitrary complex mutable objects inside well encapsulated data structures.
 Consider the following example, where instances of \Q@Foo@ could be arbitrarily complex; containing complex (possibly circular) graphs of mutable objects.
-\begin{lstlisting}
+\begin{lstlisting}[deletekeywords=label]
 Foo=Data:{.. /*mut method Void op(I a, S b)*/ ..}
 
 Tree={interface [HasToS]    mut method Void op(I a, S b) }
 
 Node = Data:{[Tree] 
-  rep Tree left, rep Tree right //the 42 syntax uses 'capsule' instead of 'rep'
-  $@$Cache.ForkJoin mut method Void op(I a, S b) = (
+  capsule Tree left, capsule Tree right //the 42 syntax uses 'capsule' instead of 'rep'
+  $@$Cache.ForkJoin
+  mut method Void op(I a, S b) = (
     unused1=this.leftOp(a=a,b=b)
     unused2=this.rightOp(a=a,b=b)
     void
     )
-    $@$Cache.Clear class method Void leftOp(mut Tree left,I a, S b) = left.op(a=a,b=b)
-    $@$Cache.Clear class method Void rightOp(mut Tree right,I a, S b) = right.op(a=a,b=b)
-    }
+  $@$Cache.Clear
+  class method Void leftOp(mut Tree left,I a, S b) = left.op(a=a,b=b)
+  $@$Cache.Clear
+  class method Void rightOp(mut Tree right,I a, S b) = right.op(a=a,b=b)
+  }
 Leaf = Data:{[Tree]
-  rep Foo label
-  $@$Cache.Clear class method Void op(mut Foo label,I a, S b) = label.op(a=a,b=b)
+  capsule Foo label
+  $@$Cache.Clear
+  class method Void op(mut Foo label,I a, S b) = label.op(a=a,b=b)
   }
 //usage
 mut Tree top = Node(

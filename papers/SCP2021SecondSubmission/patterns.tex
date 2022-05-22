@@ -56,6 +56,9 @@ In particular, the above code demonstrates that our system can:
 \item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner(ts)! can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant()! will only be checked at the end of the loop.
 \item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before the end of the loop.
 \item Pass the state of an `invalid' object around, in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not the invariant method.
+Note how programmers can use conventional private types to control how such `invalid' versions of objects are exposed in the public API, for example by 
+declaring \Q@AccountBox@ as a private nested class).
+In contrast, if \Q@invalid@ was a type system feature than any user defined type would intrisically expose the existence of both variants in the public API.
 \end{itemize}
 
 Under our strict invariant protocol, the invariant holds for all reachable objects.
@@ -188,49 +191,25 @@ The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, 
 \begin{lstlisting}
 static method Void zoom(mut Widget w) {
   w.transform(ws -> { for (wi : ws) { zoom(wi); } });
-  w.width(w.width() / 2); ...; w.top(w.top() / 2); }
+  w.width(w.width() / 2); ...; w.top(w.top() / 2); 
+}
 \end{lstlisting}
 
-In the context of reference capabilities, \Q@imm@ lambdas/closures will only be allowed to capture \Q@imm@ and \Q@capsule@ local variables.
+In the context of reference capabilities, \Q@capsule@ lambdas/closures will only be allowed to capture \Q@imm@ and \Q@capsule@ local variables.
 Note that the \Q@Transformer@ parameter to \Q@transform@ is \Q@capsule@ and the method \Q@Trasformer.apply@ takes a \Q@capsule@ receiver. In particular, this means that \Q@transform@ will be able to call the lambda at most once,
-and lambdas cannot be saved and passed to multiple calls to \Q@transform@.
-However, we could instead make \Q@transform@ take an \Q@imm@ \Q@Transformer@, and make \Q@Transformer.apply@ be an \Q@imm@ method, this would allow lambdas to be freely copied and called multiple times, however they would not be able to capture pre-existing mutable objects.
+and that those lambdas cannot be saved and passed to multiple calls to \Q@transform@.
+However, we could instead make \Q@transform@ take an \Q@imm@ \Q@Transformer@, and make \Q@Transformer.apply@ be an \Q@imm@ method, this would allow those lambdas to be freely copied and called multiple times, however they would only be able to capture \Q@imm@ local variables.
+%not be able to capture pre-existing mutable objects.
 
-\begin{comment} % this is annoying, I'm just going to make it take a capsule
-To allow capturing mutable state, we can add a separate \Q@CapTransformer@ \Q@interface@ with a \Q@capsule@ \Q@apply@ method:
-\begin{lstlisting}[escapechar=\%]
-interface CapTransformer<T> {
-	capsule method Void capApply(mut T elem); 
-}
-interface Widget { ... // as before
-	mut method read Void capTransform(CapTransformer<Widgets> t);
-}
-class SafeMovable implements Widget { ... // as before
-	mut method Void capTransform(capsule CapTransformer<Widgets> t) {
-		// same body as before
-		t.capApply(this.box.c);}}
-\end{lstlisting}
-This is sound because the \Q@t@ parameter to \Q@capTransform@ cannot possible alias the \Q@SafeMovable@ \Q@this@, thus the call to \Q@apply@ cannot observe a broken \Q@SafeMoveable@. Note that because \Q@CapTransformer@'s \Q@capApply@ method takes a \Q@capsule@ this, it can only be called once, since the receiver will be the only copy of \Q@this@.
-\IOComm{This is not true!! You could have an implementation of \Q@capApply@ that does \Q@this.capApply(...)@ right? What about saving \Q@this@ in the heap somewhere, and later on recovering it back as a capsule?}
+That is, a lambda is a normal object instantiated from an interface with a single abstract method.
+Reference capabilities of both the created object and the provided method must be consider when deciding what local variables can be captured.
+For simplicity in this work we only consider three cases:
+When creating an \Q@imm@ object by specifying an \Q@imm@ method, only \Q@imm@ local variables can be captured in the lambda closure.
+When creating a \Q@capsule@ object by specifying a \Q@capsule@ method, only \Q@imm@ and \Q@capsule@ local variables can be captured.
+When creating a \Q@mut@ object by specifying a \Q@mut@ method, only \Q@imm@ and \Q@mut@ local variables can be captured.
 
-For example, we can use \Q@capTransform@ to move a \Q@Widget@ into another \Q@Widget@, without having to clone the \Q@Widget@:
-\begin{lstlisting}
-capsule Widget myWidget = ...;
-mut Widget parent = ...;
-parent.capTransform(ws -> ws.add(myWidget));
-\end{lstlisting}
-The lambda, \Q@ws -> ws.add(myWidget)@ can be typed as a \Q@capsule@ \Q@CapTransformer<Widgets>@ since it's only free variable, \Q@myWidget@, is also \Q@capsule@.
-
-Note that a \Q@Transformer<T>@ can be trivially made into a \Q@CapTransformer@, e.g. by using Java 8's default interface methods:
-\begin{lstlisting}
-interface Transformer<T> implements CapTransformer<T> {
-	method Void apply(mut T elem);
-	capsule method Void capApply(mut T elem) {
-		// promotes the capsule 'this' to imm
-		this.apply(elem) }}
-\end{lstlisting}
-\end{comment}
-% One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
+%The comment below was confusing when doing src/replace,
+%Please, check that the new version of capsule lambdas is OK
 
 % \begin{lstlisting}[escapechar=\%]
 %// Lambda Expression that creates a new Transformer<...>
@@ -266,7 +245,6 @@ The \Q@Node@s are guaranteed to be encapsulated by the \Q@Graph@, however they c
 %interface Transform<T>{ method read T apply(mut Nodes nodes); }//can capture only imm
 \begin{lstlisting}
 interface Transform<T>{ capsule method read T apply(mut Nodes nodes); }
-//can capture only imm and capsule
 
 interface Node{
   read method Bool subInvariant(read Nodes nodes)
@@ -335,7 +313,7 @@ read method Void connectWith(read Node other,mut Graph g){
 	});
 }
 capsule method read MyNode addToGraph(mut Graph g){
-	return g.capTransform(ns->{
+	return g.transform(ns->{
 	mut MyNode n1=this;//single usage of capsule 'this'
 	ns.add(n1);
 	});
@@ -350,12 +328,3 @@ Note how the body of the \Q@capsule@ lambda in \Q@connectWith(other,g)@, can not
 and recover the concrete objects from the \Q@mut Nodes ns@ object.
 In this way, we also obtain more useful \Q@mut@ references to those nodes.
 On the other hand, note how in \Q@addToGraph(g)@ we use the reference to the \Q@capsule this@ within the lambda, this allows the lambda to be safely typed as \Q@capsule@, since there can be no other aliases to \Q@this@, and the \Q@this@ variable cannot be used again in the method.
-
-Reference Cababilities must be taken into account when creating lambdas.
-A lambda is a normal object instantiated from an interface with a single abstract method.
-Reference Cababilities of both the created object and the provided method must be consider when deciding what local variables
-can be captured.
-For simplicity in this work we only consider three cases:
-When creating an \Q@imm@ object by specifying an \Q@imm@ method, only \Q@imm@ local variables can be captured in the lambda closure.
-When creating a \Q@capsule@ object by specifying a \Q@capsule@ method, only \Q@imm@ and \Q@capsule@ local variables can be captured.
-When creating a \Q@mut@ object by specifying a \Q@mut@ method, only \Q@imm@ and \Q@mut@ local variables can be captured.

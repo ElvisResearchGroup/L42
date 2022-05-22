@@ -20,14 +20,13 @@ Note that we do not model variable updates or traditional subclassing, since thi
 We use the following notational conventions:
 \begin{itemize}
 	\item Class, method, parameter, and field names are denoted by $C$, $m$, $x$, and $f$, respectively.
-	\item We use ``$\ls$'' and ``$\vs$'' as metavariables denoting a sequence of form $\range{v}$ and $\range{l}$, similarly with other metavariables ending in ``$s$''.
+	\item We use ``$\vs$'' and ``$\ls$'' as metavariables denoting a sequence of form $\range{v}$ and $\range{l}$, similarly with other metavariables ending in ``$s$''.
 	\item We use ``$\_$'' to stand for any single piece of syntax.
 	\item Memory locations are denoted by $l$.
 	\item We assume an implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$ within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
 	\item Memory, denoted by $\s : l\rightarrow C\{\ls\}$, is a finite map from locations, $l$, to annotated tuples, $C\{\ls\}$, representing objects; here $C$ is the class name and $\ls$ are the 
 	field values.
-	We use the notation $\C{l}$ to get the class name of $l$, $\s[l.f=l']$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$ (
-this is only used in our proofs since our small step reduction does not need to delete individual locations). The notation $\s,\s'$ combines the two memories, and requires that $\dom(\s)$ is disjoint from $\dom(\s')$.
+	We use the notation $\C{l}$ to get the class name of $l$, $\s[l.f=l']$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$ (this is only used in our proofs since our small step reduction does not need to delete individual locations). The notation $\s,\s'$ combines the two memories, and requires that $\dom(\s)$ is disjoint from $\dom(\s')$.
 	\item We assume a typing judgment of form $\ty{e}{T}$, this says that the expression $e$ has type $T$,
 	where the classes of any locations are stored in $\s$ and the types of variables are stored in the environment $\G : x\rightarrow T$.
 \end{itemize}
@@ -43,7 +42,7 @@ this is only used in our proofs since our small step reduction does not need to 
 	%in particular, calling them can lead to non-deterministic behaviour.
 	
 	\item \Q!mut! methods on \Q!Cap!, unlike all other methods, can have the same method name declared multiple times. To enable a typesystem to be sound, we require that methods with the same name have identical signatures.
-	Such methods will model I/O, for example reading a byte from a file could be modelled by having several different \Q!read! method implementations, each of which returns a different byte value,
+	Such methods will model I/O, for example reading a byte from a file could be modelled by having several different \Q!mut method Int readByte()! implementations, each of which returns a different byte value,
 	a call to such a method will then non-deterministically reduce to one of these values.
 	%\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods can be declared with the same signature multiple times, thus a call to them will non-deterministically chose one of the implementations.
 \end{itemize}
@@ -190,7 +189,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (
 \subheading{Grammar}
 The grammar is defined in Figure \ref{f:grammar}.
 
-We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. We don't model traditional \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values. If \Q!capsule! fields where added, they would not make our invariant protocol more interesting, as long as they do not provide a backdoor to create improper \Q!capsule! references.
+We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. We don't model the pre existing L42 \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values. If \Q!capsule! fields where added, they would not make our invariant protocol more interesting, as long as they do not provide a backdoor to create improper \Q!capsule! references.
 
 We use $v$, of form $\mdf\,l$, to keep track of the reference capabilities in the runtime, as it allows multiple references to the same location to co-exist with different reference capabilities; however $\mdf$'s are not stored in memory.
 The reduction rules do not change behaviour based on these $\mdf$'s, they are merely used by our proofs to keep track of the guarantees enforced by the typesystem.
@@ -244,7 +243,7 @@ The standard evaluation context~\cite[Chapter~19]{pierce2002types}, $\EV$, repre
 The full expression context, $\E$, is like an $\EV$, but nothing needs to have been evaluated yet, i.e. the hole can occur in place of any sub-expression.
 The context $\ER$ is also like an $\EV$, but instead has a hole in an argument to a \emph{redex} (i.e. an expression that is about to be reduced).
 	This captures our previously informal notion: a value $v$ is \emph{involved in execution} if we have an $\ER[v]$.
-	For example, if $\ER$ is of form $\EV[\new{C}{v_1,\square,v_3}]$, then $\ER[v_2] = \EV[\new{C}{v_1,v_2,v_3}]$, i.e. we are about to perform an operation (creating a new object) that is involving the value $v_2$.
+	For example, if $\ER$ = $\EV[\new{C}{v_1,\square,v_3}]$, then $\ER[v_2] = \EV[\new{C}{v_1,v_2,v_3}]$, i.e. we are about to perform an operation (creating a new object) that is involving the value $v_2$.
 
 %As is standard, an $\E$ represents an expression with a single \emph{hole} ($\hole$) in place of a sub-expression. We use the notation $\E[e]$ to fill in the hole, i.e. $\E[e]$ returns $\E$ but with the single occurrence of $\hole$ replaced %by $e$.
 %For example, if $\E = \call{\hole}{m}{}$ then $\E[\new{C}{}]$ = $\call{\new{C}{}}{m}{}$.
@@ -256,7 +255,9 @@ The rest of our grammar is standard and follows Java, except that types ($T$) co
 \subheading{Reference Capability Operations}
 We define the following properties of our reference capabilities and field kinds:
 \begin{itemize}
-	\item $\mdf \leq \mdf'$ indicates that a reference of capability $\mdf$ can be be used whenever one of kind $\mdf'$ is expected. This defines a partial order:\\
+	\item $\mdf \leq \mdf'$ indicates that a reference of capability $\mdf$ can be be used whenever 
+    %'one of kind' Marco: you wrote 'kind' but now kind is also a concept in our language
+    $\mdf'$ is expected. This defines a partial order:\\
 	\SS[1]\begin{iitemize}
 	\item $\mdf \leq \mdf$, for any $\mdf$\SS
 	\item $\Kw{imm} \leq \Kw{read}$\SS
@@ -294,7 +295,7 @@ We additionally restrict the grammar with the following well-formedness criteria
 	
 	\item Rep mutators must also follow the requirements in \ref{s:protocol}, except that a \Q!mut! method that reads a \Q!rep! field is \emph{always} considered a rep mutator, even if it only needs to use the field value as \Q!read!\footnote{
 		This restriction is merely for simplicity, it does not limit expressivity as one can write a getter of form
-		$\method{\Kw{read}\,}{\,\Kw{read}\,C}{m}{\Kw{this}\D f}$, where $C.f = \field{\Kw{rep}}{C}{f}$, and then call this $m$ on a \Q!mut! \Q!this!.}
+		$\method{\Kw{read}\,}{\,\Kw{read}\,C}{m}{}{\Kw{this}\D f}$, where $C.f = \field{\Kw{rep}}{C}{f}$, and then call \Q@this.m()@ on a \Q!mut! \Q!this!.}
 		Such methods must not use \Q!this!, except for the single access to the \Q!rep! field, and they must not have \Q!mut! or \Q!read! parameters, or a \Q!mut! return type.
 		Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{\_}{f}$ and $C.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drangex{\mdf}{\_\,\_}}{\E[\Kw{this}\D f]}$:
 	\begin{iitemize}
@@ -318,7 +319,8 @@ We additionally restrict the grammar with the following well-formedness criteria
 	methods within a \Q!class!/\Q!interface! (other than \Q!mut! methods in \Q!Cap!) have unique names; and parameters of a method have unique names and are not named \Q!this!.
 
 	\item For simplicity of the type-system and associated proof, we require that every method in the (indirect) super-interfaces of a class be implemented with exactly the same signature, i.e. if we have a $\clazz{C}{\_}{\_}{\Ms}$, and $\iclazz{C'}{\_}{\As}$, where $C'$ is reachable through the \Q!implements! clauses starting from $C$,
-	then for all $\amethod{\mdf}{T}{m}{\Ps} \in \As$, there is some $e$ with $\method{\mdf}{T}{m}{\Ps}{e} \in \Ms$.
+	then for all $\amethod{\mdf}{T}{m}{\drange{T}{x}} \in \As$, there is some $e$ with $\method{\mdf}{T}{m}{\drange{T}{x}}{e} \in \Ms$.
+%we removed Ps, should we remove the macro and see what does not compile?
 \end{itemize}
 
 A typesystem, such as our example one in \ref{s:typesystem}, may impose additional restrictions on method bodies, for example that they are well typed.
@@ -401,7 +403,7 @@ Our typesystem requirements in \ref{s:proof} however only refer to the main expr
 	\end{array}$
 \caption{Reduction rules}\label{f:reductions}
 \end{figure}%
-Our reduction rules are defined in Figure \ref{f:reductions}. \IO{We use the function $\fr(\s)$ to return an arbitrary $l$ such that $l \notin \dom(\s)$}.
+Our reduction rules are defined in Figure \ref{f:reductions}. We use the function $\fr(\s)$ to return an arbitrary $l$ such that $l \notin \dom(\s)$.
 The rules use $\EV$ to ensure that the sub-expression to be reduced is the left-most unevaluated one:
 \begin{itemize}
 \item \textsc{new/new true} creates a new object.
@@ -410,15 +412,15 @@ The rules use $\EV$ to ensure that the sub-expression to be reduced is the left-
 	it simply returns a \Q!mut! reference to the new object, \emph{without} checking its invariant.
 	The separate \textsc{new true} rule is needed as the invariant of \Q!True! is itself defined to perform \Q!new True()!, so using the \textsc{new} rule would cause an infinite recursion.
 	This is sound since \emph{manually} calling invariant on \Q!True! will return a \Q!True! reference.
-\IO{Note that although we do not define what $\fr$ actually returns, since it is a \emph{function} these reduction rules are deterministic: $l_0$ is uniquely defined for any given $\s$. }
+Note that although we do not define what $\fr$ actually returns, since it is a \emph{function} these reduction rules are deterministic: $l_0$ is uniquely defined for any given $\s$.
 %Note the use of $\s,l_0 \mapsto C\{\_\}$ implies that $l_0 \notin \dom(\s)$, since $\s,l_0\mapsto C\{\_\}$ would be undefined otherwise.
 
 \item \textsc{access} looks up the value of a field in the memory and returns it, annotated with the appropriate reference capability (see above for the definition of $\rmdf{\mdf}{\fmdf}$).
-\item \textsc{update} updates the value of a field, returning a monitor that re-checks the invariant of the receiver, and if successful, will return the receiver of the update as \Q!mut!. Note that this does \emph{not} check that the receiver of a the field update has an appropriate reference capability, it is the responsibility of the type-system to ensure that this rule is only applied to a \Q!mut! or \Q!capsule! receiver. For soundness, we return a \Q!mut! reference even when the receiver is \Q!capsule!, promotion can then be used to convert the result to a \Q!capsule!, provided the new field value is appropriately encapsulated.
+\item \textsc{update} updates the value of a field, returning a monitor that re-checks the invariant of the receiver, and if successful, will return the receiver of the update as \Q!mut!. Note that this does \emph{not} check that the receiver of the field update has an appropriate reference capability, it is the responsibility of the type-system to ensure that this rule is only applied to a \Q!mut! or \Q!capsule! receiver. For soundness, we return a \Q!mut! reference even when the receiver is \Q!capsule!. Promotion can then be used to convert the result to a \Q!capsule!, provided the new field value is appropriately encapsulated.
 \item \textsc{call/call mutator} looks for a corresponding method definition in the receiver's class, and reduces to its body with parameters appropriately substituted. The parameters are substituted with the reference capabilities of the method's signature, not the capabilities at the call-site, this is used by the proofs to show that further reductions will respect the capabilities in the method signature. We wrap the body of the method call in a \Q!as! expression to ensure that the returned $\mdf$ is actually as the method signature specified; for example, a method declared as returning a \Q!read! might actually return a \Q!mut!, but the \Q!as! expressions will soundly change it to a \Q!read!, thus preventing it from being used for mutation. As with \Q!as! expressions in general, the type system is required to ensure that this will not break our reference capability guarantees in \ref{s:proof}.
 The \textsc{call mutator} rule is like \textsc{call}, but is used when the method is a rep mutator (a \Q!mut! method that accesses a \Q!rep! field):
 it additionally wraps the method body in a monitor expression that will re-check the invariant of the receiver once the body of the method has finished reducing.
-\IO{Note that as \Q!Cap! has no \Q!rep! fields and can have multiple definitions of the same method, the \textsc{call} rule allows for non-determinism, but only if the receiver is of class \Q!Cap! and the method is a \Q!mut! method.}
+Note that as \Q!Cap! has no \Q!rep! fields and can have multiple definitions of the same method, the \textsc{call} rule allows for non-determinism, but only if the receiver is of class \Q!Cap! and the method is a \Q!mut! method.
 
 \item \textsc{as} simply changes the reference capability to the one indicated. Note that our requirements on the type-system, given in \ref{s:proof}, ensure that inappropriate promotions (e.g. \Q!imm! to \Q!mut!) will be ill-typed.
 
@@ -453,10 +455,11 @@ For example, in L42 they are implemented by statically injecting calls to \Q!inv
 %}
 %
 We define a deterministic reduction arrow to mean that exactly one reduction is possible:\\*
-\IO{
-\indent$\s|e \Rightarrow \s'|e'$ iff $\s|e \rightarrow \s'|e'$, and $\forall \s'', e''$, $\s|e \rightarrow \s''|e''$, implies $\s''|e'' = \s'|e'$\\
-Set style definition:\\
-\indent$\s|e \Rightarrow \s'|e'$ iff $\{\s'|e'\} = \{\s''|e'' \text{ where } \s|e \rightarrow \s''|e''\}$}
+
+$\s|e \Rightarrow \s'|e'$ iff $\s|e \rightarrow \s'|e'$, and $\forall \s'', e''$, $\s|e \rightarrow \s''|e''$, implies $\s''|e'' = \s'|e'$\\
+%Set style definition:\\
+%\indent$\s|e \Rightarrow \s'|e'$ iff $\{\s'|e'\} = \{\s''|e'' \text{ where } \s|e \rightarrow \s''|e''\}$
+%Ok, I'm leaving the forall definition, not sure what is better.
 
 \noindent We say that an object is \valid when calling its \Q@invariant()@ method would
 deterministically produce an $\Kw{imm}\,\Kw{True}$ in a finite number of steps, i.e. assuming the typesystem is sound, this means it does not evaluate to a non-$\Kw{True}$ reference, fail to terminate, or produce an \error.

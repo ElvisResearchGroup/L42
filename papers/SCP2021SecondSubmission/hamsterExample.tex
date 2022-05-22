@@ -104,7 +104,7 @@ Though we don't want either \Q@pos@ or \Q@path@ to ever mutate, Spec\# currently
 Note that this prevents multiple \Q@Cage@s from sharing the same point instance in their \Q@path@.
 %, unless they are owned by the same object (such as a \Q@DoubleCage@ containing two \Q@Hamster@s).  
 Had we made \Q@Point@ an immutable class, we would get no such restriction. A similar problem applies to our \Q@pos@ field: the \Q@pos@ of \Q@Hamster@s in different  \Q@Cage@s cannot be the same \Q@Point@ instance.
-Note how if we consider being in the reachable object graph of an object's \Q!rep! fields as being `owned' by the object, our \Q@rep@ fields behave like \Q@Rep@ fields; similarly, \Q@mut@ fields (that are in the reachable object graph of a \Q@rep@ field) behave like \Q@Peer@ fields.
+Note how if we consider being in the reachable object graph of an object's \Q!rep! fields as being `owned' by the object, our \Q@rep@ fields behave like \Q@Rep@ fields; similarly, \Q@mut@ fields that are in the reachable object graph of a \Q@rep@ field behave like \Q@Peer@ fields.
 
 The \Q@expose(this)@ block is needed, since in Spec\# in order to modify a field of an object (like \Q@this.h.pos@), we must first ``expose'' its owner (the \Q@Cage@). During an \Q@expose@ block, Spec\# will not assume the invariant of the exposed object, but will ensure it is re-established at the end of the block. This is similar to our concept of rep mutators (like our \Q@moveTo@ method above), however it is supported by adding an extra syntactic construct (the \Q@expose@ block), which we avoid.
 

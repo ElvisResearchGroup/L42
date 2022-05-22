@@ -70,7 +70,7 @@ class MagicCounter {//INVALID EXAMPLE
   Int counter = 0;
   method Int incr(){return unsafe{counter++}; /*using internal mutability*/}}
 class NastyS extends String {..
-  MagicCounter c = new MagicCounter(0);
+  MagicCounter c = new MagicCounter(0);//can be 'imm' since it is 'unsafe'
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
 ...
 NastyS name = new NastyS(); //type system believe name's ROG is immutable
