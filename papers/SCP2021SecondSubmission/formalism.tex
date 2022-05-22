@@ -293,11 +293,9 @@ We additionally restrict the grammar with the following well-formedness criteria
 		\item $\fmdf \in \{\Kw{imm},\Kw{rep}\}$
 	\end{iitemize}
 	
-	\item Rep mutators must also follow the requirements in \ref{s:protocol}, except that a \Q!mut! method that reads a \Q!rep! field is \emph{always} considered a rep mutator, even if it only needs to use the field value as \Q!read!\footnote{
-		This restriction is merely for simplicity, it does not limit expressivity as one can write a getter of form
-		$\method{\Kw{read}\,}{\,\Kw{read}\,C}{m}{}{\Kw{this}\D f}$, where $C.f = \field{\Kw{rep}}{C}{f}$, and then call \Q@this.m()@ on a \Q!mut! \Q!this!.}
-		Such methods must not use \Q!this!, except for the single access to the \Q!rep! field, and they must not have \Q!mut! or \Q!read! parameters, or a \Q!mut! return type.
-		Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{\_}{f}$ and $C.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drangex{\mdf}{\_\,\_}}{\E[\Kw{this}\D f]}$:
+	\item Rep mutators must also follow the requirements in Section \ref{s:protocol},
+Such methods must not use \Q!this!, except for the single access to the \Q!rep! field, and they must not have \Q!mut! or \Q!read! parameters, or a \Q!mut! return type.
+Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{\_}{f}$ and $C.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drangex{\mdf}{\_\,\_}}{\E[\Kw{this}\D f]}$:
 	\begin{iitemize}
 		\item $\Kw{this} \notin \E$\SS[0.15]
 		\item $\drangex[\text{, }]{\mdf}{\!\notin \{\Kw{mut},\Kw{read}\}}$\SS[0.15]
@@ -336,14 +334,14 @@ Our typesystem requirements in \ref{s:proof} however only refer to the main expr
 		{\s,l_0\mapsto C\{\range{l}\}}{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}}
 		\text{, where:}}
 	\\\qquad l_0 = \fr(\s)\text{ and }C \neq \Kw{True}
-	\\\smash{
+	\\[0ex]\smash{
 		\rrule{new true}
 		{\s}{\new{\Kw{True}}{}}
 		{\s,l_0\mapsto \Kw{True}\{\}}{\Kw{mut}\,l_0}
 		%\IO{\text{, where }l_0 = \fr(\s)}}
 		\text{, where:}}
 	\\\qquad l_0 = \fr(\s)
-	\\\smash{
+	\\[0ex]\smash{
 		\rrule{access}
 		{\s}{\mdf\,l\D f}
 		{\s}{\mdf'\,l'}
@@ -364,7 +362,7 @@ Our typesystem requirements in \ref{s:proof} however only refer to the main expr
 		\text{, where:}}
 	\\\qquad\begin{array}{l}
 		\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e}\\*
-		\text{if }\mdf_0 = \Kw{mut}\text{, }\IO{\nexists f,\E\text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]}
+		\text{if }\mdf_0 = \Kw{mut}\text{ then }\nexists (f,\E) \text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]
 	\end{array} % because otherwise there seems to be too much space between this and as
 	\\\rowSpace\smash{
 		\rrule{call mutator}

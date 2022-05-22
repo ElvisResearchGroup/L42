@@ -122,7 +122,16 @@ More preciselly, if a reference to an object in the reachable object graph of a 
 
 To show how our \Q@rep@ fields ensure these properties, we first define some terminology:
 \Q@x.f@ is a \emph{field access}, \Q@x.f=e@ is a \emph {field update},\footnote{Thus a field update \Q@x.f=e@ is not a field access followed by an assignment.}
-a \Q@mut@ method with a field access on a \Q!rep! field of \Q!this! is a \emph{rep mutator}. 
+a \Q@mut@ method with a field access on a \Q!rep! field of \Q!this! is a \emph{rep mutator}.
+\footnote{
+We could relax our protocol,
+so that a \Q!mut! method that reads a \Q!rep! field it is not considered a rep mutator if the method only needs to use the field value as \Q!read!.
+This relaxation would be merely for convenience; it does not change expressivity as one can write a getter of form
+\Q@read method read C m()\{return this.f;\}@
+for a \Q@rep C f@ field,
+%$\method{\Kw{read}\,}{\,\Kw{read}\,C}{m}{}{\Kw{this}\D f}$, where $C.f = \field{\Kw{rep}}{C}{f}$,
+and then call \Q@this.m()@ on a \Q!mut! \Q!this!.%
+} 
 Note that a method performing a field \emph{update} of a \Q@rep@ field (instead of a field access) is not called a rep mutator, but it is just a normal method performing a field update.
 Rep mutators handle the more subtle case where the fields of an object with invariant are not updated, but a mutation deep within their reachable object graph may potentially break the invariant.
 

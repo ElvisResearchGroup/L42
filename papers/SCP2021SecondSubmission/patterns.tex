@@ -15,8 +15,8 @@ We showed how the box pattern can be used to write invariants over cyclic mutabl
 Instead of adding new features to the language, like an \Q!invalid! modifier (denoting an object whose invariant does not need to hold), and an \Q!expose! statement like Spec\#, we can use a `box' class and a rep mutator to the same effect:
 \begin{lstlisting}
 interface Person{ mut method Bool accept(read Account a,read Transaction t); }
-interface Transaction{ mut method ImmList<Transfer> compute(); }
-//Here ImmList<T> represents a list of immutable Ts.
+interface Transaction{ mut method List<Transfer> compute(); }
+//Here List<T> represents a list of immutable Ts.
 class Transfer{ Int money;
   method Void execute(mut AccountBox that){// Gain some money, or lose some money
     if(this.money>0){ that.income+=money; }
@@ -38,7 +38,7 @@ class Account{
     if(this.holder.accept(this, ts)){ this.transferInner(ts.compute()); }
   }
   // rep mutator, like an `expose(this)' statement
-  private mut method Void transferInner(ImmList<Transfer> ts){
+  private mut method Void transferInner(List<Transfer> ts){
      mut AccountBox b = this.box;
      for (Transfer t : ts) { t.execute(b); }
   }// check the invariant here
