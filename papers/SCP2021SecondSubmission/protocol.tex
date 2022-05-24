@@ -164,7 +164,18 @@ only a rep mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way
 If execution is (indirectly) in a rep mutator, than $o$ is only used as the receiver of the \Q!this.f! expression in the rep mutator.
 Thus we can be sure that the reachable object graph of $o.f$ will only be mutated within a rep mutator, and only after the single use of $o$ to access $o.f$.
 Since such mutation could invalidate the invariant of $o$, we call the \Q@invariant()@ method at the end of the rep mutator body; before $o$ can be used again. Provided that the invariant is re-established before a rep mutator returns, no invariant failure will be thrown, even if the invariant was temporarily broken \emph{during} the body of the method.
-
+\footnote{
+That is, rep mutators pretend
+  that \Q@this@ is linear by requiring it to be used exactly once to read the \Q@rep@. By burying the
+  only current access point to the \Q@rep@ field we can read it as \Q@mut@ and update it.
+  The restrictions on parameter types and return types ensure that when such reference goes out of
+  scope, the only remaining reference allowing mutation is in the \Q@rep@ field again.
+  This is similar to the ideas of the Focus operation \cite{??
+%Fähndrich and DeLine's Focus operation [Fändrich & DeLine, 2002]
+}
+ and View-point adaptation \cite{DietlEtAl07}.
+}
+%INTERESTING, the commented text down here looks a lot like the rev suggestion above...
 %As the expression is \Q!capsule!, we can be sure that the object being initialised/updated will have the only external alias to the reachable object graph of the field's new value. In addition, since the reference was \Q!capsule!, the initialised/updated object could not already alias it, thus after the initialisation/update, the initilised/updated \Q!capsule! field will not alias the object.
 
 In contrast, L42's pre-existing \Q!capsule! fields do not have our rep mutator restrictions, in particular, other objects can mutate them, although storing references to them on the heap is highly restricted.

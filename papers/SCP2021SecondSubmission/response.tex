@@ -1,403 +1,336 @@
-TODO: Update to use new "rep field" terminology
-We would like to thank all four reviewers for their insightful reviews!
+We would like to thank all the reviewers for their insightful reviews!
+
+In this response document we first summarize our major changes, then we list response points specific to individual reviewers.
+
+1:  We added Appendix B, containing a type system for our small step reduction and a proof showing that such type system
+does support all the requirements of Appendix A. This is a concrete example showing that the requirements of Appendix A
+can be satisfied by a practical type system. The presented type system is a simplification of the current L42 type system.
+We thank the reviewers for pushing us in this direction. This makes our work much stronger from a formal perspective.
+
+2: We changed our terminology:
+Before we used 'capsule fields' and 'capsule references' and we spent quite some text explaining how 
+'capsule fields' can not be used to produce a capsule reference. Given the reaction of the reviewers, this terminology must have been
+intrinsically confusing.
+For example Rev 1 asked "why capsule fields never hold capsule references"
+Conceptually, the answer would have been "because that is how we are defining it to be".
+That is, in L42 the keyword 'capsule' means different things when applied to fields or local variables.
+This is similar to what happens in Java with the keyword 'final', that means different things when it is applied to clases, methods and fields.
+Since the language we use in our presentation is already quite far from the concrete 42 syntax, there is no need to stick to the confusing 42 terminology and
+we have now changed our terminology.
+We now refer to 'rep fields' for what we used to call 'capsule fields',
+while 'capsule references' and 'capsule local variables' are keeping the same terminology.
+That is, there is no change of meaning. Just a change in how we explain such meaning.
+
+3: We added Appendix C, containing an in dept explanation of parallelism in 42 and on how the restrictions and relaxations
+ about capsule references and capsule fields do not prevent safe parallelism.
+We are unsure if this Appendix should stay in the final version of this work. 
+We inserted it because Rev#2 was concerned that our novel field type, was causing difficoulties in connection with safe parallelism.
+To properly clarify that this was not the case, we had to explain how safe parallelism works in 42, and that required quite some text.
+
+About the 4 main points listed at the top of the reviews
+>>1 - better introduction of the various concepts used
+Following the detaild comments of the revs we have improved the explanation in many points, in particular we have clarified much more how the
+try-catch and the corresponding restrictions work. The change in terminology (rep fields) is also designed to make the explanation more clear
+
+>>2 - improve the formalisation, and make it more precise, and more self-contained
+This is where we spent most of our effort. Appendix B now make our work self contained
+
+>>3 - improve discussion of related work.
+We integrated the paper suggested by the reviewers in our discussion, we recognize there are many more works we could discuss,
+and we are eager to lissen to more suggestions from the revs; however our work already has XX (more then 79) references.
+This is because our work is sits at the border between many aread: runtime verification, static verification, object capabilities, reference capabilities.
+ 
+>>4 - They also all have suggestions to improve the presentation of the paper.
+We have done our best to address all the minor comments.
+
+
+We are worried that Rev1 and Rev2 seams to ponder that we may be willingly making an unsound system:
+>>(Rev2) Option 2: the paper intends to update enclosing variables from inside the try block, opening up the unsoundness I noted above.
+>>(Rev1) It seems very dangerous to trust the developer to correctly mark which methods may invalidate the invariant...
+We are very confused about those remarks. We believe our work to be sound. 
+We are not assuming a 'cooperative programmer' that does not exploit holes.
+We belive that there is no hole to exploit.
+Where in the paper we have suggested otherwise?
+
+
+---------
+Answers to Reviewer #1: 
+
+>> accidental sharing of the `BoxRange` object could still be a problem[..] It could perhaps be implemented as[..] Or maybe there is [..] ownership [..]?
+>> Would aliasing of `this` be  a problem though? Is it a problem in the current system?
+Aliasing of the object with invariant is not a problem, our system is sound.
+Using the Box pattern, aliasing of the internal encapsulated object (as mut) is only possible when the outer object (the one with the invariant) is not visible.
+Aliasing of the internal object (as read) is possible everywhere, but if the outer object is visible, then the constraints induced by its invariant will
+be enforced on the internal object too. See section7, the subInvariant pattern and when the subInvariant method can be observed as false
+
+
+>> How big is the actual gain between having `Range` and  `BoxRange` vs. having `Range` and `unpacked Range`?
+In a language design only focusing on invariant supports having a language level 'unpacked' support feels tempting.
+But, in a fully fledged language it would be yet another language feature to consider, and it would interact with all the other features.
+Moreover, adding this feature seams to invite even more features into the language:
+'(un)packed' is a kind of type state, so we could immagine more states objects could be in, and we may even want to define a metalanguage to support creation of user defined typestates.
+In this work we aimed at a minimal type system: when a feature could be expressed as a pattern we do not lift it at the type level.
+It would also be tempting to lift at the type/language level the 'sub-invariant' pattern shown later.
+Having many patterns lifted would expose them more to the programmers, and encourage their use.
+However, we think that there is greater value in minimality.
+Indeed, using patterns to express concepts also shows programmers how using patterns can help them encode all kinds of features they need, instead of having to rely on a limited set of language features.
+>> I am not sure it would be a bad thing with type-system support for reasoning about when an object is in an inconsistent state.
+>> In some sense, you are doing the same thing with the box-pattern: a `FooBox` is (the representation of) a `Foo` whose invariant may be temporarily broken.
+>> If this distinction is necessary for reasoning about programs, I would think language support is a *good* thing.
+>> There is the static inner class I thought about before
+As rev1 themselves notices, the box pattern is more flexible than a language supported 'unpacked' feature:
+by making the Boxed type private we can avoid client code to even see the inner 'Box' type. 
+In contrast, if 'unpacked'/'invalid' was a type system feature than any user defined type would intrisically expose the existence of both variants in the public API.
+>> A nice thing  about the latter approach is that I know that I am indeed  handling a `Range` and that there are
+>> no discrepancies between the classes representing the different states (packed and  unpacked) of the object.
+While sometime a guarancee of no discrepancy would be nice, one of the main pillars of OO is the concept of encapsulation, so that
+for example methods looking like getters and setters do not need to directly correspond to concrete fields in the object.
+Code enforcing their encapsulation boundaries would likelly not want to expose their true internal state as a Box object, they would likelly wanting to expose a wrapper whose
+API would be stable, while keeping the internal representation open to change for future maintanence.
+
+We included some of those considerations in the sub-invariant pattern subsection.
+
+
+>>there is a story for verification in a concurrent setting as well, since that is  the context for a lot of the work on reference capabilities.
+There could be interesting patterns merging parallelism and invariant based verification. We would like to explore this in future work.
+Right now, L42 does support unobservable parallelism, so invariants are already enforced also in a parallel setting.
+We would not consider our work sound if this was not the case. To the best of our understanding, there is absolutelly no way 
+to observe broken invariants in 42, even when using all of the full features of 42 including parallelism and interaction with Java code.
+The details on how the 42 runtime is protected agains malitious Java code (and C code loaded from that Java) are outside of the scope of this work.
+
+%The 42 developers are getting ready to test this in the wild by offering a money price to whoever can break some specific 42 gurantees.
+%The exact terms of this challenge are still under developement, but the main idea is that contestants would be able to 
+% (that can in turn interact with potentially broken C code),
+%broken invariants would never be observable.
+%That is, assuming the 42 process runs in user space on an OS where the root is not compromised, 
 
-======================================================================
-We start by addressing the four crucial points raised by Reviewer D.
-======================================================================
 
+>>"This is different with respect to many other approaches"  -- Which approaches are these? 
+We refer to former work about aliasing and immutablity before Gordon, so fractional permissions, universe types, islands, row and cooked types, external uniqueness and so on.
 
-- convince me the restrictions are not so severe
-------------------------------------------------
 
-Our solution proposes using the Box and the Transform patterns, which makes the restrictions of our systems not so severe. Specifically, when it comes to the following concerns:
+>> I don't know what you mean by "the result [of accessing a capsule variable] will not be a capsule reference".[..] it seems like enforcing affineness is more restrictive.[..]
+>>  Since Gordon et al. use flow sensitive typing,[..](with some restrictions on parameter and return types).
+>>  Note that it is always possible to permanently lose the capsule  capability following an arbitrary operation requiring a `mut` capability.
+Yes, that is exacly what we mean: while in 42 any way to read a capsule local variable gives you a capsule reference, in the other approaches the situation is more involved
+ (in order to be more expressive) and sometime reading the capsule variable can give you some other kind of stuff, as you said.
+Also, you suggests that the other approaches also have a much simpler core 
+>>I believe some recovery/promotion is happening under the hood here
+but they have some syntactic sugar or programming patterns lifted at the language level that make the surface language more usable.
+Most likelly, those surface language features could all transparently keep working if (for example) Pony developers wanted to integrate our work in their language.
 
-1. "no shortage of code knowingly violating invariants"(and fixing them later)
-2. "batch invariant checking in order to do it less often"
-3. "to implement a binary tree" "use a separate wrapper"
-4. "spec# can (with user guidance) check only once"
-5. "in a simulation step"
 
-We can resolve them all using the Box pattern: a separate wrapper object storing data whose invariant
-is only meaningful when checked together.
+>> Then, at a later stage,[...]
+We changed the sentence a little to clarify the distinction between instances and classes(lines XX in the new version). Indeed, as discussed just two lines above
+"any expression ([..]) of a mut type that has no mut or read free variables can be implicitly promoted to capsule",
+thus no matter how complex and full of internally aliased mut objects a data structure is, if we can create an instance without using any mut, the whole instance can be a capsule/imm.
 
-At the end of this response, we include code examples demonstrating how to address points 1-2-3-4-5.
 
-In particular we show a sample implementation of a Binary Sorted Tree including 'add' and 'delete' as queried by the reviewer.
+>> My intuition for capsule mutators is that they "pretend"
+Yes, this is a nice summary, we reworked and included it in the text. 
+The concept of the focus operator is very similar to the concept of view-point adaptation, we cited both works there.
 
-Our experimentation shows that Spec# also requires the Box pattern when
-invariants over cyclic object structures are needed; such as the SafeMovable in GUI.
-The Box pattern replaces the "expose" block of Spec#.
-Where Spec# provides special syntax, we instead require adding new methods/wrapper
-objects. In this way we get a level of control very similar to the one of Spec#
-but without adding and formalising special syntax/features.
-Our system is designed to keep the restrictions simple, and to minimise additional constructs and concepts.
-We believe that our restrictions are simple enough that users can apply and understand them.
 
-As we said in the paper, on Line 162, page 4: 'we needed to write a separate moveTo method, since we do not want to burden our language with extra constructs such as Spec#’s expose.' But we indeed should make this much more clear in the introduction.
+>>`return counter++;` should not be in a comment? Or is it because the example is invalid? (there is also no `counter` field in the class)
+Yes, the idea is that just doing counter++ would probably not be enough, that there should be some hypotetical unexistant 'backdoor syntax' around it.
+We changed the example with some hypotetical syntax to make it more concrete.
 
+>> [..]sequence expressions in the language[..]you could abuse the fact that method calls have multiple arguments[..]  Featherweight Java also has no sequencing[..]
+Yes, in minimalistic FJ inspired languages we often use methods with multiple arguments to encode sequencing.
 
-- why the children() call in the GUI type checks
-------------------------------------------------
 
-This point is connected to the comments: "leak out a mut alias to the capsule field" and "differs in such important ways"
+>> "Our setting does ensure termination of the invariant of[..]so, this is a less  interesting property (albeit not uninteresting) in my opinion.
+Yes, solving the halting problem would have been much more interesting but would deserve a paper of its own.
+Here, more modesly, we just show that it terminates because of determinism+altready terminated.
+We clarified this in a foot note.
 
-We agree that our explanation of capsule fields is indeed lacking.
 
-Capsule expressions and local variables are identical in Pony, Microsoft and L42.
-Linear types ensure that variables are used only once.
-Capsule fields in Pony, Microsoft and L42 must be initialised and updated with capsule expressions.
-However using destructive reads in Pony and Microsoft a capsule field access produces a capsule reference.
-L42 also requires to initialise and update capsule fields using capsule expressions,
-but it supports many ways to access capsule fields.
+>>[..]Would you get the same pathological numbers if you removed the checks after pure methods? In that case, this experiment is a point in
+>> favour of tracking (im)mutability, but not necessarily the whole reference capability approach.
+Yes, any kind of purity verification solves the exponential explosion, as you can see later for Spec# doing the same exact number of checks of 42.
+The RC approach is a kind of purity verification that is so much simpler to use than the Spec# approach.
 
-One relevant way to access capsule field is as follows: require 'this.f' to have the modifier of the receiver
-(i.e. if 'this' is 'mut', 'this.f' is 'mut'; if 'this' is 'read', 'this.f' is 'read'; if 'this' is 'capsule', 'this.f' is 'capsule').
-Moreover, any 'mut method' accessing a capsule field must satisfy the requirements of capsule mutators.
-Those access requirements are designed to avoid representation exposure.
-This is formally encoded in the appendix as Assumptions 4 and 5.
+>> I think this whole section [..] provides a strong argument for using reference capabilities in a setting outside of reasoning about parallelism and data races
+Thanks for this consideration. We edited the paper to made this point explicit.
 
-We will cite "Flexible recovery of uniqueness and immutability" 
-pg 169 doi:10.1016/j.tcs.2018.09.001 where variations on these restrictions are discussed.
-Such paper shows that capsule fields can be formalised/encoded as mut fields whose use is restricted by applying syntactic restrictions to class code in isolation.
-Thus, also Pony and Microsoft could have this kind of encapsulated fields.
 
-**We will improve the paper by explaining the difference between capsule fields and capsule local variables better.**
+>> "Note how in the lambda in connectWith(other,g), [..]" -- I think this is the same reasoning as in [..], but this is still an assumption.
+>> It would be nice with a clarification here or earlier.
+Yes, our informal handling of lambas was very confusing. Now we discuss how differently typed lambdas can capture different kinds of variables.
 
 
-So to answer the question regarding "read method read Widgets children(){return this.box.c;}":
+>> "the overall idea is that an invariant is seen as a Void  cached [..]" -- I do not understand this at all. Why is the  invariant cached if it is always expected to return `true`?
+>> The  only times it is interesting to calculate the invariant is when the value may have changed, and then having a cached value is not helpful.
+We were unsure how much of this to insert in the paper since it is more of an extension of the current work: the point is that a generalization of invariants is caching: 
+-both caches and invariants have to be recomputed every time something in the ROG changes.
+-So if we allow for a meaninful result instead of just 'true' we can use the exact same mechanism of invariants in order to encode caching.
+We clarified this in the text.
 
-'this.box' is a capsule field accessed on a read 'this'. 'this.box' will return a read reference
-and 'this.box.c' is also read.
+---------
+Answers to Reviewer #2: 
 
-Note that this behaviour is sound because thanks to Assumption 5 we know that the reachable object graph
-of this.box does not contain "this".
+>>The formal calculus is pure
+The calculus we shown have a mutable memory, so it is not pure.
 
+>>The paper gives a nice overview of [..] but stopping short of enough detail to fully explain the differences with regard to that work's notions of "capsule" (including earlier versions of L42)
+>>I assumed this fork of L42 had given up on safe concurrency.
+A full explanation of how L42 handles safe concurrency is out of the scope of the main text of the paper. 
+In this revision, we added Appendix C, where we explain in the details how 42 handle unobservable parallelism.
+We are open to either  keep this appendix in the final version of the paper or to remove it if it is considered out of scope. 
 
-- there is more generality to the GUI case study
-------------------------------------------------
+>and thus obscuring what seem to be subtle reliance on a novel twist to L42's already-unique view of what capsule means
+We hope that our new terminology (rep fields) clarifies how we do not rely on a specific interpretation of capsulness and how 
+any system supporting iso of Gordon/Pony would work be able to support our rep fields just fine.
 
-The GUI is an application of the Composite programming pattern - one of the most common OO patterns.
-We also included two more case studies in the appendix.
 
-Here a summary of our 4 case studies:
-* The `Hamster`: Section 1, Pages 2-4, 
-* The `Gui`: Section 7,
-* The `Family`: Appendix C, pages 38-40,
-  designed as a worst case for the performance compared to visible state semantics
-* The Spec# Papers: Appendix C, pages 40-41,
-  here we looked at three papers on Spec# ("if the limitations of a system aren't encountered in an evaluation, why not?")
- *  We encoded all examples from 'Verification of Object-Oriented Programs with Invariants'[5]
- *  We can not encode examples from papers 'Object Invariants in Dynamic Contexts'[46] and
-   'Friends Need a Bit More: Maintaining Invariants Over Shared State'[6]:
-   they verify invariants over state that is *not* encapsulated.
+>>I think this paper really needs to (1) include a concrete type system for the core language,
+Done in Appendix B
+>> and (2) switch the informal "Java-like" intuitions in the start to be closer to the "Featherweight L42."
+This would require a full rewriting of most of the informal text and would make our work much less valuable.
+Our aim here is not to glorify 42 but to show a strategy that can be implemented by many different languages.
+We hope that Section 8 and Appendix C can sufficiently show how our work looks like when it is applied to the exact  environment 42.
 
+>>Without a formalization, of this change, it's not possible to fully understand the details of this paper's assumptions on capsule fields,[..]
+>>I'd settle for a clear formalization of an example type system
+We have now added Appendix B with a full type system and a proof showing that such type system satisfy our assumption.
+Appendix C would also help to clarify the former work on 42.
 
-- inheritance and syntactic checks in invariant bodies
-------------------------------------------------------
-We fear our syntactic checks may have been misunderstood:
-invariant methods can only access capsule and immutable fields over 'this';
-but expressions are allowed over the result of the field access.
-Thus 'this.f.bar()' is allowed if 'f' is 'capsule' or 'imm'. 
 
-A simple solution to support conventional inheritance would be to require the invariant to only
-access final methods, plus the syntactic checks already required and the considerations under line 407.
+>>How is this possible without *major* modifications or restrictions?
+>>the idea of shipping unique/isolated/capsule references to other threads
+>>What's to stop someone from writing "read C x = foo.myCapsuleField; send(swap/dread(foo.myCapsuleField)); x.someField" and causing a data race?
+Gordon and 42 aims to ensure the correctness of Fork Joins. This means that we do not just 'ship work to another worker' and continue our work.
+We rather control the scope of the whole fork join, and what variables can be seen in the various branches. Please refer to Appendix C for more details.
 
-Overriding methods called by the invariant can be very confusing.
-Consider the following example:
 
-```
-class A{
-  Int f;
-  read method int f(){return this.f;}
-  read method Bool invariant(){this.f()>0;}
-}
-class B extends A {
-  method int f(){return -this.f;}
-}
-```
+>>Assumption 6 is underspecified partly because the paper remains vague on what exactly it means for an *expression* to have a capsule type.
+>>This is a very subtle aspect of the work in this area. Gordon et al. avoided it entirely by formalizing something closer to a compiler IR.
+>>Pony tackles it, but with a distinction in the type system between iso references that are stored and iso references that are "in flight" as part of an intermediate reduction (in the implementation; the formal calculus from AGERE'15 just uses recovery).
+>>I'm not as familiar with L42's details, but this paper under review doesn't say anything about it. The paper spends a bit of time distinguishing the treatments of capsule locals and fields, but it's not clear what the in-flight use case means.
 
-Class B is changing the meaning of the invariant method in A because it overrides f().
-Is this intentional? Preventing such behaviour seems like a reasonable precaution.
+We hope this is going to be more clear with the new terminology: capsules variables are now only ever on the stack (and linear), and capsule references are "in-flight".
+There is no a capsule reference on the heap since 42 do not support destructive reads. Supporting iso fields with destructive reads would not impact our approach in any way.
+again, more details in Appendix B and C.
 
+>>The paper's formal definition of encapsulated [..]  doesn't directly control heap structure.
+Indeed, 42 capsule references simply enstablish a forest of isolated mutable ROGs starting from the stack, and do not recursively divides the heap into trees.
+In particular, for our invariant checking, this assumption just underline that a more rigid control of the heap is not needed. 
+Also, both heap and stack need to be took in consideration to talk about encapsulation.
 
-======================================================================
-We now give answers to the two explicit questions raised by Reviewer C.
-======================================================================
 
+>>I'm not fundamentally opposed to the way this paper tries to make its results depend on the *semantics* of types rather than a specific type system;[..]
+>>That is a great strategy that I'm tempted to try myself.
+>> But I think because the paper hasn't actually applied this to a fully worked out semantics for types, the paper ends up at the very least not explaining its assumptions clearly,
+>> and is possibly making mutually inconsistent assumptions. 
+Yes, thanks to this comment instead of removing our assumptions and presenting a direct proof we have chosen to keep our assumptions based proof (Appendix A)
+and to prove that those assumptions can be verified in a practice type system (Appendix B)
 
-- Does Boogy/Spec# rely on object immutability as well?
--------------------------------------------------------
 
-Spec# offers immutable classes. In 'Flexible Immutability with Frozen Objects'[46] they expand Spec# to also consider immutable instances of non-immutable classes. Spec# supports two kinds of invariants: ownership based invariants and visibility based invariants.
-They both limit what kind of what data can be accessed in the invariant. Both kinds of invariants can access immutable data; ownership based invariants can also access owned data. Visibility based invariants can reason over non encapsulated state, but runtime checking has not been implemented, as it would require implementing 'ghost' state. 
+>>[..]So, I can see two possibilities for fixing this in a Java-like language:
+>>Option 1: the references from outside the try-catch are also marked final.
+Yes, this was already part of how 42 dealt with strong error safety fron its inception. We now make it clear also in the informal part.
+The formal part is silent on this aspect since we do not encode local variable update.
+Formally, there is no need to encode them directly; it is well known that they can be emulated by a final local variable storing a box object with a single updatable field.
 
 
-- Why do we care for reducing checks
-------------------------------------
+>>[..]there's *no* way to actually get data out of a try-catch directly
+>>This is okay (clearly there's a way to get a value out of the try block!)
+42 is an expression based language, and try-catches are expressions (including an 'else part' similarly to python try-catch-else).
+Those expressions can return mutable data if such mutable data is created inside one of the catch bodies or if the try block completes successfully.
+Even in a statement based language with traditional try-catch statements, we still cound get data out of a try-catch by using a 'return'.
+Again, try-catching on checked exceptions have none of those strong restrictions, they only apply on unchecked exceptions/errors.
+We clarified this in the text.
 
-As shown in the GUI, the checks in the visible state semantics can explode
-exponentially, making the code unusable even for debugging.
-On the other hand, if the cost of runtime checks is low,
-it becomes feasible to keep those checks running in production,
-to capture invariant failure exceptions and provide alternative behaviour.
+>>then implicitly suggests that as a result, more nuanced comparisons are uninteresting. This is rather unsatisfying.
+>>I think this shallowness short-changes the reader ([..]). But it *also* does a disservice to this paper: [..]
+We agree. On the other side, our paper is already very long.
+We added a couple of sentences about the relation with [59]//TODO:
 
-This has implications for security.
-For example, if all the objects that are able to perform Database actions had invariants,
-our system statically ensures that Database methods are only called from objects whose invariant holds.
-If we could prove that the invariant only allows for a valid DB transaction, we would have a system
-that make guarantees about transactions.
 
-Additional Note: We agree with Reviewer C that we should have clarified more that our model essentially imposes the Box and the Transform patterns.
+>>Please explain in more detail why distinguishing checked vs. unchecked exceptions makes any difference in the restrictions on try blocks [..]
+>>I see clearly how the restrictions in the formal calculus ensure no broken invariants are exposed, but I cannot see any reason a checked exception would justify relaxing 
+>>all of those restrictions.
+>>""an exception thrown while an invariant doesn't hold has the potential to""
+We make sure that checked exceptions never leak outside of a scope where an object with a possibly broken invariant is involved in execution: 
+  - 42 constructors (called factories) can not leak exceptions. In a language where they could,
+   we would need to guarantees that if the constructor leaks a checked exception, the created object is now unreachable.
+  - settes, capsule mutators and invariant methods can not throw checked exceptions. This is part of our explicit restrictions.
+We clarified this in the paper.
 
+>>"Pony does not guarantee that capsule fields contain a capsule reference at all times, as it provides non-destructive reads" 
+>>This is either incorrect, or a highly misleading characterization of Pony's 'tag' RC. In Pony, reading an iso field non-destructively results in a 'tag' RC,
+>> which may not be dereferenced, and therefore does not affect reachability paths.
+Rev1 pointed out about ISO!, that is more similar to the case we are discussing. 
+As we can see, the more complex treatements of isolated fields can create confusions.
 
-======================================================================
-We now provide our responses to the other comments by Reviewer D.
-======================================================================
+>>I find this terminology VERY confusing. A capsule mutator may read the field but not modify the capsule field? [..]le mutator."
+We changed the text a little to make it more direct.
 
-- soundness concerns:
----------------------
+>>This bit about getting a read reference from reading a capsule field seems like it would allow violating capsule properties, unless L42 disallows storing read RCs in the heap?
+Indeed, 42 allows to store read RCs only in very specific cases, by making wrapper objects that are born 'read'.
+This is needed for the most important promotion rule of 42: any expression that does not take in input mut but returns a mut is a capsule.
+If read RCs could easily be saved in fields of mutable objects, this would be unsound.
 
-In the formal calculus all errors are "unchecked exceptions".
-strong exception safety requires that if a try-catch captures an unchecked exception then the body of the try
-is type-checked using "read" instead of "mut" for all the local variables.
-To transfer this knowledge from local variables to object locations, we annotate the try with
-the set of preserved locations.
 
-Thus, if "l" was visible from outside, then it could not be mutated, thus 'l.f=v' would not type check.
-On the other hand, if 'l.f=v' type checked, it means that l is not visible outside.
 
-Having that constraint as a syntactic well-formedness or as a typing requirement just moves 
-where the proof has to take care of it: progress (in our case) or subject reduction
-(in the variant proposed by the reviewer).
+---------
+Answers to Reviewer #3:
 
-This reasoning is hidden in the paper under Assumption 1 (progress), since any type system
-supporting Assumption 1 would have to take care of this detail.
+>>The contribution are not clearly presented. It should be crystal clear what is the current contribution on top of the author's previous work.
+We have now made a clear bullet point of the contribution in each section at the end of the introduction.
+More generally, all the content about invariants and verification is a novel contribution, and all the content about reference capabilities and the way 42 works is not.
 
-- the system can no longer be used for concurrency
---------------------------------------------------
+>>your formal language should be a bit more expressive and include the necessary expressions to cover your example 
+>>(a bit of integer arithmetic and Boolean expressions beyond 'true' and 'false', conditionals and loops).
+>>As such, your language is not even Turing-complete...
+>>The formal part of the paper is not self-contained since neither it defines a turing-complete language, nor explains all the introduce notations and rules.
 
-Concurrency is about what types of references can be passed to different threads/actors,
-not what fields objects can have.
-In 42 a capsule field access does not always give a capsule reference,
-so it cannot be easily passed to another thread, thus we are not violating any concurrency properties.
+It is well known that FJ is turing complete. You can easly encode lambda calculus in it.
+We have now made our work self contained by adding Appendix B
 
-- There are no redundant checks in the capsule mutators:
-----------------------------------------------------------------------------------------
 
- since 'this' is used only once, 'this' cannot also appear in the form 'this.x=e' (thus a second invariant check cannot be triggered)
+>>representation invariants are not limited to OO languages. They also exist in other languages in which they are usually called type invariants.
+We added a mention to "refinment types" in the introduction.
 
-- "invariant can only access capsule and imm fields":
------------------------------------------------------
 
-See previous answer about "Does Boogie/Spec# rely on object immutability as well?"
+>>Promotion and Recovery: at this point, it is not clear why this paragraph is relevant for this paper
+We added a sentence explaining why this is important in our context.
 
--line 685 and capsule fields access:
-line 683 contains the definition of the method makeBox(c).
-As noticed by RevC, there is a typo in our code 'cs' should be 'c' all the times.
-makeBox(c) works as follows
-* It creates a new mut Box passing 'c', which is 'mut' by subtyping.
-This is sound since the type system prevents the 'c' variable from being used again.
-* It modifies the 'mut Box b'; the fact that 'c' was 'capsule' is not relevant here.
-* it returns 'b' as a 'capsule'.  This is sound, as the only parameter 
-of makeBox(c) is 'capsule'. This mechanism work the same in L42/Pony/Microsoft.
+>>Purity: what about (deterministic) I/O?
+If you consider a single running process on any operative system, there is no such thing as deterministic IO:
+what we read always depends on what other processes may be doing,
+what we write can still non deterministically go in error if the HD fails or it is full, for example.
+It is possible to talk about deterministic I/O only if we assume to control the whole system, not just our individual process.
 
--"would a different annotation of the Spec# version lead to soundly checking the invariant with fewer invocations of the invariant method?"
----------------------------------------------------
+>>"it is guaranteed to be garbage collectable" --> "so it is out of scope when checking the invariant" 
+>>being guaranteed to be garbage collectable does not offer any strong guarantee since one cannot be sure that the GC will indeed collect it
+True, but actual collection is not important here. We are certaint that it is never going to be involved in execution ever again.
+That is what being garbage collectable means.
 
-We tried many different ways to encode the GUI example in Spec#, in particular we tried very hard to find a solution that did not require to use the Box pattern (in addition of the expose block).
-In none of our attempt we managed to reduce the number of invocations.
 
-- reference capability
-----------------------
-
-If the reviewers think it is more appropriate,
-we will change the terminology to use reference capability.
-We were not intentionally attempting to change the terminology used by the field.
+>>The verifier available online [...] behaves differently: please add explanations here (and maybe as plain text and not as a footnote).
+We are sorry, but we do not know all the details, those online verifiers are liable to change and it is
+not very well documented how they differ from the official releases.
 
--externally unique
-----------------------------
-
-Neither the work of Microsoft, Pony or L42 supports external uniqueness.
-Isolated and capsule objects provides a much stronger encapsulation guarantee (separate uniqueness).
-A good explanation of this common misconception can be found in
-Capabilities for Uniqueness and Borrowing, Philipp Haller and Martin Odersky pg 360 fig3,
-where the arrow 's' is allowed in external uniqueness but not in separate uniqueness.
-
-- prevent any clear class of these pathologies
-----------------------------------------------
-
-We are not sure what the reviewer means here: L42 has no 'null' and if an invariant call
-somehow throws an error (unchecked exception) then according to our definition,
-such invariant does not hold, but the invariant implementation is not 'wrong'.
-We would expect the user to throw personalised error messages instead of just returning false
-in order to produce better error messages.
-
-- how this allows for an invariant to be violated for a non trivial period of time
-----------------------------------------------------------------------------------
-
-The invariant must hold for all the objects involved in execution.
-If an object is not in the ROG of any parameter (including this) of the *current* method,
-clearly such object is not involved in execution and its invariant can be freely broken.
-'this' can be used only once in capsule mutators, so 'this' is not visible after such first use.
-See the code snippet for cases 1-2 at the end of this response.
-
-
-======================================================================
-We now provide our responses to the other comments by Reviewer B.
-======================================================================
-
-Firstly, we thank the reviewer for their positive comments of our paper and that "it will make a nice addition to Ecoop".
-Answering some of their particular points: 
-
-"y=this x=this y.f=x" is allowed by our system and the resulting object would have a circular object graph.
-Such object can be promoted/recovered as imm, and the whole ROG would be immutable.
-(L42 has no static fields)
-
-Object capabilities control non-determinism and I/O. They are essential in the discussion after line 530
-
-
-======================================================================
-Code examples showing how to handle points 1-5
-======================================================================
-
-1,2: violating invariants and fixing it later, or executing the invariants in batch
-
-```
-  class ABox{int a;int b;}
-  class A{
-    capsule ABox box;
-    read method Bool invariant(){this.box.a>this.box.b;}
-    mut method Void play(){//this is a capsule mutator
-      mut ABox inner=this.box; //the only use of 'this'
-      inner.a=5;///may break invariant
-      inner.b=3;///fix invariant
-      //invariant checked here
-    }
-  }
-```
-
-3: binary trees. We provide here the full code that would support sorted binary trees.
-Note how the annotation burden is quite low. We thanks the reviewer for suggesting this problem.
-If the reviewers think it is a good example, we could add it as an additional case study in the appendix.
-
-Note how the invariant can reason on the overall shape of the Node, and
-how Node.delete() can perform multiple field updates,
-and even violate sortedness, without any invariant checks.
-However, the Tree object is not visible while Node.delete() executes.
-Any time a Tree is visible, it is guaranteed to be sorted;
-any method call mutating the contained Nodes will invoke an invariant check.
-This is similar to Spec# `NoDefaultContract`, allowing methods to take in input
-objects whose invariant is not known to hold:
-in this example the Tree correspond to a Spec# Tree where the invariant
-is known to hold, while the TreeBox correspond to a Spec# Tree where the invariant is not known to hold.
-In actual L42 the code could be much more compact, but we show the solution in the language of our paper,
-that is more verbose since it is more similar to Java.
-
-``` 
-class Tree {
-  capsule TreeBox box;
-
-  Tree(){this.box=new TreeBox();}//invariant check after constructor
-
-  mut method Void add(Int value) {//this is a capsule mutator
-    TreeBox b=this.box;//only use of 'this' is here
-    b.root=b.root.add(value);//invariant check after this line is completed
-  }
-  read method Bool isEmpty() {return this.box.root.isEmpty();}
-  mut method Void delete(Int value) {//this is a capsule mutator
-    TreeBox b=this.box;//only use of 'this' is here
-     b.root=b.root.delete(value);//invariant check after this line is completed
-  }
-  read method Bool invariant() {return this.box.root.sorted();}
-}
-
-class TreeBox{ mut Node root; TreeBox(){this.root=new EmptyNode();} }
-
-interface Node{//L42 has no null; we must use subtyping or library support for optional types
-  read method Bool isEmpty();
-  mut method mut FullNode get();
-  mut method mut Node add(Int value);
-  mut method mut Node delete(Int value);
-  read method Bool sorted();
-}
-class EmptyNode implements Node{
-  read method Bool isEmpty() {return true;}
-  mut method mut FullNode get() {throw new Error();}
-  mut method mut Node add(Int value) {return new FullNode(value,this,this);}
-  mut method mut Node delete(Int value) {return this;}
-  read method Bool sorted() {return true;}
-}
-class FullNode implements Node{
-  read method Bool isEmpty() {return false;}
-  mut method mut FullNode get() {return this;}
-  mut method mut FullNode add(Int value) {
-    if (value < this.value) {this.left = this.left.add(value);}
-    else if (value > this.value) {this.right =this.right.add(value);}
-    return this;
-  }
-  mut method mut Node delete(Int value) {
-    if (value < this.value) {this.left = this.left.delete(value);}
-    if (value > this.value) {this.right = this.right.delete(value);}
-    if(value!=this.value) {return this;}
-    if (this.left.isEmpty() && this.right.isEmpty()) {return this.left;}
-    if (this.right.isEmpty()) {return this.left;}
-    if (this.left.isEmpty()){return this.right;}
-    this.value = this.right.get().min();
-    this.right = this.right.delete(this.value);
-    return this;
-  }
-  read method Int min() {
-    if(this.left.isEmpty()) {return this.value;}
-    return this.left.get().min();
-  }
-  read method Int max() {
-    if(this.right.isEmpty()) {return this.value;}
-    return this.right.get().max();
-  }
-  read method Bool sorted() {
-    if(!this.right.isEmpty() && this.right.get().min()<=this.value) {return false;}
-    if(!this.left.isEmpty() && this.left.get().max()>=this.value) {return false;}
-    return this.right.sorted() && this.left.sorted();
-  }
-  Int value;
-  mut Node left;
-  mut Node right;
-  FullNode(Int value, mut Node left, mut Node right) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
-  }
-}
-```  
-
-4:in Spec# the user may write 
-
-```
-    Void a() {
-      this.doA();
-      expose(this){this.doB(); this.doC();}
-      this.doD();
-    }
-```
-
-in L42 they would need to write the more verbose
-
-```
-    mut method Void a() {
-      this.readState().doA();
-      this.capsuleMutator();
-      this.readState().doD();
-    }
-    read method read Box readState(){return this.state;}//get the capsule state a read
-    mut method Void capsuleMutator() {
-      mut Box box=this.state;
-      box.doB(); box.doC();//here 'this' is not visible, also 'this' not inside ROG(box)
-      }
-```
-    
-Where 'this.state' is the capsule field of the box pattern.
-As you can see, the user can still guide the invariant checking, by using programming patterns
-instead of a dedicated syntax.
-
-5:About 5, consider the Family example of Appendix C: the box pattern triggers the
-invariant only after a complete simulation step.
+>>the 'moveTo' method seems to break the invariant (when not called from 'move'). Could you elaborate here?
+It would not be able to break the invariant.
+By perfoning a field update, it is triggering an invariant check.
+Our system is not statically preventing attempting to break invariants, it just prevents broken objects involved in execution.
+For example, in the GUI case study, nothing prevents up to attempt moving the widgets until they would overlap.
+That attempt woulds cause an invariant error to raise (and would not overlap widgets)
+
+>>if you use a list for 'parents' (instead having two fields), the invariant should verify that every child has 2 parents
+We wrote this example to accomodate for any kind of family, we wish not to offend any alternative form of family organization.
+
+
+>>a study [19] discovered that developers TODO we still need to handle this
+
+>>a survey by Voigt et al. [76] and the extensive MOP project [52] --> these references are quite old TODO
+
+>>three times less annotation burden than [...] Spec# --> I do not agree with this conclusion if you only look at the number of annotations (which is the most meaningful measure IMO)
+Some Spec# annotations are very involved, consider this single annotation:
+"Owner.Same(Owner.ElementProxy(children), children)" In our understanding this is a single annotation, so when we count annotations, that whole string would count 1.
+On the other side, when we count tokens, that string would count 6.
+(note how it does not count 13 since we do not count " ()[]{},;" as tokens)
+That is why we considered tokens to be a better metric.
+
