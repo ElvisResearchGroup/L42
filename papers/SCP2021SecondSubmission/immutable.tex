@@ -148,7 +148,7 @@ Since we represent invariant failures by throwing unchecked exceptions, programs
 %NOTE the text above was pointless since the invariant method can not see 'this' directly anywhay!
 % ISAAC: What two properties where you refering to?
  This property ensures that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
-%}{3}{\label{SES2} [see footnote \ref{SES1}]}.
+%}{3}{\label{SES2} [see footnote \autoref{SES1}]}.
 If instead we were to not enforce strong exception safety, an invalid object could be made reachable.
 The following code is ill-typed since we try to mutate \Q@bob@ in a \Q@try-catch@ block that captures all unchecked exceptions; thus also including invariant failures:
 %\saveSpace

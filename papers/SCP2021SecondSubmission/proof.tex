@@ -51,7 +51,7 @@
 \lstset{language=FortyFour} % Make all code bold
 \label{s:proof}
 As previously discussed, we provide a set of requirements that the type system needs to ensure, and prove the soundness of our invariant protocol over these,
-in this way we are parametric over the concrete typesystem. In \ref{s:typesystem}, we present an example typesystem and prove that it satisfies these requirements.
+in this way we are parametric over the concrete typesystem. In \autoref{s:typesystem}, we present an example typesystem and prove that it satisfies these requirements.
 
 \subheading{Auxiliary Definitions}
 To express our type system assumptions, we first need some auxiliary definitions. 
@@ -109,7 +109,7 @@ That single use of $l$ is the connection preventing those $\muty$ objects from b
 \subheading{Type System Requirements}
 As we do not have a concrete type system, we need to assume some properties about the expressions that it admits.
 Rather than requiring each expression during reduction to be well-typed, we instead let the type-system impose restrictions on method bodies, and type-check the initial expression, we then require properties on all future memories and expressions (i.e. $\VS$s).
-In \ref{s:typesystem} we show such a type-system and prove it satisfies these requirements, but these requirements do \emph{not} hold for arbitrary well-typed $\s|e$ pairs, only for $\VS$s.
+In \autoref{s:typesystem} we show such a type-system and prove it satisfies these requirements, but these requirements do \emph{not} hold for arbitrary well-typed $\s|e$ pairs, only for $\VS$s.
 This allows the type-system to be simpler, in particular, as the initial main expression can only have \Q!mut! references to $c$ (an object with no fields(), the type-system need not check that the heap structure and reference capabilities in the main expressions are consistent.
 
 First we require that fields and methods are only given values with the correct reference capabilities, i.e. the field initialisers of \Q!new! expressions, the right hand sides of update expressions, and the receiver and parameters of method calls have the capabilities required by the field declarations/method signatures:
@@ -249,7 +249,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	\end{proof}
 	
 	\LS
-		We can use our object capability discipline (described in Section \ref{s:formalism}) to prove that the \Q!invariant()! method is deterministic and does not mutate existing memory:%
+		We can use our object capability discipline (described in \autoref{s:formalism}) to prove that the \Q!invariant()! method is deterministic and does not mutate existing memory:%
 	\SS\begin{Lemma}[Determinism]\ \\
 	\indent If $\VS(\s, \E[\invariant{l}])$ and $\s|\invariant{l} \rightarrow^{n} \s'|e'$, for some $n \geq 0$, then:
 	\begin{iitemize}
@@ -310,7 +310,7 @@ To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! f
 
 \LS 
 
-\noindent Now we formally state the core properties of our \Q!rep! fields (informally described in Section \ref{s:protocol}):%
+\noindent Now we formally state the core properties of our \Q!rep! fields (informally described in \autoref{s:protocol}):%
 \SS\begin{theorem}[Rep Field Soundness]\ \\
 	\indent If $\VS(\s, e)$ then $\forall l$ with $\reach(\s, e, l)$, we have:
 	\begin{iitemize}

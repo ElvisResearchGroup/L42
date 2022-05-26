@@ -124,31 +124,31 @@ It is important to note that unlike most prior work, we soundly handle catching 
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
 %--I think we can avoid this to save space
-%Section \ref{s:TMsAndOCs} explains the pre-existing \emph{type modifier} features we use for this work.
-%Section \ref{s:protocol} explains the details of our invariant protocol, and Section \ref{s:formalism} formalises a language enforcing this protocol.
-%Sections \ref{s:immutable} and \ref{s:encapsulated} explain and motivate how our protocol can handle invariants over immutable and encapsulated mutable data, respectively.
-%Section \ref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#: they performed 5 orders of magnitude more invariant checks, and required 60\% more annotations, respectively.
-%Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclusions.
+%\autoref{s:TMsAndOCs} explains the pre-existing \emph{type modifier} features we use for this work.
+%\autoref{s:protocol} explains the details of our invariant protocol, and \autoref{s:formalism} formalises a language enforcing this protocol.
+%\autoref{s:immutable} and \autoref{s:encapsulated} explain and motivate how our protocol can handle invariants over immutable and encapsulated mutable data, respectively.
+%\autoref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#: they performed 5 orders of magnitude more invariant checks, and required 60\% more annotations, respectively.
+%\autoref{s:related} and \autoref{s:conclusion} provide related work and conclusions.
 
 The remainder of this paper proceeds as follows:
 \begin{itemize}
-	\item Section \ref{s:TMsAndOCs} explains background information necessary to understand our approach
-	\item Section \ref{s:protocol} fully explains our novel invariant protocol, and our novel field type for mutable data
-	\item Section \ref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the L42 (and similar) type systems
-	\item Section \ref{s:formalism} formalises our runtime invariant checking, and what it means it to soundly enforce our invariant protocol
-	\item Section \ref{s:case-studyAll} contains many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic
-	\item Section \ref{s:patterns} show how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around
-	\item Section \ref{s:L42} summarises how we have implemented our protocol in L42
-	\item Section \ref{s:related} presents related work, and Section \ref{s:conclusion} concludes
-	\item \ref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in Section \ref{s:formalism} sound
-	\item \ref{s:typesystem} presents a simple L42-inspired type system and proves that it satisfies the requirements in Section \ref{s:proof}	
+	\item \autoref{s:TMsAndOCs} explains background information necessary to understand our approach
+	\item \autoref{s:protocol} fully explains our novel invariant protocol, and our novel field type for mutable data
+	\item \autoref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the L42 (and similar) type systems
+	\item \autoref{s:formalism} formalises our runtime invariant checking, and what it means it to soundly enforce our invariant protocol
+	\item \autoref{s:case-studyAll} contains many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic
+	\item \autoref{s:patterns} show how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around
+	\item \autoref{s:L42} summarises how we have implemented our protocol in L42
+	\item \autoref{s:related} presents related work, and \autoref{s:conclusion} concludes
+	\item \autoref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in \autoref{s:formalism} sound
+	\item \autoref{s:typesystem} presents a simple L42-inspired type system and proves that it satisfies the requirements in \autoref{s:proof}	
 \end{itemize}
 
 %We proposed our approach for integration in the L42 language, and after minor reworking it has been accepted, and the current version of L42 integrated our 
 %invariant checking protocol in a cohesive way with the support for caching and parallelism.
-%Section ~\ref{s:integration} discusses the details of this integration.
+%Section ~\autoref{s:integration} discusses the details of this integration.
 
-% In Appendix \ref{s:runtime-verification}, we discuss more related work on runtime verification.
+% In \autoref{s:runtime-verification}, we discuss more related work on runtime verification.
 
 
 %you see this already later on... I wanted to avoid repating it

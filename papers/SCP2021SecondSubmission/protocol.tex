@@ -95,9 +95,9 @@ their only parameter (the receiver) is \Q!read!.
 %and unrelated code cannot break the invariant
 %s of arbitrary objects,
 %since a \Q!read! or \Q!mut! field could be modified through arbitrary aliases 
-%(see Section \ref{s:immutable}). 
+%(see \autoref{s:immutable}). 
 
-%To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %
+%To ensure that invariants cannot be broken by unrelated code (see \autoref{s:immutable})  %
 \subheading{Rep Fields}
 %As we discussed before, while most approaches agree on the exact properties of a capsule reference,
 %capsule fields are handled in different ways in different approaches. 
@@ -170,9 +170,8 @@ That is, rep mutators pretend
   only current access point to the \Q@rep@ field we can read it as \Q@mut@ and update it.
   The restrictions on parameter types and return types ensure that when such reference goes out of
   scope, the only remaining reference allowing mutation is in the \Q@rep@ field again.
-  This is similar to the ideas of the Focus operation \cite{??
+  This is similar to the ideas of the Focus operation \cite{??}
 %Fähndrich and DeLine's Focus operation [Fändrich & DeLine, 2002]
-}
  and View-point adaptation \cite{DietlEtAl07}.
 }
 %INTERESTING, the commented text down here looks a lot like the rev suggestion above...
@@ -208,7 +207,7 @@ The language runtime will automatically perform calls to \Q!invariant()!, if suc
 	\item After a field update, on the receiver.
 	\item After a rep mutator method returns, on the receiver of the method\footnote{The invariant is not checked if the call was terminated via an an unchecked exception, since strong exception safety guarantees the object will be unreachable.}.
 \end{itemize}
-\noindent In Section \ref{s:formalism}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that the invariants of all objects involved in execution hold. %(except the invariant of \Q!this! when used to access fields in a runtime-generated call to the \Q!invariant()! method itself).
+\noindent In \autoref{s:formalism}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that the invariants of all objects involved in execution hold. %(except the invariant of \Q!this! when used to access fields in a runtime-generated call to the \Q!invariant()! method itself).
 
 \subheading{Traditional Constructors and Subclassing}
 L42 constructors directly initialise all the fields using the parameters, and L42 does not provide traditional subclassing.

@@ -9,10 +9,10 @@ While studying those languages, we discovered an elegant way to enforce invarian
 
 That is, our work shows that reference and object capabilities are very usueful also outside of the context of safe parallelism.
 
-% We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol.
+% We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See \autoref{s:protocol} for the exact details of our invariant protocol.
 %We aim to leverage these existing TM guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
 %when the same expressive power can be expressed using (verbose) programming patterns;
-%see Appendix~\ref{s:patterns}.
+%see \autoref{s:patterns}.
 %This approach allows our sound invariant protocol to only rely on a few simple and easy to understand rules.
 
 % here we use the type system to restrict, but not prevent such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
@@ -122,7 +122,7 @@ those weaker forms of encapsulation are still sufficient to ensure safe parallel
 The detailed way L42 parallelism works is unrelated to the presented work.
 Please see the tutorial on \url{Forty2.is} (specifically, section 5 and 6) for more information on parallelism in L42.
 }
-In Section~\ref{s:protocol} we present a novel kind of ``\Q!rep!'' field.
+In \autoref{s:protocol} we present a novel kind of ``\Q!rep!'' field.
 These, like \Q!capsule! fields, can only be initialised/updated with \Q!capsule! references,
 however alias to it can be created in restricted ways.
 Unlike \Q!capsule! fields, which are usually designed for safe parallelism,
@@ -132,7 +132,7 @@ these \Q!rep! fields are specifically useful for invariant checking;
 %a capsule field is not the same concept of a capsule reference. 
 %However, different languages have different behaviour when a capsule field is accessed, and a capsule reference is not always produced.
 
-%None of those forms of \Q!capsule! fields are suitable for invariant checking, since they are designed to prevent  data-races. In Section \ref{s:protocol} we present a novel kind of \Q!capsule! field, designed to prevent representation exposure. We added this new kind of \Q!capsule! field to L42, and it could be easily added to Gordon \etal and Pony.
+%None of those forms of \Q!capsule! fields are suitable for invariant checking, since they are designed to prevent  data-races. In \autoref{s:protocol} we present a novel kind of \Q!capsule! field, designed to prevent representation exposure. We added this new kind of \Q!capsule! field to L42, and it could be easily added to Gordon \etal and Pony.
 
 \subheading{Promotion and Recovery}
 \noindent Many different techniques and type systems handle the reference capabilities above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.

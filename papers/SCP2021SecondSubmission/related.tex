@@ -17,7 +17,7 @@ L42 allows writing \Q@class@ methods (similar to a static method in Java) with a
 
 Our restrictions are also checked by the type system, so even if the user manually writes these methods, instead of relying on the metaprogramming, they still cannot break our invariant protocol.
 
-To make this work more accessible to programmers familiar with Java/C\#, we have shown our examples in a more Java-like syntax. Here you can see our \Q!ShippingList! example from Section \ref{s:immutable} in the full L42 Syntax:
+To make this work more accessible to programmers familiar with Java/C\#, we have shown our examples in a more Java-like syntax. Here you can see our \Q!ShippingList! example from \autoref{s:immutable} in the full L42 Syntax:
 \begin{lstlisting}
 ShippingList = Data:{
   capsule Items items
@@ -157,7 +157,7 @@ non-deterministic I/O.
 
 Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#. It adds various annotations such as method contracts and class invariants. 
 It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This 
-allows invariants to query owned mutable objects whose reachable object graph is not fully encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
+allows invariants to query owned mutable objects whose reachable object graph is not fully encapsulated. However as we showed in \autoref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
 is insufficient to modify it or call its methods.
 %tells you nothing about it, hindering
 %modification and method calls.
@@ -193,7 +193,7 @@ And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails 
 As you can see, failing to handle non-determinism jeopardises reasoning.
 A simpler and more restrictive solution to these problems is to restrict `pure' functions so that they can only read final fields and call other pure functions. This is the approach used by~\cite{Flanagan06hybridtypes}. One advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
 
-%We explore our connections with runtime verification in Appendix \ref{s:runtime-verification}.
+%We explore our connections with runtime verification in \autoref{s:runtime-verification}.
 
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 
