@@ -782,16 +782,16 @@ every well typed expression can either continue to be reduced, it is a value, or
 		Thus the only way the side conditions are unsatisfiable is if $\mdf_0 \neq \Kw{mut}$, $e'$ is not of form $\E[\Kw{this}\D f]$, or $\C{s}{l_0}.f$ is not of form $\field{\Kw{rep}}{\_}{f}$, but then the side-conditions for the \textsc{call} rule are satisfiable, a contradiction.
 		
 		\item Suppose the \textsc{try error} rule matches, then $e = \EV[\trys{\s'}{e'}{e''}]$.
-		Thus we have that its side-condition, $\error(\s,e)$, does not hold.
-		If $e$ is of form $v$, then the \textsc{try ok} rule applies.
+		Thus we have that its side-condition, $\error(\s,e')$, does not hold.
+		If $e'$ is of form $v$, then the \textsc{try ok} rule applies.
 		Thus by the inductive hypothesis, we must have some $\s'$ and $e'''$ such that $\s|e'\rightarrow\s'|e'''$.
 		And so $e = \EV'[e']$, where $\EV' = \EV[\trys{\s'}{\hole}{e''}]$. Thus we can use the same rule that got us $\s|e'\rightarrow\s'|e'''$ to instead give us $\s|\EV'[e']\rightarrow\s'|\EV'[e''']$, a contradiction.
 		Note that this works because the reduction rules never look at the actual value of the $\EV$.
 			
 		\item Suppose the \textsc{monitor exit} rule matches, then $e = \EV[e']$ with $e' = \M{l}{v}{\mdf\,l'}$.
-			Thus we have that $\C{s}{l'} \neq \Kw{true}$. Thus $\error(\s, e')$.
+			Thus we have that $\C{l'} \neq \Kw{True}$. Thus $\error(\s, e')$.
 			If $\EV$ is of form $\EV'[\trys{\s'}{\EV''}{\_}]$, where $\EV'$ is maximal, then the \textsc{try error} rule applies.
-			Thus, as $e'$ is of form $\M{l}{v}{\mdf\,l'}$ and $\C{s}{l'} \neq \Kw{true}$, we have that $\error(\s, \EV[e'])$ holds.
+			Thus, as $e'$ is of form $\M{l}{v}{\mdf\,l'}$ and $\C{l'} \neq \Kw{True}$, we have that $\error(\s, \EV[e'])$ holds.
 			
 		\item Suppose the \textsc{as}, \textsc{try enter}, or \textsc{try ok} rules match, these rules have no side-conditions, and the right-hand-sides are trivially satisfiable, a contradiction.
 	\end{enumerate}
@@ -802,7 +802,6 @@ every well typed expression can either continue to be reduced, it is a value, or
 Thus our type system satisfies the conventional soundness notion of \thm{Progress} + \thm{Type Preservation}.
 
 \subheading{Proof of Type System Requirements}
-
 Finally we prove each of the requirements from \autoref{s:proof}.
 
 \setcounter{requirement}{0}
@@ -936,7 +935,7 @@ over expressions typed under a $\demut{\G}$.
 
 \LS
 
-Similarly, we use this \thm{Stronger Mut Consistency} to prove a stronger version of \thm{Non-Mutating}.
+Similar to \thm{Stronger Mut Consistency}, we prove a stronger version of \thm{Non-Mutating}.
 
 \SS\begin{Corollary}[Stronger Non-Mutating]\ \\
 	\indent If $\vdash\s$, $\tyr eT$, $l\in\dom(\s)$, not $\muty(\s,e,l)$,
@@ -965,7 +964,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 	\indent If $\VS(\s,e)$, then $\forall l$:
 	\begin{ienumerate}
 		\item if $\immut(\s,e,l)$, then not $\muty(\s,e,l)$, and
-		\item if $e = \E[\Kw{capsule}\,l]$, then $\encap(\s,\E,l)$
+		\item if $e = \E[\Kw{capsule}\,l]$, then $\encap(\s,\E,l)$.
 	\end{ienumerate}
 \end{theorem}
 \SS\begin{proof}

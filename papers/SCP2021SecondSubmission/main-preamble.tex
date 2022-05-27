@@ -136,7 +136,7 @@
   morekeywords={assert, expose, iso, isolated, baloon, rep}
   }
 
-\lstdefinelanguage{FortyThree}[]{FortyTwo}{morekeywords={rep,as,promote}} % 42 but with rep keyword
+\lstdefinelanguage{FortyThree}[]{FortyTwo}{literate={@}{@}{1},morekeywords={rep,as,promote}} % 42 but with rep keyword, also stops @ from being treated as part of an identifier
 \lstdefinelanguage{FortyFour}[]{FortyThree}{basicstyle=\small\ttfamilywithbold\bfseries} % 43 but all code in bold, for use in math sections
 \lstset{language=FortyThree}
 

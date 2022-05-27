@@ -4,11 +4,11 @@
 \vspace{-1ex}
 In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this article's scope to explain 
 in detail this integration, but the overall idea is that an invariant
-is seen as a \Q@Void@ \Q!$@$Cache.Now! method.
+is seen as a \Q@Void@ \Q!@Cache.Now! method.
 %, who's result is pre-computed.
-The language ensures that \Q!$@$Cache.Now! methods are recomputed whenever their result may change; any exceptions are propagated immediately, and are not cached.
-The type-system requires that any method that could alter the result of a \Q!Cache.Now! method (except via a field update) must be marked with \Q!$@$Cache.Clear! and respect our rep mutator restrictions.
-L42 requires an explicit \Q!$@$Cache.Clear! so as to make it clear in the code that such methods has special type-system restrictions.
+The language ensures that \Q!@Cache.Now! methods are recomputed whenever their result may change; any exceptions are propagated immediately, and are not cached.
+The type-system requires that any method that could alter the result of a \Q!@Cache.Now! method (except via a field update) must be marked with \Q!@Cache.Clear! and respect our rep mutator restrictions.
+L42 requires an explicit \Q!@Cache.Clear! so as to make it clear in the code that such methods has special type-system restrictions.
 This is more general than invariant checking however, as \Q!Cache.Now! methods can return a meaningful result, and not simply success or exception.
 L42 also supports other kinds of cached methods, which get computed in parallel when an instance of the corresponding class is created, or when their result may be altered.
 
@@ -21,10 +21,10 @@ To make this work more accessible to programmers familiar with Java/C\#, we have
 \begin{lstlisting}
 ShippingList = Data:{
   capsule Items items
-  @$$Cache.Now
+  @Cache.Now
   class method Void invariant(read Items items) =
     X[items.weight()<=300Num]
-  @$$Cache.Clear
+  @Cache.Clear
   class method Void addItem(mut Items items,Item item) =
     items.add(item)
 }
@@ -32,9 +32,9 @@ ShippingList = Data:{
 In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. 
 In particular, note how the current concrete 42 syntax uses the keyword \Q@capsule@ to represent various kinds of restrictions over fields.
 The language relies on the presence of annotations or other specific methods
-to decide what restrictions to apply. In this case, the presence of the \Q!@$$Cache.Now! annotation clarifies that the field \Q@capsule Items items@
+to decide what restrictions to apply. In this case, the presence of the \Q!@Cache.Now! annotation clarifies that the field \Q@capsule Items items@
 is actually a \Q@rep@ field as discussed in our work.
-The \Q!@$$Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@$$Cache.Clear! method is called.
+The \Q!@Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@Cache.Clear! method is called.
 The \Q!X[...]! notation used in \Q!invariant! is an assert statement: it throws an unchecked exception if it's argument is false.
 Please refer to \url{Forty2.is} for more information.
 \vspace{-1ex}
