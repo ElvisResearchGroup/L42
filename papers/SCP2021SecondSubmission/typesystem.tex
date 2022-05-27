@@ -38,7 +38,7 @@ In this section we formalise a lightweight version of the L42 type system. We th
 \noindent We extend this to convert all $\Kw{mut}$ variables in an typing environment to $\Kw{read}$:\\
 \indent $\demut{\G}(x) = \demut{\mdf}\,C$ iff $\G(x) = \mdf\,C$
 
-\noindent Note that we always have $\demut{\emptyset} = \emptyset$, $\demut{\demut{\G}} = \demut{\G}$, and \IO{$\G(x) \leq \demut{\G}(x)$.}
+\noindent Note that we always have $\demut{\emptyset} = \emptyset$, $\demut{\demut{\G}} = \demut{\G}$, and $\G(x) \leq \demut{\G}(x)$.
 
 \LS
 
@@ -170,14 +170,14 @@ Finally, we define a notation to mean that two expressions are identical, except
 		
 		During reduction, we will type the expression under $\s; \emptyset$, and so $e$ may contain \Q!mut! references, however this does not break our guarantees since we previously typed the expression under $\emptyset; \demut{\G}$, and so any such references must have been created during the reduction of $e$, and cannot have come from the $\demut{\G}$.
 		
-		\IO{The full L42 language supports more promotions, such as \Q!read! to \Q!imm!, these could be added to our type system, but would greatly complicate our proofs. The \textsc{TAsCapsule} rule should be sufficient to demonstrate that our invariant protocol can be supported in a system with promotions.}
+		The full L42 language supports more promotions, such as \Q!read! to \Q!imm!. These could be added to our type system, but would greatly complicate our proofs. The \textsc{TAsCapsule} rule is sufficient to demonstrate that our invariant protocol can be supported in a system with promotions.
 		
 		\item \textsc{TTryCatch1} types a \Q!try!--\Q!catch! expression that has yet to be reduced, similar to the \textsc{TAsCapsule} rule, we require the \Q!try! part to be typeable under $\demut{\G}$. This ensures strong exception safety as $\demut{\G}$ contains no \Q!mut! variables, and so the only way $e$ can obtain a \Q!mut! reference is from a \Q!capsule! variable or a freshly created object.
 		In addition, since the only preexisting objects that can be seen as \Q!mut! are those \reach from \Q!capsule! variables in $\G$, 
 		there is no way for $e$ to store any state in a place that $e'$ could observe it. 
 		
-		\item \textsc{TTryCatch2} is used to type annotated \Q!try!--\Q!catch! expressions during reduction, as such expression cannot occur in method bodies, we will always have $\G = \emptyset$. As with the \textsc{TAsCapsule} typing rule, since \Q!try!--\Q!catch! expressions can only be introduced through method calls\IO{, we don't need any extra type restrictions.
-		In particular, the check that $\ty[\emptyset][\demut{\G}]{e}{T}$ holds from within a method body is sufficient to reason over \Q!try!--\Q!catch!es in the main expression}
+		\item \textsc{TTryCatch2} is used to type annotated \Q!try!--\Q!catch! expressions during reduction, as such expression cannot occur in method bodies, we will always have $\G = \emptyset$. As with the \textsc{TAsCapsule} typing rule, since \Q!try!--\Q!catch! expressions can only be introduced through method calls, we don't need extra type restrictions.
+		In particular, the check that $\ty[\emptyset][\demut{\G}]{e}{T}$ holds from within a method body is sufficient to reason over \Q!try!--\Q!catch!es in the main expression.
 		
 		\item \textsc{Monitor} type checks monitor expressions introduced by reduction, the $l$ will refer to the monitored object,
 		$e$ will compute the result of the entire expression (provided the invariant check succeeds) and the $e'$ will be the \Q!invariant! check itself. Note that $e$ will be computed \emph{before} $e'$.
@@ -378,7 +378,8 @@ We show that if a method call on fully reduced values is well typed, the receive
 	\qed\end{enumerate}
 \end{proof}
 
-\noindent \IO{Now an auxiliary lemmas that is needed to reason over the types of runtime introduced monitor expressions, they are well typed provided the body is well typed.}
+\noindent We now present a lemma needed to reason over the types of monitor expressions.%, that are introduced at runtime.
+Monitor expressions are well typed provided the body is well typed.
 \SS\begin{Lemma}[Monitor Type]\ \\
 	\indent If $\vdash\s$, $l\in\dom(\s)$, and $\tyr eT$ then $\tyr{\M le{\invariant l}}T$.
 \end{Lemma}

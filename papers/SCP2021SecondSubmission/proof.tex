@@ -104,7 +104,7 @@ then it is \immut in $\E[e]$, and not \muty in any $e' \in \E[e]$.
 
 \noindent We require that if something was not \muty, it remains that way:%
 \SS\begin{restatable}[Mut Consistency]{Requirement}{REQMutCons}\ \\
-	\indent If $\VS(\s, \EV[e])$, $\IO{l \in \dom(\s)}$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
+	\indent If $\VS(\s, \EV[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
 \end{restatable}
 \IOComm{Verify the $\EV$ change doesn't break anything!}
 \SS\noindent Note that this holds even if $l$ is \muty through $\E$, thus an \Q!as! expression cannot change a \Q!read! or \Q!imm! reference to \Q!mut!, as the associated location will not be \muty within the body of the \Q!as! expression, even if there are \Q!mut! references to the same object outside the \Q!as!.

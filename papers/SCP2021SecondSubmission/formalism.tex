@@ -427,7 +427,7 @@ Note that as \Q!Cap! has no \Q!rep! fields and can have multiple definitions of 
 \end{itemize}
 
 Note that as with most OO languages, an expression $e$ can always be reduced, unless: $e$ is already a value, $e$ contains an uncaught invariant failure, or $e$ attempts to perform an ill-defined operation (e.g. calling a method that doesn't exist). The latter case can be prevented by any standard sound OO typesystem.
-However, invalid use of reference capabilities (e.g. having both an \Q!imm! and \Q!mut! reference to the same location) does \emph{not} cause reduction to get stuck, instead, in \autoref{s:proof} we explicitly require that the typesystem prevents such things from happening, which our example type system in \autoref{s:typesytem} proves to be the case.
+However, invalid use of reference capabilities (e.g. having both an \Q!imm! and \Q!mut! reference to the same location) does \emph{not} cause reduction to get stuck, instead, in \autoref{s:proof} we explicitly require that the typesystem prevents such things from happening, which our example type system in \autoref{s:typesystem} proves to be the case.
 
 Note that the monitor expressions are only a proof device, they need not be implemented directly as presented.
 For example, in L42 they are implemented by statically injecting calls to \Q!invariant()! at the end of setters (for \Q@imm@ and \Q@rep@ fields), factory methods, and rep mutators; this works as L42 follows the uniform access principle, so it does not have primitive expression forms for field updates and constructors, rather they are uniformly represented as method calls.

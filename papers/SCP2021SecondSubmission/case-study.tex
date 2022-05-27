@@ -23,6 +23,7 @@ Here we show a simplified version\footnote{The full version, written in L42, whi
 \begin{lstlisting}
 class SafeMovable implements Widget {
   rep Box box; Int width = 300; Int height = 300;
+
   @Override read method Int left() { return this.box.l; }
   @Override read method Int top() { return this.box.t; }
   @Override read method Int width() { return this.width; }
@@ -39,6 +40,7 @@ class SafeMovable implements Widget {
     return b;// mut b is soundly promoted to capsule
   }
 }
+
 class Box { Int l; Int t; mut Widgets c; Box(Int l, Int t, mut Widgets c) {..} }
 class MoveAction implements Action {
   mut Box outer;
@@ -80,8 +82,12 @@ Here \Q@SafeMovable.overlap@ is a static method that simply checks that the boun
 As shown in the figure below, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 This set up is not overly complicated, the maximum nesting level of \Q@Widget@s is $5$.
-Our main method automatically presses each of the $16$ buttons once. In L42, using our invariant protocol, this resulted in $77$ calls to \Q@SafeMovable@'s invariant. \IOComm{Make sure the image is placed properly!}
+Our main method automatically presses each of the $16$ buttons once. In L42, using our invariant protocol, this resulted in $77$ calls to \Q@SafeMovable@'s invariant. 
 
+\subheading{Comparison With Visible State Semantics}
+As an experiment, we set our implementation to generate invariant checks following the  visible state semantics approaches of D and Eiffel~\cite{Alexandrescu:2010:DPL:1875434,Meyer:1992:EL:129093},
+where the invariant of the receiver is instead checked at the start and end of \emph{every} 
+public (in D) and qualified\footnote{That is, the receiver is not \Q!this!.} (in Eiffel) method call.
 
 \newlength{\imglength}%
 \setlength{\imglength}{0.40\textwidth}%
@@ -92,10 +98,8 @@ Our main method automatically presses each of the $16$ buttons once. In L42, usi
 	\includegraphics[width=\imglength]{GuiImg}%
 	\vspace{-2\ht0}%
 \end{wrapfigure}%
-\subheading{Comparison With Visible State Semantics}
-As an experiment, we set our implementation to generate invariant checks following the  visible state semantics approaches of D and Eiffel~\cite{Alexandrescu:2010:DPL:1875434,Meyer:1992:EL:129093},
-where the invariant of the receiver is instead checked at the start and end of \emph{every} 
-public (in D) and qualified\footnote{That is, the receiver is not \Q!this!.} (in Eiffel) method call.
+
+
 In our \Q!SafeMovable! class, all methods are public, and all calls (outside the invariant) are qualified, thus this difference is irrelevant. Neither protocol performs invariant checks on field accesses or updates,
 however due to the `uniform access principle'~\cite{Meyer:1992:EL:129093}%\footnote{%
 %L42 also follows the Eiffel uniform access principle: field accesses are the same as method calls.%

@@ -170,9 +170,8 @@ That is, rep mutators pretend
   only current access point to the \Q@rep@ field we can read it as \Q@mut@ and update it.
   The restrictions on parameter types and return types ensure that when such reference goes out of
   scope, the only remaining reference allowing mutation is in the \Q@rep@ field again.
-  This is similar to the ideas of the Focus operation \cite{??}
-%Fähndrich and DeLine's Focus operation [Fändrich & DeLine, 2002]
- and View-point adaptation \cite{DietlEtAl07}.
+  This is similar to the ideas of the Focus operation~\cite{DBLP:journals/jot/BarnettDFLS04}
+ and View-point adaptation~\cite{DietlEtAl07}.
 }
 %INTERESTING, the commented text down here looks a lot like the rev suggestion above...
 %As the expression is \Q!capsule!, we can be sure that the object being initialised/updated will have the only external alias to the reachable object graph of the field's new value. In addition, since the reference was \Q!capsule!, the initialised/updated object could not already alias it, thus after the initialisation/update, the initilised/updated \Q!capsule! field will not alias the object.
