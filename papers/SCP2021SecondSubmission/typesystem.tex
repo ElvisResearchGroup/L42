@@ -38,7 +38,7 @@ In this section we formalise a lightweight version of the L42 type system. We th
 \noindent We extend this to convert all $\Kw{mut}$ variables in an typing environment to $\Kw{read}$:\\
 \indent $\demut{\G}(x) = \demut{\mdf}\,C$ iff $\G(x) = \mdf\,C$
 
-\noindent Note that $\demut{\emptyset} = \emptyset$ and $\demut{\demut{\G}} = \demut{\G}$.
+\noindent Note that we always have $\demut{\emptyset} = \emptyset$, $\demut{\demut{\G}} = \demut{\G}$, and \IO{$\G(x) \leq \demut{\G}(x)$.}
 
 \LS
 
@@ -102,7 +102,7 @@ Finally, we define a notation to mean that two expressions are identical, except
 			\ty{e_n}{T_n}}
 		{\ty{\call{e_0}{m}{\range{e}}}{T'}}
 		{S = \methods{\mdf}{T'}{m}{\drangex{T}{\_}}\\
-			C.m\in\{S,S\,\_\}}
+			C.m\in\{S,\,S\,\_\}}
 		\hfill
 		\\\rowSpace
 		\hfill
@@ -170,8 +170,7 @@ Finally, we define a notation to mean that two expressions are identical, except
 		
 		During reduction, we will type the expression under $\s; \emptyset$, and so $e$ may contain \Q!mut! references, however this does not break our guarantees since we previously typed the expression under $\emptyset; \demut{\G}$, and so any such references must have been created during the reduction of $e$, and cannot have come from the $\demut{\G}$.
 		
-		\IO{The full L42 language supports more promotions, such as \Q!read! to \Q!imm!,
-these could be added to our type system, but would greatly complicate our proofs. The \textsc{TAsCapsule} rule should be sufficient to demonstrate that our invariant protocol can be supported in a system with promotions.}
+		\IO{The full L42 language supports more promotions, such as \Q!read! to \Q!imm!, these could be added to our type system, but would greatly complicate our proofs. The \textsc{TAsCapsule} rule should be sufficient to demonstrate that our invariant protocol can be supported in a system with promotions.}
 		
 		\item \textsc{TTryCatch1} types a \Q!try!--\Q!catch! expression that has yet to be reduced, similar to the \textsc{TAsCapsule} rule, we require the \Q!try! part to be typeable under $\demut{\G}$. This ensures strong exception safety as $\demut{\G}$ contains no \Q!mut! variables, and so the only way $e$ can obtain a \Q!mut! reference is from a \Q!capsule! variable or a freshly created object.
 		In addition, since the only preexisting objects that can be seen as \Q!mut! are those \reach from \Q!capsule! variables in $\G$, 
@@ -206,7 +205,7 @@ these could be added to our type system, but would greatly complicate our proofs
 		\item $\s(l_0) = C_0\{\range l\}$,\SS
 		\item we have $\clazz{C_0}{\_}{\Fs}{\_}$,\SS
 		\item $\Fs = \drangex{\_\,C}{\_}$, and\SS
-		\item $\C[\s]{l_1} \leq C_1,\ldots,\C{l_n} \leq C_n$
+		\item $\C{l_1} \leq C_1,\ldots,\C{l_n} \leq C_n$
 	\end{iitemize}
 	Thus $\vdash \s$ ensures that there are no dangling pointers, each object has a proper class (and not an interface),
 	they have the appropriate number of fields, and each field value has an appropriate class. Note that $\vdash \s$ doesn't require the field kinds are respected, this is ensured by the below proofs of our type system requirements.
@@ -235,174 +234,150 @@ Now we prove that we can always extract a $\tye{e}{T}$ from a $\tye{e}{T'}$ judg
 	The ``if'' direction holds trivially since $\tye{e}{T'}$ implies $\ty{e}{T'}$, and then \textsc{TSub} can be used to get $\ty{e}{T}$ 
 \qed\end{proof}
 
+This lemma means that if we know the syntactic form of a well-typed expression $e$, we can use \thm{Type Rule} to determine which of the non-\textsc{TSub} rules must have applied.
+
 \LS
 
-This lemma means that if we know the syntactic form of a well-typed expression $e$, we can use \thm{Type Rule} to determine which of the non-\textsc{TSub} rules must have applied.
+Now we show that the type system types references according to their reference capability and class:
+\SS\begin{Lemma}[Ref Type]\ \\
+	\indent $\tyr{\mdf\,l}T$ if and only if $\mdf\,\C{l} \leq T$.
+\end{Lemma}
+\SS\begin{proof}
+	Follows immediately from $\thm{Type Rule}$ and the $\textsc{TRef}$
+	and $\textsc{TSub}$ typing rules.
+	\qed\end{proof}
 
 \LS
 
 We note that if an expression is well-typed, then each sub-expression must also be well-typed. Note that the proof is non-trivial as we sometimes type a sub-expression under $\demut{\G}$ and not $\G$.
 
-\SS\begin{Corollary}[Nested Type]\ \\
+\SS\begin{Corollary}[\IO{Nested Type}]\ \\
 	\indent If $\ty{\E[e]}T$, then $\tye{e}{T'}$, for some $T'$.
 \end{Corollary}
 \SS\begin{proof}
-	\REFORMAT
-	\IOComm{Marco, does this proof make sense?}
 	We prove this by induction on the size of $\E$.
-	\begin{itemize}
-		\item The base case follows trivially from $\thm{Type Rule}$.
-		\item In the inductive case, by $\thm{Type Rule}$ and the structure of our typing rules, we have $\E = \E'[\E'']$
-		where $\E'' \neq \hole$ and is otherwise minimal.
-		\begin{itemize}
-			\item By the inductive hypothesis, we have that $\tye{\E''[e]}{T''}$ holds for some $T''$.
-			\item Since $e$ is a direct sub-expression of $\E''$, each such rule
-			has a premise of form $\ty e{T'''}$ or $\ty[\s][\demut{\G}]e{T'''}$,
-			for some $T'''$.
-			\item If $\ty[\s][\demut{\G}]e{T'''}$, we can turn such a typing derivation
-			into one for $\ty e{T'''}$, by replacing each occurrence
-			of a $\irule{TVar}{\ }{\ty[\s][\demut{\G}]x{\demut{\G}(x)}}$ derivation with $\irules{TSub}{\irule{TVar}{\ }{\ty x{\G(x)}}}{\ty x{\demut{\G}(x)}}{\G(x) \leq \demut{\G}(x)}$,
-			the side condition trivially holds since we always have $\mdf \leq \demut{\mdf}$.
-			Note that this works even if the typing derivation for $\ty[\s][\demut{\G}]e{T'''}$
-			itself uses the $\textsc{TAsCapsule}$ or $\textsc{TTryCatch1}$ rules,
-			since $\demut{\demut{\G}} = \demut{\G}$.
-			\item Thus we have $\ty e{T'''}$, and so by $\thm{Type Rule}$,
-			we have $\tye e{T'}$, for
-			some $T'$.
-		\qed\end{itemize}
-	\end{itemize}
-\end{proof}
+	The base case follows trivially from $\thm{Type Rule}$.
+
+	In the inductive case, by $\thm{Type Rule}$ and the structure of our typing rules, we have $\E = \E'[\E'']$ where $\E'' \neq \hole$ and is otherwise minimal.
+	By the inductive hypothesis, we have that $\tye{\E''[e]}{T''}$ holds for some $T''$.
+	Since $e$ is a direct sub-expression of $\E''$, each such rule has a premise of form $\ty e{T'''}$ or $\ty[\s][\demut{\G}]e{T'''}$, for some $T'''$.
+	
+	If $\ty[\s][\demut{\G}]e{T'''}$, we can turn such a typing derivation into one for $\ty e{T'''}$,\\
+	\indent by replacing each occurrence of a $\irule{TVar}{\ }{\ty[\s][\demut{\G}]x{\demut{\G}(x)}}$ with $\irule{TSub}{\irule{TVar}{\ }{\ty x{\G(x)}}}{\ty x{\demut{\G}(x)}}$.\\
+	The side condition for \textsc{TSub} trivially holds as we always have $\G(x) \leq \demut{\G}(x)$.
+	Note that this works even if the typing derivation for $\ty[\s][\demut{\G}]e{T'''}$ itself uses the $\textsc{TAsCapsule}$ or $\textsc{TTryCatch1}$ rules, since $\demut{\demut{\G}} = \demut{\G}$.
+	
+	Thus we have $\ty e{T'''}$, and so by $\thm{Type Rule}$, we have $\tye e{T'}$, for some $T'$.
+\qed\end{proof}
 
 Now we show that if we have a $\ty eT$ then we can substitute each variable in $\dom(\G)$ with an appropriate reference, and $e$ will still have type $T$:
 
-\SS\begin{Lemma}[Substitution]\ \\
-	\indent If $\dom(\G) = \{x_1,\ldots,x_n\}$, $\ty eT$, and $\mdf_1\,\C[\s]{l_1} \leq \G(x_1),\ldots,\mdf_n\,\C[\s]{l_n} \leq \G(x_n)$,\\
+\SS\begin{Lemma}[\IO{Substitution}]\ \\
+	\indent If $\dom(\G) = \{x_1,\ldots,x_n\}$, $\ty eT$, and $\mdf_1\,\C{l_1} \leq \G(x_1),\ldots,\mdf_n\,\C{l_n} \leq \G(x_n)$,\\
 	\indent then $\tyr {e[\trange x{\!\coloneqq\mdf}l]}T$.
 \end{Lemma}
 \SS\begin{proof}
-	\REFORMAT
 	Let $e' = e[\trange x{\!\coloneqq\mdf}l]$. The proof then follows by induction
-	on the size of the typing derivation applied to obtain $\ty eT$,
-	and showing that we con obtain $\tyr {e'}T$:
-	\begin{enumerate}
-		\item Suppose $\textsc{TVar}$ applied, i.e. $e = x$ and $T = \G(x)$.
-		\begin{itemize}
-			\item Thus there is some $i\in[1,n]$ with $x_i = x$ and so $e' = \mdf_i\,l_i$.
-			\item By the $\textsc{TVar}$ rule we have $\tyr{e'}{\mdf_i\,\C[\s]{l_i}}$.
-			\item Since $\mdf_i\,\C[\s]{l_i} \leq \G(x_i),$ by the $\textsc{TSub}$
-			rule we have $\tyr{e'}{\G(x_i)}$, as required.
-		\end{itemize}
+	on the size of the typing derivation applied to obtain $\ty eT$.
+	We then proceed by cases on the typing rule that gave us $\ty eT$, show that we con obtain $\tyr {e'}T$:
+	\begin{itemize}
+		\item Suppose the $\textsc{TVar}$ typing rule applied, i.e. $e = x$ and $T = \G(x)$.
+			Thus there is some $i\in[1,n]$ with $x_i = x$ and $e' = \mdf_i\,l_i$.
+			By the $\textsc{TRef}$ typing rule, we have $\tyr{e'}{\mdf_i\,\C{l_i}}$.
+			Since $\mdf_i\,\C{l_i} \leq \G(x_i),$ by the $\textsc{TSub}$ typing rule, we have $\tyr{e'}{\G(x_i)}$, as required.
 
-		\item Suppose $\textsc{TAsCapsule}$ applied, i.e. $e = \cas{e_0}$
-		and $T = \Kw{capsule}\,C$ for some $e_0$ and $C$, where $\ty[\s][\demut{\G}]{e_0[\Kw{mut}\,c\coloneqq\Kw{read}\,c]}{\Kw{mut}\,C}$.
-		\begin{itemize}
-			\item Thus $e' = \cas{e'_0}$ where $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$.
-			\item Note that $\dom(\demut{\G}) = \G$, so consider each $i\in[1,n]$:
-			\begin{itemize}
-				\item Let $\mdf'_i\,C_i = \G(x_i)$, then $\demut{\G}(x_i) = \demut{\mdf'_i}\,C_i$
-				and $\mdf_i \leq \mdf'_i$ and $\,\C[\s]{l_i} \leq C_i$
-				\item Clearly $\mdf'_i \leq \demut{\mdf'_i}$ and so $\mdf_i \leq \demut{\mdf'_i}$,
-				thus we have $\mdf'_i\,\C[\s]{l_i} \leq \demut{\G}(x_i)$.
-			\end{itemize}
-			\item By the above and the inductive hypothesis, we have that $\tyr{e'_0}{\Kw{mut}\,C}$.
-			\item Thus by $\textsc{TAsCapsule}$ and since $\demut{\emptyset} = \emptyset$,
+		\item Suppose the $\textsc{TAsCapsule}$ typing rule applied, i.e. $e = \cas{e_0}$
+		and $T = \Kw{capsule}\,C$, for some $e_0$ and $C$, where $\ty[\s][\demut{\G}]{e_0}{\Kw{mut}\,C}$.
+			Thus $e' = \cas{e'_0}$ where $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$.
+			
+			Note that $\dom(\demut{\G}) = \G$, and consider each $i\in[1,n]$,
+				$\G(x_i)$ will be of form $\mdf'_i\,C_i$ where $\demut{\G}(x_i) = \demut{\mdf'_i}\,C_i$,  $\mdf_i \leq \mdf'_i$, and $\C{l_i} \leq C_i$.
+				Clearly $\mdf'_i \leq \demut{\mdf'_i}$ and so $\mdf_i \leq \demut{\mdf'_i}$,
+				thus we have $\mdf_i\,\C{l_i} \leq \demut{\G}(x_i)$.
+			
+			By the above and the inductive hypothesis, we have that $\tyr{e'_0}{\Kw{mut}\,C}$.
+			Thus by $\textsc{TAsCapsule}$ and the fact that $\demut{\emptyset} = \emptyset$,
 			we have $\tyr{\cas{e'_0}}{\Kw{capsule}\,C}$, as required.
-		\end{itemize}
 
-		\item Suppose $\textsc{TTryCatch1}$ applied, i.e. $e = \try{e_0}{e_1}$
-		for some $e_1$ and $e_1$, where $\ty[\s][\demut{\G}]{e_0}T$
+		\item Suppose the $\textsc{TTryCatch1}$ typing rule applied, i.e. $e = \try{e_0}{e_1}$
+		for some $e_0$ and $e_1$, where $\ty[\s][\demut{\G}]{e_0}T$
 		and $\ty{e_1}T$.
-		\begin{itemize}
-			\item Thus $e' = \try{e'_0}{e'_1}$ where $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$
+			Thus $e' = \try{e'_0}{e'_1}$ where $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$
 			and $e'_1 = e_1[\trange x{\!\coloneqq\mdf}l]$.
-			\item By the above $\textsc{TAsCapsule}$ case and the inductive hypothesis we have $\tyr{e'_0}T$.
-			\item By the inductive hypothesis, we have $\tyr{e'_1}T$.
-			\item Thus by the $\textsc{TTryCatch1}$ rule we have $\tyr{\try{e'_0}{e'_1}}T$.
-		\end{itemize}
+			By the above $\textsc{TAsCapsule}$ case and the inductive hypothesis, we have $\tyr{e'_0}T$.
+			By the inductive hypothesis, we also have $\tyr{e'_1}T$.
+			Thus by the $\textsc{TTryCatch1}$ rule we have $\tyr{\try{e'_0}{e'_1}}T$.
 
 		\item Otherwise, the $\textsc{TSub}$, $\textsc{TRef}$, $\textsc{TUpdate}$,
 		$\textsc{TNew}$, $\textsc{TAccess},$ $\textsc{TTryCatch2}$, $\textsc{TMonitor}$,
-		$\textsc{TCall}$, or $\textsc{TAs}$ rules applied
-		\begin{itemize}
-			\item The side conditions of these rules (if any) do not depend on the $\G$
+		$\textsc{TCall}$, or $\textsc{TAs}$ typing rule applied.
+			The side conditions of these rules (if any) do not depend on the $\G$,
 			nor the $x$s or $v$s in the expression, thus the side conditions
 			still hold for a conclusion of form $\tyr{e'}T$.
-			\item Now consider each premise of these rules (if any):
-			\begin{itemize}
-				\item Each such premise is of form $\ty{e_0}{T_0}$ where $e_0$ is
-				a sub-expression of $e$.
-				\item Thus there is a corresponding sub-expression $e'_0$ of $e'$
-				such that $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$.
-				\item Thus by the inductive hypothesis we have $\tyr{e'_0}{T_0}$, which is the corresponding
-				premise for a conclusion of form $\tyr{e'}T$.
-			\end{itemize}
-			\item Thus we can use the same rule to obtain a conclusion of form $\tyr{e'}T$.
-		\qed\end{itemize}
-	\end{enumerate}
+
+			Now consider each premise of these rules (if any).
+			Each such premise is of form $\ty{e_0}{T_0}$, where $e_0$ is a sub-expression of $e$.
+			Thus there is a corresponding sub-expression $e'_0$ of $e'$ such that $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$.
+			Thus by the inductive hypothesis we have $\tyr{e'_0}{T_0}$, which is the corresponding premise for a conclusion of form $\tyr{e'}T$.
+
+			Thus we can use the same typing rule to obtain a conclusion of form $\tyr{e'}T$.
+	\qed\end{itemize}
 \end{proof}
 
 \LS
 
 We show that if a method call on fully reduced values is well typed, the receiver and each argument satisfies the method signature, and once these have been substituted in, the body has the appropriate type.
 
-\SS\begin{Lemma}[Method Type]\ \\
+\SS\begin{Lemma}[\IO{Method Type}]\ \\
 	\indent If $\vdash\s$ and $\tyr {\call{\mdf_0\,l_0}m{\drange{\mdf}l}}T$, then:
 	\begin{ienumerate}
 		\item $\C{l_0}.m = \method{\mdf'_0}{T'}m{\trange{\mdf'}Cx}e$,
-		\item $\mdf_0 \leq \mdf'_0$, $\mdf_1\,\C{l_1} \leq \mdf'_1\,C_1,\ldots,\mdf_n\,\C{l_n} \leq \mdf'_n\,C_n$,
+		\item $\mdf_0 \leq \mdf'_0$,
+		\item $\mdf_1\,\C{l_1} \leq \mdf'_1\,C_1,\ldots,\mdf_n\,\C{l_n} \leq \mdf'_n\,C_n$,
 		\item $\tyr{e[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{T'}$, and
 		\item $T' \leq T$.
 	\end{ienumerate}
 \end{Lemma}
-\SS\begin{proof} \REFORMAT
-	By $\thm{Type Rule}$ we have that the $\textsc{TCall}$ rule
-	applied yielding $\tyr {\call{\mdf_0\,l_0}m{\drange{\mdf}l}}T''$
-	for some $T'' \leq T$.
+\SS\begin{proof}
 	\begin{enumerate}
 		\item By $\vdash\s$ we have that $\C{l_0}$ is not an interface, so by
 		our grammar, we have $\C{l_0}.m = S\,e$ where $S = \methods{\mdf'_0}{T'}m{\trange{\mdf'}Cx}$
 		for some $e$.
-		\item Now we show $\mdf_0 \leq \mdf'_0$:
-		\begin{itemize}
-			\item By the $\textsc{TCall}$ rule, we have $\tyr{\mdf_0\,l_0}{\mdf\,C}$
-			for some $\mdf$ and $C$.
-			\item By $\thm{Type Rule}$ and our $\textsc{TRef}$ rule, we have $\mdf_0 \leq \mdf$
+		\item By \thm{Type Rule}, the $\textsc{TCall}$ typing rule applied, so we have $\tyr{\mdf_0\,l_0}{\mdf\,C}$, for some $\mdf$ and $C$.
+			By $\thm{Ref Type}$, we have $\mdf_0 \leq \mdf$
 			and $\C{l_0} \leq C$.
-			\item If $C$ is an interface, then by our well-formedness rules on the
-			class table, we have $C.m = S$
-			\item Otherwise, $C$ is a class, and by our well-formedness rules on the
+
+			\LS
+			
+			If $C$ is an interface, then by our well-formedness rules on the
+			class table, we have $C.m = S$. Otherwise, $C$ is a class, and by our well-formedness rules on the
 			class table, we have $\C{l_0} = C$.
-			\item Thus we have $C.m\in\{S,S\,e\}$.
-			\item By the $\textsc{TCall}$ rule, this means that $\mdf = \mdf'_0$,
+
+			\LS
+			
+			Regardless, we have $C.m\in\{S,\,S\,e\}$.
+			By the $\textsc{TCall}$ typing rule, this means that $\mdf = \mdf'_0$,
 			thus $\mdf_0 \leq \mdf'_0$.
-		\end{itemize}
-		\item Now we show that for each $i\in[1,n]$, $\mdf_i\,\C{l_i} \leq \mdf'_i\,C_i$:
-		\begin{itemize}
-			\item Since $C.m\in\{S,S\,e\}$, by the $\textsc{TCall}$ rule we have
-			$\tyr{\mdf_i\,l_i}{\mdf'_i\,C_i}$.
-			\item By $\thm{Type Rule}$ and our $\textsc{TRef}$ rule, we thus have
+		\item %Now we show that for each $i\in[1,n]$, $\mdf_i\,\C{l_i} \leq \mdf'_i\,C_i$:
+			Consider each $i \in [1, n]$. Since $C.m\in\{S,\,S\,e\}$, by the $\textsc{TCall}$ rule we have
+			$\tyr{\mdf_i\,l_i}{\mdf'_i\,C_i}$. By \thm{Ref Type}, we thus have
 			$\mdf_i\,\C{l_i} \leq \mdf'_i\,C_i$.
-		\end{itemize}
-		\item Now we show $\tyr{e[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{T'}$
-		\begin{itemize}
-			\item By our well-formedness rules on methods, we have $\ty[\emptyset][\G]e{T'}$,
-			where $\G = \Kw{this}\mapsto\mdf'_0\,\C[\s]{l_0},\trange x{\!\mapsto\mdf'}C$.
-			\item We also have $\ty e{T'}$, since no typing rule depends on
+
+		\item %Now we show $\tyr{e[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{T'}$
+			By our well-formedness rules on methods, we have $\ty[\emptyset][\G]e{T'}$,
+			where $\G = \Kw{this}\mapsto\mdf'_0\,\C{l_0},\trange x{\!\mapsto\mdf'}C$.
+			We also have $\ty e{T'}$, since no typing rule depends on
 			what is \emph{not} contained within the memory.
-			\item Since $\mdf_0\,\C[\s]{l_0} \leq \mdf'_0\,\,\C[\s]{l_0}$ and
+			Since $\mdf_0\,\C{l_0} \leq \mdf'_0\,\,\C{l_0}$ and
 			$\mdf_1\,\C{l_1} \leq \mdf'_1\,C_1,\ldots,\mdf_n\,\C{l_n} \leq \mdf'_n\,C_n$,
 			by $\thm{Substiution}$, we have $\tyr{e[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{T'}$.
-		\end{itemize}
 	
-	\item Finally, we have $T' \leq T$ since $C.m\in\{S,S\,e\}$, by the $\textsc{TCall}$
-	rule, we have $T'' = T'$.
+	\item Finally, since $C.m\in\{S,\,S\,e\}$, by \thm{Type Rule} and the $\textsc{TCall}$ call rule,
+	we have $T' \leq T$.
 	\qed\end{enumerate}
 \end{proof}
 
-Now a couple of auxiliary lemmas that are needed to reason over the types of reducing an expression.
-
-\noindent First a monitor can be trivially added over a well typed expression.
-
+\noindent \IO{Now an auxiliary lemmas that is needed to reason over the types of runtime introduced monitor expressions, they are well typed provided the body is well typed.}
 \SS\begin{Lemma}[Monitor Type]\ \\
 	\indent If $\vdash\s$, $l\in\dom(\s)$, and $\tyr eT$ then $\tyr{\M le{\invariant l}}T$.
 \end{Lemma}
@@ -415,18 +390,7 @@ Now a couple of auxiliary lemmas that are needed to reason over the types of red
 				{\tyr{\invariant{l}}{\Kw{imm}\,\Kw{Bool}}}}
 		{\ty{\M{l}{e}{\invariant{l}}}{T}}$
 	
-\noindent By our well-formedness rules on the class table, we have $\C{l}.\Kw{invariant} = \method{\Kw{read}}{\Kw{imm}\,\Kw{Bool}}{\Kw{invariant}}{}{\_}$, since $\vdash\s$ ensures that $\C[\s]l$ is not an interface. Thus the side condition required by the \textsc{TCall} rule holds, as does the $l \in \dom(\s)$ condition required by \textsc{TMonitor}.
-\qed\end{proof}
-
-\LS
-
-Now we show that the type system types references according to their reference capability and class:
-\SS\begin{Lemma}[Ref Type]\ \\
-	\indent $\tyr{\mdf\,l}T$ if and only if $\mdf\,\C[\s]l \leq T$.
-\end{Lemma}
-\SS\begin{proof}
-	Follows immediately from $\thm{Type Rule}$ and the $\textsc{TRef}$
-	and $\textsc{TSub}$ typing rules.
+\noindent By our well-formedness rules on the class table, we have $\C{l}.\Kw{invariant} = \method{\Kw{read}}{\Kw{imm}\,\Kw{Bool}}{\Kw{invariant}}{}{\_}$, since $\vdash\s$ ensures that $\C{l}$ is not an interface. Thus the side condition required by the \textsc{TCall} rule holds, as does the $l \in \dom(\s)$ condition required by \textsc{TMonitor}.
 \qed\end{proof}
 
 \LS
@@ -434,127 +398,132 @@ Now we show that the type system types references according to their reference c
 We now prove the standard soundness property of any type system: reduction respects the type of an expression.
 Note that this holds for any well-typed expression and well-formed memory, even those that are not \VS.
 Note as discussed before, our type system does not directly verify the required properties of our reference capabilities (such as preventing simultaneous \Q!imm! and \Q!mut! references to the same object), rather we prove those separately bellow.
-\SS\begin{theorem}[Type Preservation]\ \\
+\SS\begin{theorem}[\IO{Type Preservation}]\ \\
 	\indent If $\vdash\s$, $\tyr eT$ and $\s|e\rightarrow^n\s'|e'$, then $\vdash\s'$
 	and $\tyr[\s']{e'}T$.
 \end{theorem}
 \SS\begin{proof}
-	\REFORMAT
-	First we assume that $n = 1$, i.e. $\s|e\rightarrow\s'|e'$. We note By
-	$\thm{Type Rule}$ we can obtain a $T'$ such that $\tyr eT'$
-	holds by a rule other than $\textsc{TSub}$ and where $T' \leq T$.
+	First we assume that $n = 1$, i.e. $\s|e\rightarrow\s'|e'$. We note by
+	$\thm{Type Rule}$ that we have $\tyer{e}{T'}$, for some $T' \leq T$.
 	We will then show that $\tyr[\s']{e'}{T'}$ holds by induction
-	on the size of $e$:
-	\begin{itemize}
-		\item In the base case, we assume that there is no $\EV$ and $e_0$ where
-		$\EV \neq \hole$ and $\EV[e_0] = e$. We now proceed by cases on the
-		reduction rule applied:
+	on the size of $e$.
+
+	In the base case, we assume that there is no $\EV$ and $e_0$ where
+		$\EV \neq \hole$ and $e = \EV[e_0]$. We now proceed by cases on the
+		reduction rule applied:\SS
 		\begin{enumerate}
 			\item Suppose that the $\textsc{new/new true}$ rule
 			was applied, i.e. we have $e = \new C{\drange{\mdf}l}$, $\s' = \s,l_0\mapsto C\{\range l\}$,
-			and $e'\in\{\Kw{mut}\,l_0,\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}\}$,
-			and $l_0 = \fr(\s)$:
-			\begin{itemize}
-				\item By the $\textsc{TNew}$ typing rule, we have $T' = \Kw{mut}\,C$, a declaration
+			and $e'\in\{\Kw{mut}\,l_0,\,\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}\}$,
+			and $l_0 = \fr(\s)$.
+				By the $\textsc{TNew}$ typing rule, we have $T' = \Kw{mut}\,C$, and a declaration
 				$\clazz C{\_}{\Fs}{\_}$ with $\Fs = \trangex{\fmdf}C{\_}$.
-				\item Consider each $i\in[1,n]$, clearly $\C[\s']{l_i} = \C[\s]{l_i}$,
-				moreover by the $\textsc{TNew}$ typing rule, we have $\tyr{\mdf_i\,l_i}{\derep{\fmdf_i}\,\,C_i}$,
+				\LS
+				
+				Now consider each $i\in[1,n]$, clearly $\C[\s']{l_i} = \C{l_i}$,
+				and by the $\textsc{TNew}$ typing rule, we have $\tyr{\mdf_i\,l_i}{\derep{\fmdf_i}\,\,C_i}$,
 				and so by $\thm{Ref Type}$ we have $\C[\s']{l_i} \leq \,C_i$.
-				\item Since $l_0 = \fr(\s)$, $l_0\notin\dom(\s)$.
-				\item Thus, since $\vdash\s$, we have $\clazz C{\_}{\Fs}{\_}$, and the
-				above, we have $\vdash\s'$.
-				\item Clearly $\C[\s']{l_0} = C$, so by $\textsc{TRef}$ we have $\tyr[\s']{\Kw{mut}\,l_0}{\Kw{mut}\,C}$.
-				\item If $e' = \Kw{mut}\,l_0$ then we are done.
-				\item Otherwise, $e' = \M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}$ so by
+				\LS
+				
+				Furthermore, since $l_0 = \fr(\s)$, $l_0\notin\dom(\s)$, by the above and the fact that $\vdash\s$, we have $\vdash\s'$, as required.
+				\LS	
+									
+				Clearly $\C[\s']{l_0} = C$, so by \thm{Ref Type}, we have $\tyr[\s']{\Kw{mut}\,l_0}{\Kw{mut}\,C}$.
+				\LS
+						
+				If $e' = \Kw{mut}\,l_0$ then we are done.
+				Otherwise, $e' = \M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}$, and by
 				$\thm{Monitor Type}$, we have $\tyr[\s']{e'}{\Kw{mut}\,C}$ as
 				required.
-			\end{itemize}
+				
 			\item Suppose the $\textsc{access}$ rule was applied, i.e. we have $e = \EV[\mdf\,l\D f]$,
-			$\s' = \s$, and $e' = \rmdf{\mdf}{\fmdf}\,\s[l.f]$ where $\C{l'}.f = \field{\fmdf}Cf$:
-			\begin{itemize}
-				\item By the $\textsc{TAccess}$ typing rule, we have $\tyr{\mdf\,l}{\mdf'\,C'}$
+			$\s' = \s$, and $e' = \rmdf{\mdf}{\fmdf}\,\s[l.f]$, where $\C{l'}.f = \field{\fmdf}Cf$.
+				By the $\textsc{TAccess}$ typing rule, we have $\tyr{\mdf\,l}{\mdf'\,C'}$
 				where $C'$ is a class (since the side condition on $\textsc{TAccess}$
 				requires $C'$ to have a field).
-				\item By $\thm{Ref Type}$ rules we have $\mdf \leq \mdf'$ and $\C[\s]l \leq C'$.
-				\item Since $\vdash\s$ we have $\C[\s]l$ is a class, so by our well-formedness
-				rules on the class table, since $C'$ is also a class, we have $\C[\s]l = C'$.
-				\item Thus by the $\textsc{TAccess}$ typing rule, since $\C{l'}.f = \field{\fmdf}Cf$,
+				By $\thm{Ref Type}$, we have $\mdf \leq \mdf'$ and $\C{l} \leq C'$.
+				Since $\vdash\s$, $\C{l}$ is a class, so by our well-formedness
+				rules on the class table, since $C'$ is also a class, we have $\C{l} = C'$.
+				Thus by the $\textsc{TAccess}$ typing rule, since $\C{l'}.f = \field{\fmdf}Cf$,
 				we have $T' = \rmdf{\mdf'}{\fmdf}\,C$.
-				\item If $\fmdf = \Kw{imm}$ then $\rmdf{\mdf}{\fmdf} = \rmdf{\mdf'}{\fmdf} = \Kw{imm}$
-				and so trivially $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$
-				\item Otherwise, $\rmdf{\mdf}{\fmdf} = \mdf$ and $\rmdf{\mdf'}{\fmdf} = \mdf'$;
+				\LS
+				
+				If $\fmdf = \Kw{imm}$ then $\rmdf{\mdf}{\fmdf} = \rmdf{\mdf'}{\fmdf} = \Kw{imm}$
+				and so trivially $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$.
+				Otherwise, $\rmdf{\mdf}{\fmdf} = \mdf$ and $\rmdf{\mdf'}{\fmdf} = \mdf'$;
 				since $\mdf \leq \mdf'$, we thus have $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$.
-				\item Since $\vdash\s$, we have $\C{\s[l.f]} \leq C$, so since $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$,
+				\LS
+				
+				Since $\vdash\s$, we have $\C{\s[l.f]} \leq C$, and since $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$,
 				by $\thm{Ref Type}$, we have $\tyr{\rmdf{\mdf}{\fmdf}\,\s[l.f]}{T'}$,
 				as required.
-			\end{itemize}
+
 			\item Suppose the $\textsc{update}$ rule was applied, i.e. we have $e = \EV[\mdf\,l\D f\equals\mdf'\,l']$,
-			$\s' = \s[l.f = l']$, and $e' = \M l{\Kw{mut}\,l}{\invariant l}$:
-			\begin{itemize}
-				\item By the $\textsc{TUpdate}$ typing rule, we have $\tyr{\mdf\,l}{\Kw{mut}\,C}$
+			$\s' = \s[l.f = l']$, and $e' = \M l{\Kw{mut}\,l}{\invariant l}$.
+				By the $\textsc{TUpdate}$ typing rule, we have $\tyr{\mdf\,l}{\Kw{mut}\,C}$,
 				where $C.f = \field{\fmdf}{C'}f$.
-				\item As with the $\textsc{access}$ case above, we have $\C[\s]l = C$.
-				\item Thus by the $\textsc{TUpdate}$ typing rule, we have $\tyr{\mdf'\,l'}{\derep{\fmdf}\,C}'$
+				As with the $\textsc{access}$ case above, we have $\C{l} = C$.
+				Thus by the $\textsc{TUpdate}$ typing rule, we have $\tyr{\mdf'\,l'}{\derep{\fmdf}\,C}'$
 				and $T' = \Kw{mut}\,C$.
-				\item By $\thm{Type Ref}$ we have $\C[\s]{l'} \leq C'$.
-				\item Clearly $\C[\s']{l'} = \C[\s]{l'}$ and $\C[\s']l = \C[\s]l$, and
-				so we have $\C[\s]l.f = \field{\fmdf}{C'}f$ with $\C[\s']{l'} \leq C'$.
-				\item As $\vdash\s$ and $\s'$ differs from $\s$ only at $l.f$, we thus
-				have $\vdash\s'$.
-				\item By the $\textsc{TRef}$ typing rule we have $\tyr{\Kw{mut}\,l}{\Kw{mut}\,C}$,
-				thus by $\thm{Monitor Type}$ we have $\tyr{e'}{\Kw{mut}\,C}$ as
-				required:
-			\end{itemize}
+				\LS
+				
+				By $\thm{Type Ref}$ we have $\C{l'} \leq C'$.
+				Clearly $\C[\s']l = \C{l}$ and $\C[\s']{l'} = \C{l'}$, and
+				so we have $\C[\s']{l}.f = \field{\fmdf}{C'}f$ with $\C[\s']{l'} \leq C'$.
+				As $\s'$ differs from $\s$ only at $l.f$,
+				by the above and the fact that $\vdash\s$, we have $\vdash\s'$.
+				\LS
+				
+				By \thm{Ref Type} we have $\tyr{\Kw{mut}\,l}{\Kw{mut}\,C}$,
+				thus by $\thm{Monitor Type}$, we have $\tyr{e'}{\Kw{mut}\,C}$ as
+				required.
+
 			\item Suppose that the $\textsc{call/call mutator}$ rule
 			was applied, i.e. we have $e = \call{\_\,l_0}m{\range{\_\,l}}$,
-			$\s' = \s$, and $e'\in\{\as{e''}{\mdf'},\M{l_0}{\as{e''}{\mdf'}}{\invariant{l_0}}\}$,
+			$\s' = \s$, $e'\in\{\as{e''}{\mdf'},\,\M{l_0}{\as{e''}{\mdf'}}{\invariant{l_0}}\}$,
 			$e'' = e'''[\Kw{this}\coloneqq\mdf_0\,l_0,\trange x{\coloneqq\mdf}l]$,
-			and $\C{l_0} = \method{\mdf_0}{\mdf'\,C}m{\drange{\mdf}{\_\,x}}{e'''}$:
-			\begin{itemize}
-				\item By $\thm{Method Type}$ we have $\tyr{e''}{\mdf'\,C'}$ and
+			and $\C{l_0}.m = \method{\mdf_0}{\mdf'\,C}m{\drange{\mdf}{\_\,x}}{e'''}$.
+				By $\thm{Method Type}$, we have $\tyr{e''}{\mdf'\,C'}$ and
 				so $\mdf'\,C \leq T'$.
-				\item Thus, by the $\textsc{TAs}$ typing rule we trivially have $\tyr{\as{e''}{\mdf'}}{\mdf'\,C}$,
-				since $\mdf' \leq \mdf'$.
-				\item By the $\textsc{TSub}$ typing rule we thus have $\tyr{\as{e''}{\mdf'}}{T'}$.
-				\item If $e' = \as{e''}{\mdf'}$ then we are done.
-				\item Otherwise, $e' = \M{l_0}{\as{e''}{\mdf'}}{\invariant{l_0}}$
-				so by $\thm{Monitor Type}$, we have $\tyr {e'}{T'}$ as required.
-			\end{itemize}
+				Thus, since $\mdf' \leq \mdf'$, by the $\textsc{TAs}$ typing rule, we have $\tyr{\as{e''}{\mdf'}}{\mdf'\,C}$.
+				Finally, by the $\textsc{TSub}$ typing rule, we have $\tyr{\as{e''}{\mdf'}}{T'}$.
+				\LS
+				
+				If $e' = \as{e''}{\mdf'}$ then we are done.
+				Otherwise, $e' = \M{l_0}{\as{e''}{\mdf'}}{\invariant{l_0}}$,
+				and by $\thm{Monitor Type}$, we have $\tyr {e'}{T'}$ as required.
+
 			\item Suppose the $\textsc{as}$ rule was applied, i.e. we have $e = \as{\mdf\,l}{\mdf'}$,
-			$\s' = \s$, and $e' = \mdf'\,l$:
-			\begin{itemize}
-				\item By the $\textsc{TAs}$ and $\textsc{TAsCapsule}$ rules we have some
+			$\s' = \s$, and $e' = \mdf'\,l$.
+				By the $\textsc{TAs}$ and $\textsc{TAsCapsule}$ typing rules, we have some
 				$C$ with $\tyr{\mdf\,l}{\_\,C}$ (since $\demut{\emptyset} = \emptyset)$
 				and $T' = \mdf'\,C$.
-				\item Thus by $\thm{Ref Type}$ we have $\C[\s]l \leq C$, thus by $\thm{Ref Type}$
-				we have $\tyr{\mdf'\,l}{\mdf'\,C}$ as required.
-			\end{itemize}
+				Thus, by $\thm{Ref Type}$, we have $\C{l} \leq C$, and 
+				$\tyr{\mdf'\,l}{\mdf'\,C}$ as required.
+
 			\item Suppose the $\textsc{try enter}$ rule was applied,
-			i.e. we have $e = \try{e_1}{e_2}$, $\s' = \s$, and $e' = \trys{\s}{e_1}{e_2}$:
-			\begin{itemize}
-				\item By the $\textsc{TTryCatch1}$ typing we have $\tyr{e_1}{T'}$ and
+			i.e. we have $e = \try{e_1}{e_2}$, $\s' = \s$, and $e' = \trys{\s}{e_1}{e_2}$.
+				By the $\textsc{TTryCatch1}$ typing rule, we have $\tyr{e_1}{T'}$ and
 				$\tyr{e_2}{T'}$, thus by the $\textsc{TTryCatch2}$ rule we have
-				$\tyr{\trys{\s}{e_1}{e_2}}{T'}$ as required.
-			\end{itemize}
+				$\tyr{\trys{\s}{e_1}{e_2}}{T'}$, as required.
+
 			\item Suppose the $\textsc{try ok}$ rule was applied, i.e.
-			we have $e = \trys{\s''}v{\_}$, $\s' = \s$, and $e' = v$:
-			\begin{itemize}
-				\item By the $\textsc{TTryCatch2}$ typing we have $\tyr v{T'}$ as required.
-			\end{itemize}
+			we have $e = \trys{\s''}v{\_}$, $\s' = \s$, and $e' = v$.
+				By the $\textsc{TTryCatch2}$ typing we have $\tyr v{T'}$ as required.
+
 			\item Suppose the $\textsc{try error}$ rule was applied,
 			i.e. we have $e = \trys{\s''}{e_1}{e_2}$, $\s' = \s$, and $e' = e_2$,
-			where $\error(\s,e_1)$:
-			\begin{itemize}
-				\item By the $\textsc{TTryCatch2}$ typing we have $\tyr{e_2}{T'}$ as
+			where $\error(\s,e_1)$.
+				By the $\textsc{TTryCatch2}$ typing we have $\tyr{e_2}{T'}$ as
 				required.
-			\end{itemize}
+
 			\item Otherwise, the $\textsc{monitor exit}$ rule was applied, i.e. we
-			have $e = \M lv{\mdf\,l'}$, $\s' = \s$, and $e' = v$, where $\C{l'} = \Kw{True}$:
-			\begin{itemize}
-				\item By the $\textsc{TMonitor}$ typing we have $\tyr v{T'}$ as required.
-			\end{itemize}
+			have $e = \M lv{\mdf\,l'}$, $\s' = \s$, and $e' = v$, where $\C{l'} = \Kw{True}$.
+				By the $\textsc{TMonitor}$ typing rule we have $\tyr v{T'}$ as required.
 		\end{enumerate}
-		\item In the inductive case, we assume the base case does not hold, i.e.
+	
+	
+		In the inductive case, we assume the base case does not hold, i.e.
 		we have some $e_0$ and minimal $\EV \neq \hole$ where $e = \EV[e_0]$,
 		i.e. $e_0$ is a direct sub-expression of $e$.
 		\begin{itemize}
@@ -568,11 +537,11 @@ Note as discussed before, our type system does not directly verify the required 
 			for some $T_0$, and since we have $\s|e_0\rightarrow\s'|e'_0$,
 			by the inductive hypothesis we have $\vdash\s$ and $\tyr[\s']{e'_0}{T''}$.
 			\item Now note that regardless of the reduction rule applied to get $\s|e_0\rightarrow\s'|e'_0$,
-			we have $\forall l\in\dom(\s)$, $\C[\s]l = \C[\s']{l'}$, so for
+			we have $\forall l\in\dom(\s)$, $\C{l} = \C[\s']{l'}$, so for
 			any $e_1$ and $T_1$, if we we have $\tyr {e_1}{T_1}$
 			then we also have $\tyr[\s']{e_1}{T_1}$ (since the only typing
 			rule that depends on the $\s$ is the $\textsc{TRef}$ rule, but since
-			we have no altered the value of any $\C[\s]l$, such a rule is still
+			we have no altered the value of any $\C{l}$, such a rule is still
 			valid under $\s'$).
 			\item Now we will modify the rule application that gave us $\tyr{\EV[e_0]}{T'}$
 			as follows:
@@ -595,14 +564,15 @@ Note as discussed before, our type system does not directly verify the required 
 			\end{itemize}
 			\item Thus we have $\tyr{\EV[e'_0]}{T'}$ as required.
 		\end{itemize}
-	\item Now we proceed by induction on $n$. In the base case, $n = 0$ and
+
+
+	Finally, we proceed by induction on $n$. In the base case, $n = 0$ and
 	the conclusion trivially holds since $\s' = \s$ and $e' = e$. In the
 	inductive case, we have $n = k+1$ and $\s|e\rightarrow^{k}\s_k|e_k\rightarrow\s'|e'$.
 	By the inductive hypothesis we have that $\vdash\s_k$ and $\ty[\s_k][\G]{e_k}T$
 	and so by the above case for $n = 1$, we have $\vdash\s'$ and $\tyr[\s']{e'}T$
 	as required.
-	\qed\end{itemize}
-\end{proof}
+	\qed\end{proof}
 
 
 As a simple corollary, any sub-expression obtained from reducing a valid initial memory and main expression is well typed.
@@ -659,7 +629,7 @@ This lemma is needed to reason over our $\ty[\s][\demut{\G}]{e}{T}$ judgements: 
 	with $\s|\EV'[e'_1]\rightarrow\s|\EV'[e'_2]$ and $e_2\sim e'_2$.
 	\begin{enumerate}
 		\item Suppose the $\textsc{access}$ rule applied, i.e. we have $e_1 = \mdf\,l\D f$,
-		$\s = \s_0$, and $e_2 = \rmdf{\mdf}{\fmdf}\,\s_0[l.f]$, where$\C[\s]l.f = \field{\fmdf}{\_}f$
+		$\s = \s_0$, and $e_2 = \rmdf{\mdf}{\fmdf}\,\s_0[l.f]$, where$\C{l}.f = \field{\fmdf}{\_}f$
 		\begin{itemize}
 			\item Since $e_1\sim e{}'_1$, we have $e'_1 = \mdf'\,l\D f$, for
 			some $\mdf'$.
@@ -709,8 +679,7 @@ This lemma is needed to reason over our $\ty[\s][\demut{\G}]{e}{T}$ judgements: 
 				``$\as{\mdf\,l}{\mdf'}$'', but that $\mdf'$ is not attached
 				to a \emph{reference.}} in $e_1$ or $\EV$, either in their side-conditions, or their
 			right-hand-sides, $\s_0|\EV'[e'_1]\rightarrow\s|\EV'[e'_2]$ is also
-			a valid reduction, as required. \IOComm{Note that this only works BECAUSE these rules do not do any sanity
-				checking on the $\mdf$s.}
+			a valid reduction, as required.
 		\end{itemize}
 	\end{enumerate}
 	As $\EV[e_1]\sim\EV'[e'_1]$ it follows from the above that $\EV[e_2]\sim\EV'[e'_2]$,
@@ -877,7 +846,7 @@ over expressions typed under a $\demut{\G}$.
 		\end{enumerate}
 		\item Suppose that the $\textsc{new/new true}$ rule was
 		applied, i.e. we have some $\EV$ with $e = \EV[\new C{\drange{\mdf}l}]$,
-		$\s' = \s,l'\mapsto C\{\range l\}$, and $e'\in\{\EV[\M{l'}{\Kw{mut}\,l'}{\invariant{l'}}],\EV[\Kw{mut}\,l']\}$.
+		$\s' = \s,l'\mapsto C\{\range l\}$, and $e'\in\{\EV[\M{l'}{\Kw{mut}\,l'}{\invariant{l'}}],\,\EV[\Kw{mut}\,l']\}$.
 		\begin{enumerate}
 			\item Since no-preexisting part of $\s$ is modified, we must have that
 			$l$ is now $\muty$ through the $\Kw{mut}\,l'$ reference in $e'$,
@@ -904,7 +873,7 @@ over expressions typed under a $\demut{\G}$.
 		\end{enumerate}
 		\item Suppose that the $\textsc{call/call mutator}$ rule
 		was applied, i.e. we have some $\EV$ with $e = \EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]$,
-		$\s' = \s$, and $e'\in\{\as{e''}{\mdf''},\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
+		$\s' = \s$, and $e'\in\{\as{e''}{\mdf''},\,\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
 		$e'' = e'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
 		and $\C{l_0} = \method{\mdf'_0}Tm{\drange{\mdf'}{\_\,x}}{e'''}$
 		\begin{enumerate}
@@ -1004,7 +973,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 			is not $\muty$ in $\EV[\mdf'\,l']$.
 		\end{itemize}
 		\item $\crule{new/new true}{\s'}{\EV[\new C{\drange{\mdf}l}]}{\s}e$,
-		where $\s = \s',l_0\mapsto C\{\range l\}$, $e = \EV[e']$, and $e'\in\{\Kw{mut}\,l_0,\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}\}$
+		where $\s = \s',l_0\mapsto C\{\range l\}$, $e = \EV[e']$, and $e'\in\{\Kw{mut}\,l_0,\,\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}\}$
 		\begin{itemize}
 			\item By $\thm{Valid Type}$, $\new C{\drange{\mdf}l}$ was typed by $\textsc{TNew}$
 			and so we have $\clazz C{\_}{\Fs}{\_}$, where $\Fs = \drange{\fmdf}{\_\,f}$.
@@ -1050,7 +1019,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 				Does that even hold}
 		\end{itemize}
 		\item $\crule{call/call mutator}{\s}{\EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]}{\s}e$,
-		where $e = \EV[e']$, $e'\in\{\as{e''}{\mdf''},\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
+		where $e = \EV[e']$, $e'\in\{\as{e''}{\mdf''},\,\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
 		$e'' = e'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
 		and $\C{l_0} = \method{\mdf'_0}{\mdf''\,\_}m{\drange{\mdf'}{\_\,x}}{e'''}$
 		\begin{itemize}
@@ -1091,7 +1060,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 	show a contradiction, thus proving that $l$ is in fact be $\encap$:
 	\begin{enumerate}
 		\item $\crule{new/new true}{\s'}{\EV[e'']}{\s}{\E[\Kw{capsule}\,l]}$, where
-		$\s = \s',l_0\mapsto C\{\ls\}$, $\E[\Kw{capsule}\,l] = \EV[e']$, $e'\in\{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}},\Kw{mut}\,l_0\}$,
+		$\s = \s',l_0\mapsto C\{\ls\}$, $\E[\Kw{capsule}\,l] = \EV[e']$, $e'\in\{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}},\,\Kw{mut}\,l_0\}$,
 		and $e'' = \new C{\vs}$
 		\begin{itemize}
 			\item Suppose $\E$ is of form $\EV[\E']$, i.e. the hole in $\E$ is within
@@ -1165,7 +1134,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 			we have a contradiction.
 		\end{itemize}
 		\item $\crule{call/call mutator}{\s}{\EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]}{\s}{\E[\Kw{capsule}\,l]}$,
-		where $\E[\Kw{capsule}\,l] = \EV[e']$, $e'\in\{\as{e''}{\mdf''},\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
+		where $\E[\Kw{capsule}\,l] = \EV[e']$, $e'\in\{\as{e''}{\mdf''},\,\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
 		$e'' = e'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
 		and $\C{l_0} = \method{\mdf'_0}{\mdf''\,\_}m{\drange{\mdf'}{\_\,x}}{e'''}$
 		\begin{itemize}
@@ -1209,7 +1178,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 					which have all been substituted with $\mdf'_i\,l_i$.
 					\item Since our type system requires that each method bodies mentions each
 					$\Kw{capsule}$ parameter at most once, it follows that $x_i\notin\E'''$.
-					\item Since $l'$ is not $\reach$ through $l_0$, and $\E'\in\{\as{\E''''}{\mdf''},\M l{\as{\E''''}{\mdf''}}{\invariant{l_0}}\}$,
+					\item Since $l'$ is not $\reach$ through $l_0$, and $\E'\in\{\as{\E''''}{\mdf''},\,\M l{\as{\E''''}{\mdf''}}{\invariant{l_0}}\}$,
 					where $\E'''' = \E''''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
 					it follows that $l'$ is not $\reach$ through $\E'$.
 				\end{itemize}
