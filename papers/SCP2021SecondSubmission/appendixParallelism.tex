@@ -31,7 +31,7 @@ The difference is that in L42 those variables will not be able to come from read
 Note that this is because, as a research question, the L42 developers are trying to understand how far they can go without resorting to destructive reads.
 They could easily add a primitive datatype that works as a \emph{consumable} mutable box storing a true capsule. Such a primitive data type would behave exactly like the \Q@Box@ type above.
 Then, a 42 user could chose to use such boxes to recover all the expressive power (and risks) of destructive reads.
-However, L42 specifically wishes to demonstrate support expressive automatic parallelism without needing such destructive reads.
+However, L42 specifically wishes to demonstrate support for expressive automatic parallelism without needing such destructive reads.
 
 The current version of L42 relies on a \Q|@Cache.ForkJoin| annotation and the \Q@Data@ decorator to activate various forms of (unobservable) automatic parallelism. We show these forms below.
 Of course, the invariant protocol described in this paper also works with \Q|@Cache.ForkJoin|, thus it is impossible to observe a broken invariant, even when using parallelism. This is a direct result of the fact that parallelism in 42 is unobservable: the semantics of parallel code is equivalent to the semantics of the corresponding sequential code, only the performance changes.
@@ -43,20 +43,20 @@ This is the simplest parallelism pattern in L42:
 \begin{lstlisting}[deletekeywords=label]
 Example = Data:{
   @Cache.ForkJoin class method 
-  capsule D foo(capsule A a, imm B b, read C c, mut D d) = (
-    mut A a0 = a.op(a)
-    mut B b0 = b.op(b)
-    mut C c0 = c.op(c)
-    a0.and(b0).and(c0).and(d)
+  capsule D foo(capsule A a, capsule B b, imm C c, read D d, mut E e) = (
+    mut A a0 = a.op(d)
+    mut B b0 = b.op(c)
+    mut C c0 = c.op(d)
+    a0.and(b0).and(c0).and(e)
     )
   }
 \end{lstlisting}
-The \emph{fork} part consists of the initialisation expressions for \Q@a0@, \Q@b0@, and 
-\Q@c0@, which are run in parallel, the \emph{join} part is the final expression, which is run only when 
-all of the fork expressions have completed.
-The \Q!foo! method itself can take any kind of parameters, and they can all be used in join, but the fork expressions need to fit a recognised
-safe parallelism pattern. In \emph{non-mutable computation} only \Q@read@, \Q@capsule@, and \Q@imm@ parameters can be used in fork expressions.
-The name \emph{non-mutable computation} comes from the fact that even if the \Q!capsules! are mutated, nothing that is visible outside of the fork--join can be mutated while the fork part is running; thus parallelism is unobservable.
+The first part consists of the initialisation expressions for \Q@a0@, \Q@b0@, and 
+\Q@c0@, which are run in parallel, the final expression, which is run only when 
+all of the initialisation expressions have completed.
+The \Q!foo! method itself can take any kind of parameters, and they can all be used in the final expression, but the initialisation expressions need to fit a recognised
+safe parallelism pattern. In \emph{non-mutable computation} only \Q@read@, \Q@capsule@, and \Q@imm@ parameters can be used in the initialisation expressions.
+The name \emph{non-mutable computation} comes from the fact that even if the \Q!capsules! are mutated, nothing that is visible outside of the fork--join can be mutated while the initialisation expressions are running; thus parallelism is unobservable.
 
 In general, \Q|@Cache.ForkJoin| works only on methods whose body is a round parenthesis block, with some local variable initialisation expressions followed by a final expression.
 That is, fork--join methods must follow this specific syntactic pattern:
@@ -68,13 +68,16 @@ That is, fork--join methods must follow this specific syntactic pattern:
   $e$
   )
 \end{lstlisting}
-Here the fork expressions, $e_0,\ldots,e_k$, are executed in parallel, and the join expression $e$ is executed once the $e_0,\ldots,e_k$ have finished.
-This corresponds to a manual fork--join where each $e_0,\ldots,e_k$ would first ``fork'' into a new thread, the main thread would wait for each of these threads to finish by ``joining'' on them, before executing $e$.
+Here the initialisation expressions, $e_0,\ldots,e_k$, are executed in parallel, and the final expression $e$ is executed once the $e_0,\ldots,e_k$ have finished.
+A naive implementation would execute each $e_0,\ldots,e_k$ by ``forking'' into a new thread, the main thread would wait for each of these threads to finish by ``joining'' on them and then executing $e$.
+The L42 implementation however aims to be more efficient by not spawning new threads: each of $e_1,\ldots,e_k$ on a pool of preexisting threads, 
+executes $e_0$ on the current thread, and then waits for the $e_1,\ldots,e_k$ tasks to finish, before executing $e$.
+Other approaches to allocating work to threads could also be used provided the final expression, $e$, is only executed after each of the initialisation expressions have finished.
 
-The different forms of parallelism supported by L42 impose different requirements on the free variables that the fork expressions can use.
+The different forms of parallelism supported by L42 impose different requirements on the free variables that the initialisation expressions can use.
 
 Some readers may find it surprising that the \emph{non-mutable computation} pattern allows \Q@read@ references to be used, since there could also be \Q@mut@ references to the same objects.
-However, such \Q@mut@ references will all be unreachable from inside the fork. This is because the fork cannot use \Q!mut! variables, and the \Q!capsule! variables are encapsulated, and so they cannot alias anything reachable from such \Q!read! references.
+However, such \Q@mut@ references will all be unreachable from inside the initialisation expressions. This is because they cannot use \Q!mut! variables, and any \Q!capsule! variables they use will be encapsulated, and so hence will not alias anything reachable from such \Q!read! references.
 %How the mutROG of \Q@capsule@ fields can be shared is not important here because in 42 there is no way to go from a \Q@capsule@ field back to a \Q@capsule@ reference.
 
 This form of parallelism is the only one proposed by Gordon; it is very expressive in their setting with destructive reads, but it is quite limited in L42. However L42 offers other forms of parallelism, as shown below.
@@ -88,9 +91,9 @@ This form of parallelism is the only one proposed by Gordon; it is very expressi
 
 
 \subheading{Single-Mutable Computation}
-In this pattern, a single fork expression can use any kind of parameter, while the other ones can not 
+In this pattern, a single initialisation expression can use any kind of parameter, while the other ones can not 
 use \Q@mut@, \Q@lent@ (a variation of \Q@mut@ present in L42), or \Q@read@ parameters.
-This pattern allows the single fork expression that uses \Q@mut@ to recursively explore a complex mutable data structure and replace arbitrary immutable elements nested inside of it.
+This pattern allows the single initialisation expression that uses \Q@mut@ to recursively explore a complex mutable data structure and replace arbitrary immutable elements nested inside of it.
 Consider for example the following code, which computes, in parallel,
 new immutable string values for all of
 the entries in a mutable list:
@@ -117,26 +120,23 @@ Debug(data)//["aa"; "bb"; "cc"; "dd"; "ee"]
 As you can see, we do not need to copy the whole list. We can update the elements in place one by one.
 If the operation \Q@map(that)@ is complex enough, running it in parallel could be beneficial.
 
-This code can be implemented by starting (`forking'') a new thread for both the \Q@this.map(elem)@ and \Q@this.of(...)@ line, or alternatively as the L42 implementation works, by queuing the \Q@this.map(elem)@ on a pool of preexisting threads, and then continue executing \Q@this.of(...)@ on the current thread.
-Other approaches to allocating work to threads could also be used to improve performance, these will not effect the semantics of the program if the join expression, \Q@data.set(...)@, is only executed after each of the fork expressions have finished.
-
 As you can see, it is trivial to adapt the above code to explore other kinds of collections, for example a binary tree.
 The visit of the tree would be performed recursively and sequentially in the current thread, the operations on the data of each node will execute in parallel, and their results will be composed at the end of each recursion.
 
 These two forms of parallelism where already possible on the L42 model before our work on invariants and our \Q@rep@ fields.
 We think that it is particularly interesting that this kind of parallelism can be obtained without destructive reads.
-Building on top of our \Q@rep@ fields and on the concept of \emph{rep mutators}, a new form of parallel fork-join computation was recently added:
+Building on top of our \Q@rep@ fields and on the concept of \emph{rep mutators}, a new form of parallel fork--join computation was recently added:
 \emph{This-Mutable computation}.
 
 \subheading{This-Mutable Computation}
 In this pattern, the \Q@this@ variable is considered specially.
 The method must be declared \Q@mut@, and the 
-fork expressions cannot
+initialisation expressions cannot
 use \Q@mut@, \Q@lent@, or \Q@read@ parameters.
 However, the \Q@mut@ \Q@this@ can be used to directly call
 rep mutator methods (marked by \Q|@Cache.Clear| in the L42 syntax).
 Since a rep mutator can mutate the reachable object graph of a \Q@rep@ field, and the \mrog of different \Q@rep@ fields is always disjoint, 
-different fork expressions must use rep mutators that operate on different \Q@rep@ fields.
+different initialisation expressions must use rep mutators that operate on different \Q@rep@ fields.
 In this way, L42 can express parallel computation processing arbitrary complex mutable objects inside well encapsulated data structures.
 Consider the following example, where instances of \Q@Foo@ could be arbitrarily complex; containing (possibly circular) graphs of mutable objects.
 \begin{lstlisting}[deletekeywords=label]
@@ -179,17 +179,17 @@ top.op(a=15I, b=S"hello")
 
 This pattern relies on the fact that by using \Q@rep@ fields we can define arbitrary complex data structures composed of disjoint mutable object graphs.
 Note that \Q@read@ aliases to parts of the data structure can be visible outside.
-This is safe since we cannot access them during the fork expressions. This holds because rep mutators can not have \Q@read@ parameters (and other parameters cannot have \Q!read! fields).
+This is safe since we cannot access them during the initialisation expressions. This holds because the \Q!@Cache.Clear! method cannot have \Q@read@ parameters (and other parameters cannot have \Q!read! fields).
 
 \subheading{Non fork--join parallelism in L42}
 L42 also supports eager caching using the \Q|@Cache.Eager| annotation.
 This form of parallelism can only start from fully immutable data.
 This can be used only on methods with no parameters,
-with only final \Q!imm! fields.
+whose receiver only has final \Q!imm! fields.
 When such an object is created, these methods are executed in parallel, when the method finishes executing it will cache the result (either a value or exception).
 When a \Q|@Cache.Eager| is called by the user, it will wait for the aforementioned parallel execution to finish, and then return the result saved in the cache.
 This is observably equivalent to not having the \Q|@Cache.Eager| annotation, where each call to the method would recompute the result.
-This works because our reference and object capability discipline guarantees that any method taking only \Q!imm! data is pure and deterministic.
+This works because L42's reference and object capability discipline guarantees that any method taking only \Q!imm! data is pure and deterministic.
 
 This form of parallelism allows expressing computation in a very declarative style, but it does not interact with capsule references, our rep fields, or rep mutators, so an in-depth discussion of \Q|@Cache.Eager| is out of scope.
 
