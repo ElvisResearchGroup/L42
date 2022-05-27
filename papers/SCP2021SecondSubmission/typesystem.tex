@@ -1,2 +1,1462 @@
-\section{Typesystem and Proof of Requirements}
+\section{Example Type System and Proof of Requirements}
+\let\p=\undefined % so we dob't use it!
 \label{s:typesystem}
+\newcommand{\TODO}[1]{\IO{\textbf{TODO: #1}}}
+\newcommand{\EXPLAIN}{\TODO{ADD EXPLANATION HERE!!!}}
+\newcommand{\REFORMAT}{\color{orange}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In this section we formalise a lightweight version of the L42 type system. We then prove that it satisfies the requirements in \autoref{s:proof}, and hence soundly supports our invariant protocol. This demonstrates that our protocol can be satisfied by a realistic type system.
+
+\subheading{New Notations}
+\noindent First we define the usual subclass hierarchy:\\
+\indent $C \leq C'$ iff:%
+\begin{iitemize}
+	\item $C' = C$,\SS
+	\item $\exists C''$ with $C \leq C''$ and $C'' \leq C'$, or\SS
+	\item we have $\clazz{C}{\Cs}{\_}{\_}$ or $\iclazz{C}{\Cs}{\_}$ and $C'\in\Cs$
+\end{iitemize}
+\LS
+\noindent Then we define subtyping:\\
+\indent $\mdf\,C \leq \mdf'\,C'$ iff $\mdf \leq \mdf'$ and $C \leq C'$
+
+\LS
+
+\noindent Note that $\mdf \leq \mdf'$, $C \leq C'$, and $T \leq T'$ are all reflexive and transitive.
+
+\LS
+
+\noindent Now we define a notation that converts $\Kw{mut}$ reference capabilities to $\Kw{read}$:\\
+\indent $\demut{\Kw{mut}} = \Kw{read}$ and $\demut{\mdf} = \mdf$, if $\mdf \neq \Kw{mut}$
+
+\noindent Note that we always have $\mdf \leq \demut{\mdf}$ and $\demut{\demut{\mdf}} = \demut{\mdf}$
+
+\LS
+
+\noindent We extend this to convert all $\Kw{mut}$ variables in an typing environment to $\Kw{read}$:\\
+\indent $\demut{\G}(x) = \demut{\mdf}\,C$ iff $\G(x) = \mdf\,C$
+
+\noindent Note that $\demut{\emptyset} = \emptyset$ and $\demut{\demut{\G}} = \demut{\G}$.
+
+\LS
+
+\noindent We also extend this to convert all $\Kw{mut}$ references in an expression to $\Kw{read}$:\\
+\indent $\demut{e} = e[\mdf_1\,l_1\coloneqq\demut{\mdf_1}\,l_1,\ldots,\mdf_n\,l_n\coloneqq\demut{\mdf_n}\,l_n]$, where $\{\drange{\mdf}l\} = \{v \in e\}$
+
+
+\LS
+Finally, we define a notation to mean that two expressions are identical, except perhaps for reference capability annotations on references:\\
+\indent $\e \sim e'$ iff $e[\trange{\mdf}{l}{\!\coloneqq\Kw{read}\,l}] = e'[\trange{\mdf}{l}{\!\coloneqq\Kw{read}\,l}]$,\\
+\indent \indent where $\{\drange{\mdf}l\} = \{v \in e\} \cup \{v \in e'\}$.
+
+\noindent Note that the above requires that the $\mdf$s of an $\Kw{as}$ expression are the same, i.e. $\as{e}{\mdf} \sim \as{e'}{\mdf'}$ only if $\mdf = \mdf'$.
+\\\IOComm{Actually I don't think this actually matters,
+	so a simpler definition might be $\e \sim e'$ iff:\\ \indent$%
+		e[\Kw{imm}\coloneqq\Kw{read},\Kw{mut}\coloneqq\Kw{read},\Kw{capsule}\coloneqq\Kw{read}] = %
+		e'[\Kw{imm}\coloneqq\Kw{read},\Kw{mut}\coloneqq\Kw{read},\Kw{capsule}\coloneqq\Kw{read}]$}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\rowSpace}{\vspace{-1.5ex}\\}
+\subheading{Type System}
+\begin{figure}%
+	$\hfill\begin{array}{c}
+		\hfill
+		\irules{TSub}
+		{\ty{e}{T}}
+		{\ty{e}{T'}}
+		{T \leq T'}
+		\hfill\hfill
+		\irule {TVar}
+		{\ }
+		{\ty{x}{\G(x)}}
+		\hfill\hfill
+		\irule {TRef}
+		{\ }
+		{\ty{\mdf\,l}{\mdf\,\C{l}}}
+		\hfill
+		\\\rowSpace
+		\hfill
+		\irules{TNew}
+		{\ty{e_1}{\derep{\fmdf_1}\,C_1}\\\\
+			\vdots\\\\
+			\ty{e_n}{\derep{\fmdf_n}\,C_n}}
+		{\ty{\new C{\range e}}{\Kw{mut}\,C}}
+		{\clazz C{\_}{\Fs}{\_}\\
+			\Fs = \trangex{\fmdf}{C}{\_}}
+		\hfill
+		\\
+		\hfill
+		\irules{TAccess}
+		{\ty{e}{\mdf\,C}}
+		{\ty{e\D f}{\rmdf{\mdf}{\fmdf}\,C'}}
+		{C.f = \field{\fmdf}{C'}f}
+		\hfill\hfill
+		\irules{TUpdate}
+		{\ty e{\Kw{mut}\,C}\\\\
+			\ty{e'}{\derep{\fmdf}\,C'}}
+		{\ty{e\D f\equals e'}{\Kw{mut}\,C}}
+		{C.f = \field{\fmdf}{C'}{f}}	
+		\\\rowSpace
+		\hfill
+		\irules{TCall}
+		{\ty{e_0}{\mdf\,C}\\\\
+			\ty{e_1}{T_1}\\\\
+			\vdots\\\\
+			\ty{e_n}{T_n}}
+		{\ty{\call{e_0}{m}{\range{e}}}{T'}}
+		{S = \methods{\mdf}{T'}{m}{\drangex{T}{\_}}\\
+			C.m\in\{S,S\,\_\}}
+		\hfill
+		\\\rowSpace
+		\hfill
+		\irules{TAs}
+		{\ty{e}{\mdf\,C}}
+		{\ty{\as{e}{\mdf'}}{\mdf'\,C}}
+		{\mdf \leq \mdf'}
+		\hfill\hfill
+		\irule{TAsCapsule}
+		{\ty[\s][\demut{\G}]{e}{\Kw{mut}\,C}}
+		{\ty{\cas{e}}{\Kw{capsule}\,C}}
+		\hfill
+		\\\rowSpace
+		\hfill
+		\irule{TTryCatch1}
+		{\ty[\s][\demut{\G}]{e}{T}\\\\
+			\ty{e'}{T}}
+		{\ty{\try{e}{e'}}{T}}
+		\hfill\hfill
+		\irule{TTryCatch2}
+		{\ty{e}{T}\\\\
+			\ty{e'}{T}}
+		{\ty{\trys{\s'}{e}{e'}}{T}}
+		\hfill
+		\\\rowSpace
+		\hfill
+		\irules{TMonitor}
+		{\ty{e}{T}\\\\
+			\ty{e'}{\mdf\,\Kw{Bool}}}
+		{\ty{\M{l}{e}{e'}}{T}}
+		{l \in \dom{\s}}
+		\hfill\end{array}\hfill$
+		\vspace{-1.5ex}%
+	\caption{Type rules}\label{f:types}%
+	\vspace{-4ex}
+	\end{figure}
+
+	We present the typing rules in \autoref{f:types}:
+	\begin{itemize}
+		\item \textsc{TSub} is the standard ``subsumption'' rule, an expression with a type $T$ also has any super-type $T'$, in particular this works with our reference capabilities, e.g. an expression of type $\Kw{imm}\,C$ also has type $\Kw{read}\,C$.
+
+		\item \textsc{TVar} simply looks up the type of an $x$ in the environment $\G$. Note that this requires that $x \in \dom(\G)$, i.e. that there are no undefined variables.
+	\end{itemize}
+\begin{itemize}
+		\item \textsc{TRef} types a reference with the given capability by looking up the memory $\s$ to determine the appropriate class. Note that this requires that $l \in \dom(\S$), i.e. that there are no dangling pointers. However, it does \emph{not} impose any restrictions on the reference capability $\mdf$, for example an expression with two $\Kw{capsule}$ references with the same $l$ is considered well-typed by our type system, the proofs of our various type system requirements ensure that such an expression cannot be a $\VS$, i.e. they will not actually occur when reducing a valid initial program.
+	\end{itemize}
+\begin{itemize}
+		\item \textsc{TNew} types a \Q!new! expression by checking that there is an initialising expression for each field $f_i$, that has the corresponding class $C_i$ and capability $\derep{\fmdf_i}$. See \autoref{s:formalism} for the definition of $\derep{\fmdf}$.
+			\end{itemize}
+	\begin{itemize}
+		\item \textsc{TAccess} types a field access expression by checking that the receiver has the given field. The $\rmdf{\mdf}{\fmdf}$ computes the resulting reference capability in the same way as the \textsc{Access} reduction rule, although at runtime the result of the expression may have a more specific reference capability.
+		
+		\item \textsc{TUpdate} types a field update expression by checking that the receiver has the given field, and the new value has the appropriate type. As with the \textsc{New} rule, we use $\derep{\fmdf}$ to compute the required reference capability. This rule requires the receiver of the update to be typeable as \Q!mut!, this ensures that only \Q!mut! and \Q!capsule! references can be used to mutate an object.
+		
+		\item \textsc{TCall} types a method call by looking for the appropriate method/signature in the receivers class. If the receivers class is an interface, then $C.m$ will be of form $S$, otherwise it will be of form $S\,\_$ and hence have a method body, but we do not use this extra information. We check that the receiver conforms to the reference capability of the method, and check that each argument conforms to the corresponding parameter type.
+		Note that we don't need to know whether the called method is a rep mutator or not, as the runtime will only introduce an extra invariant check, and not alter the result of the method.
+		
+		\item \textsc{TAs} this types an \Q!as! expression that is trivially sound because the body of the expression conforms to the target reference capability. This allows the reference capability of an expression to be restricted, e.g. if $\mdf' = \Kw{read}$, the \Q!as! expression cannot be used as the receiver of a field update, even if $\mdf = \Kw{mut}$.
+		
+		\item \textsc{TAsCapsule} is the \Q!capsule! promotion rule, it is the main way the type system is practical. 
+		As \Q!as! expressions must have come from a method body, we will initially have  $\ty[\emptyset][\demut{G}]{e}{\Kw{mut}\,C}$, and so $e$ will contain no references.
+		In particular, this means that if $e$ uses any \Q!mut! variables in $\G$ it can only see them as \Q!read!, in particular, our typing rules ensure that such a variable cannot be stored in the heap, nor can any part of its \rog be accessed as \Q!mut! (because \textsc{TAccess} will type such an access as \Q!read! or \Q!imm!).
+		This is enough to ensure that once the variables in $\G$ have been substituted for values and the body is reduced to a value, no \Q!mut! or \Q!read! variables in $\G$ will be \reach from $e$. Thus every object \reach from the result of $e$ will be a newly created object, \immut, or \reach only through \Q!capsule! variables in $\G$. This ensures that the result is \encap as the non-\immut objects reachable from a \Q!capsule! variable in $\G$ will not be \reach elsewhere in the program.
+		
+		During reduction, we will type the expression under $\s; \emptyset$, and so $e$ may contain \Q!mut! references, however this does not break our guarantees since we previously typed the expression under $\emptyset; \demut{\G}$, and so any such references must have been created during the reduction of $e$, and cannot have come from the $\demut{\G}$.
+		
+		We could also extend our type system with more promotion rules (e.g. \Q!read! to \Q!imm!), but the \textsc{TAsCapsule} rule should be sufficient to demonstrate that our invariant protocol can be supported in a system with non-trivial promotions.
+		
+		\item \textsc{TTryCatch1} types a \Q!try!--\Q!catch! expression that has yet to be reduced, similar to the \textsc{TAsCapsule} rule, we require the \Q!try! part to be typeable under $\demut{G}$. This ensures strong exception safety as $\demut{\G}$ contains no \Q!mut! variables, and so the only way $e$ can obtain a \Q!mut! reference is from a \Q!capsule! variable or a freshly created object.
+		In addition, since the only preexisting objects that can be seen as \Q!mut! are those \reach from \Q!capsule! variables in $\G$, 
+		there is no way for $e$ to store any state in a place that $e'$ could observe it. 
+		
+		\item \textsc{TTryCatch2} is used to type annotated \Q!try!--\Q!catch! expressions during reduction, as such expression cannot occur in method bodies, we will always have $\G = \emptyset$. As with the \textsc{TAsCapsule} typing rule, since \Q!try!--\Q!catch! expressions can only be introduced through method calls, we don't need to impose special restrictions once that \Q!try!--\Q!catch! block has begun executing, the check that $\ty[\emptyset][\demut{\G}]{e}{T}$ holds from within a method body is sufficient.
+		
+		\item \textsc{Monitor} type checks monitor expressions introduced by reduction, the $l$ will refer to the monitored object,
+		$e$ will compute the result of the entire expression (if the invariant check succeeds) and the $e'$ will be the \Q!invariant! check itself. The side condition on $l$ is not strictly needed as it follows directly from \thm{No Dangling}.
+		Note that from our signature of the \Q!invariant! method and \thm{Type Preservation} below, $e'$ will always have type $\Kw{imm}\,\Kw{Bool}$, however we need to allow an arbitrary $\mdf$ for our \thm{Bisimulation} lemma below.
+	\end{itemize}
+
+	We use the above typing rules to type-check each method against
+	their declared return type, under the assumption that their parameters
+	and receiver have the appropriate type. We also require that each method use a $\Kw{capsule}$
+	parameter at most once. Formally, we require that:\\
+	\indent $\forall C_0, m$ if $C_0.m = \method{\mdf_0}Tm{\trange{\mdf}Cx}e$,
+	we require:
+	\begin{iitemize}
+		\item $\ty[\emptyset][{\Kw{this}\mapsto\mdf_0\,C_0,\trange x{\!\mapsto\mdf}C}]eT$\SS
+		\item $\forall i \in [1, n]$, if $\mdf_i = \Kw{capsule}$, then $\forall\E$
+		with $e = \E[x]$, $x\notin \E$
+	\end{iitemize}
+	
+	\LS
+	
+	\noindent Finally, we define a notation to verify that memory respects the class table.\\
+	\indent $\vdash\s$ iff $\forall l_0\in\dom(\s)$:
+	\begin{iitemize}
+		\item $\s(l_0) = C_0\{\range l\}$\SS
+		\item we have $\clazz{C_0}{\_}{\Fs}{\_}$\SS
+		\item $\Fs = \drangex{\_\,C}{\_}$\SS
+		\item $\C[\s]{l_1} \leq C_1,\ldots,\C{l_n} \leq C_n$
+	\end{iitemize}
+	Thus $\vdash \s$ ensures that there are no dangling pointers, each object has a proper class (and not an interface),
+	they have the appropriate number of fields, each each field value has an appropriate class. Note that $\vdash \s$ doesn't require the field kinds are respected, this is ensured by our type system requirement proofs below.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subheading{Lemmas}
+
+Often we need to use the properties guaranteed by the type-rules for a specific form of expression,
+to this aim we define a slightly different typing judgement that excludes the \textsc{TSub} rule:\\
+\indent $\tye{e}{T}$ iff $\ty{e}{T}$ holds by a rule other than \textsc{TSub}
+
+\noindent Note that $\tye{e}{T}$ may still use \textsc{TSub} for the \emph{sub}expressions of $e$.
+
+\LS
+
+Now we prove that we can always extract a $\tye{e}{T}$ from a $\tye{e}{T'}$ judgement:
+
+\SS\begin{Lemma}[Type Rule]\ \\
+	\indent $\ty{e}{T}$ holds if and only if $\tye{e}{T'}$ holds for some $T' \leq T$
+\end{Lemma}
+\SS\begin{proof}
+	The ``only if'' direction holds directly from induction on the length of the type derivation of $\ty{e}{T}$ and the fact that $ \leq $ is transitive.
+	The ``if'' direction holds trivially since $tye{e}{T'}$ implies $ty{e}{T'}$, and then \textsc{TSub} can be used to get $\ty{e}{T}$ 
+\qed\end{proof}
+
+\LS
+
+This lemma means that if we know the syntactic form of a well-typed expression $e$, we can use \thm{Type Rule} to determine which of the non-\textsc{TSub} rules must have applied.
+
+We note that if an expression is well-typed, then each sub-expression must also be well-typed. Note that the proof is non-trivial as we sometimes type a sub-expression under $\demut{\G}$ and not $\G$.
+
+\SS\begin{Corollary}[Nested Type]\ \\
+	\indent If $\ty{\E[e]}T$, then $\tye{e}{T'}$, for some $T'$.
+\end{Corollary}
+\SS\begin{proof}
+	\REFORMAT
+	\IOComm{Marco, does this proof make sense?}
+	We prove this by induction on the size of $\E$.
+	\begin{itemize}
+		\item The base case follows trivially from $\thm{Type Rule}$.
+		\item In the inductive case, by $\thm{Type Rule}$ and the structure of our typing rules, we have $\E = \E'[\E'']$
+		where $\E'' \neq \hole$ and is otherwise minimal.
+		\begin{itemize}
+			\item By the inductive hypothesis, we have that $\tye{\E''[e]}{T''}$ holds for some $T''$.
+			\item Since $e$ is a direct sub-expression of $\E''$, each such rule
+			has a premise of form $\ty e{T'''}$ or $\ty[\s][\demut{\G}]e{T'''}$,
+			for some $T'''$.
+			\item If $\ty[\s][\demut{\G}]e{T'''}$, we can turn such a typing derivation
+			into one for $\ty e{T'''}$, by replacing each occurrence
+			of a $\irule{TVar}{\ }{\ty[\s][\demut{\G}]x{\demut{\G}(x)}}$ derivation with $\irules{TSub}{\irule{TVar}{\ }{\ty x{\G(x)}}}{\ty x{\demut{\G}(x)}}{\G(x) \leq \demut{\G}(x)}$,
+			the side condition trivially holds since we always have $\mdf \leq \demut{\mdf}$.
+			Note that this works even if the typing derivation for $\ty[\s][\demut{\G}]e{T'''}$
+			itself uses the $\textsc{TAsCapsule}$ or $\textsc{TTryCatch1}$ rules,
+			since $\demut{\demut{\G}} = \demut{\G}$.
+			\item Thus we have $\ty e{T'''}$, and so by $\thm{Type Rule}$,
+			we have $\tye e{T'}$, for
+			some $T'$.
+		\qed\end{itemize}
+	\end{itemize}
+\end{proof}
+
+Now we show that if we have a $\ty eT$ then we can substitute each variable in $\dom(\G)$ with an appropriate reference, and $e$ will still have type $T$:
+
+\SS\begin{Lemma}[Substitution]\ \\
+	\indent If $\dom(\G) = \{x_1,\ldots,x_n\}$, $\ty eT$, and $\mdf_1\,\C[\s]{l_1} \leq \G(x_1),\ldots,\mdf_n\,\C[\s]{l_n} \leq \G(x_n)$,\\
+	\indent then $\tyr {e[\trange x{\!\coloneqq\mdf}l]}T$.
+\end{Lemma}
+\SS\begin{proof}
+	\REFORMAT
+	Let $e' = e[\trange x{\!\coloneqq\mdf}l]$. The proof then follows by induction
+	on the size of the typing derivation applied to obtain $\ty eT$,
+	and showing that we con obtain $\tyr {e'}T$:
+	\begin{enumerate}
+		\item Suppose $\textsc{TVar}$ applied, i.e. $e = x$ and $T = \G(x)$.
+		\begin{itemize}
+			\item Thus there is some $i\in[1,n]$ with $x_i = x$ and so $e' = \mdf_i\,l_i$.
+			\item By the $\textsc{TVar}$ rule we have $\tyr{e'}{\mdf_i\,\C[\s]{l_i}}$.
+			\item Since $\mdf_i\,\C[\s]{l_i} \leq \G(x_i),$ by the $\textsc{TSub}$
+			rule we have $\tyr{e'}{\G(x_i)}$, as required.
+		\end{itemize}
+
+		\item Suppose $\textsc{TAsCapsule}$ applied, i.e. $e = \cas{e_0}$
+		and $T = \Kw{capsule}\,C$ for some $e_0$ and $C$, where $\ty[\s][\demut{\G}]{e_0[\Kw{mut}\,c\coloneqq\Kw{read}\,c]}{\Kw{mut}\,C}$.
+		\begin{itemize}
+			\item Thus $e' = \cas{e'_0}$ where $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$.
+			\item Note that $\dom(\demut{\G}) = \G$, so consider each $i\in[1,n]$:
+			\begin{itemize}
+				\item Let $\mdf'_i\,C_i = \G(x_i)$, then $\demut{\G}(x_i) = \demut{\mdf'_i}\,C_i$
+				and $\mdf_i \leq \mdf'_i$ and $\,\C[\s]{l_i} \leq C_i$
+				\item Clearly $\mdf'_i \leq \demut{\mdf'_i}$ and so $\mdf_i \leq \demut{\mdf'_i}$,
+				thus we have $\mdf'_i\,\C[\s]{l_i} \leq \demut{\G}(x_i)$.
+			\end{itemize}
+			\item By the above and the inductive hypothesis, we have that $\tyr{e'_0}{\Kw{mut}\,C}$.
+			\item Thus by $\textsc{TAsCapsule}$ and since $\demut{\emptyset} = \emptyset$,
+			we have $\tyr{\cas{e'_0}}{\Kw{capsule}\,C}$, as required.
+		\end{itemize}
+
+		\item Suppose $\textsc{TTryCatch1}$ applied, i.e. $e = \try{e_0}{e_1}$
+		for some $e_1$ and $e_1$, where $\ty[\s][\demut{\G}]{e_0}T$
+		and $\ty{e_1}T$.
+		\begin{itemize}
+			\item Thus $e' = \try{e'_0}{e'_1}$ where $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$
+			and $e'_1 = e_1[\trange x{\!\coloneqq\mdf}l]$.
+			\item By the above $\textsc{TAsCapsule}$ case and the inductive hypothesis we have $\tyr{e'_0}T$.
+			\item By the inductive hypothesis, we have $\tyr{e'_1}T$.
+			\item Thus by the $\textsc{TTryCatch1}$ rule we have $\tyr{\try{e'_0}{e'_1}}T$.
+		\end{itemize}
+
+		\item Otherwise, the $\textsc{TSub}$, $\textsc{TRef}$, $\textsc{TUpdate}$,
+		$\textsc{TNew}$, $\textsc{TAccess},$ $\textsc{TTryCatch2}$, $\textsc{TMonitor}$,
+		$\textsc{TCall}$, or $\textsc{TAs}$ rules applied
+		\begin{itemize}
+			\item The side conditions of these rules (if any) do not depend on the $\G$
+			nor the $x$s or $v$s in the expression, thus the side conditions
+			still hold for a conclusion of form $\tyr{e'}T$.
+			\item Now consider each premise of these rules (if any):
+			\begin{itemize}
+				\item Each such premise is of form $\ty{e_0}{T_0}$ where $e_0$ is
+				a sub-expression of $e$.
+				\item Thus there is a corresponding sub-expression $e'_0$ of $e'$
+				such that $e'_0 = e_0[\trange x{\!\coloneqq\mdf}l]$.
+				\item Thus by the inductive hypothesis we have $\tyr{e'_0}{T_0}$, which is the corresponding
+				premise for a conclusion of form $\tyr{e'}T$.
+			\end{itemize}
+			\item Thus we can use the same rule to obtain a conclusion of form $\tyr{e'}T$.
+		\qed\end{itemize}
+	\end{enumerate}
+\end{proof}
+
+\LS
+
+We show that if a method call on fully reduced values is well typed, the receiver and each argument satisfies the method signature, and once these have been substituted in, the body has the appropriate type.
+
+\SS\begin{Lemma}[Method Type]\ \\
+	\indent If $\vdash\s$ and $\tyr {\call{\mdf_0\,l_0}m{\drange{\mdf}l}}T$, then:
+	\begin{ienumerate}
+		\item $\C{l_0}.m = \method{\mdf'_0}{T'}m{\trange{\mdf'}Cx}e$,
+		\item $\mdf_0 \leq \mdf'_0$, $\mdf_1\,\C{l_1} \leq \mdf'_1\,C_1,\ldots,\mdf_n\,\C{l_n} \leq \mdf'_n\,C_n$,
+		\item $\tyr{e[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{T'}$, and
+		\item $T' \leq T$.
+	\end{ienumerate}
+\end{Lemma}
+\SS\begin{proof} \REFORMAT
+	By $\thm{Type Rule}$ we have that the $\textsc{TCall}$ rule
+	applied yielding $\tyr {\call{\mdf_0\,l_0}m{\drange{\mdf}l}}T''$
+	for some $T'' \leq T$.
+	\begin{enumerate}
+		\item By $\vdash\s$ we have that $\C{l_0}$ is not an interface, so by
+		our grammar, we have $\C{l_0}.m = S\,e$ where $S = \methods{\mdf'_0}{T'}m{\trange{\mdf'}Cx}$
+		for some $e$.
+		\item Now we show $\mdf_0 \leq \mdf'_0$:
+		\begin{itemize}
+			\item By the $\textsc{TCall}$ rule, we have $\tyr{\mdf_0\,l_0}{\mdf\,C}$
+			for some $\mdf$ and $C$.
+			\item By $\thm{Type Rule}$ and our $\textsc{TRef}$ rule, we have $\mdf_0 \leq \mdf$
+			and $\C{l_0} \leq C$.
+			\item If $C$ is an interface, then by our well-formedness rules on the
+			class table, we have $C.m = S$
+			\item Otherwise, $C$ is a class, and by our well-formedness rules on the
+			class table, we have $\C{l_0} = C$.
+			\item Thus we have $C.m\in\{S,S\,e\}$.
+			\item By the $\textsc{TCall}$ rule, this means that $\mdf = \mdf'_0$,
+			thus $\mdf_0 \leq \mdf'_0$.
+		\end{itemize}
+		\item Now we show that for each $i\in[1,n]$, $\mdf_i\,\C{l_i} \leq \mdf'_i\,C_i$:
+		\begin{itemize}
+			\item Since $C.m\in\{S,S\,e\}$, by the $\textsc{TCall}$ rule we have
+			$\tyr{\mdf_i\,l_i}{\mdf'_i\,C_i}$.
+			\item By $\thm{Type Rule}$ and our $\textsc{TRef}$ rule, we thus have
+			$\mdf_i\,\C{l_i} \leq \mdf'_i\,C_i$.
+		\end{itemize}
+		\item Now we show $\tyr{e[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{T'}$
+		\begin{itemize}
+			\item By our well-formedness rules on methods, we have $\ty[\emptyset][\G]e{T'}$,
+			where $\G = \Kw{this}\mapsto\mdf'_0\,\C[\s]{l_0},\trange x{\!\mapsto\mdf'}C$.
+			\item We also have $\ty e{T'}$, since no typing rule depends on
+			what is \emph{not} contained within the memory.
+			\item Since $\mdf_0\,\C[\s]{l_0} \leq \mdf'_0\,\,\C[\s]{l_0}$ and
+			$\mdf_1\,\C{l_1} \leq \mdf'_1\,C_1,\ldots,\mdf_n\,\C{l_n} \leq \mdf'_n\,C_n$,
+			by $\thm{Substiution}$, we have $\tyr{e[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{T'}$.
+		\end{itemize}
+	
+	\item Finally, we have $T' \leq T$ since $C.m\in\{S,S\,e\}$, by the $\textsc{TCall}$
+	rule, we have $T'' = T'$.
+	\qed\end{enumerate}
+\end{proof}
+
+Now a couple of auxiliary lemmas that are needed to reason over the types of reducing an expression.
+
+\noindent First a monitor can be trivially added over a well typed expression.
+
+\SS\begin{Lemma}[Monitor Type]\ \\
+	\indent If $\vdash\s$, $l\in\dom(\s)$, and $\tyr eT$ then $\tyr{\M le{\invariant l}}T$.
+\end{Lemma}
+\SS\begin{proof}
+	We can construct the following typing derivation:\\
+	\indent$\iruled{TMonitor}
+		{\tyr{e}{T}\\
+			\iruled{TCall}
+				{\iruled{TRef}{}{\tyr{\Kw{read}\,l}{\Kw{read}\,\C{l}}}}
+				{\tyr{\invariant{l}}{\Kw{imm}\,\Kw{Bool}}}}
+		{\ty{\M{l}{e}{\invariant{l}}}{T}}$
+	
+\noindent By our well-formedness rules on the class table, we have $\C{l}.\Kw{invariant} = \method{\Kw{read}}{\Kw{imm}\,\Kw{Bool}}{\Kw{invariant}}{}{\_}$, since $\vdash\s$ ensures that $\C[\s]l$ is not an interface. Thus the side condition required by the \textsc{TCall} rule holds, as does the $l \in \dom(\s)$ condition required by \textsc{TMonitor}.
+\qed\end{proof}
+
+\LS
+
+Now we show that the type system types references according to their reference capability and class:
+\SS\begin{Lemma}[Ref Type]\ \\
+	\indent $\tyr{\mdf\,l}T$ if and only if $\mdf\,\C[\s]l \leq T$.
+\end{Lemma}
+\SS\begin{proof}
+	Follows immediately from $\thm{Type Rule}$ and the $\textsc{TRef}$
+	and $\textsc{TSub}$ typing rules.
+\qed\end{proof}
+
+We now prove the standard soundness property of any type system: reduction respects the type of an expression.
+Note that this holds for any well-typed expression and well-formed memory, even those that are not \VS.
+Note as discussed before, our type system does not directly verify the required properties of our reference capabilities (such as preventing simultaneous \Q!imm! and \Q!mut! references to the same object), rather we prove those separately bellow.
+\SS\begin{theorem}[Type Preservation]\ \\
+	\indent If $\vdash\s$, $\tyr eT$ and $\s|e\rightarrow^n\s'|e'$, then $\vdash\s'$
+	and $\tyr[\s']{e'}T$.
+\end{theorem}
+\SS\begin{proof}
+	\REFORMAT
+	First we assume that $n = 1$, i.e. $\s|e\rightarrow\s'|e'$. We note By
+	$\thm{Type Rule}$ we can obtain a $T'$ such that $\tyr eT'$
+	holds by a rule other than $\textsc{TSub}$ and where $T' \leq T$.
+	We will then show that $\tyr[\s']{e'}{T'}$ holds by induction
+	on the size of $e$:
+	\begin{itemize}
+		\item In the base case, we assume that there is no $\EV$ and $e_0$ where
+		$\EV \neq \hole$ and $\EV[e_0] = e$. We now proceed by cases on the
+		reduction rule applied:
+		\begin{enumerate}
+			\item Suppose that the $\textsc{new/new true}$ rule
+			was applied, i.e. we have $e = \new C{\drange{\mdf}l}$, $\s' = \s,l_0\mapsto C\{\range l\}$,
+			and $e'\in\{\Kw{mut}\,l_0,\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}\}$,
+			and $l_0 = \fr(\s)$:
+			\begin{itemize}
+				\item By the $\textsc{TNew}$ typing rule, we have $T' = \Kw{mut}\,C$, a declaration
+				$\clazz C{\_}{\Fs}{\_}$ with $\Fs = \trangex{\fmdf}C{\_}$.
+				\item Consider each $i\in[1,n]$, clearly $\C[\s']{l_i} = \C[\s]{l_i}$,
+				moreover by the $\textsc{TNew}$ typing rule, we have $\tyr{\mdf_i\,l_i}{\derep{\fmdf_i}\,\,C_i}$,
+				and so by $\thm{Ref Type}$ we have $\C[\s']{l_i} \leq \,C_i$.
+				\item Since $l_0 = \fr(\s)$, $l_0\notin\dom(\s)$.
+				\item Thus, since $\vdash\s$, we have $\clazz C{\_}{\Fs}{\_}$, and the
+				above, we have $\vdash\s'$.
+				\item Clearly $\C[\s']{l_0} = C$, so by $\textsc{TRef}$ we have $\tyr[\s']{\Kw{mut}\,l_0}{\Kw{mut}\,C}$.
+				\item If $e' = \Kw{mut}\,l_0$ then we are done.
+				\item Otherwise, $e' = \M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}$ so by
+				$\thm{Monitor Type}$, we have $\tyr[\s']{e'}{\Kw{mut}\,C}$ as
+				required.
+			\end{itemize}
+			\item Suppose the $\textsc{access}$ rule was applied, i.e. we have $e = \EV[\mdf\,l\D f]$,
+			$\s' = \s$, and $e' = \rmdf{\mdf}{\fmdf}\,\s[l.f]$ where $\C{l'}.f = \field{\fmdf}Cf$:
+			\begin{itemize}
+				\item By the $\textsc{TAccess}$ typing rule, we have $\tyr{\mdf\,l}{\mdf'\,C'}$
+				where $C'$ is a class (since the side condition on $\textsc{TAccess}$
+				requires $C'$ to have a field).
+				\item By $\thm{Ref Type}$ rules we have $\mdf \leq \mdf'$ and $\C[\s]l \leq C'$.
+				\item Since $\vdash\s$ we have $\C[\s]l$ is a class, so by our well-formedness
+				rules on the class table, since $C'$ is also a class, we have $\C[\s]l = C'$.
+				\item Thus by the $\textsc{TAccess}$ typing rule, since $\C{l'}.f = \field{\fmdf}Cf$,
+				we have $T' = \rmdf{\mdf'}{\fmdf}\,C$.
+				\item If $\fmdf = \Kw{imm}$ then $\rmdf{\mdf}{\fmdf} = \rmdf{\mdf'}{\fmdf} = \Kw{imm}$
+				and so trivially $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$
+				\item Otherwise, $\rmdf{\mdf}{\fmdf} = \mdf$ and $\rmdf{\mdf'}{\fmdf} = \mdf'$;
+				since $\mdf \leq \mdf'$, we thus have $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$.
+				\item Since $\vdash\s$, we have $\C{\s[l.f]} \leq C$, so since $\rmdf{\mdf}{\fmdf} \leq \rmdf{\mdf'}{\fmdf}$,
+				by $\thm{Ref Type}$, we have $\tyr{\rmdf{\mdf}{\fmdf}\,\s[l.f]}{T'}$,
+				as required.
+			\end{itemize}
+			\item Suppose the $\textsc{update}$ rule was applied, i.e. we have $e = \EV[\mdf\,l\D f\equals\mdf'\,l']$,
+			$\s' = \s[l.f = l']$, and $e' = \M l{\Kw{mut}\,l}{\invariant l}$:
+			\begin{itemize}
+				\item By the $\textsc{TUpdate}$ typing rule, we have $\tyr{\mdf\,l}{\Kw{mut}\,C}$
+				where $C.f = \field{\fmdf}{C'}f$.
+				\item As with the $\textsc{access}$ case above, we have $\C[\s]l = C$.
+				\item Thus by the $\textsc{TUpdate}$ typing rule, we have $\tyr{\mdf'\,l'}{\derep{\fmdf}\,C}'$
+				and $T' = \Kw{mut}\,C$.
+				\item By $\thm{Type Ref}$ we have $\C[\s]{l'} \leq C'$.
+				\item Clearly $\C[\s']{l'} = \C[\s]{l'}$ and $\C[\s']l = \C[\s]l$, and
+				so we have $\C[\s]l.f = \field{\fmdf}{C'}f$ with $\C[\s']{l'} \leq C'$.
+				\item As $\vdash\s$ and $\s'$ differs from $\s$ only at $l.f$, we thus
+				have $\vdash\s'$.
+				\item By the $\textsc{TRef}$ typing rule we have $\tyr{\Kw{mut}\,l}{\Kw{mut}\,C}$,
+				thus by $\thm{Monitor Type}$ we have $\tyr{e'}{\Kw{mut}\,C}$ as
+				required:
+			\end{itemize}
+			\item Suppose that the $\textsc{call/call mutator}$ rule
+			was applied, i.e. we have $e = \call{\_\,l_0}m{\range{\_\,l}}$,
+			$\s' = \s$, and $e'\in\{\as{e''}{\mdf'},\M{l_0}{\as{e''}{\mdf'}}{\invariant{l_0}}\}$,
+			$e'' = e'''[\Kw{this}\coloneqq\mdf_0\,l_0,\trange x{\coloneqq\mdf}l]$,
+			and $\C{l_0} = \method{\mdf_0}{\mdf'\,C}m{\drange{\mdf}{\_\,x}}{e'''}$:
+			\begin{itemize}
+				\item By $\thm{Method Type}$ we have $\tyr{e''}{\mdf'\,C'}$ and
+				so $\mdf'\,C \leq T'$.
+				\item Thus, by the $\textsc{TAs}$ typing rule we trivially have $\tyr{\as{e''}{\mdf'}}{\mdf'\,C}$,
+				since $\mdf' \leq \mdf'$.
+				\item By the $\textsc{TSub}$ typing rule we thus have $\tyr{\as{e''}{\mdf'}}{T'}$.
+				\item If $e' = \as{e''}{\mdf'}$ then we are done.
+				\item Otherwise, $e' = \M{l_0}{\as{e''}{\mdf'}}{\invariant{l_0}}$
+				so by $\thm{Monitor Type}$, we have $\tyr {e'}{T'}$ as required.
+			\end{itemize}
+			\item Suppose the $\textsc{as}$ rule was applied, i.e. we have $e = \as{\mdf\,l}{\mdf'}$,
+			$\s' = \s$, and $e' = \mdf'\,l$:
+			\begin{itemize}
+				\item By the $\textsc{TAs}$ and $\textsc{TAsCapsule}$ rules we have some
+				$C$ with $\tyr{\mdf\,l}{\_\,C}$ (since $\demut{\emptyset} = \emptyset)$
+				and $T' = \mdf'\,C$.
+				\item Thus by $\thm{Ref Type}$ we have $\C[\s]l \leq C$, thus by $\thm{Ref Type}$
+				we have $\tyr{\mdf'\,l}{\mdf'\,C}$ as required.
+			\end{itemize}
+			\item Suppose the $\textsc{try enter}$ rule was applied,
+			i.e. we have $e = \try{e_1}{e_2}$, $\s' = \s$, and $e' = \trys{\s}{e_1}{e_2}$:
+			\begin{itemize}
+				\item By the $\textsc{TTryCatch1}$ typing we have $\tyr{e_1}{T'}$ and
+				$\tyr{e_2}{T'}$, thus by the $\textsc{TTryCatch2}$ rule we have
+				$\tyr{\trys{\s}{e_1}{e_2}}{T'}$ as required.
+			\end{itemize}
+			\item Suppose the $\textsc{try ok}$ rule was applied, i.e.
+			we have $e = \trys{\s''}v{\_}$, $\s' = \s$, and $e' = v$:
+			\begin{itemize}
+				\item By the $\textsc{TTryCatch2}$ typing we have $\tyr v{T'}$ as required.
+			\end{itemize}
+			\item Suppose the $\textsc{try error}$ rule was applied,
+			i.e. we have $e = \trys{\s''}{e_1}{e_2}$, $\s' = \s$, and $e' = e_2$,
+			where $\error(\s,e_1)$:
+			\begin{itemize}
+				\item By the $\textsc{TTryCatch2}$ typing we have $\tyr{e_2}{T'}$ as
+				required.
+			\end{itemize}
+			\item Otherwise, the $\textsc{monitor exit}$ rule was applied, i.e. we
+			have $e = \M lv{\mdf\,l'}$, $\s' = \s$, and $e' = v$, where $\C{l'} = \Kw{True}$:
+			\begin{itemize}
+				\item By the $\textsc{TMonitor}$ typing we have $\tyr v{T'}$ as required.
+			\end{itemize}
+		\end{enumerate}
+		\item In the inductive case, we assume the base case does not hold, i.e.
+		we have some $e_0$ and minimal $\EV \neq \hole$ where $e = \EV[e_0]$,
+		i.e. $e_0$ is a direct sub-expression of $e$.
+		\begin{itemize}
+			\item \IOComm{This part is horribly worded...}
+			\item By the structure of our reduction rules we have $\s|e_0\rightarrow\s'|e'_0$
+			where $e' = \EV[e_0]$.
+			\item Clearly $e'$ is not of form $v$, so the typing rule use to obtain
+			$\tyr{\EV[e_0]}{T'}$ must not have been $\textsc{TSub}$, $\textsc{TVar}$,
+			or $\textsc{TRef}$.
+			\item Each such rule will have a premise of form $\tyr{e_0}{T_0}$,
+			for some $T_0$, and since we have $\s|e_0\rightarrow\s'|e'_0$,
+			by the inductive hypothesis we have $\vdash\s$ and $\tyr[\s']{e'_0}{T''}$.
+			\item Now note that regardless of the reduction rule applied to get $\s|e_0\rightarrow\s'|e'_0$,
+			we have $\forall l\in\dom(\s)$, $\C[\s]l = \C[\s']{l'}$, so for
+			any $e_1$ and $T_1$, if we we have $\tyr {e_1}{T_1}$
+			then we also have $\tyr[\s']{e_1}{T_1}$ (since the only typing
+			rule that depends on the $\s$ is the $\textsc{TRef}$ rule, but since
+			we have no altered the value of any $\C[\s]l$, such a rule is still
+			valid under $\s'$).
+			\item Now we will modify the rule application that gave us $\tyr{\EV[e_0]}{T'}$
+			as follows:
+			\begin{itemize}
+				\item Change the conclusion to be $\tyr[\s']{\EV[e'_0]}{T'}$
+				\item Change the premise for the sub-expression in the hole of $\EV$, which
+				will be of form $\tyr{e_0}{T_0}$, to be $\tyr[\s']{e'_0}{T''}$
+				\item For every other premise, which will be of form $\tyr{e_1}{T_1}$,
+				for some $e_1$ and $T_1$, change it to be $\tyr[\s']{e_1}{T_1}$
+			\end{itemize}
+			\item By looking at each typing rule, it can be seen that the above transformation
+			will respect the rule since:
+			\begin{itemize}
+				\item As shown above, each premise is valid
+				\item The transformation we have applied to the premises is consistent with
+				the transformation of the conclusion
+				\item Each side-condition is still valid, as they do not depend on the value
+				of $\s$ nor the values of any sub-expressions (this holds as we have
+				preserved the \emph{types} of these sub-expressions)
+			\end{itemize}
+			\item Thus we have $\tyr{\EV[e'_0]}{T'}$ as required.
+		\end{itemize}
+	\item Now we proceed by induction on $n$. In the base case, $n = 0$ and
+	the conclusion trivially holds since $\s' = \s$ and $e' = e$. In the
+	inductive case, we have $n = k+1$ and $\s|e\rightarrow^{k}\s_k|e_k\rightarrow\s'|e'$.
+	By the inductive hypothesis we have that $\vdash\s_k$ and $\ty[\s_k][\G]{e_k}T$
+	and so by the above case for $n = 1$, we have $\vdash\s'$ and $\tyr[\s']{e'}T$
+	as required.
+	\qed\end{itemize}
+\end{proof}
+
+
+As a simple corollary, any sub-expression obtained from reducing a valid initial memory \& main expression is well typed.
+
+\SS\begin{Corollary}[Valid Type]\ \\
+	\indent If $\VS(\s,\E[e])$ then $\vdash\s$ and $\tyer eT$, for some $T$.
+\end{Corollary}
+\SS\begin{proof}
+	By definition of $\VS$, we have some $e_0$ and $T_0$ with $\tyr[\s_0]{e_0}T_0$,
+	$\s_0 = c\mapsto\Kw{Cap}\{\}$ and $\s_0|e_0\rightarrow^*\s|\E[e]$. Clearly
+	$\vdash\s_0$ and $\Kw{Cap}$ is defined to be a class with no fields,
+	Thus by $\thm{Type Preservation}$ we have $\tyr {\E[e]}{T_0}$.
+	Finally, by $\thm{Nested Type}$ and $\thm{Type Rule}$ we have
+	$\tyer eT$, for some
+	$T'$.
+\qed\end{proof}
+
+Now a simple lemma relating $\immut$ with $\mrog$ and $\muty$:
+
+\SS\begin{Lemma}[Immutable ROG]\ \\
+	\indent If not $\immut(\s,e,l)$ and $l\in\rog(\s,l')$, then:
+	\begin{ienumerate}
+		\item $l\in\mrog(\s,l')$, and
+		\item if $\Kw{mut}\,l'\in e$ or $\Kw{capsule}\,l'\in e$, then $\muty(\s,e,l)$.
+	\end{ienumerate}
+\end{Lemma}
+\SS\begin{proof}
+	\SS\begin{enumerate}
+		\item $l$ cannot be in the $\rog$ of $l'$ through any $\Kw{imm}$ fields (or else $l$ would be $\immut$), and so it must be in $\rog(\s,l')$ only through $\Kw{mut}$ or $\Kw{rep}$ fields, and so it is in $\mrog(\s,l')$
+		\item Follows immediately from the above and the definition of $\muty$.
+	\qed\end{enumerate}
+\end{proof}
+
+Finally, we show that reduction does not depend on reference capabilities:
+if we have an expression $e_0$, then any memory \& expression that could result from reducing $e_0$ 
+can also be obtained by reducing $e'_0$ (except that the resulting expression may differ in reference capabilities).
+Note that the resulting memory will be identical, as memory does not contain reference capabilities.
+This lemma is needed to reason over our $\ty[\s][\demut{\G}]{e}{T}$ judgements: any state obtained by reducing $e$ after substituting in references according to $\G$, will also be obtainable by reducing $e$ after substituting according to $\demut{\G}$.
+
+\SS\begin{Lemma}[Bisimulation]\ \\
+	\indent If $e_0\sim e'_0$ and $\s_0|e_0\rightarrow^n\s|e$, then we have
+	some $e'$ where $\s_0|e'_0\rightarrow^n\s_n|e'$ and $e\sim e'$.
+\end{Lemma}
+\SS\begin{proof}
+	\REFORMAT
+	First we will assume that $n = 1$. Let $e_1$ and $\EV$ be such
+	that $e_0 = \EV[e_1]$ and $\EV$ is maximal. By the structure of
+	our reduction rules, we have that $e = \EV[e_2]$, for some $e_2$.
+	Since $\EV[e_1]\sim e'_0$, there exists $\EV'$ and $e'_1$
+	such that $e'_0 = \EV'[e'_1]$ and $e_1\sim e'_1$. We now
+	proceed by cases on the reduction rule applied, and construct an $e'_2$
+	with $\s|\EV'[e'_1]\rightarrow\s|\EV'[e'_2]$ and $e_2\sim e'_2$.
+	\begin{enumerate}
+		\item Suppose the $\textsc{access}$ rule applied, i.e. we have $e_1 = \mdf\,l\D f$,
+		$\s = \s_0$, and $e_2 = \rmdf{\mdf}{\fmdf}\,\s_0[l.f]$, where$\C[\s]l.f = \field{\fmdf}{\_}f$
+		\begin{itemize}
+			\item Since $e_1\sim e{}'_1$, we have $e'_1 = \mdf'\,l\D f$, for
+			some $\mdf'$.
+			\item Let $e'_2 = \rmdf{\mdf'}{\fmdf}\,\s_0[l.f]$, and clearly $e_2\sim e'_2$.
+			\item Since the value of $\fmdf$ does not depend on the value of $\mdf$,
+			we can apply the $\textsc{access}$ rule again to get $\s_0|\EV'[\mdf'\,l\D f]\rightarrow\s|\EV'[e_2]$,
+			as required.
+		\end{itemize}
+		\item Suppose the $\textsc{try error}$ rule applied, i.e.
+		$e_1 = \trys{\s'}{e_3}{e_4}$, $\s = \s_0$, and $e_2 = e_4$,
+		where $\error(\s,e_3)$:
+		\begin{itemize}
+			\item Since $e_1\sim e'_1$, we have $e'_1 = \trys{\s'}{e'_3}{e'_4}$,
+			with $e_3\sim e'_3$ and $e_4\sim e'_4$.
+			\item Let $e'_2 = e'_4$, by the above we have $e_2\sim e'_2$.
+			\item As the definition of $\error$ does not depend on $\mdf$s, we have
+			$\error(\s,e'_3)$.
+			\item Thus we can apply the $\textsc{try enter}$ rule again,
+			yielding $\s_0|\EV'[e'_1]\rightarrow\s|\EV'[e'_2]$, as required.
+		\end{itemize}
+		\item Suppose the $\textsc{monitor exit}$ rule applied, i.e.
+		$e_1 = \M lv{\mdf\,l'}$, $\s = \s_0$, and $e_2 = v$, where $\C[\s_0]{l'} = \Kw{True}$:
+		\begin{itemize}
+			\item As this rule doesn't depend on the value of $\mdf$, this is similar
+			to the $\textsc{try error}$ case above, except that we have $e'_1 = \M l{v'}{\mdf'\,l'}$,
+			with $v\sim v'$, and we set $e'_2 = v'$.
+		\end{itemize}
+		\item Suppose the $\textsc{try enter}$ rule applied, i.e.
+		$e_1 = \try{e_3}{e_4}$, $\s = \s_0$, and $e_2 = \trys{\s_0}{e_3}{e_4}$:
+		\begin{itemize}
+			\item This is similar to the $\textsc{try error}$ case above, except that
+			we have $e'_2 = \try{e'_3}{e'_4}$, with $e_3\sim e'_3$
+			and $e_4\sim e'_4$, and we set $e'_2 = \trys{\s_0}{e'_3}{e'_4}$.
+		\end{itemize}
+		\item Suppose the $\textsc{try ok}$ rule applied, i.e. $e_1 = \trys{\s'}v{\_}$,
+		$\s = \s_0$, and $e_2 = v'$:
+		\begin{itemize}
+			\item This is similar to the $\textsc{try error}$ case above, except that
+			we have $e'_2 = \trys{\s'}{v'}{\_}$, with $v\sim v'$, and we
+			set $e'_2 = v'$.
+		\end{itemize}
+		\item Otherwise the $\textsc{as/new/new true/update/call/call mutator}$
+		rule applied:
+		\begin{itemize}
+			\item Let $e'_2 = e_2$, we thus trivially have $e'_2\sim e_2$.
+			\item As these reduction rules do not depend on the capabilities of references\footnote{Note that the $\textsc{as}$ rule does depend on the $\mdf'$ in
+				``$\as{\mdf\,l}{\mdf'}$'', but that $\mdf'$ is not attached
+				to a \emph{reference.}} in $e_1$ or $\EV$, either in their side-conditions, or their
+			right-hand-sides, $\s_0|\EV'[e'_1]\rightarrow\s|\EV'[e'_2]$ is also
+			a valid reduction, as required. \IOComm{Note that this only works BECAUSE these rules do not do any sanity
+				checking on the $\mdf$s.}
+		\end{itemize}
+	\end{enumerate}
+	As $\EV[e_1]\sim\EV'[e'_1]$ it follows from the above that $\EV[e_2]\sim\EV'[e'_2]$,
+	so set $e' = \EV'[e'_2]$, then we have $\s_0|e'_0\rightarrow\s|e'$
+	and $e\sim e'$, as required.
+	
+	Now we proceed by induction on $n$. In the base case, $n = 0$, and
+	so we have $\s = \s_0$, $e = e_0$, and we can set $e' = e'_0$
+	so that $\s_0|e'_0\rightarrow^{0}\s|e'$ and $e\sim e'$ holds. In
+	the inductive case, we have $n = k+1$ and $\s_0|e_0\rightarrow^{k}\s_k|e_k\rightarrow\s|e$.
+	By the inductive hypothesis we have some $e'_k$ such that $\s_0|e'_0\rightarrow^{k}\s_k|e'_k$
+	and $e_k\sim e'_k$, so by the above case for $n = 1$, we have
+	some $e'$ with $\s_k|e'_k\rightarrow\s|e'$ and $e'\sim e$, thus
+	we have $\s_0|e'_0\rightarrow^{k+1}\s|e'$ as required.
+\qed\end{proof}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subheading{Conventional Soundness}
+For the purposes of our invariant protocol and the requirements in \autoref{s:proof}, we do not require that well typed programs do not get stuck during reduction, e.g. because a non-existent method is called.
+However, to show that our system is practical, we prove the key property bellow:
+every well typed expression can either continue to be reduced, it is a value, or it contains an uncaught exception (i.e. an invariant failure).
+
+\SS\begin{theorem}[Progress]\ \\
+	\indent If $\vdash \s$ and $\tyr{e}{T}$ then either:
+	\begin{iitemize}
+		\item $e$ is of form $v$,\SS
+		\item $\error(\s, e)$, or\SS
+		\item $\exists e',\s'$ with $\s|e \rightarrow \s'|e'$.
+	\end{iitemize}
+\end{theorem}
+\SS\begin{proof}
+	\IOComm{Actually check this!}
+	The proof is by induction on the size of $e$: we assume the theorem holds for all subexpressions (if any) of $e$, and show that it holds for the entire $e$.
+		
+	Suppose that there is no $e'$ or $\s'$ with $\s|e \rightarrow \s'|e'$, then this means that none of the reduction rules applied. Note that by \thm{Type Rule} we have some $T'$ with $\tyer{e}{T'}$.
+
+	Suppose that reduction is stuck because there is no rule whose left-hand-side matches $\s|e$. From the grammar for $\EV$ and $e$, the only way this could occur is if $e$ is of form $x$. But there is no way to obtain $\tyer{x}{T'}$, because the \textsc{TVar} rule would set $T' = \emptyset(x)$, which is undefined.
+	
+	Thus, there are matching reduction rules, but none of their side-conditions/right-hand-sides are satisfiable.
+	Consider each such rule:
+	\begin{enumerate}
+		\item Suppose the \textsc{new} rule matches, and so $e = \EV[\new{C}{\range{\_\,l}}]$. 
+		$\fr(\s)$ is well-defined since there is always some $l_0 \notin \dom(\s)$. Thus, we must have $C = \Kw{True}$.
+		By definition, the \Q!True! class contains no fields, thus by our \textsc{TNew} rule, we have $n = 0$, and so the \textsc{new true} rule applies, whose side-condition is satisfiable, a contradiction..
+	
+		\item Suppose the \textsc{new true} rule applies, then as with \textsc{new} above, the side condition is satisfiable, a contradiction.
+		
+		\item Suppose the \textsc{access} rule matches, and so $e = \EV[\mdf\,l\D f]$.
+			By our \textsc{TAccess} typing rule we require that $\tyr{\mdf\,l}{\_\,C}$, for some $C$, and $C.f$ is defined.
+			By \thm{Type Ref} we have that $\C{l} \leq C$. Thus $l \in \dom(\s)$, moreover, since $\vdash \s$, it follows that $\C{l}$ is a class (and not an interface).
+			Thus by our well-formedness rules on the class table, we have $\C{l} = C$.
+			By $\vdash \s$, since $C.f$ exists, it follows that $\s[l.f]$ is defined.
+			Thus every part of the side-condition of \textsc{access} is well defined, a contradiction.
+			
+		\item Suppose the \textsc{update} rule matches, and so $e = \EV[\_\,l\D f \equals \_ l']$.
+		By our \textsc{TUpdate} typing rule, we have $\tyr{\mdf\,l}{\_\,C}$, for some $C$, where $C.f$ is defined.
+		By the above case for \textsc{TAccess}, we thus have that $\C{l} = C$ and $\s[l.f]$ is defined.
+		Thus $\s[l.f = l']$ is also well-defined, and so the right-hand-side of the \textsc{update} rule is satisfiable, a contradiction.
+		
+		\item Suppose the \textsc{call} rule matches, and so $e = \EV[\call{\_\,l_0}{m}{\range{\_\,l}}]$.
+		By \thm{Method Type}, we have that $\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e'}$ is well-defined. Thus we must have that $\mdf_0 = \Kw{mut}$ and $e' = \E[\Kw{this}\D f]$ with $\C{l_0}.f = \field{\Kw{rep}}{\_}{f}$, which satisfies the side-conditions of the \textsc{call mutator} rule, a contradiction.
+		
+		\item Suppose the \textsc{call mutator} rule matches, and so $e = \EV[\call{\_\,l_0}{m}{\range{\_\,l}}]$.
+		As above, by \thm{Method Type}, we have that $\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e'}$.
+		Thus the only way the side conditions are unsatisfiable is if $\mdf_0 \neq \Kw{mut}$, $e'$ is not of form $\E[\Kw{this}\D f]$, or $\C{s}{l_0}.f$ is not of form $\field{\Kw{rep}}{\_}{f}$, but then the side-conditions for the \textsc{call} rule are satisfiable, a contradiction.
+		
+		\item Suppose the \textsc{try error} rule matches, then $e = \EV[\trys{\s'}{e'}{e''}]$.
+		Thus we have that its side-condition, $\error(\s,e)$, does not hold.
+		If $e$ is of form $v$, then the \textsc{try ok} rule applies.
+		Thus by the inductive hypothesis, we must have some $\s'$ and $e'''$ such that $\s|e'\rightarrow\s'|e'''$.
+		And so $e = \EV'[e']$, where $\EV' = \EV[\trys{\s'}{\hole}{e''}]$. Thus we can use the same rule that got us $\s|e'\rightarrow\s'|e'''$ to instead give us $\s|\EV'[e']\rightarrow\s'|\EV'[e''']$, a contradiction.
+		Note that this works because the reduction rules never look at the actual value of the $\EV$.
+			
+		\item Suppose the \textsc{monitor exit} rule matches, then $e = \EV[e']$ with $e' = \M{l}{v}{\mdf\,l'}$.
+			Thus we have that $\C{s}{l'} \neq \Kw{true}$. Thus $\error(\s, e')$.
+			If $\EV$ is of form $\EV'[\trys{\s'}{\EV''}{\_}]$, where $\EV'$ is maximal, then the \textsc{try error} rule applies.
+			Thus, as $e'$ is of form $\M{l}{v}{\mdf\,l'}$ and $\C{s}{l'} \neq \Kw{true}$, we have that $\error(\s, \EV[e'])$ holds.
+			
+		\item Suppose the \textsc{as}, \textsc{try enter}, or \textsc{try ok} rules match, these rules have no side-conditions, and the right-hand-sides are trivially satisfiable, a contradiction.
+	\end{enumerate}
+	
+	Thus from the above, we must have had that only the \textsc{monitor exit} rule matched, and $\error(\s, e)$ holds.
+\qed\end{proof}
+
+Thus our type system satisfies the conventional soundness notion of \thm{Progress} + \thm{Type Preservation}.
+
+\subheading{Proof of Type System Requirements}
+
+Finally we prove each of the requirements from \autoref{s:proof}.
+
+\setcounter{requirement}{0}
+\SS\REQTypeCons
+\SS\begin{proof}
+	\SS\begin{enumerate}
+		\item Follows immediately from $\thm{Valid Type}$ and our $\textsc{TNew}$
+		typing rule.
+		\item Follows immediately from $\thm{Valid Type}$ and our $\textsc{TUpdate}$
+		typing rule.
+		\item Follows immediately from $\thm{Valid Type}$ and $\thm{Method Type}$.
+	\qed\end{enumerate}
+\end{proof}
+
+\setcounter{requirement}{4}
+\SS\REQMutUpd
+\SS\begin{proof}
+	Follows immediately from $\thm{Valid Type}$ and our $\textsc{TUpdate}$
+	rule.
+\qed\end{proof}
+
+Now we prove a slightly stronger version of the $\thm{Mut Consistency}$
+requirement, which works for any well-formed memory and well-typed
+expression, even if they are not a $\VS$ (i.e. they are not obtainable
+by reducing a valid initial memory \& expression). We will use this
+stronger property in combination with $\thm{Bisimulation}$ to reason
+over expressions typed under a $\demut{\G}$.
+
+\SS\begin{Lemma}[Stronger Mut Consistency]\ \\
+	\indent If $\vdash\s$, $\tyr eT$, $l\in\dom(\s)$, not $\muty(\s,e,l)$,
+	and $\s|e\rightarrow^{n}\s'|e'$, then not $\muty(\s',e',l)$.
+\end{Lemma}
+\SS\begin{proof}
+	\REFORMAT
+	First we will assume that $n = 1$. We now assume that $\muty(\s',e',l)$,
+	and then proceed by cases on the reduction rule applied and show a
+	contradiction, thus proving that $l$ must not be $\muty$:
+	\begin{enumerate}
+		\item Suppose the $\textsc{update}$ rule was applied, i.e. we have some
+		$\EV$ with $e = \EV[\mdf\,l'\D f\equals\mdf'\,l'']$, $\s' = \s[l'.f = l'']$,
+		and $e' = \EV[\M{l'}{\Kw{mut}\,l'}{\invariant{l'}}]$.
+		\begin{itemize}
+			\item By $\thm{Type Preservation}$, $\thm{Type Rule}$, and our $\textsc{TUpdate}$
+			typing rule, we have $\mdf \leq \Kw{mut}$.
+			\item Since $l'\in\mrog(\s,l')$, and $l$ was not $\muty$, we have that
+			$l'\notin\rog(\s,l)$, and so we have not mutated the $\rog$ of
+			$l$, i.e. $\rog(\s,l) = \rog(\s',l)$.
+			\item Thus the only way for $l$ to have become $\muty$ is if we have some
+			$l_1\in\rog(\s',l)$ and some $l_2$ with $\Kw{mut}\,l_2\in e'$
+			or $\Kw{capsule}\,l_2\in e'$, and $l_1\in\mrog(\s',l_2)$.
+			\item Since $\s' = \s[l'.f = v]$ and $l$ was not previously $\muty$, we
+			must have made $l_1\in\mrog(\s',l_2)$ through the fact that
+			$\s'(l'.f) = l''$, and so we have that $\C[\s']{l'}.f = \field{\fmdf}Cf$
+			for some $\fmdf\in\{\Kw{mut},\Kw{rep}\}$.
+			\item Thus before the reduction, we had $l_1\in\mrog(\s,l'')$ and $l'\in\mrog(\s,l_2)$.
+			\IOComm{Thus we are extending the $\mrog$s by making $l'.f\to l''$}
+			\item By $\thm{Type Preservation}$, $\thm{Type Rule}$, and our $\textsc{TUpdate}$
+			typing rule, we have that $\mdf'\in\{\Kw{mut},\Kw{capsule}\}$.
+			\item Since $l_1\in\mrog(\s,l'')$ and $l_1\in\rog(\s,l)$, we thus
+			have $\muty(\s,e,l)$, a contradiction.
+		\end{itemize}
+		\item Suppose the $\textsc{access}$ rule was applied, i.e. we have some
+		$\EV$ with $e = \EV[\mdf\,l'\D f]$, $\s' = \s$, and $e' = \EV[v]$,
+		where $v = \rmdf{\mdf}{\fmdf}\,\s[l'.f]$ and $\C{l'}.f = \field{\fmdf}Cf$.
+		\begin{enumerate}
+			\item As we have not modified memory, the only way for $l$ to have become
+			$\muty$ is via $v$, i.e. we must have $\rmdf{\mdf}{\fmdf} \leq \Kw{mut}$
+			and some $l''\in\rog(\s,l)$ such that $l''\in\mrog(\s,\s[l'.f])$.
+			\item By definition of $\rmdf{\mdf}{\fmdf}$ this implies that $\fmdf\in\{\Kw{mut},\Kw{rep}\}$
+			and $\mdf \leq \Kw{mut}$. So we have that $l''\in\mrog(\s,l')$, and
+			$\Kw{mut}\,l'\in e$ or $\Kw{capsule}\,l'\in e$.
+			\item Thus we must have $\muty(\s,e,l)$, a contradiction.
+		\end{enumerate}
+		\item Suppose that the $\textsc{new/new true}$ rule was
+		applied, i.e. we have some $\EV$ with $e = \EV[\new C{\drange{\mdf}l}]$,
+		$\s' = \s,l'\mapsto C\{\range l\}$, and $e'\in\{\EV[\M{l'}{\Kw{mut}\,l'}{\invariant{l'}}],\EV[\Kw{mut}\,l']\}$.
+		\begin{enumerate}
+			\item Since no-preexisting part of $\s$ is modified, we must have that
+			$l$ is now $\muty$ through the $\Kw{mut}\,l'$ reference in $e'$,
+			i.e. we must have some $l''\in\rog(\s,l)$ with $l''\in\mrog(\s',l')$.
+			\item By $\thm{No Dangling}$ we have $l'' \neq  l'$, thus we have that
+			$i\in[1,n]$, $C.i = \field{\fmdf}{C'}f$, $\fmdf\in\{\Kw{mut},\Kw{rep}\}$,
+			and $l''\in\mrog(\s,l_i)$.
+			\item By $\thm{Type Preservation}$, $\thm{Type Rule}$, and our $\textsc{TNew}$
+			typing rule, we have that $\mdf_i \leq \Kw{mut}$.
+			\item Since $l''\in\mrog(\s,l_i)$ and $l''\in\rog(\s,l)$, we thus
+			have $\muty(\s,e,l)$, a contradiction.
+		\end{enumerate}
+		\item Suppose the $\textsc{as}$ rule was applied, i.e. we have some $\EV$
+		with $e = \EV[\as{\mdf\,l'}{\mdf'}]$, $\s' = \s$, and $e' = \EV[\mdf'\,l']$
+		\begin{enumerate}
+			\item By $\thm{Type Preservation}$ and $\thm{Type Rule}$ either the
+			$\textsc{TAs}$ or $\textsc{TAsCapsule}$ typing rule applied.
+			\item In either case, by $\thm{Ref Type}$ we have that $\mdf' \leq \Kw{mut}$
+			only if $\mdf \leq \Kw{mut}$.
+			\item As we haven't introduced any other reference or modified any memory,
+			we must have that $l$ is now $\muty$ through $\mdf'\,l'$.
+			\item But them $\mdf' \leq \Kw{mut}$ and so $\mdf \leq \Kw{mut}$, and hence $l$
+			was already $\muty$ through $\mdf\,l$, a contradiction.
+		\end{enumerate}
+		\item Suppose that the $\textsc{call/call mutator}$ rule
+		was applied, i.e. we have some $\EV$ with $e = \EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]$,
+		$\s' = \s$, and $e'\in\{\as{e''}{\mdf''},\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
+		$e'' = e'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
+		and $\C{l_0} = \method{\mdf'_0}Tm{\drange{\mdf'}{\_\,x}}{e'''}$
+		\begin{enumerate}
+			\item As we haven't modified memory, for this reduction to have made $l$
+			$\muty$, we must have introduced a $\Kw{mut}$ or $\Kw{capsule}$ reference
+			in $e''$.
+			\item By our well-formedness rules on method bodies, there are no references
+			in $e'''$, thus $l$ must be $\muty$ through one of the $\mdf'_i\,l_i$
+			references we substituted into $e'''$, for some $i\in[1,n]$ where
+			$\mdf'_i \leq \Kw{mut}$.
+			\item By $\thm{Type Preservation}$ and $\thm{Method Type}$, we have
+			that $\mdf_i \leq \mdf'_i$, and so $\mdf_i \leq \Kw{mut}$ and so
+			$e$ already had a reference, $\mdf_i\,l_i$, through which $l$
+			was $\muty$, a contradiction.
+		\end{enumerate}
+		\item Otherwise, $\textsc{try enter/monitor exit/try ok/try error}$
+		was applied. However, memory was not modified, and no new references
+		where added to the main expression, thus we can't have caused $\muty$
+		to now hold, a contradiction.
+	\end{enumerate}
+	Now we proceed by induction on $n$. In the base case, $n = 0$, which
+	is trivial as $\s' = \s$ and $e' = e$. In the inductive case, we have
+	$n = k+1$ and $\s|e\rightarrow^{k}\s_k|e_k\rightarrow\s'|e'$. By the inductive hypothesis
+	we have not $\muty(\s_k,e_k,l)$. We clearly have $l\in\dom(\s_k)$
+	as no reduction rules remove from memory, thus by the above case for
+	$n = 1$, we have not $\muty(\s',e',l)$ as required.
+\qed\end{proof}
+
+\LS
+
+Similarly, we use this \thm{Stronger Mut Consistency} to prove a stronger version of \thm{Non-Mutating}.
+
+\SS\begin{Corollary}[Stronger Non-Mutating]\ \\
+	\indent If $\vdash\s$, $\tyr eT$, $l\in\dom(\s)$, not $\muty(\s,e,l)$,
+	and $\s|e\rightarrow^*\s'|e'$, then $\s'(l) = \s(l)$
+\end{Corollary}
+\SS\begin{proof}
+	The proof is the same as for $\thm{Non Mutating}$ in \autoref{s:proof},
+	except we use $\thm{Stronger Mut Consistency}$ instead of $\thm{Mut Consistency}$
+	and use $\thm{Type Preservation}$, $\thm{Type Rule}$, and the
+	$\textsc{TUpdate}$ rule instead of $\thm{Mut Update}$.
+\qed\end{proof}
+
+\setcounter{requirement}{2}
+\SS\REQMutCons
+\SS\begin{proof}
+	By $\thm{Valid Type}$ we have $\vdash\s$ and $\tyr eT$ for some
+	type $T$, and so the conclusion holds by $\thm{Stronger Mut Consistency}$.
+\qed\end{proof}
+
+\LS
+
+Now the hardest requirements to prove: $\thm{Imm Consistency}$ and $\thm{Capsule Consistency}$.
+We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $\Kw{imm}$ is expected, and our $\textsc{TAsCapsule}$ typing rule allows the use of $\Kw{imm}$ local variables.
+
+\SS\begin{theorem}[Imm--Capsule Consistency]\ \\	
+	\indent If $\VS(\s,e)$, then $\forall l$:
+	\begin{ienumerate}
+		\item if $\immut(\s,e,l)$, then not $\muty(\s,e,l)$, and
+		\item if $e = \E[\Kw{capsule}\,l]$, then $\encap(\s,\E,l)$
+	\end{ienumerate}
+\end{theorem}
+\SS\begin{proof}
+	\REFORMAT
+	As before, we prove this by induction on the number of reduction since
+	the initial main expression and memory. The base case is trivial since
+	the main expression cannot contain any $\Kw{imm}$ references, and there
+	are no fields in memory, thus nothing can be $\immut$, moreover the
+	main expression cannot contain any $\Kw{capsule}$ references.
+	
+	In the inductive case we assume that our theorem holds for all previous
+	states, we then pick an arbitrary $l$ and prove the two conclusions
+	for the current $\s|e$.
+	
+	\emph{Part 1 ($\thm{Imm Consistency}$): }If $l$ was previously $\immut$, by the inductive hypothesis and
+	$\thm{Mut Consistency}$, $l$ is still not $\muty$, as required.
+	
+	Now suppose that $l$ was not $\immut$ in the previous state, but
+	is now. We then proceed by cases on the reduction rule applied and
+	show that $l$ is now not $\muty$:
+	\begin{enumerate}
+		\item $\crule{as}{\s}{\EV[\as{\mdf\,l'}{\mdf'}]}{\s}e$, where $e = \EV[\mdf'\,l']$
+		\begin{itemize}
+			\item Since $l$ was not $\immut$ in $\EV$ and we haven't modified memory,
+			the only way it could now be $\immut$ is if $\mdf' = \Kw{imm}$ and $l\in\rog(\s,l')$.
+			\item By $\thm{Valid Type}$, we must have that $\as{\mdf\,l}{\mdf'}$
+			was well-typed by $\textsc{TAs}$ (and not $\textsc{TAsCapsule}$,
+			as $\mdf' \neq \Kw{capsule}$), thus $\mdf \leq \Kw{imm}$.
+			\item Clearly $\mdf \neq \Kw{imm}$, since $l$ was not $\immut$. Thus by definition
+			of $ \leq $, we have that $\mdf = \Kw{capsule}$.
+			\item Since $l\in\rog(\s,l')$, and $l$ was not $\immut$, by $\thm{Immutable ROG}$
+			we have $\muty(\s,\EV[\as{\Kw{capsule}\,l'}{\mdf'}],l)$.
+			\item By the inductive hypothesis we have $\encap(\s,\EV[\as{\hole}{\mdf'}],l')$, and
+			so it follows that not $\reach(\s,\EV,l)$.
+			\item Thus, we have $l$ is not $\reach$ in $\EV[\mdf'\,l']$ except
+			through $\mdf'\,l'$, but $\mdf' = \Kw{imm}$, so it follows that $l$
+			is not $\muty$ in $\EV[\mdf'\,l']$.
+		\end{itemize}
+		\item $\crule{new/new true}{\s'}{\EV[\new C{\drange{\mdf}l}]}{\s}e$,
+		where $\s = \s',l_0\mapsto C\{\range l\}$, $e = \EV[e']$, and $e'\in\{\Kw{mut}\,l_0,\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}\}$
+		\begin{itemize}
+			\item By $\thm{Valid Type}$, $\new C{\drange{\mdf}l}$ was typed by $\textsc{TNew}$
+			and so we have $\clazz C{\_}{\Fs}{\_}$, where $\Fs = \drange{\fmdf}{\_\,f}$.
+			\item Since $l$ was not $\immut$ in $\s'$ through $\EV$, and existing
+			objects in $\s'$ have not been modified, it follows that $l$ must
+			be $\immut$ through $e'$, as the only object mentioned in $e'$
+			is $l_0$, we have $l\in\rog(\s,l_0)$.
+			\item As we haven't modified preexisting objects, and $\Kw{imm}\,l_0\notin e'$,
+			it follows that for some $i\in[1,n]$ with $\fmdf_i = \Kw{imm}$, we
+			have $l\in\rog(\s,\s[l_0.f_i]) = \rog(\s,l_i)$.
+			\item By $\thm{Valid Type}$ and $\textsc{TNew}$, we have that $\mdf_i \leq \derep{\fmdf_i} = \Kw{imm}$.
+			\item Thus, as with the $\textsc{as}$ case above, we have $\mdf_i = \Kw{capsule}$
+			and by $\thm{Immutable ROG}$ we have that $l$ was $\muty$, and
+			so by the inductive hypothesis we have the $l$ was previously $\reach$, only through
+			the $\mdf_i\,l_i$ argument of the $\Kw{new}$.
+			\item Thus $l$ is not $\reach$ through any $\s[l_0.f_j]$ with $j \neq  i$,
+			and so it follows that $l$ is $\reach$ in $\s|\EV[e']$ only through
+			$l_0.f_i$; as $f_i$ is an $\Kw{imm}$ field, it follows that
+			$l$ is not $\muty$.
+		\end{itemize}
+		\item $\crule{access}{\s}{\EV[\mdf\,l'\D f]}{\s}e$, where $e = \EV[\rmdf{\mdf}{\fmdf}\,\s[l'.f]]$
+		and $\C l.f = \field{\fmdf}{\_}f$
+		\begin{itemize}
+			\item As we have not modified memory, it follows that $l$ is $\immut$
+			through the newly introduced reference to $\s[l'.f]$.
+			\item As $l$ was not previously $\immut$ and the main expression already
+			contained $\mdf\,l'$, it follows that $l$ is not in the $\rog$
+			of any $\Kw{imm}$ fields that are $\reach$ through $l'$.
+			\item Thus the only way $l$ is now $\immut$ is if we just introduced an
+			$\Kw{imm}$ reference to it, i.e. if $l = \s[l'.f]$ and $\rmdf{\mdf}{\fmdf} = \Kw{imm}$.
+			\item By definition of $\rmdf{\mdf}{\fmdf}$, we have that either $\mdf = \Kw{imm}$
+			or $\fmdf = \Kw{imm}$. In the former case, $\Kw{imm}\,l$ would be in the
+			main expression, in the latter case, $l$ would be $\reach$ through
+			an $\Kw{imm}$ field of $\mdf\,l$; either way $l$ must have been $\immut$,
+			a contradiction.
+		\end{itemize}
+		\item $\crule{update}{\s'}{\EV[\mdf\,l'\D f = \mdf'\,l'']}{\s}e$,
+		where $\s = \s'[l'.f = l'']$ and $e = \M{l'}{\Kw{mut}\,l'}{\invariant{l'}}$
+		\begin{itemize}
+			\item As with the $\textsc{as}$ case above, since $l$ is now $\immut$,
+			we must have that $C.f = \field{\Kw{imm}}{\_}f$ and $l\in\rog(\s,l'')$.
+			\item \TODO{FUCK we have $l\in\rog(\s,l'')$, HOW DO I PROVE that $l\in\rog(\s',l'')$?
+				Does that even hold}
+		\end{itemize}
+		\item $\crule{call/call mutator}{\s}{\EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]}{\s}e$,
+		where $e = \EV[e']$, $e'\in\{\as{e''}{\mdf''},\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
+		$e'' = e'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
+		and $\C{l_0} = \method{\mdf'_0}{\mdf''\,\_}m{\drange{\mdf'}{\_\,x}}{e'''}$
+		\begin{itemize}
+			\item By our well-formedness rules on method bodies, there are no locations
+			in $e'''$, thus the only references in $e''$ are $\drange[,][0]{\mdf'}l$.
+			\item By definition of $\immut$, since we have not modified memory, it
+			follows that $l\in\rog(\s,l_i)$ for some $i\in[1,n]$ with $\mdf'_i = \Kw{imm}$.
+			\item As with the $\textsc{as}$ case above, by $\thm{Valid Type}$ and
+			$\text{TCall}$, we have that $\mdf_i = \Kw{capsule}$, moreover, as $l$
+			is not $\immut$, we have $l\in\mrog(\s,l_i)$.
+			\item By the inductive hypothesis we have that $l_i$ was $\encap$ and so it follows
+			that $l$ is not $\reach$ from $\EV$, or through any $l_j$ with
+			$j \neq  i$.
+			\item As the only occurrences of $l_i$ in $e''$ have reference capability
+			$\mdf'_i = \Kw{imm}$, we have that $l$ is not $\muty$ in $e''$
+			\item The only reference to $l_i$ that could be in $e'$ but not in
+			$e''$ has reference capability $\Kw{read}$, and so $l$ is not $\muty$
+			in $e'$ either.
+			\item Finally, since $l$ is not $\reach$ in $\EV$, it follows that $l$
+			is not $\muty$ in $\EV[e']$.
+		\end{itemize}
+		\item $\crule{try enter/try ok/try error/monitor exit}{\s}{e'}{\s}e$
+		\begin{itemize}
+			\item These rules do not modify memory, nor introduce or change references
+			in the main expression, except perhaps by removing them, i.e. for
+			any $v\in e$, we have $v\in e'$. Thus there is no way we could
+			have made $l$ $\immut$, a contradiction.
+		\end{itemize}
+	\end{enumerate}
+	
+	\emph{Part 2 ($\thm{Capsule Consistency}$):} Now suppose $e = \E[\Kw{capsule}\,l]$, for some $\E$, and $\encap(\s,\E,l)$
+	doesn't hold.
+	
+	Thus we pick an $l'\in\rog(\s,l)$ with $\muty(\s,\E[\Kw{capsule}\,l],l')$
+	such that $\reach(\s,\E,l')$.
+	
+	We now proceed by cases on the reduction rule we just applied, and
+	show a contradiction, thus proving that $l$ is in fact be $\encap$:
+	\begin{enumerate}
+		\item $\crule{new/new true}{\s'}{\EV[e'']}{\s}{\E[\Kw{capsule}\,l]}$, where
+		$\s = \s',l_0\mapsto C\{\ls\}$, $\E[\Kw{capsule}\,l] = \EV[e']$, $e'\in\{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}},\Kw{mut}\,l_0\}$,
+		and $e'' = \new C{\vs}$
+		\begin{itemize}
+			\item Suppose $\E$ is of form $\EV[\E']$, i.e. the hole in $\E$ is within
+			$e'$:
+			\begin{itemize}
+				\item But there are no $\Kw{capsule}$s in $e'$, a contradiction.
+			\end{itemize}
+			\item Otherwise, $\E$ is not of form $\EV[\E']$, i.e. the hole in $\E$
+			is within $\EV$, and so $\Kw{capsule}\,l\in\EV$ and $e'\in\E$:
+			\begin{itemize}
+				\item As we didn't modify $\EV$, this $\Kw{capsule}\,l$ must have been in the
+				previous state, i.e. we have some $\E'$ with $\EV[e''] = \E'[\Kw{capsule}\,l]$
+				and $e''\in\E'$ (since the hole in $\E$ is not within the hole
+				in $\EV$):
+				\item By $\thm{No Dangling}$, $l\in\dom(\s')$, and since we didn't
+				modify any preexisting objects, we have $\rog(\s,l) = \rog(\s',l)$.
+				\item By the inductive hypothesis we have $\encap(\s',\E',l)$, and by $\thm{Mut Consistency}$,
+				we have $\muty(\s',\E'[\Kw{capsule}\,l],l')$, and since $l'\in\rog(\s,l)$,
+				it follows that not $\reach(\s',\E',l')$ in the previous state.
+				\item Suppose $l'$ is $\reach$ through $\EV$, then there is some $l''\in\EV$
+				with $l'\in\rog(\s',l'')$. By $\thm{No Dangling}$, $l''\in\dom(\s)$,
+				and since preexisting memory wasn't modified, it follows that $l'\in\rog(\s,l'')$;
+				since $l''\in\EV$, we have $l''\in\E'$, and so we had $\reach(\s,\E',l')$,
+				a contradiction.
+				\item Otherwise, $l'$ is $\reach$ through $e'$, clearly $l'\in\dom(\s')$,
+				and so by $\thm{Lost Forever}$, we have $\reach(\s',\new C{\vs},l')$.
+				But $\new C{\vs}\in\E'$, and so we also have $\reach(\s,\E',l')$,
+				which is still a contradiction.
+				\item Note that the above steps do not depend on the actual forms of $e'$
+				and $e''$ or the reduction rule applied, they only require $\VS(\EV[e''])$,
+				$\s'|e''\rightarrow\s|e'$, $\rog(\s,l) = \rog(\s',l)$, and $\EV[e'] = \E[\Kw{capsule}\,l]$,
+				were $\E$ is not of form $\EV[\E'']$.
+			\end{itemize}
+		\end{itemize}
+		\item $\crule{access}{\s}{\EV[\mdf\,l''\D f]}{\s}{\E[\Kw{capsule}\,l]}$, where
+		$\E[\Kw{capsule}\,l] = \EV[\rmdf{\mdf}{\fmdf}\,\s[l''.f]]$
+		\begin{itemize}
+			\item Suppose $\E = \EV$, so $\Kw{capsule}\,l = \rmdf{\mdf}{\fmdf}\,\s[l''.f]$:
+			\begin{itemize}
+				\item By definition of $\rmdf{\mdf}{\fmdf}$, this means that $\mdf = \Kw{capsule}$,
+				and so by the inductive hypothesis we have that $\encap(\s,\EV[\hole\D f],l'')$.
+				\item Since $l'\in\rog(\s,l)$ and $l = \s[l''.f]$, it follows that $l'\in\rog(\s,l'')$.
+				\item Since $l'$ is $\muty$ in $\EV[\Kw{capsule}\,l]$, by $\thm{Mut Consistency}$,
+				$l'$ is also $\muty$ in $\EV[\Kw{capsule}\,l''\D f]$
+				\item Thus, since $l''$ was $\encap$ and $l'\in\rog(\s,l'')$, it
+				follows that $l'$ is not $\reach$ through $\EV[\hole\D f]$.
+				\item Clearly this means $l'$ is not $\reach$ through $\EV$, a contradiction.
+			\end{itemize}
+			\item Otherwise, $\Kw{capsule}\,l\in\EV$, and so by the $\textsc{new/new true}$
+			case above, we have a contradiction.
+		\end{itemize}
+		\item $\crule{update}{\s'}{\EV[\mdf\,l''\D f\equals v]}{\s}{\E[\Kw{capsule}\,l]}$,
+		where $\s = \s'[l''.f = v]$ and $\E[\Kw{capsule}\,l] = \EV[\M{l''}{\Kw{mut}\,l''}{\invariant{l''}}]$
+		\TODO{Can't use $\s[l.f = v]$!}
+		\begin{itemize}
+			\item Clearly $\Kw{capsule}\,l\in\EV$, since the update expression reduced to
+			a monitor over a $\Kw{mut}$, not a $\Kw{capsule}$.
+			\item As the reduction didn't modify $\EV$, have $\EV[\mdf\,l''\D f\equals v] = \E'[\Kw{capsule}\,l]$,
+			for some $\E'$, with $\mdf\,\,l''\D f\equals v\in\E'$.
+			\item By the inductive hypothesis, we have $\encap(\s',\E',l)$.
+			\item By $\thm{Valid Type}$ and our $\textsc{TUpdate}$ rule, we have
+			$\mdf = \Kw{mut}$.
+			\item Suppose $l''\in\rog(\s',l)$, then since $\mdf = \Kw{mut}$, we have
+			$\muty(\s',\E'[\Kw{capsule}\,l],l'')$, and so it follows from $\encap(\s',\E',l)$
+			then not $\reach(\s',\E',l)$.
+			\item But $\mdf\,\,l''\D f\equals v\in\E'$, and so $l''$ is clearly
+			$\reach$ in $\E'$, a contradiction. Thus we must have $l''\notin\rog(\s',l)$.
+			\item As $\s$ only differs from $\s'$ at $l''$, and $l''\notin\rog(\s',l)$,
+			it follows that the $\rog$ of $l$ can't have changed, i.e. $\rog(\s,l) = \rog(\s',l)$.
+			\item Thus, by the $\textsc{new/new true}$ case above,
+			we have a contradiction.
+		\end{itemize}
+		\item $\crule{call/call mutator}{\s}{\EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]}{\s}{\E[\Kw{capsule}\,l]}$,
+		where $\E[\Kw{capsule}\,l] = \EV[e']$, $e'\in\{\as{e''}{\mdf''},\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
+		$e'' = e'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
+		and $\C{l_0} = \method{\mdf'_0}{\mdf''\,\_}m{\drange{\mdf'}{\_\,x}}{e'''}$
+		\begin{itemize}
+			\item Suppose $\E = \EV[\E'']$ for some $\E''$, thus $\E''[\Kw{capsule}\,l] = e'$:
+			\begin{itemize}
+				\item Clearly $\Kw{capsule}\,l\in e''$, and by our well-formedness rules on
+				method bodies, $\Kw{capsule}\,l\notin e'''$.
+				\item Thus we must have some $\mdf'_i\,l_i = \Kw{capsule}\,l$, for some $i\in[0,n]$.
+				\item Moreover, this means that $e''' = \E'''[\Kw{this}]$, if $i = 0$,
+				otherwise $e''' = \E'''[x_i]$, for some $\E'''$.
+				\item By $\thm{Valid Type}$ and our $\textsc{TCall}$ rule, we have $\mdf_ieq mdf'_i$,
+				i.e. $\mdf_i = \Kw{capsule}$.
+				\item Suppose $i = 0$:
+				\begin{itemize}
+					\item By the inductive hypothesis we thus have $\encap(\s,\EV[\call{\hole}m{\drange{\mdf}l}],l)$.
+					\item By $\thm{Mut Consistency}$, we have that $l'$ was $\muty$, and
+					since $l'\in\rog(\s,l)$, it follows that $l'$ is not $\reach$
+					through $\EV$, or any $\mdf_j\,l_j$ with $j \neq  i$.
+					\item Since $\mdf'_i = \Kw{capsule}$ and $i = 0$, the method was not a rep mutator,
+					and so the $\textsc{call}$ (and not $\textsc{call mutator}$)
+					rule must have applied, thus $e' = \as{e''}{\mdf''}$. Thus by
+					our well-formedness rules on method bodies, since $l'$ is $\reach$
+					in $\EV[\E'']$, we must have that $l'$ is only $\reach$ through
+					each occurrence of $\Kw{this}\in e'''$, which have all been substituted
+					with $\mdf'_i\,l_i$ (since there are no other references, and
+					$l'$ is not $\reach$ through any $x_j$ that has been substituted
+					for $\mdf'_j\,l_j$)
+					\item As our type system requires that each method bodies mentions $\Kw{capsule}$
+					receivers at most once, it follows that $\Kw{this}\notin\E'''$.
+					\item Since $\E' = \as{\E'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]}{\mdf''}$,
+					it follows that $l'$ is not $\reach$ through $\E'$.
+				\end{itemize}
+				\item Otherwise, $i\geq1$:
+				\begin{itemize}
+					\item By the inductive hypothesis, we have $\encap(\s,\EV[\call{\mdf_0\,l_0}m{\drange[][1][i-1]{\mdf}l,\hole,\drange[][i+1][n]{\mdf}l}],l)$.
+					\item As in the $i = 0$ case, it follows from $\thm{Mut Consistency}$
+					and the definition of $\encap$ that $l'$ is not $\reach$ through
+					$\EV$,or any $\mdf_j\,l_j$ with $j \neq  i$. Furthermore, by
+					our well-formedness rules on method bodies, it follows that $l'$
+					is only $\reach$ through each occurrence of $x_i\in e'''$,
+					which have all been substituted with $\mdf'_i\,l_i$.
+					\item Since our type system requires that each method bodies mentions each
+					$\Kw{capsule}$ parameter at most once, it follows that $x_i\notin\E'''$.
+					\item Since $l'$ is not $\reach$ through $l_0$, and $\E'\in\{\as{\E''''}{\mdf''},\M l{\as{\E''''}{\mdf''}}{\invariant{l_0}}\}$,
+					where $\E'''' = \E''''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
+					it follows that $l'$ is not $\reach$ through $\E'$.
+				\end{itemize}
+				\item Either way, as $l'$ is not $\reach$ through $\E'$, and it was
+				not $\reach$ through $\EV$ either, it follows that $l'$ is not
+				$\reach$ through $\E$, a contradiction.
+			\end{itemize}
+			\item Otherwise, $\Kw{capsule}\,l\in\EV$, and so by the $\textsc{new/new true}$
+			case above, we have a contradiction.
+		\end{itemize}
+		\item $\crule{try enter/try ok/try error/monitor exit}{\s}{e'}{\s}{\E[\Kw{capsule}\,l]}$
+		\begin{itemize}
+			\item These rules do not modify memory, introduce references in the main
+			expression, or change their reference capabilities. Thus it follows
+			that $e' = \E'[\Kw{capsule}\,l]$, for some $\E'$.
+			\item Thus, from the inductive hypothesis, we have $\encap(\s,\E',l)$, moreover, by
+			$\thm{Mut Consistency}$, we have that $\muty(\s,e',l')$, and
+			so it follows that $l'$ is not $\reach$ in $\E'$.
+			\item But these reduction rules do not introduce any references, nor duplicate
+			them, and since memory hasn't been modified, as $l'$ is $\reach$
+			in $\E$, it follows that $l'$ is $\reach$ in $\E'$, a contradiction.
+		\end{itemize}
+		\item $\crule{as}{\s}{\EV[\as{\mdf\,l''}{\mdf'}]}{\s}e$, where $e = \EV[\mdf'\,l'']$
+		\begin{itemize}
+			\item Suppose $\E = \EV$, and so $\mdf'\,l'' = \Kw{capsule}\,l$.
+			\begin{itemize}
+				\item Let $\s_0$ and $e_0$ be such that $\s_0|\EV[\cas{e_0}]$
+				is the earliest state in our reduction sequence such that $\s_0|e_0\rightarrow^*\s|\cas{\mdf\,l}$.
+				Thus, $\s_0|\cas{e_0}$ is the state our $\cas{\mdf\,l}$ expression
+				was in before the body of the $\Kw{as}\,\Kw{capsule}$ expression began reduction.
+				\item By definition of $\VS$ and our reduction rules we must have had that
+				the $\cas{e_0}$ expression was introduced by a method call, we
+				will show that $\tyr[\s_0]{\demut{e_0}}{\Kw{mut}\,C}$ holds for
+				some $C$:
+				\begin{itemize}
+					\item thus there is some $\s'_0$, $m$, and $\range[][0]l$, where $\s'_0|\call{\mdf_0\,l_0}m{\range{\_\,l}}\rightarrow\s'_0|\E[\cas{e_0}]\rightarrow^*\s_0|\EV'[\cas{e_0}]$,
+					where $\E = \EV''[\EV']$.
+					\item By our $\textsc{call}$ and $\textsc{call mutator}$
+					reduction rules, this $\cas{e_0}$ expression must have come from
+					the method body.
+					\item Let $x_0 = \Kw{this}$ and $C_0 = \C[\s'_0]{l_0}$, then we have
+					some $e'_0$ and $\E'$ with $C_0.m = \method{\_}{\_}m{\trange{\mdf}Cx}{\E'[\cas{e'_0}]}$
+					where $e'_0[\trange[][0]x{\!\coloneqq\mdf}l] = e_0$.
+					\item By our well-formedness rules on method bodies, $\thm{Nested Type}$
+					and $\thm{Type Rule}$, we have $\ty[\emptyset]{\cas{e'_0}}{\Kw{capsule}\,C}$,
+					where $\G = \trange[][0]{\mdf}C{\!\mapsto x}$, for some $C$, and where
+					the typing rule used was either $\textsc{TAs}$ or $\textsc{TAsCapsule}$.
+					\item Suppose the typing rule applied was $\textsc{TAs}$, then we have
+					$\ty[\emptyset]{e'_0}{\Kw{capsule}\,C}$. So by $\thm{Valid Type}$,
+					$\thm{Method Type}$, and $\thm{Substitution}$ we have $\ty[\emptyset]{e_0}{\Kw{capsule}\,C}$,
+					thus as above, by $\thm{Type Preservation?}$ we have $\mdf = \Kw{capsule}$,
+					and by the inductive hypothesis, we have that $l$ is $\encap$, a contradiction.
+					\item Thus the typing rule must have been $\textsc{TAsCapsule}$, and since
+					our well-formedness rules on method bodies ensure $c\notin e'_0$,
+					we have $\ty[\emptyset][\demut{\G}]{e'_0}{\Kw{mut}\,C}.$
+					\item Note that $e'_0[x_0\coloneqq\demut{\mdf_0}\,l_0,\ldots,x_n\coloneqq\demut{\mdf_n}\,l_n] = e'_0[\trange[][0]x{\!\coloneqq\mdf}l][\mdf_0\,l_0\coloneqq\demut{\mdf_0}\,l_0,\ldots,\mdf_n\,l_n\coloneqq\demut{\mdf_n}\,l_n] = \demut{e_0}$,
+					this holds since by our well-formedness rules on method bodies, there
+					are no $l$s in $e'_0$.
+					\item Consider each $i\in[0,n]$, we have $\demut{\G}(x_i) = \demut{\mdf_i}\,C_i$,
+					by $\thm{Valid Type}$ and $\thm{Method Type}$ we have $\C[\s'_0]{l_i} \leq C_i$.
+					\item Thus by $\thm{Substitution}$ we have $\tyr{\demut{e_0}}{\Kw{mut}\,C}$.
+				\end{itemize}
+				\item Now, we show that for all $\Kw{mut}\,l'\in e_0$ and $l''\in\rog(\s_0,l')$,
+				we have $\s(l'') = \s_0(l'')$ and $l''\notin\mrog(\s,l)$:
+				\begin{itemize}
+					\item Suppose $\muty(\s_0,\demut{e_0},l'')$, then since $\demut{e_0}$
+					contains no $\Kw{mut}$ references, it follows that $e_0 = \E[\Kw{capsule}\,l''']$
+					for some $\E$ and $l'''$ with $l''\in\mrog(\s_0,l''')$.
+					\item By the inductive hypothesis, we have $\encap(\s_0,\E,l''')$.
+					Since $l''$ is clearly $\muty$ in $\E$, it follows that $l''$
+					is not $\reach$ in $\E$.
+					\item But $\Kw{mut}\,l'\in\E$, and $l''$ is $\reach$ through $l'$,
+					a contradiction. Thus not $\muty(\s_0,\demut{e_0},l'')$.
+					\item Clearly $e_0\sim\demut{e_0}$, and since $\s_0|e_0\rightarrow^*\s|\mdf\,l$,
+					by $\thm{Bisimulation}$, there is some $\mdf'$ such that $\s_0|\demut{e_0}\rightarrow^*\s|\mdf'\,l$.
+					\item Then, since not $\muty(\s_0,\demut{e_0},l'')$, by $\thm{Stronger Non-Mutating}$
+					we have $\s(l'') = \s_0(l'')$.
+					\item Suppose $l''\in\mrog(\s,l)$, then $\tyr[\s_0]{\demut{e_0}}{\Kw{mut}\,C}$,
+					by $\thm{Type Preservation}$ and $\thm{Type Rule}$, it follows
+					that $\mdf' \leq \Kw{mut}$ and hence $\muty(\s,\mdf'\,l,l'')$.
+					\item But $\s_0|\demut{e_0}\rightarrow^*\s|\mdf'\,l$ and not $\muty(\s_0,\demut{e_0},l'')$,
+					so by $\thm{Stronger Mut Consistency}$ we have not $\muty(\s,\mdf'\,l,l'')$,
+					a contradiction.
+				\end{itemize}
+				\item We also show that for all $l''$, if $\reach(\s_0,\EV,l'')$,
+				then $\s_0(l'') = \s(l'')$:
+				\begin{itemize}
+					\item If $l''$ is in the $\rog$ of some $\Kw{mut}\,l'''\in e_0$,
+					then this holds by the above.
+					\item Otherwise, by $\thm{Non Mutating}$, we must have that $l''$
+					is in the $\mrog$ of some $\Kw{capsule}\,l'''\in e_0$, i.e. $e_0 = \E'[\Kw{capsule}\,l''']$,
+					for some $\E'$.
+					\item By the inductive hypothesis, we have that $\encap(\s_0,\EV[\E'],l''')$, since
+					$l''$ is $\muty$ through $l'''$, it follows that we can't
+					have $\reach(\s_0,\EV[\E'],l'')$, a contradiction.
+				\end{itemize}
+				\item Since $\reach(\s,\EV,l')$, since nothing $\reach$ from $\EV$ has
+				been modified, it follows that we must have initially had $\reach(\s_0,\EV,l')$,
+				and so $l'\in\dom(\s_0)$.
+				\item Since $\muty(\s,\EV[\Kw{capsule}\,l],l')$ and $l'\in\dom(\s_0)$, by
+				$\thm{Mut Consistency}$, we have $\muty(\s_0,\EV[e_0],l')$.
+				\item Since $l'\in\rog(\s,l)$, it follows that $\reach(\s,\mdf\,l,l')$
+				and so by $\thm{Lost Forever}$ we have some $\mdf'\,l''\in e_0$
+				with $l'\in\rog(\s_0,l'')$.
+				\item Now consider the possible values of $\mdf'$:
+				\begin{itemize}
+					\item If $\mdf' = \Kw{capsule}$:
+					\begin{itemize}
+						\item By the inductive hypothesis, we have $\encap(\s_0,\EV[\E'],l'')$, where $\E'[\Kw{capsule}\,l''] = e_0$.
+						\item Since $\muty(\s_0,\EV[e_0],l')$, it thus follows that not $\reach(\s_0,\EV[\E'],l')$,
+						and hence not $\reach(\s_0,\EV,l')$.
+						\item $\TODO{THERE\,IS\,A\,MISSING\,STEP\,HERE}$
+						\item By the above, it follows that we can't have mutated anything $\reach$
+						from $\EV$, thus we can't have made $\reach(\s,\EV,l')$ hold, a
+						contradiction.
+					\end{itemize}
+					\item If $\mdf' = \Kw{mut}$:
+					\begin{itemize}
+						\item By the above, we have $l'\notin\mrog(\s,l)$, since $l'\in\rog(\s,l)$,
+						it follows that $l'$ must be in the $\rog$ of an $\Kw{imm}$ field
+						(since we do not have $\Kw{read}$ fields).
+						\item Thus $\immut(\s,\EV[\Kw{capsule}\,l],l')$, and by the $\thm{Imm Consistency}$
+						part of the proof above, we have not $\muty(\s,\EV[\Kw{capsule}\,l],l')$,
+						a contradiction.
+					\end{itemize}
+					\item If $\mdf' = \Kw{imm}$:
+					\begin{itemize}
+						\item Thus we have $\immut(\s_0,\EV[\cas{e_0}],l')$, and so by the
+						inductive hypothesis we have not $\muty(\s_0,\EV[\cas{e_0}],l')$
+						\item Since $\s_0|\EV[\cas{e_0}]\rightarrow^*\s|\EV[\Kw{capsule}\,l]$, by $\thm{Mut Consistency}$,
+						we have not $\muty(\s,\EV[\Kw{capsule}\,l],l')$, a contradiction.
+					\end{itemize}
+					\item Otherwise, $\mdf' = \Kw{read}$:
+					\begin{itemize}
+						\item If $l'$ is in the $\rog$ of any non-$\Kw{read}$ reference in $e_0$,
+						then one of the above cases would apply, and we would have a contradiction.
+						\item If $l'$ was in the $\rog$ of any $\Kw{imm}$ field in the $\rog$
+						of $l''$, then $\immut(\s_0,\EV[\cas{e_0}],l')$ would hold,
+						and by the case for $\mdf' = \Kw{imm}$ above, we have a contradiction.
+						\item Thus, we assume that $l'$ is only $\reach$ through $\Kw{read}$ references
+						in $e_0$, but not through any $\Kw{imm}$ fields.
+						\item  Consider the reduction sequence $\s_0|e_0\rightarrow^*\s|\cas{\mdf\,l}$:
+						by $\thm{Valid Type}$ and our typing rules, it follows that a $\Kw{read}$
+						reference cannot change reference capabilities (because our $\textsc{TAs}$,
+						$\textsc{TAsCapsule}$, and $\textsc{TCall}$ rules prohibit this),
+						$\Kw{read}$ reference can be stored on the heap (our $\textsc{TUpdate}$
+						rule prohibits this), and each field access on a $\Kw{read}$ reference
+						produces a $\Kw{read}$ or $\Kw{imm}$ reference (by definition of the $\textsc{access}$
+						reduction rule).
+						\item However, we just assumed that $l'$ isn't in the $\rog$ of an $\Kw{imm}$
+						field, so if a field access on a $\Kw{read}$ reference returns an $\Kw{imm}$,
+						then $l'$ is not $\reach$ through the result of said access (by
+						the $\textsc{access}$ rule).
+						\item Thus we have that at each step of reduction: either $l'$ is not
+						$\reach$ in the body of the as expression, or it is $\reach$ only
+						through $\Kw{read}$ references.
+						\item But by $\thm{Valid Type}$ and our $\textsc{TAs}$ and $\textsc{TAsCapsule}$
+						rules, we have that $\mdf\notin\{\Kw{read},\Kw{imm}\}$, hence $l'$ cannot
+						be $\reach$ through $\mdf\,l$.
+						\item But we assumed that $l'\in\rog(\s,l)$, a contradiction.
+					\end{itemize}
+				\end{itemize}
+			\end{itemize}
+			\item Otherwise, $\Kw{capsule}\,l\in\EV$, and so by the $\textsc{new/new true}$
+			case above, we have a contradiction.
+		\qed\end{itemize}
+	\end{enumerate}
+\end{proof}
+
+\LS
+
+The above theorem allows us to now directly prove the \thm{Imm Consistency} and \thm{Capsule Consistency} requirements themselves.
+
+\setcounter{requirement}{1}
+\SS\REQImmCons
+\SS\begin{proof}
+	By definition of $\immut$ it follows that $l$ is $\immut$ in $\E[e]$,
+	thus by $\thm{Imm--Capsule Consistency}$ we have
+	that $l$ is not $\muty$ in $\E[e]$. By definition of $\muty$,
+	it follows that $l$ is not $\muty$ in $e$ either.
+\qed\end{proof}
+
+\LS
+
+\setcounter{requirement}{3}
+\SS\REQCapCons
+\SS\begin{proof}
+	Follows immediately from $\thm{Imm--Capsule Consistency}$.
+\qed\end{proof}
+
+\LS
+
+Finally, we prove \thm{Strong Exception Safety}, in a manner similar to how we proved the \textsc{as} case for \thm{Capsule Consistency}.
+
+\setcounter{requirement}{5}
+\SS\REQSES
+\SS\begin{proof}
+	\REFORMAT
+	\begin{itemize}
+		\item By definition of $\VS$ and our well-formedness rules on method bodies,
+		we must have some $\EV$, $e_0$, and $e'_0$ with $\VS(\s,\EV[\try{e_0}{e'_0}])$
+		and $\s|\try{e_0}{e'_0}\rightarrow\s|\trys{\s}{e_0}{e'_0}\rightarrow^*\s'\mid\trys{\s}e{e'}$.
+		\item By our grammar for $\EV$ and our reduction rules we also have $\s|e_0\rightarrow^*\s'|e$
+		and $e'_0 = e'$.
+		\item By $\thm{Valid State}$ and our typing rules we have that the $\textsc{TTryCatch1}$
+		rule applied, and hence $\ty[\s][\emptyset]{\try e{e'}}T$, $\ty[\s][\emptyset]{e_0}T$,
+		and $\ty[\s][\emptyset]{e'}T$, for some $T$.
+		\item By definition of $\VS$ and our reduction rules we must have had that
+		the $\try{e_0}{e'_0}$ expression was introduced by a method
+		call. We will show that $\tyr{\demut{e_0}}{T'}$ holds for some
+		$T'$:
+		\begin{itemize}
+			\item Thus there is some $\s'_0$, $m$, and $\range[][0]l$, where $\s''|\call{\mdf_0\,l_0}m{\range{\_\,l}}\rightarrow\s''|\E[\try{e_0}{e'_0}]\rightarrow^*\s|\EV'[\try{e_0}{e'_0}]$
+			where $\EV = \EV''[\EV']$ for some $\EV''$.
+			\item Let $x_0 = \Kw{this}$ and $C_0 = \C[\s'']{l_0}$, then by our $\textsc{call/call mutator}$
+			rules we have some $e_1$, $e'_1$, and $\E'$ with $C_0.m = \method{\_}{\_}m{\trange{\mdf}Cx}{\E'[\try{e_1}{e'_1}]]}$
+			where $e'_1[\trange[][0]x{\!\coloneqq\mdf}l] = e_1$.
+			\item By our well-formedness rules on method bodies and $\thm{Nested Type}$
+			we have that $\ty {\try{e_1}{e'_1}}{T'}$ holds by $\textsc{TTryCatch1}$,
+			for some $T'$.
+			\item By our well-formedness rules on method bodies, $c\notin e_1$, thus
+			we have we have $\ty[\s][\demut{\G}]{e_1}{T'}$.
+			\item As with the $\textsc{as}$ case for the $\thm{Capsule Consistency}$
+			part of the $\thm{Imm--Capsule Consistency}$ proof above,
+			we have $e_1[x_0\coloneqq\demut{\mdf_0}\,l_0,\ldots,x_n\coloneqq\demut{\mdf_n}\,l_n] = \demut{e_0}$
+			where for each $i\in[0,n]$ we have $\demut{\G}(x_i) = \demut{\mdf_i}\,C_i$,
+			and by $\thm{Valid Type}$ and $\thm{Method Type}$, we we have
+			$\C[\s'_0]{l_i} \leq C_i$.
+			\item Thus by $\thm{Substitution}$ we have $\tyr{\demut{e_0}}{T'}$.
+		\end{itemize}
+		\item Now let $l\in\dom(\s)$ with $\reach(\s,\EV[e'],l)$.
+		\item If we don't have $\reach(\s,e_0,l)$ then by $\thm{Lost Forever}$,
+		the reduction $\s|e_0\rightarrow^*\s'|e$ cannot involve a $\textsc{update}$
+		on $l$, i.e. we must have $\s'(l) = \s(l)$.
+		\item Suppose $l$ is $\muty$ through a $\Kw{capsule}$ reference, i.e. we have
+		some $\E$, $l'$, and $l''$ with $l'\in\rog(\s,l)$, $e_0 = \E[\Kw{capsule}\,l'']$,
+		and $l'\in\mrog(\s,l'')$:
+		\begin{itemize}
+			\item Clearly we also have $\muty(\s,\EV[\trys{\s}{e_0}{e'_0}],l)$,
+			and since $\VS(\s,\EV[\trys{\s}{e_0}{e'_0}])$, by $\thm{Capsule Consistency}$
+			we have not $\reach(\s,\EV[\trys{\s}{\E}{e'_0}],l)$.
+			\item But this implies not $\reach(\s,\EV,l)$ and since $e'_0 = e'$,
+			not $\reach(\s,e',l)$. Thus we have not $\reach(\s,\EV[e'_0])$,
+			a contradiction.
+		\end{itemize}
+		\item By the above, $l$ is not $\muty$ through any $\Kw{capsule}$ reference
+		in $\demut{e_0}$ either, as such a reference would be in $e_0$
+		as well.
+		\item Since $\demut{e_0}$ has no $\Kw{mut}$ references, it follows that
+		not $\muty(\s,\demut{e_0},l)$.
+		\item Clearly $e_0\sim\demut{e_0}$, and since $\demut{e_0}$ $\s|e_0\rightarrow^*\s'|e$,
+		by $\thm{Bisimulation}$, there is some $e''$ such that $\s|\demut{e_0}\rightarrow^*\s'|e''$.
+		\item Since $\tyr{\demut{e_0}}{T'}$ holds and not $\muty(\s,\demut{e_0},l)$,
+		by $\thm{Stronger Non-Mutating}$, we have $\s(l) = \s'(l)$, as
+		required.
+	\qed\end{itemize}
+\end{proof}

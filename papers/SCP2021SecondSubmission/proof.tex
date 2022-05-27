@@ -1,51 +1,3 @@
-\ifx\relax\undefined% Don't actually execute, just for VS code's LaTeX preview
-	% Mathwords
-	\newcommand{\HNO}{\mathit{headNotObservable}}
-	\newcommand{\dom}{\mathit{dom}}
-	\newcommand{\CR}{\mathit{circular}}
-	\newcommand{\CN}{\mathit{confined}}
-	\newcommand{\RCR}{\mathit{repCircular}}
-	\newcommand{\RCN}{\mathit{repConfined}}
-	\newcommand{\RM}{\mathit{repMutating}}
-	\newcommand{\rog}{\mathit{ROG}}
-	\newcommand{\mrog}{\mathit{mROG}}
-	\newcommand{\rf}{\mathit{repFields}}
-	\newcommand{\muty}{\mathit{mutatable}}
-	\newcommand{\mony}{\mathit{monitored}}
-	\newcommand{\valid}{\mathit{valid}}
-	\newcommand{\trusted}{\mathit{trusted}}
-	\newcommand{\reach}{\mathit{reachable}}
-	\newcommand{\error}{\mathit{error}}
-	\newcommand{\encap}{\mathit{encapsulated}}
-	\newcommand{\immut}{\mathit{immutable}}
-	\newcommand{\VS}{\mathit{validState}}
-	\newcommand{\V}[1]{#1}
-	\newcommand{\Kw}[1]{\texttt{#1}}
-	%\newcommand{\par}{}
-
-	\newcommand{\rangeX}[3][,]{\ensuremath{#2 #1 \ldots #1 #3}}
-	\newcommand{\range}[2][,]{\rangeX[#1]{#2_1}{#2_n}}
-	\newcommand{\drange}[3][,]{#2_1\,#3_1 #1\ldots#1 #2_n\,#3_n}
-	\newcommand{\trange}[4][,]{\rangeX[#1]{#2_1\,#3_1\,#4_1}{#2_n\,#3_n\,#4_n}}
-	\newcommand{\drangex}[3][,]{\rangeX[#1]{#2_1\,#3}{#2_n\,#3}}
-	\newcommand{\trangex}[4][,]{\rangeX[#1]{#2_1\,#3_1\,#4}{#2_n\,#3_n\,#4}}
-
-	\newcommand{\Terminale}[1]{\Kw{#1}}
-	\newcommand{\ensuremath}[1]{#1}
-	\newcommand{\xspace}{}
-	\newcommand{\myCalBig}[1]{\mathcal{#1}}
-
-	\newcommand{\textsc}[1]{\textsf{#1}}
-
-	\newcommand{\equals}{\,\Kw{=}\,}
-
-	\newcommand{\D}{\texttt{.}}
-	\newcommand{\mdf}{\mu}
-	\newcommand{\fmdf}{\kappa}
-
-	\newcommand{\eup}{\mdf\,l\D f\equals w}
-\fi
-
 \section{Invariant Protocol Proof and Type System Requirements}
 
 \lstset{language=FortyFour} % Make all code bold
@@ -152,8 +104,9 @@ then it is \immut in $\E[e]$, and not \muty in any $e' \in \E[e]$.
 
 \noindent We require that if something was not \muty, it remains that way:%
 \SS\begin{restatable}[Mut Consistency]{Requirement}{REQMutCons}\ \\
-	\indent If $\VS(\s, \E[e])$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
+	\indent If $\VS(\s, \IO{\EV}[e])$, $\IO{l \in \dom(\s)}$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
 \end{restatable}
+\IOComm{Verify the above changes don't break anything!}
 \SS\noindent Note that this holds even if $l$ is \muty through $\E$, thus an \Q!as! expression cannot change a \Q!read! or \Q!imm! reference to \Q!mut!, as the associated location will not be \muty within the body of the \Q!as! expression, even if there are \Q!mut! references to the same object outside the \Q!as!.
 
 \LS
@@ -212,17 +165,19 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	\LS
 
 	\noindent We show that a sub-expression can mutate an object only if it is \muty:
-	\SS\begin{Lemma}[Non Mutating]\ \\
+	
+\SS\begin{Lemma}[Non-Mutating]\ \\
 		\indent If $\VS(\s,\E[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^* \s'|e'$, then $\s'(l) = \s(l)$.
 	\end{Lemma}
 	\SS\begin{proof}
 	By \thm{Mut Consistency}, $l$ never becomes $\muty$, and so we never obtain a $\Kw{mut}$ or $\Kw{capsule}$ reference to it, thus by \thm{Mut Update}, we never update the fields of $l$, and there are no reduction rules that remove from $\s$.
-	\end{proof}
+	\qed\end{proof}
 
 
 	\LS
 	By the definition of \VS and the reduction rules themselves, we can show that the main expression and heap never contain dangling references:
-	\SS\begin{Lemma}[No Dangling]\ \\
+	
+\SS\begin{Lemma}[No Dangling]\ \\
 		\indent If $\VS(\s, e)$ then:
 		\begin{iitemize}
 			\item $\forall l \in e$, $l \in \dom(\s)$\SS
@@ -235,22 +190,24 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 		In the inductive case, each reduction rule only introduces $l$s into the memory or main-expression that were either already there, or in the case of \textsc{new/new true}, that are simultaneously added to the \dom of the memory.
 		%By induction, in the base case, by definition of $\VS$, $\dom(\s) = \{c\}$ and $\s(c) = \Kw{Cap}\{\}$, and the only $l \in e$ is $c$, so the statement trivially holds.
 		%In the inductive case, we have $\s'|e' \rightarrow \s|e$ for some $\s'$ and $e'$ satisfying the lemma, each reduction rule only introduces $l$s into $\s$ and $e$ that were either already in $\s'$ or $e'$, or in the case of \textsc{new}, are simultaneously added to the \dom of $\s$, thus by the inductive hypothesis, every $l$ in $\s$ or $e$ is also in $\dom(\s)$. Note that this holds only because our well-formedness rules prevent $l$s from being in method bodies, otherwise the \textsc{call} rule could introduce dangling references.
-	\end{proof}
+	\qed\end{proof}
 	\noindent As a simple corollary of this, we have that if $l \in \dom(\s)$, then $\rog(\s, l) \subseteq \dom(\s)$, similarly with \mrog.
 
 	\LS
 	Similarly, we show that once an $l$ becomes un-\reach, it remains that way:
-	\SS\begin{Lemma}[Lost Forever]\ \\
+	
+\SS\begin{Lemma}[Lost Forever]\ \\
 		\indent If $\VS(\s, \E[e])$, and $\s|e \rightarrow^* \s'|e'$, then $\forall l \in \dom(\s)$, if not $\reach(\s, e, l)$, then not $\reach(\s', e', l)$.
 	\end{Lemma}\SS
 	\begin{proof}
 		The proof follows from induction on the number of reductions, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
-		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true})
-	\end{proof}
+		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true}).
+	\qed\end{proof}
 	
 	\LS
 		We can use our object capability discipline (described in \autoref{s:formalism}) to prove that the \Q!invariant()! method is deterministic and does not mutate existing memory:%
-	\SS\begin{Lemma}[Determinism]\ \\
+	
+\SS\begin{Lemma}[Determinism]\ \\
 	\indent If $\VS(\s, \E[\invariant{l}])$ and $\s|\invariant{l} \rightarrow^{n} \s'|e'$, for some $n \geq 0$, then:
 	\begin{iitemize}
 		%\item $\forall l' \in \dom(\s)$, not $\muty(\s', e', l')$
@@ -264,7 +221,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	We show the second part by induction on $n$: if $n = 0$, then no reduction was performed, $e' = \invariant{l}$, and it trivially holds that $\s|\invariant{l} \Rightarrow^{0} \s|\invariant{l}$. In the inductive case, we have some $\s''$ and $\e''$ with $\s|\invariant{l} \rightarrow^{n - 1} \s''|e'' \rightarrow \s'|e'$, and assume our inductive hypothesis that $\s|\invariant{l} \Rightarrow^{n - 1} \s''|e''$.
 	As $c$ is not \muty in $\invariant{l}$, by \thm{Mut Consistency}, $\Kw{mut}\,c \notin e''$ and $\Kw{capsule}\,c \notin e''$. Since, by definition, there are never any other instances of \Q!Cap!, it follows from \thm{Type Consistency} that the reduction $\s''|\e'' \rightarrow \s'|e'$ was not due to \textsc{call/call mutator} reducing a call to a \Q!mut! method of \Q!Cap!.
 	As all other methods are uniquely defined, the reduction must have been deterministic, i.e.  $\s''|\e'' \Rightarrow \s'|e'$, and so by the inductive hypothesis, we have $\s|\invariant{l} \Rightarrow^{n} \s''|e''$.
-	\end{proof}
+	\qed\end{proof}
 
 \subheading{Rep Field Soundness}\IOComm{Re-read everything from this point!}
 Now we define and prove important properties about our novel \Q!rep! fields. We first start with a few core auxiliary definitions.
@@ -541,7 +498,7 @@ We then proceed by cases on the reduction rule applied, and prove the theorems c
 			
 			\item Because $l$ was not \RM in $\s_i|\EV[e']$, and $\mdf\,l'$ contains no monitors, $l$ is not \RM in $\EV[\mdf\,l']$.
 			
-			\item Since a rep mutator cannot have any \Q!mut! parameters, by \thm{Type Consistency} and \thm{Non Mutating}, the body of the method can only modify things \muty through $l$, or a \Q!capsule! parameter.
+			\item Since a rep mutator cannot have any \Q!mut! parameters, by \thm{Type Consistency} and \thm{Non-Mutating}, the body of the method can only modify things \muty through $l$, or a \Q!capsule! parameter.
 			\item By \thm{Type Consistency}, and \thm{Capsule Consistency}, every capsule parameter is \encap, and so anything mutated through such a parameter must have been un\reach outside the call.
 			\item Thus, forall $l' \in \dom(\s_i)$, if $\reach(\s_i, \EV, l')$ and $l' \notin \mrog(\s_i, l)$, then $ \s(l) = \s_i(l)$.
 		
@@ -571,7 +528,7 @@ We then proceed by cases on the reduction rule applied, and prove the theorems c
 
 		\item Every \reach $l$ that was \RM or not \RCN is \HNO:
 			as in the \textsc{update} case above, by the inductive hypothesis, $l$ must have been \HNO, as these rules don't remove any monitor expressions or field accesses, $l''$ is still \HNO.
-	\end{enumerate}
+	\qed\end{enumerate}
 \end{ienumerate}
 \end{proof}
 
@@ -628,7 +585,7 @@ modify the object, but not observe it; only after that moment, the object may be
 	\begin{itemize}
 		\item Clearly $l$ is now $\mony$.
 		\item Consider any other $l'$, where $l \in \rog(\s',l')$ and $l'$ was \valid; now suppose we just made $l'$ in\valid. 
-			By our well-formedness criteria, \Q@invariant()@ can only accesses \Q@imm@ and \Q@rep@ fields, thus by \thm{Non Mutating}, 
+			By our well-formedness criteria, \Q@invariant()@ can only accesses \Q@imm@ and \Q@rep@ fields, thus by \thm{Non-Mutating}, 
 			and \thm{Determinism}, we must have that $l$ was in the \rog of $\s'[l'.f']$, for some $f' \in \rf(\s', l')$.
 			
 			Since $l \neq l'$, $l'$ can't have been \RCN. Thus, by \thm{Rep Field Soundness}, $l'$ was \HNO, and so $\EV[\mdf\,l\D f\equals v]$ is of form $\EV'[\M{l'}{e''}{e'''}]$:
@@ -689,32 +646,32 @@ modify the object, but not observe it; only after that moment, the object may be
 	\item (\textsc{access}, \textsc{call/call mutator}, \textsc{as}, \textsc{try enter}, and \textsc{try ok}) these are trivial:
 	\begin{itemize}
 		\item As in the above case for \textsc{new}, since these rules don't modify memory or remove monitors, by the inductive hypothesis, every \reach $l$ is still \valid or \mony.
-	\end{itemize}
+	\qed\end{itemize}
 \end{ienumerate}
 \end{proof}
 
 \subheading{Proof of Soundness}\IOComm{I haven't checked the proofs here for correctness yet, I need a break...}
-First we need to prove that an object is not reachable from one of its \Q!imm! fields; if it were, \Q!invariant()! could access such a field and observe a potentially broken object:\SS
-\begin{Lemma}[Imm Not Circular]\ \\
+First we need to prove that an object is not reachable from one of its \Q!imm! fields; if it were, \Q!invariant()! could access such a field and observe a potentially broken object:
+
+\SS\begin{Lemma}[Imm Not Circular]\ \\
 \indent If $\VS(\s, e)$, $\forall f,l$, if $\reach(\s, e, l)$, $\C{l}.f = \field{\Kw{imm}}{\_}{f}$, then $l \notin \rog(\s, \s[l.f])$.
 \end{Lemma}\SS
 \begin{proof}
 The proof is by induction; obviously the property holds in the initial $\s|e$, since $\s = c\mapsto \Kw{Cap}\{\}$. Now suppose it holds in a $\VS(\s', e')$ where $\s'|e' \rightarrow \s|e$:
 \begin{ienumerate}
-	\item Consider any pre-existing \reach $l$ and $f$ with $\C[\s']{l}.f = \field{\Kw{imm}}{\_}{f}$, by \thm{Imm Consistency} and \thm{Non Mutating}, the only way $\rog(\s, \s[l.f])$ could have changed is if $e' = \EV[\mdf\,l\D f = \mdf'\,l']$, where $\mdf \leq \Kw{mut}$, i.e. we just applied the \textsc{update} rule. By \thm{Type Consistency}, $\mdf' \leq \Kw{imm}$, so by \thm{Imm Consistency}, $l \notin \rog(\s, l')$. Since $l' = \s[l.f]$, we now have $l \notin \rog(\s, \s[l.f])$.
+	\item Consider any pre-existing \reach $l$ and $f$ with $\C[\s']{l}.f = \field{\Kw{imm}}{\_}{f}$, by \thm{Imm Consistency} and \thm{Non-Mutating}, the only way $\rog(\s, \s[l.f])$ could have changed is if $e' = \EV[\mdf\,l\D f = \mdf'\,l']$, where $\mdf \leq \Kw{mut}$, i.e. we just applied the \textsc{update} rule. By \thm{Type Consistency}, $\mdf' \leq \Kw{imm}$, so by \thm{Imm Consistency}, $l \notin \rog(\s, l')$. Since $l' = \s[l.f]$, we now have $l \notin \rog(\s, \s[l.f])$.
 	\item The only rules that make an $l$ \reach are \textsc{new/new true}. So consider $e = \EV[\new{C}{\range{\_\,l}}]$, and each $i$ with $C.i = \field{\Kw{imm}}{\_}{f}$. But each of $\range{l}$ existed in the previous state and $l \notin \dom(\s')$; so by \VS and our reduction rules, $l \notin \rog(\s', l_i) = \rog(\s, \s[l.f])$.
-\end{ienumerate}
+\qed\end{ienumerate}
 \end{proof}
 \noindent Note that the above only applies to \Q!imm! \emph{fields}: \Q!imm! \emph{references} to cyclic objects can be created by promoting a \Q!mut! reference, however the cycle must pass through a \emph{field} declared as \Q!read! or \Q!mut!, but such fields cannot be referenced in the invariant method.
 
 \LS
 
 We can now finally prove the soundness of our invariant protocol:
-\SS%\THMSoundness
-\begin{restatable}[Soundness]{theorem}{THMSoundness} %Creates a \THMSoundness macro that restates the theorem with the correct number
-	If $\VS(\s, \ER[\_\,l])$, then either $\valid(\s,l)$ or $\trusted(\ER,l)$.
-\end{restatable}%
-\SS
+
+\setcounter{theorem}{0}% We want to force it to use the original number
+\SS\THMSoundness\SS
+\setcounter{theorem}{3}% So further theorems are numbered appropriately
 
 \begin{proof}
 \noindent Suppose $\VS(\s, e)$, and $e = \ER[\_\,l]$. Suppose $l$ is not $\valid$; since $l$ is \reach, by \thm{Stronger Soundness}, $\mony(e,l)$, $e = \E[\M{l}{e_1}{e_2}]$, and either:
@@ -723,7 +680,7 @@ We can now finally prove the soundness of our invariant protocol:
 	\item $\ER = \E[\M{l}{e_1}{\E'}]$, and thus $l$ was found inside $e_2$. By our reduction rules, all monitor expressions start with $e_2=\invariant{l}$; if this has yet to be reduced, then $\E' = \E''[\call{\hole}{\Kw{invariant}}{}]$, thus $\trusted(\ER, l)$. By our well-formedness rules for \Q!invariant()!, the next reduction step will be a \textsc{call}, $e_2$ will only contain $l$ as the receiver of a field access; so if we just performed said \textsc{call}, $\E' = \E''[\hole\D f]$: hence $\trusted(\ER, l)$. Otherwise, by \thm{Imm Not Circular}, \thm{Rep Field Soundness}, and \RCR, no further reductions of $e_2$ could have introduced an occurrence of $l$, so we must have that $l$ was introduced by the \textsc{call} to \Q!invariant()!, and so $\trusted(\ER, l)$.
 \end{iitemize}
 Thus either $l$ is $\valid$ or $\trusted(\ER, l)$.
-\end{proof}
+\qed\end{proof}
 
 
 

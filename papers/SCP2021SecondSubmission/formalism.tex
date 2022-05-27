@@ -135,19 +135,19 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (
 		% |\E[\EG_l]}{}\\
 		\produzione{\CD}{
 			\clazz{C}{\Cs}{\Fs}{\Ms}
-			\mid \iclazz{C}{\Cs}{\As}
+			\mid \iclazz{C}{\Cs}{\Ss}
 		}{class declaration}\\
 
 		\produzione{F}{
 			\field{\fmdf}{C}{f}
 		}{field}\\
 
-		\produzione{A}{
-			\amethod{\mdf}{T}{m}{\drange{T}{x}}
-		}{abstract method}\\
+		\produzione{\IO{S}}{
+			\methods{\mdf}{T}{m}{\drange{T}{x}}
+		}{\IO{method signature}}\\
 
-		\produzione{M}{
-			\method{\mdf}{T}{m}{\drange{T}{x}}{e}
+		\produzione{\IO{M}}{
+			S\,e			
 		}{method}\\
 
 		%\produzione{P}{
@@ -227,7 +227,7 @@ The three other expressions are:
 We say that an $e$ is an $\error$ if it represents an uncaught invariant failure, i.e. a runtime-injected invariant check that has failed and is not enclosed in a \Q!try! block:\\
 \indent $\error(\s, e)$ iff:
 \begin{iitemize}
-	\item $e = \EV[\M{l}{v}{\Kw{imm}\,l'}]$\SS
+	\item $e = \EV[\M{l}{v}{\mdf\,l'}]$\SS
 	\item $\C{l'} \neq \Kw{True}$\SS
 	\item $\EV$ is not of form $\EV'[\trys{\s'}{\EV''}{\_}]$
 \end{iitemize}
@@ -273,10 +273,8 @@ We define the following properties of our reference capabilities and field kinds
 	
 	\item $\rmdf{\mdf}{\fmdf}$ denotes the reference capability that is returned when accessing a field with kind $\fmdf$, on a receiver with capability $\mdf$:\\
 	\SS[1]\begin{iitemize}
-	\item $\rmdf{\Kw{imm}}{\fmdf} = \rmdf{\mdf}{\Kw{imm}} = \Kw{imm}$\SS
-	\item $\rmdf{\Kw{read}}{\fmdf} = \Kw{read}$, if $\fmdf \neq \Kw{imm}$\SS
-	\item $\rmdf{\Kw{mut}}{\Kw{rep}} = \rmdf{\Kw{mut}}{\Kw{mut}} = \Kw{mut}$\SS
-	\item $\rmdf{\Kw{capsule}}{\Kw{rep}} = \rmdf{\Kw{capsule}}{\Kw{mut}} = \Kw{capsule}$
+	\item $\rmdf{\mdf}{\Kw{imm}} = \Kw{imm}$\SS
+	\item $\rmdf{\mdf}{\Kw{mut}} = \rmdf{\mdf}{\Kw{rep}} = \mdf$
 	\end{iitemize}
 \end{itemize}
 
@@ -316,8 +314,8 @@ Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{
 	every $C$ mentioned in the program or in any well typed expression has a single corresponding \Q!class!/\Q!interface! definition; the $C$s in an \Q!implements! are all names of \Q!interface!s; the $C$ in a $\new{C}{\es}$ expression denotes a \Q!class!; the \Q!implements! relationship is acyclic; the fields of a \Q!class! have unique names; 
 	methods within a \Q!class!/\Q!interface! (other than \Q!mut! methods in \Q!Cap!) have unique names; and parameters of a method have unique names and are not named \Q!this!.
 
-	\item For simplicity of the type-system and associated proof, we require that every method in the (indirect) super-interfaces of a class be implemented with exactly the same signature, i.e. if we have a $\clazz{C}{\_}{\_}{\Ms}$, and $\iclazz{C'}{\_}{\As}$, where $C'$ is reachable through the \Q!implements! clauses starting from $C$,
-	then for all $\amethod{\mdf}{T}{m}{\drange{T}{x}} \in \As$, there is some $e$ with $\method{\mdf}{T}{m}{\drange{T}{x}}{e} \in \Ms$.
+	\item For simplicity of the type-system and associated proof, we require that every method in the (indirect) super-interfaces of a class be implemented with exactly the same signature, i.e. if we have a $\clazz{C}{\_}{\_}{\Ms}$, and $\iclazz{C'}{\_}{\Ss}$, where $C'$ is reachable through the \Q!implements! clauses starting from $C$,
+		then for all $\IO{S \in \Ss}$, there is some $e$ with $\IO{S\,e \in \Ms}$.
 %we removed Ps, should we remove the macro and see what does not compile?
 \end{itemize}
 
@@ -358,21 +356,22 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 	\\[0ex]\smash{
 		\rrule{call}
 		{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
-		{\s}{\as{e[\Kw{this}\coloneqq\mdf_0\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]}{\mdf'}}
+		{\s}{\as{e'}{\mdf'}}
 		\text{, where:}}
 	\\\qquad\begin{array}{l}
 		\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e}\\*
+		e' = e[\Kw{this}\coloneqq\mdf_0\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]\\*
 		\text{if }\mdf_0 = \Kw{mut}\text{ then }\nexists (f,\E) \text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]
 	\end{array} % because otherwise there seems to be too much space between this and as
 	\\\rowSpace\smash{
 		\rrule{call mutator}
 		{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
-		{\s}{\M{l_0}{e}{\invariant{l_0}}}
+		{\s}{\M{l_0}{\as{e}{\mdf'}}{\invariant{l_0}}}
 		\text{, where:}}
 	\\[\baselineskip]\qquad\begin{array}{l}
 		\C{l_0}.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{\E[\Kw{this}\D f]}\\*
 		\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\\*
-		e = \as{\E[\Kw{this}\D f][\Kw{this}\coloneqq\Kw{mut}\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]}{\mdf'}
+		e = \E[\Kw{this}\D f][\Kw{this}\coloneqq\Kw{mut}\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]
 	\end{array}\vspace{-0.5ex} % because otherwise there seems to be too much space between this and as
 	\\\rowSpace\smash{
 		\rrule{as}
@@ -393,7 +392,7 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 		\text{, where } \error(\s,e)}
 	\\\rowSpace\smash{
 		\rrule{monitor exit}
-		{\s}{\M{l}{v}{\Kw{imm}\,l'}}
+		{\s}{\M{l}{v}{\mdf\,l'}}
 		{\s}{v}
 		\text{, where } \C{l'} = \Kw{True}
 		}
@@ -482,16 +481,17 @@ We define a \VS as one that was obtained by any number of reductions from a well
 \indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^* \s|e$, for some $e_0$ such that:
 \begin{iitemize}
 \item $\tyr[c\mapsto\Kw{Cap}\{\}]{e_0}{T}$, for some $T$\SS
-\item $e_0$ contains no $\M{\_}{\_}{\_}$, $\trys{\s'}{\_}{\_}$, or $\as{\_}{\mdf}$ expressions\SS
+\item $e_0$ contains no $\M{\_}{\_}{\_}$, $\trys{\s'}{\_}{\_}$, $\try{\_}{\_}$,  or $\as{\_}{\mdf}$ expressions\SS
 \item $\forall\mdf\,l \in e_0$, $\mdf\,l = \Kw{mut}\,c$
 \end{iitemize}
 By restricting which initial expressions are well-typed, the type-system (such as the one presented in \autoref{s:typesystem}) can ensure the required properties of our reference-capabilities (see \autoref{s:proof}); any standard OO type system can also be used to reject expressions that might try to perform an ill-defined reduction (like reading a field that does not exist).
 The initial expression cannot contain any runtime expressions, except for \Q!mut! references to the single pre-existing \Q!Cap! object.
 Note that as \Q!Cap! has no fields and \Q!this! is not of form $l$, field accesses/updates in the initial main expression can never be reduced.
-To make the type system and proofs presented in \autoref{s:typesystem} simpler, we require that $c$ can only be initially referenced as \Q!mut! and that there are no \Q!as! expressions in $e_0$. This restriction does not effect expressivity, as you can pass $c$ to a method whose parameters have the desired reference capability, and whose body contains the desired \Q!as! expressions.
+To make the type system and proofs presented in \autoref{s:typesystem} simpler, we require that $c$ can only be initially referenced as \Q!mut! and that there are no \Q!try!--\Q!catch! or \Q!as! expressions in $e_0$. This restriction does not effect expressivity, as you can pass $c$ to a method whose parameters have the desired reference capability, and whose body contains the desired  \Q!try!--\Q!catch! and/or \Q!as! expressions.
 %\loseSpace
 
 Finally, we define what it means to soundly enforce our invariant protocol:
+
 \SS\begin{restatable}[Soundness]{theorem}{THMSoundness}\ \\ %Creates a \THMSoundness macro that restates the theorem with the correct number
 \indent If $\VS(\s, \ER[\_\,l])$, then either $\valid(\s,l)$ or $\trusted(\ER,l)$.
 \end{restatable}\SS\noindent

@@ -115,15 +115,15 @@
 % Just to ensure consistency amongst the various syntactic forms when we use them in maths
 \newcommand{\M}[3]{\ensuremath{\Kw{M}\oR{}#1\semiColon\,#2\semiColon\,#3\cR}}
 \newcommand{\as}[2]{\ensuremath{#1\,\Kw{as}\,#2}} %#1\ \Kw{promote}\ \oC#2\cC}}
-\newcommand{\cas}[1]{\prom{\Kw{capsule}}{#1}}
+\newcommand{\cas}[1]{\as{#1}{\Kw{capsule}}}
 \newcommand{\call}[3]{#1\D #2\oR#3\cR}
 \newcommand{\new}[2]{\Kw{new}\ #1\oR#2\cR}
 \newcommand{\field}[3]{#1\,#2\,#3}
 \newcommand{\try}[2]{\Kw{try}\ \oC#1\cC\ \Kw{catch}\ \oC#2\cC}
 \newcommand{\clazz}[4]{\Kw{class}\ #1\ \Kw{implements}\ #2\ \oC#3\semiColon#4\cC}
 \newcommand{\iclazz}[3]{\Kw{interface}\ #1\ \Kw{implements}\ #2\ \oC#3\cC}
-\newcommand{\amethod}[4]{#1\,\Kw{method}\,#2\,#3\oR#4\cR}
-\newcommand{\method}[5]{\amethod{#1}{#2}{#3}{#4}\,#5}
+\newcommand{\methods}[4]{#1\,\Kw{method}\,#2\,#3\oR#4\cR}
+\newcommand{\method}[5]{\methods{#1}{#2}{#3}{#4}\,#5}
 \newcommand{\trys}[3]{\Kw{try}^{#1}\oC#2\cC\ \Kw{catch}\ \oC#3\cC}
 
 \newcommand{\fmdf}{\V\kappa} % field modifier metavariable, I'm open to different letters
@@ -165,7 +165,7 @@
 \newmathword{\CN}{confined}
 \newmathword{\RCN}{repConfined}
 \newmathword{\rog}{ROG}
-\newmathword{\mrog}{mROG}
+\newmathword{\mrog}{MROG}
 \newmathword{\rf}{repFields}
 \newmathword{\muty}{mutatable}
 \newmathword{\mony}{monitored}
@@ -191,7 +191,11 @@
 \newcommand{\Ms}{\mathit{Ms}}
 \newcommand{\Fs}{\mathit{Fs}}
 \newcommand{\Ps}{\mathit{Ps}}
-\newcommand{\As}{\mathit{As}}
+\newcommand{\Ss}{\mathit{Ss}}
+
+
+% Change the spacing of enumerates slightly to be consistenct with itemize
+\renewcommand{\labelenumi}{\theenumi.\hskip-0.25em}
 
 % Too much space arround itemizes used in definitions, so fix that
 \newenvironment{iitemize}{\SS\begin{itemize}}{\end{itemize}\SS}
@@ -205,6 +209,9 @@
 \NewDocumentCommand\tyr{O{\s} m m}{\ty[#1][\emptyset]{#2}{#3}}
 \NewDocumentCommand\ntyr{O{\s} m m}{\nty[#1][\emptyset]{#2}{#3}}
 
+
+\NewDocumentCommand\tye{O{\s} O{\G} O{\vdash} m m}{\ensuremath{#1; #2 #3 #4 :: #5}\xspace}
+\NewDocumentCommand\tyer{O{\s} m m}{\tye		[#1][\emptyset]{#2}{#3}}
 %\renewcommand{\h}{\ensuremath{\square}\xspace}
 %\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
 \providecommand\G{}
@@ -226,10 +233,11 @@
 \newcommand{\C}[2][\s]{\ensuremath{\mathrm{C}^{#1}_{#2}}}
 \newcommand{\rmdf}[2]{\ensuremath{#1{::}#2}}
 \newcommand{\derep}[1]{\widetilde{#1}}
-
+\newcommand{\demut}[1]{\widehat{#1}}
 \renewcommand{\equals}{\,\Kw{=}\,} % Because there are usually modifies on both the left and right, it looks better with spaces
 \renewcommand{\Terminale}[1]{\text{\lstinline|#1|}}
 %\newcommand{\WT}[2][\s]{#1 \vdash #2}
+
 
 \NewDocumentCommand\rangeX{O{,} m m}{\ensuremath{#2 #1 \ldots #1 #3}}
 
@@ -241,6 +249,8 @@
 \NewDocumentCommand\drange{O{,} O{1} O{n} m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}}{#4_{#3}\,#5_{#3}}}
 % Ditto, but with 3 bodies
 \NewDocumentCommand\trange{O{,} O{1} O{n} m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6_{#2}}{#4_{#3}\,#5_{#3}\,#6_{#3}}}
+% 4 bodies
+\NewDocumentCommand\qrange{O{,} O{1} O{n} m m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6_{#2}\,#7_{#2}}{#4_{#3}\,#5_{#3}\,#6_{#3}\,#7_{#3}}}
 
 % Like \drange, but the second body does not get a subscript:  <body1>_1 <body2> ... <body2>_n <body2>
 % Usefull for symbols or constants
@@ -248,10 +258,27 @@
 \NewDocumentCommand\drangex{O{,} O{1} O{n} m m}{\rangeX[#1]{#4_{#2}\,#5}{#4_{#3}\,#5}}
 % Like \trange, but the 3rd argument doesn't get a subscript
 \NewDocumentCommand\trangex{O{,} O{1} O{n} m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6}{#4_{#3}\,#5_{#3}\,#6}}
+% Dittot, but for \qrange
+\NewDocumentCommand\qrangex{O{,} O{1} O{n} m m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6_{#2}\,#7}{#4_{#3}\,#5_{#3}\,#6_{#3}\,#7}}
 
-% Reduction rule: \rrule{<name>}{<s1>}{<e1>}{<s2>}{<e2>}
+% Reduction rule: \crule{<name>}{<s1>}{<e1>}{<s2>}{<e2>}
 % Just put side conditions after it in \text{...}
-\newcommand{\rrule}[5]{\textsc{(#1)}\ #2|\EV[#3] \rightarrow #4|\EV[#5]}
+\newcommand{\crule}[5]{\textsc{(#1)}\ #2|#3 \rightarrow #4|#5}
+\newcommand{\rrule}[5]{\crule{#1}{#2}{\EV[#3]}{#4}{\EV[#5]}}
+% Typing rule: \irule{<name>}{<premises>\...}{<conclusion>}
+\newcommand{\irule}[3]{\inferrule*[vcenter,left={(\textsc{#1})}]{#2}{#3}}
+% Typing rule: \irules{<name>}{<premises>\...}{<conclusion>}{<side-conditions...>}
+\newcommand{\irules}[4]{\inferrule*[vcenter,left={(\textsc{#1})},right={%
+	\!\!\!\ensuremath{\begin{array}{l}#4\end{array}}%
+}]{#2}{#3}}
+%Like \irule but for use in typing derivations
+\newcommand{\iruled}[3]{\inferrule*[left={(\textsc{#1})}]{#2}{#3}}
+\newcommand{\irulesd}[4]{\inferrule*[vcenter,left={(\textsc{#1})},right={%
+		\!\!\!\ensuremath{\begin{array}{l}#4\end{array}}%
+	}]{#2}{#3}}
+% So a line containing \vdots has the same height as a normal line, and the \vdots are properly centered
+\let\ovdots=\vdots
+\renewcommand{\vdots}{\smash{\raisebox{-0.5ex}{\ovdots}}}
 
 \renewcommand{\seguitoProduzione}[2]{&\!\!\!\hphantom{\produzioneDef}\llap{$\mid$}\!\!&#1&\!\!\mbox{{\small{#2}}}}
 
