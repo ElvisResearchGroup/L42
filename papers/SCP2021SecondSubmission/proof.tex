@@ -104,9 +104,9 @@ then it is \immut in $\E[e]$, and not \muty in any $e' \in \E[e]$.
 
 \noindent We require that if something was not \muty, it remains that way:%
 \SS\begin{restatable}[Mut Consistency]{Requirement}{REQMutCons}\ \\
-	\indent If $\VS(\s, \IO{\EV}[e])$, $\IO{l \in \dom(\s)}$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
+	\indent If $\VS(\s, \EV[e])$, $\IO{l \in \dom(\s)}$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
 \end{restatable}
-\IOComm{Verify the above changes don't break anything!}
+\IOComm{Verify the $\EV$ change doesn't break anything!}
 \SS\noindent Note that this holds even if $l$ is \muty through $\E$, thus an \Q!as! expression cannot change a \Q!read! or \Q!imm! reference to \Q!mut!, as the associated location will not be \muty within the body of the \Q!as! expression, even if there are \Q!mut! references to the same object outside the \Q!as!.
 
 \LS
@@ -249,13 +249,11 @@ To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! f
 %\indent $\RCN(\s, e, l, f)$ iff $\isrep{l}{f}$ implies that not $\muty(\s\setminus l, e, \s[l.f])$.
 %\indent $\RCN(\s, e, l)$ iff $\forall f$, $\RCN(\s, e, l, f)$.
 %\LS 
-%\IOComm{For the above two, I added an overload that takes an '$f$' so that it makes sense in the proof when we say that ``$\RCN$ holds for some $l.f$''}
 
 \noindent We say that an $l$ is \RM if we are in a monitor for $l$ which must have been introduced by \textsc{call mutator}:\\
 \indent $\RM(\s, e, l)$ iff $e = \E[\M{l}{e'}{\_}]$, with $e' \neq \Kw{mut}\,l$.
 %\item $e = \E[\Kw{mut}\,l\D f]$, with $f \in \rf(\s,l)$
 %\end{iitemize}
-%\IOComm{If $e$ is the main expression, then the second point will only ever hold if the first does}
 \LS 
 
 \noindent Finally we say that $l$ is \HNO if we are in a monitor introduced for a call to a rep mutator, and $l$ is not reachable from inside this monitor, except perhaps through a single \Q!rep! field access:\\
@@ -619,10 +617,10 @@ modify the object, but not observe it; only after that moment, the object may be
 	\item $\rrule{try error}{\s}{\trys{\s'}{e}{e'}}{\s}{e'}$, where $\error(\s, e) = \EV'[\M{l}{\_}{\_}]$:
 	\begin{itemize}
 		\item As with the case for \textsc{try error} in the proof of \thm{Rep Field Soundnes}, we were previously in a state $\s_i|e_i$, where $e_i = \EV[\trys{\s'}{\_}{\_}]$, and $\s_i = \s'$.
-		\item By definition of \error, we have that $l$ is not \valid in $\s$. \IOComm{Because monitors always start of ass invariant calls}
+		\item By definition of \error, we have that $l$ is not \valid in $\s$, since monitor expressions always start of as an invariant calls.
 		\item Suppose $l$ is still \reach in $\s|\EV[e']$, by \thm{Strong Exception Safety}, we have $l \in \dom(\s')$. Thus by the inductive hypothesis, we have that $l$ was \valid or \mony in the state $\s'|e_i$.
 		\item If $l$ was \mony, then by \VS and our well-formedness rules on method bodies, said monitor must have been introduced by the \textsc{new}, \textsc{update}, or \textsc{call mutator} reduction rules.
-		\item The \textsc{new} and \textsc{update} rules monitor a value, which cannot reduce to a \Q!try!--\Q!catch!, so the monitor must have been introduced by \textsc{call mutator}.\IOComm{No new bullet point}
+		\item The \textsc{new} and \textsc{update} rules monitor a value, which cannot reduce to a \Q!try!--\Q!catch!, so the monitor must have been introduced by \textsc{call mutator}.
 		\item But by our well-formedness rules on rep mutators, the body of the called method cannot mention $l$ except to read a field, 
 		as shown in the case for \textsc{update} above, $l$ will be un\reach once the field access has been reduced, which by \thm{Lost Forever} is a contradiction, as $l$ is \reach through $e$.
 		\item Thus, $l$ can't have been \mony in $\s'|e_i$, so it must have been \valid.
@@ -682,98 +680,4 @@ We can now finally prove the soundness of our invariant protocol:
 Thus either $l$ is $\valid$ or $\trusted(\ER, l)$.
 \qed\end{proof}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\begin{comment}
-\newcommand{\fresh}{\mathit{fresh}}
-\subheading{Hyper Specific Lemma:}
-\noindent $\forall l'$ and $f'$, if:
-\begin{iitemize}
-	\item $\VS(\s, \EV[\invariant{l}])$
-	\item $\VS((\s, \fresh(\s) \mapsto C'{\ls}), \EV'[\invariant{l}])$
-	\item $\s|\invariant{l} \Rightarrow^* \s_1|\mdf\,l_1$
-	\item $\C[\s_1]{l_1} = \Kw{True}$
-	\item $\forall f$, if $\C{l}.f = \field{\fmdf}{\_}{f}$ and $\fmdf \in \{\Kw{imm}, \Kw{rep}\}$, 
-		then $l' \notin \rog(\s, \s[l.f])$
-	\item $\C{l'}.f'$ is defined
-\end{iitemize}
-\noindent Then:\\
-\begin{iitemize}
-\item $\s[l'.f' = v]|\invariant{l} \Rightarrow^* \s_2|\mdf\,l_2$ with $\C[\s_2]{l_2} = \Kw{True}$
-\item $\s, \fresh(\s) \mapsto C'{\ls} |\invariant{l} \Rightarrow^* \s_3|\mdf\,l_3$ with $\C[\s_3]{l_3} = \Kw{True}$
-\end{iitemize}
-\subheading{Generic:}
-
-Ok you win, I'm doing it the theta way:
-In order to prove this, we will use a new metavariable $\theta : l \rightarrow l'$, which is a substitution.
-\noindent If:
-\begin{iitemize}
-	\item $\theta(l) = l$ % We aren't renaming $l$
-	\item $\s = \s_0,s_1$ and $\s' = \s_0',s_1'$
-	\item Where
-	\item $\VS(\s, \E[\_\,l])$ and $\VS'(\s', \E'[\_\,l])$ \IOComm{this is so we can use \thm{No Dangling}}
-	
-	\item $e = e'[\theta]$
-	\item $\s \subseteq \s'[\theta]$
-
-	\item $\C[\s]{l} = \C[\s']{l}$ \IOComm{If this were not true, the \Q!invariant! method itself could change!}
-	\item $\forall f$, if $\C{l}.f = \field{\fmdf}{\_}{f}$ with $\fmdf \in \{\Kw{imm}, \Kw{rep}\}$, then: \IOComm{forall \Q!imm! and \Q!rep! fields}
-	\begin{nitemize}
-		\item $\s[l.f] = \s'[l.f]$ \IOComm{the fields value hasn't changed}
-		\item $\forall l' \in \rog(\s, \s[l.f])$, $\s(l') = \s'(l')$ \IOComm{the fields \rog hasn't changed either}
-	\end{nitemize}
-	\item $\s|\invariant{l} \Rightarrow^* \s_1|\mdf\,l_1$ \IOComm{the invariant returns \Kw{True}}
-\end{iitemize}
-\noindent Then:\\
-\begin{iitemize}
-	\item $\s'|\invariant{l} \Rightarrow^* \s_2|\mdf\,l_2$ with $\C[\s_1]{l_1} = \C[\s_2]{l_2}$  \IOComm{the invariant still returns \Kw{True}}
-\end{iitemize}
-The idea is that $\s'$ can be different from $\s$ (this will be due to a single \textsc{new/new true} or \textsc{update}),
-but the invariant of $l$ can't have changed.
-
-\begin{proof}
-	The proof is by induction on the number of reductions since $\s|\invariant{l}$.
-	
-	Let $\theta : \dom(\s') \rightarrow \dom(\s)$ be a substitution that renames things in $\s'$ to $\s$.
-	We require that $\theta(l) = l$ and that for any $l'$ in the $\rog$ of an \Q!imm! or \Q!rep! field of $l$,
-	$\theta(l') = l'$.
-	
-
-	In the inductive case we proceed by cases on the reduction rule applied:
-	\begin{enumerate}
-
-	\item $\rrule{access}{\s}{\mdf\,l'\D f}{\s}{\rmdf{\mdf}{\fmdf}\,\s[l'.f]}$, where $\C{l'}.f = \field{\fmdf}{\_}{f}$:
-	\begin{itemize}
-		\item If the field access was in the method body for $\C{l'}.\invariant{l'}$, then by our well-formedness rules $\fmdf \in \{\Kw{imm}, \Kw{rep}\}$,
-		so we have that $\s[l'.f] = \s'[l'.f]$. Morever, 
-		Thus by the \textsc{access} rule, we have $\s'|\mdf\,l'\D f \rightarrow \s'|\rmdf{\mdf}{\fmdf}\,\s[l'.f]$
-
-		\item If the accessed object was not in the original $\s$ or $\s'$, 
-			hen by the case for \textsc{new} above, $\C{l'}$ = $\C[\s']{l'}$,
-			moreover, $\C{l'}.f$ is defined iff $\C[\s']{l'}.f$,
-			and so we have that $\$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-			
-		\item Otherwise, since the \Q!invariant! method contains no parameterrs
-	\end{itemize}
-	
-	\end{enumerate}
-	
-
-
-
-
-\end{proof}
 \lstset{language=FortyThree} % Back to default
-\end{comment}

@@ -57,8 +57,8 @@ In particular, the above code demonstrates that our system can:
 \item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before the end of the loop.
 \item Pass the state of an `invalid' object around, in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not the invariant method.
 Note how programmers can use conventional private types to control how such `invalid' versions of objects are exposed in the public API, for example by 
-declaring \Q@AccountBox@ as a private nested class).
-In contrast, if \Q@invalid@ was a type system feature than any user defined type would intrisically expose the existence of both variants in the public API.
+declaring \Q@AccountBox@ as a private nested class.
+In contrast, if \Q@invalid@ was a type system feature the any user defined type would intrinsically expose the existence of both variants in the public API.
 \end{itemize}
 
 Under our strict invariant protocol, the invariant holds for all reachable objects.
@@ -160,6 +160,7 @@ reason as to when \Q@Widgets@ are valid, as we described above.
 
 
 \subheading{The Transform Pattern}
+\IOComm{RECHECK THIS SECTION}
 Recall the GUI case study from \autoref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements \Q!Widget!.
 % A rep mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.

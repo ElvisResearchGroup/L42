@@ -1,4 +1,6 @@
 \section{Example Type System and Proof of Requirements}
+\lstset{language=FortyFour} % Make all code bold
+
 \let\p=\undefined % so we dob't use it!
 \label{s:typesystem}
 \newcommand{\TODO}[1]{\IO{\textbf{TODO: #1}}}
@@ -14,7 +16,7 @@ In this section we formalise a lightweight version of the L42 type system. We th
 \begin{iitemize}
 	\item $C' = C$,\SS
 	\item $\exists C''$ with $C \leq C''$ and $C'' \leq C'$, or\SS
-	\item we have $\clazz{C}{\Cs}{\_}{\_}$ or $\iclazz{C}{\Cs}{\_}$ and $C'\in\Cs$
+	\item we have $\clazz{C}{\Cs}{\_}{\_}$ or $\iclazz{C}{\Cs}{\_}$ and $C'\in\Cs$.
 \end{iitemize}
 \LS
 \noindent Then we define subtyping:\\
@@ -50,13 +52,9 @@ Finally, we define a notation to mean that two expressions are identical, except
 \indent \indent where $\{\drange{\mdf}l\} = \{v \in e\} \cup \{v \in e'\}$.
 
 \noindent Note that the above requires that the $\mdf$s of an $\Kw{as}$ expression are the same, i.e. $\as{e}{\mdf} \sim \as{e'}{\mdf'}$ only if $\mdf = \mdf'$.
-\\\IOComm{Actually I don't think this actually matters,
-	so a simpler definition might be $\e \sim e'$ iff:\\ \indent$%
-		e[\Kw{imm}\coloneqq\Kw{read},\Kw{mut}\coloneqq\Kw{read},\Kw{capsule}\coloneqq\Kw{read}] = %
-		e'[\Kw{imm}\coloneqq\Kw{read},\Kw{mut}\coloneqq\Kw{read},\Kw{capsule}\coloneqq\Kw{read}]$}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\renewcommand{\rowSpace}{\vspace{-1.5ex}\\}
-\subheading{Type System}
+\renewcommand{\rowSpace}{\vspace{-1.46ex}\\}
 \begin{figure}%
 	$\hfill\begin{array}{c}
 		\hfill
@@ -135,13 +133,14 @@ Finally, we define a notation to mean that two expressions are identical, except
 		{\ty{e}{T}\\\\
 			\ty{e'}{\mdf\,\Kw{Bool}}}
 		{\ty{\M{l}{e}{e'}}{T}}
-		{l \in \dom{\s}}
+		{l \in \dom(\s)}
 		\hfill\end{array}\hfill$
 		\vspace{-1.5ex}%
 	\caption{Type rules}\label{f:types}%
 	\vspace{-4ex}
 	\end{figure}
 
+	\subheading{Type System}
 	We present the typing rules in \autoref{f:types}:
 	\begin{itemize}
 		\item \textsc{TSub} is the standard ``subsumption'' rule, an expression with a type $T$ also has any super-type $T'$, in particular this works with our reference capabilities, e.g. an expression of type $\Kw{imm}\,C$ also has type $\Kw{read}\,C$.
@@ -149,7 +148,7 @@ Finally, we define a notation to mean that two expressions are identical, except
 		\item \textsc{TVar} simply looks up the type of an $x$ in the environment $\G$. Note that this requires that $x \in \dom(\G)$, i.e. that there are no undefined variables.
 	\end{itemize}
 \begin{itemize}
-		\item \textsc{TRef} types a reference with the given capability by looking up the memory $\s$ to determine the appropriate class. Note that this requires that $l \in \dom(\S$), i.e. that there are no dangling pointers. However, it does \emph{not} impose any restrictions on the reference capability $\mdf$, for example an expression with two $\Kw{capsule}$ references with the same $l$ is considered well-typed by our type system, the proofs of our various type system requirements ensure that such an expression cannot be a $\VS$, i.e. they will not actually occur when reducing a valid initial program.
+		\item \textsc{TRef} types a reference with the given capability by looking up the memory $\s$ to determine the appropriate class. Note that this requires that $l \in \dom(\s$), i.e. that there are no dangling pointers. However, it does \emph{not} impose any restrictions on the reference capability $\mdf$, for example an expression with two $\Kw{capsule}$ references with the same $l$ is considered well-typed by our type system, the proofs of our various type system requirements ensure that such an expression cannot be a $\VS$, i.e. they will not actually occur when reducing a valid initial program.
 	\end{itemize}
 \begin{itemize}
 		\item \textsc{TNew} types a \Q!new! expression by checking that there is an initialising expression for each field $f_i$, that has the corresponding class $C_i$ and capability $\derep{\fmdf_i}$. See \autoref{s:formalism} for the definition of $\derep{\fmdf}$.
@@ -162,25 +161,28 @@ Finally, we define a notation to mean that two expressions are identical, except
 		\item \textsc{TCall} types a method call by looking for the appropriate method/signature in the receivers class. If the receivers class is an interface, then $C.m$ will be of form $S$, otherwise it will be of form $S\,\_$ and hence have a method body, but we do not use this extra information. We check that the receiver conforms to the reference capability of the method, and check that each argument conforms to the corresponding parameter type.
 		Note that we don't need to know whether the called method is a rep mutator or not, as the runtime will only introduce an extra invariant check, and not alter the result of the method.
 		
-		\item \textsc{TAs} this types an \Q!as! expression that is trivially sound because the body of the expression conforms to the target reference capability. This allows the reference capability of an expression to be restricted, e.g. if $\mdf' = \Kw{read}$, the \Q!as! expression cannot be used as the receiver of a field update, even if $\mdf = \Kw{mut}$.
+		\item \textsc{TAs} types an \Q!as! expression that is trivially sound because the body of the expression conforms to the target reference capability. This allows the reference capability of an expression to be restricted, e.g. if $\mdf' = \Kw{read}$, the \Q!as! expression cannot be used as the receiver of a field update, even if $\mdf = \Kw{mut}$.
 		
 		\item \textsc{TAsCapsule} is the \Q!capsule! promotion rule, it is the main way the type system is practical. 
-		As \Q!as! expressions must have come from a method body, we will initially have  $\ty[\emptyset][\demut{G}]{e}{\Kw{mut}\,C}$, and so $e$ will contain no references.
+		As \Q!as! expressions must have come from a method body, we will initially have  $\ty[\emptyset][\demut{\G}]{e}{\Kw{mut}\,C}$, and so $e$ will contain no references.
 		In particular, this means that if $e$ uses any \Q!mut! variables in $\G$ it can only see them as \Q!read!, in particular, our typing rules ensure that such a variable cannot be stored in the heap, nor can any part of its \rog be accessed as \Q!mut! (because \textsc{TAccess} will type such an access as \Q!read! or \Q!imm!).
-		This is enough to ensure that once the variables in $\G$ have been substituted for values and the body is reduced to a value, no \Q!mut! or \Q!read! variables in $\G$ will be \reach from $e$. Thus every object \reach from the result of $e$ will be a newly created object, \immut, or \reach only through \Q!capsule! variables in $\G$. This ensures that the result is \encap as the non-\immut objects reachable from a \Q!capsule! variable in $\G$ will not be \reach elsewhere in the program.
+		This is enough to ensure that once the variables in $\G$ have been substituted for values and the body is reduced to a value, no \Q!mut! or \Q!read! variables in $\G$ will be \reach from the result of $e$. Thus every object \reach from the result of $e$ will be a newly created object, \immut, or \reach only through \Q!capsule! variables in $\G$. This ensures that the result is \encap as the non-\immut objects reachable from a \Q!capsule! variable in $\G$ will not be \reach elsewhere in the program.
 		
 		During reduction, we will type the expression under $\s; \emptyset$, and so $e$ may contain \Q!mut! references, however this does not break our guarantees since we previously typed the expression under $\emptyset; \demut{\G}$, and so any such references must have been created during the reduction of $e$, and cannot have come from the $\demut{\G}$.
 		
-		We could also extend our type system with more promotion rules (e.g. \Q!read! to \Q!imm!), but the \textsc{TAsCapsule} rule should be sufficient to demonstrate that our invariant protocol can be supported in a system with non-trivial promotions.
+		\IO{The full L42 language supports more promotions, such as \Q!read! to \Q!imm!,
+these could be added to our type system, but would greatly complicate our proofs. The \textsc{TAsCapsule} rule should be sufficient to demonstrate that our invariant protocol can be supported in a system with promotions.}
 		
-		\item \textsc{TTryCatch1} types a \Q!try!--\Q!catch! expression that has yet to be reduced, similar to the \textsc{TAsCapsule} rule, we require the \Q!try! part to be typeable under $\demut{G}$. This ensures strong exception safety as $\demut{\G}$ contains no \Q!mut! variables, and so the only way $e$ can obtain a \Q!mut! reference is from a \Q!capsule! variable or a freshly created object.
+		\item \textsc{TTryCatch1} types a \Q!try!--\Q!catch! expression that has yet to be reduced, similar to the \textsc{TAsCapsule} rule, we require the \Q!try! part to be typeable under $\demut{\G}$. This ensures strong exception safety as $\demut{\G}$ contains no \Q!mut! variables, and so the only way $e$ can obtain a \Q!mut! reference is from a \Q!capsule! variable or a freshly created object.
 		In addition, since the only preexisting objects that can be seen as \Q!mut! are those \reach from \Q!capsule! variables in $\G$, 
 		there is no way for $e$ to store any state in a place that $e'$ could observe it. 
 		
-		\item \textsc{TTryCatch2} is used to type annotated \Q!try!--\Q!catch! expressions during reduction, as such expression cannot occur in method bodies, we will always have $\G = \emptyset$. As with the \textsc{TAsCapsule} typing rule, since \Q!try!--\Q!catch! expressions can only be introduced through method calls, we don't need to impose special restrictions once that \Q!try!--\Q!catch! block has begun executing, the check that $\ty[\emptyset][\demut{\G}]{e}{T}$ holds from within a method body is sufficient.
+		\item \textsc{TTryCatch2} is used to type annotated \Q!try!--\Q!catch! expressions during reduction, as such expression cannot occur in method bodies, we will always have $\G = \emptyset$. As with the \textsc{TAsCapsule} typing rule, since \Q!try!--\Q!catch! expressions can only be introduced through method calls\IO{, we don't need any extra type restrictions.
+		In particular, the check that $\ty[\emptyset][\demut{\G}]{e}{T}$ holds from within a method body is sufficient to reason over \Q!try!--\Q!catch!es in the main expression}
 		
 		\item \textsc{Monitor} type checks monitor expressions introduced by reduction, the $l$ will refer to the monitored object,
-		$e$ will compute the result of the entire expression (if the invariant check succeeds) and the $e'$ will be the \Q!invariant! check itself. The side condition on $l$ is not strictly needed as it follows directly from \thm{No Dangling}.
+		$e$ will compute the result of the entire expression (provided the invariant check succeeds) and the $e'$ will be the \Q!invariant! check itself. Note that $e$ will be computed \emph{before} $e'$.
+		The side condition on $l$ is not strictly needed as it follows directly from \thm{No Dangling}.
 		Note that from our signature of the \Q!invariant! method and \thm{Type Preservation} below, $e'$ will always have type $\Kw{imm}\,\Kw{Bool}$, however we need to allow an arbitrary $\mdf$ for our \thm{Bisimulation} lemma below.
 	\end{itemize}
 
@@ -198,26 +200,26 @@ Finally, we define a notation to mean that two expressions are identical, except
 	
 	\LS
 	
-	\noindent Finally, we define a notation to verify that memory respects the class table.\\
+	\noindent Finally, we define a $\vdash \s$ notation to verify that memory respects the class table.\\
 	\indent $\vdash\s$ iff $\forall l_0\in\dom(\s)$:
 	\begin{iitemize}
-		\item $\s(l_0) = C_0\{\range l\}$\SS
-		\item we have $\clazz{C_0}{\_}{\Fs}{\_}$\SS
-		\item $\Fs = \drangex{\_\,C}{\_}$\SS
+		\item $\s(l_0) = C_0\{\range l\}$,\SS
+		\item we have $\clazz{C_0}{\_}{\Fs}{\_}$,\SS
+		\item $\Fs = \drangex{\_\,C}{\_}$, and\SS
 		\item $\C[\s]{l_1} \leq C_1,\ldots,\C{l_n} \leq C_n$
 	\end{iitemize}
 	Thus $\vdash \s$ ensures that there are no dangling pointers, each object has a proper class (and not an interface),
-	they have the appropriate number of fields, each each field value has an appropriate class. Note that $\vdash \s$ doesn't require the field kinds are respected, this is ensured by our type system requirement proofs below.
+	they have the appropriate number of fields, and each field value has an appropriate class. Note that $\vdash \s$ doesn't require the field kinds are respected, this is ensured by the below proofs of our type system requirements.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \subheading{Lemmas}
-
 Often we need to use the properties guaranteed by the type-rules for a specific form of expression,
 to this aim we define a slightly different typing judgement that excludes the \textsc{TSub} rule:\\
-\indent $\tye{e}{T}$ iff $\ty{e}{T}$ holds by a rule other than \textsc{TSub}
+\indent $\tye{e}{T}$ iff $\ty{e}{T}$ holds by a rule other than \textsc{TSub}.
 
 \noindent Note that $\tye{e}{T}$ may still use \textsc{TSub} for the \emph{sub}expressions of $e$.
 
@@ -230,12 +232,14 @@ Now we prove that we can always extract a $\tye{e}{T}$ from a $\tye{e}{T'}$ judg
 \end{Lemma}
 \SS\begin{proof}
 	The ``only if'' direction holds directly from induction on the length of the type derivation of $\ty{e}{T}$ and the fact that $ \leq $ is transitive.
-	The ``if'' direction holds trivially since $tye{e}{T'}$ implies $ty{e}{T'}$, and then \textsc{TSub} can be used to get $\ty{e}{T}$ 
+	The ``if'' direction holds trivially since $\tye{e}{T'}$ implies $\ty{e}{T'}$, and then \textsc{TSub} can be used to get $\ty{e}{T}$ 
 \qed\end{proof}
 
 \LS
 
 This lemma means that if we know the syntactic form of a well-typed expression $e$, we can use \thm{Type Rule} to determine which of the non-\textsc{TSub} rules must have applied.
+
+\LS
 
 We note that if an expression is well-typed, then each sub-expression must also be well-typed. Note that the proof is non-trivial as we sometimes type a sub-expression under $\demut{\G}$ and not $\G$.
 
@@ -425,6 +429,8 @@ Now we show that the type system types references according to their reference c
 	and $\textsc{TSub}$ typing rules.
 \qed\end{proof}
 
+\LS
+
 We now prove the standard soundness property of any type system: reduction respects the type of an expression.
 Note that this holds for any well-typed expression and well-formed memory, even those that are not \VS.
 Note as discussed before, our type system does not directly verify the required properties of our reference capabilities (such as preventing simultaneous \Q!imm! and \Q!mut! references to the same object), rather we prove those separately bellow.
@@ -599,7 +605,7 @@ Note as discussed before, our type system does not directly verify the required 
 \end{proof}
 
 
-As a simple corollary, any sub-expression obtained from reducing a valid initial memory \& main expression is well typed.
+As a simple corollary, any sub-expression obtained from reducing a valid initial memory and main expression is well typed.
 
 \SS\begin{Corollary}[Valid Type]\ \\
 	\indent If $\VS(\s,\E[e])$ then $\vdash\s$ and $\tyer eT$, for some $T$.
@@ -607,14 +613,16 @@ As a simple corollary, any sub-expression obtained from reducing a valid initial
 \SS\begin{proof}
 	By definition of $\VS$, we have some $e_0$ and $T_0$ with $\tyr[\s_0]{e_0}T_0$,
 	$\s_0 = c\mapsto\Kw{Cap}\{\}$ and $\s_0|e_0\rightarrow^*\s|\E[e]$. Clearly
-	$\vdash\s_0$ and $\Kw{Cap}$ is defined to be a class with no fields,
+	$\vdash\s_0$ and $\Kw{Cap}$ is defined to be a class with no fields.
 	Thus by $\thm{Type Preservation}$ we have $\tyr {\E[e]}{T_0}$.
 	Finally, by $\thm{Nested Type}$ and $\thm{Type Rule}$ we have
 	$\tyer eT$, for some
 	$T'$.
 \qed\end{proof}
 
-Now a simple lemma relating $\immut$ with $\mrog$ and $\muty$:
+\L
+
+Now we present a simple lemma relating $\immut$ with $\mrog$ and $\muty$:
 
 \SS\begin{Lemma}[Immutable ROG]\ \\
 	\indent If not $\immut(\s,e,l)$ and $l\in\rog(\s,l')$, then:
@@ -1460,3 +1468,5 @@ Finally, we prove \thm{Strong Exception Safety}, in a manner similar to how we p
 		required.
 	\qed\end{itemize}
 \end{proof}
+
+\lstset{language=FortyThree} % Back to default

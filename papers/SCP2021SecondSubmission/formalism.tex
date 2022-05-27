@@ -42,7 +42,7 @@ We use the following notational conventions:
 	%in particular, calling them can lead to non-deterministic behaviour.
 	
 	\item \Q!mut! methods on \Q!Cap!, unlike all other methods, can have the same method name declared multiple times. To enable a typesystem to be sound, we require that methods with the same name have identical signatures.
-	Such methods will model I/O, for example reading a byte from a file could be modelled by having several different \Q!mut method Int readByte()! implementations, each of which returns a different byte value,
+	Such methods will model I/O, for example reading a byte from a file could be modelled by having several different \Q!mut method imm Byte readByte()! implementations, each of which returns a different byte value,
 	a call to such a method will then non-deterministically reduce to one of these values.
 	%\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods can be declared with the same signature multiple times, thus a call to them will non-deterministically chose one of the implementations.
 \end{itemize}
@@ -142,11 +142,11 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (
 			\field{\fmdf}{C}{f}
 		}{field}\\
 
-		\produzione{\IO{S}}{
+		\produzione{S}{
 			\methods{\mdf}{T}{m}{\drange{T}{x}}
-		}{\IO{method signature}}\\
+		}{method signature}\\
 
-		\produzione{\IO{M}}{
+		\produzione{M}{
 			S\,e			
 		}{method}\\
 
@@ -189,7 +189,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (
 \subheading{Grammar}
 The grammar is defined in \autoref{f:grammar}.
 
-We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. We don't model the pre existing L42 \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values. If \Q!capsule! fields where added, they would not make our invariant protocol more interesting, as long as they do not provide a backdoor to create improper \Q!capsule! references.
+We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. We don't model the preexisting L42 \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values. If \Q!capsule! fields where added, they would not make our invariant protocol more interesting, as long as they do not provide a backdoor to create improper \Q!capsule! references.
 
 We use $v$, of form $\mdf\,l$, to keep track of the reference capabilities in the runtime, as it allows multiple references to the same location to co-exist with different reference capabilities; however $\mdf$'s are not stored in memory.
 The reduction rules do not change behaviour based on these $\mdf$'s, they are merely used by our proofs to keep track of the guarantees enforced by the typesystem.
@@ -238,7 +238,7 @@ Locations ($l$), annotated tries ($\trys{\s}{e}{e'}$), and monitors $\M{l}{e}{e'
 We provide several expression contexts, $\E$, $\EV$, and $\ER$. 
 The standard evaluation context~\cite[Chapter~19]{pierce2002types}, $\EV$, represents the left-to-right evaluation order, an $\EV$ is like an $e$, but with a \emph{hole} ($\hole$) in place of a sub-expression,
 	but all the expression to the left of the hole must already be fully evaluated. This is used to model the standard left to right evaluation order: the hole denotes the location of the next sub-expression that will be evaluated. We use the notation $\EV[e]$ to fill in the hole, i.e. $\EV[e]$ returns $\EV$ but with the single occurrence of $\hole$ replaced by $e$.
-	For example, if $\EV = \call{\hole}{m}{}$ then $\EV[\new{C}{}]$ = $\call{\new{C}{}}{m}{}$.
+	For example, if $\EV = \call{\hole}{m}{}$ then $\EV[\new{C}{}] = \call{\new{C}{}}{m}{}$.
 
 The full expression context, $\E$, is like an $\EV$, but nothing needs to have been evaluated yet, i.e. the hole can occur in place of any sub-expression.
 The context $\ER$ is also like an $\EV$, but instead has a hole in an argument to a \emph{redex} (i.e. an expression that is about to be reduced).
@@ -255,9 +255,8 @@ The rest of our grammar is standard and follows Java, except that types ($T$) co
 \subheading{Reference Capability Operations}
 We define the following properties of our reference capabilities and field kinds:
 \begin{itemize}
-	\item $\mdf \leq \mdf'$ indicates that a reference of capability $\mdf$ can be be used whenever 
-    %'one of kind' Marco: you wrote 'kind' but now kind is also a concept in our language
-    $\mdf'$ is expected. This defines a partial order:\\
+	\item $\mdf \leq \mdf'$ indicates that a reference of capability $\mdf$ can be used whenever 
+    one of capability $\mdf'$ is expected. This defines a partial order:\\
 	\SS[1]\begin{iitemize}
 	\item $\mdf \leq \mdf$, for any $\mdf$\SS
 	\item $\Kw{imm} \leq \Kw{read}$\SS
@@ -292,7 +291,7 @@ We additionally restrict the grammar with the following well-formedness criteria
 	\end{iitemize}
 	
 	\item Rep mutators must also follow the requirements in \autoref{s:protocol},
-Such methods must not use \Q!this!, except for the single access to the \Q!rep! field, and they must not have \Q!mut! or \Q!read! parameters, or a \Q!mut! return type.
+such methods must not use \Q!this!, except for the single access to the \Q!rep! field, and they must not have \Q!mut! or \Q!read! parameters, or a \Q!mut! return type.
 Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{\_}{f}$ and $C.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drangex{\mdf}{\_\,\_}}{\E[\Kw{this}\D f]}$:
 	\begin{iitemize}
 		\item $\Kw{this} \notin \E$\SS[0.15]
@@ -315,7 +314,7 @@ Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{
 	methods within a \Q!class!/\Q!interface! (other than \Q!mut! methods in \Q!Cap!) have unique names; and parameters of a method have unique names and are not named \Q!this!.
 
 	\item For simplicity of the type-system and associated proof, we require that every method in the (indirect) super-interfaces of a class be implemented with exactly the same signature, i.e. if we have a $\clazz{C}{\_}{\_}{\Ms}$, and $\iclazz{C'}{\_}{\Ss}$, where $C'$ is reachable through the \Q!implements! clauses starting from $C$,
-		then for all $\IO{S \in \Ss}$, there is some $e$ with $\IO{S\,e \in \Ms}$.
+		then for all $S \in \Ss$, there is some $e$ with $S\,e \in \Ms$.
 %we removed Ps, should we remove the macro and see what does not compile?
 \end{itemize}
 
@@ -336,7 +335,6 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 		\rrule{new true}
 		{\s}{\new{\Kw{True}}{}}
 		{\s,l_0\mapsto \Kw{True}\{\}}{\Kw{mut}\,l_0}
-		%\IO{\text{, where }l_0 = \fr(\s)}}
 		\text{, where:}}
 	\\\qquad l_0 = \fr(\s)
 	\\[0ex]\smash{
@@ -361,7 +359,7 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 	\\\qquad\begin{array}{l}
 		\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e}\\*
 		e' = e[\Kw{this}\coloneqq\mdf_0\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]\\*
-		\text{if }\mdf_0 = \Kw{mut}\text{ then }\nexists (f,\E) \text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]
+		\text{if }\mdf_0 = \Kw{mut}\text{ then there are no }f\text{ and }\E \text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]
 	\end{array} % because otherwise there seems to be too much space between this and as
 	\\\rowSpace\smash{
 		\rrule{call mutator}
@@ -398,7 +396,7 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 		}
 	\vspace{-2.5ex}
 	\end{array}$
-\caption{Reduction rules}\label{f:reductions}
+\caption{Reduction rules}\label{f:reductions}\IOComm{Make sure this is formatted properly!}
 \end{figure}%
 Our reduction rules are defined in \autoref{f:reductions}. We use the function $\fr(\s)$ to return an arbitrary $l$ such that $l \notin \dom(\s)$.
 The rules use $\EV$ to ensure that the sub-expression to be reduced is the left-most unevaluated one:
@@ -437,7 +435,7 @@ For example, in L42 they are implemented by statically injecting calls to \Q!inv
 \subheading{Statement of Soundness}
 %
 %\newcommand{\sims}[3]{#2 \approx_{#1} #3}
-%%\IO{Blahblah blah, why we need this?
+%%Blahblah blah, why we need this
 %We define $\sims{\s_0}{\s|e}{\s'|e'}$ iff, $\exists \range{l}$ and $\range{l'}$ with \\
 %\begin{iitemize}
 %\item $n = |\dom(\s) \setminus \dom(\s_0)| = |\dom(\s') \setminus \dom(\s_0)|$

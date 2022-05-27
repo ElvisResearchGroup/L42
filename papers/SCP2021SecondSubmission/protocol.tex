@@ -125,8 +125,8 @@ To show how our \Q@rep@ fields ensure these properties, we first define some ter
 a \Q@mut@ method with a field access on a \Q!rep! field of \Q!this! is a \emph{rep mutator}.
 \footnote{
 We could relax our protocol,
-so that a \Q!mut! method that reads a \Q!rep! field it is not considered a rep mutator if the method only needs to use the field value as \Q!read!.
-This relaxation would be merely for convenience; it does not change expressivity as one can write a getter of form
+so that a \Q!mut! method that reads a \Q!rep! field is not considered a rep mutator if the method only needs to use the field's value as \Q!read!.
+This relaxation would merely be for convenience; it does not change expressivity as one can write a getter of form
 \Q@read method read C m()\{return this.f;\}@
 for a \Q@rep C f@ field,
 %$\method{\Kw{read}\,}{\,\Kw{read}\,C}{m}{}{\Kw{this}\D f}$, where $C.f = \field{\Kw{rep}}{C}{f}$,
@@ -187,7 +187,7 @@ These properties are also \emph{weaker} than those of \Q!capsule! \emph{referenc
 % ISAAC: Redundent, I say this allready in a footnote above
 
 %\subheading{Rep mutators}
-%\IODel{In order to allow complex mutations of objects with invariants we, introduce the notion of \emph{rep mutator}}. A \emph{rep mutator} can perform an arbitrarily complex mutation of the reachable object graph of a \Q!capsule! field. We use TMs to ensure that the object containing the \Q!capsule! field is not usable whilst the field's reachable object graph is mutated, and its invariant is checked immediately afterwards. 
+%In order to allow complex mutations of objects with invariants we, introduce the notion of \emph{rep mutator}. A \emph{rep mutator} can perform an arbitrarily complex mutation of the reachable object graph of a \Q!capsule! field. We use TMs to ensure that the object containing the \Q!capsule! field is not usable whilst the field's reachable object graph is mutated, and its invariant is checked immediately afterwards. 
 %Formally, \emph{rep mutators} are \Q@mut@ methods whose body accesses a \Q@capsule@ field. 
 
 

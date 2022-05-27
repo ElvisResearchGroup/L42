@@ -50,7 +50,6 @@ Immutable objects in the reachable object graph of a capsule reference are not c
 \noindent That is, there are only two kinds of objects: mutable and immutable, but there are more kinds of reference capabilities.
 In L42 only \Q@mut@ and \Q@imm@ references can be saved on the heap; that is, \Q@capsule@ and \Q@read@ references only exists on the stack.
 %the 'read' field in 42 can indeed be understood as a 'mut' field of an object that is born 'read'
-%\IOComm{didn't a reviewer dislike this statement?}\MSComm{rev1 said it was out of place, so I moved it.}
 
 Reference capabilities are different to field or variable qualifiers like Java's \Q@final@: reference capabilities apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
 On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@A* const@ (like \Q@final@) and \Q@const A*@ (like \Q@read@), where \Q@const A* const@ is like \Q@final read@.}
@@ -157,9 +156,9 @@ variables can be implicitly promoted to \Q@capsule@ or \Q@imm@.
 This requires the absence of \Q!read! and \Q!mut! \emph{global/static} variables, as in L42, Pony, and Gordon \etal's language.
 L42 also allows such expression to use \Q!read! free variables as well as \Q!mut! variables as if they were \Q!read!. For this to be sound, L42 does not allow \Q!read! fields.
 %Additionally, a \Q@capsule@ can be implicitly converted to \Q@imm@, thus \Q@ic@ is also ok.
-%\footnote{\IODel{
+%\footnote{
 %This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
-%}}
+%}
 This is the main improvement on the flexibility of reference capabilities in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
 these reference capabilities are opt-in: a programmer can write many classes

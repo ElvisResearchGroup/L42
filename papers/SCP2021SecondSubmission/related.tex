@@ -30,11 +30,10 @@ ShippingList = Data:{
 }
 \end{lstlisting}
 In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. 
-In particular, note how the current concrete 42 syntax uses the keyword \Q@capsule@ to represent varius kinds of restrictions over fields.
+In particular, note how the current concrete 42 syntax uses the keyword \Q@capsule@ to represent various kinds of restrictions over fields.
 The language relies on the presence of annotations or other specific methods
 to decide what restrictions to apply. In this case, the presence of the \Q!@$$Cache.Now! annotation clarifies that the field \Q@capsule Items items@
 is actually a \Q@rep@ field as discussed in our work.
-%\IOComm{Talk to marco about how the \Q!capsule! field is treated, in particular, how do you make different kinds of \Q!capsule! fields}
 The \Q!@$$Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@$$Cache.Clear! method is called.
 The \Q!X[...]! notation used in \Q!invariant! is an assert statement: it throws an unchecked exception if it's argument is false.
 Please refer to \url{Forty2.is} for more information.
@@ -45,9 +44,8 @@ Please refer to \url{Forty2.is} for more information.
 \subheading{Reference Capabilities}
 We rely on a combination of reference capabilities supported by at least three languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
-Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
+Pony~\cite{clebsch2015deny,clebsch2017orca,ponythesis}, and Gordon \etal~\cite{GordonEtAl12}.
 %each of these works is accompanied by proofs about the properties of those modifiers.
-%\IOComm{The Pony ones have no proofs!}
 %Since such proofs have already been done,
 %in this work we just assume the required properties.
 They all support full/deep interpretation (see page 5), without back doors.

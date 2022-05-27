@@ -73,7 +73,7 @@ class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);//can be 'imm' since it is 'unsafe'
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
 ...
-NastyS name = new NastyS(); //type system believe name's ROG is immutable
+NastyS name = new NastyS(); //the type system believes name's ROG is immutable
 Person person = new Person(name); // person is valid, counter=1
 name.incr(); // counter == 2, person is now broken
 person.invariant(); // returns false, counter == 3
