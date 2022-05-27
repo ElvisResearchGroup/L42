@@ -126,6 +126,7 @@ Some approaches like JML suggest verifying a simpler approach (that method calls
 \newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*${}_{}\,\bullet\,$}
 %
 %\LINE
+
 \subheading{Security and Scalability}
 Our approach allows verifying an object's invariant independently of the execution context.
 This is in contrast to the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
@@ -170,6 +171,13 @@ Spec\# also works with existing .NET libraries by annotating them with contracts
 
 %many works on static verification, such as thoser Spec\#~\cite{??}
 
+Static verification of multi object invariants is a very difficoult problem. 
+Many of the modularity issues discussed
+in Modular invariants for layered object structures~\cite{DBLP:journals/scp/MullerPL06}
+do not apply to our environment: by checking the invariant at run time it is not a problem if we do not know the implementation we depends on, making us more flexible.
+Using their terminology, our work would be \emph{encapsulation based} and not \emph{visibility based}.
+However, our encapsulation strategies are so much more flexible.
+Our box pattern can be used to emulate many \emph{visibility based} invariants, simply by putting the invariant into a box containing all involved objects.
 
 \subheading{Specification Languages}
 Using a specification language based on the mathematical metalanguage and different from the programming language's semantics may seem attractive, since it can express uncomputable concepts, has no mutation or non-determinism, and is often easier to formally reason about.
