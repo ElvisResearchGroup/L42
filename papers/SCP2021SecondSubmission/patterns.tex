@@ -58,7 +58,7 @@ In particular, the above code demonstrates that our system can:
 \item Pass the state of an `invalid' object around, in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not the invariant method.
 Note how programmers can use conventional private types to control how such `invalid' versions of objects are exposed in the public API, for example by 
 declaring \Q@AccountBox@ as a private nested class.
-In contrast, if \Q@invalid@ was a type system feature the any user defined type would intrinsically expose the existence of both variants in the public API.
+In contrast, if \Q@invalid@ was a type system feature, then any user defined type would intrinsically expose the existence of both variants in the public API.
 \end{itemize}
 
 Under our strict invariant protocol, the invariant holds for all reachable objects.
@@ -160,7 +160,6 @@ reason as to when \Q@Widgets@ are valid, as we described above.
 
 
 \subheading{The Transform Pattern}
-\IOComm{RECHECK THIS SECTION}
 Recall the GUI case study from \autoref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements \Q!Widget!.
 % A rep mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
@@ -202,12 +201,11 @@ and that those lambdas cannot be saved and passed to multiple calls to \Q@transf
 However, we could instead make \Q@transform@ take an \Q@imm@ \Q@Transformer@, and make \Q@Transformer.apply@ be an \Q@imm@ method, this would allow those lambdas to be freely copied and called multiple times, however they would only be able to capture \Q@imm@ local variables.
 %not be able to capture pre-existing mutable objects.
 
-That is, a lambda is a normal object instantiated from an interface with a single abstract method.
-Reference capabilities of both the created object and the provided method must be consider when deciding what local variables can be captured.
-For simplicity in this work we only consider three cases:
-When creating an \Q@imm@ object by specifying an \Q@imm@ method, only \Q@imm@ local variables can be captured in the lambda closure.
-When creating a \Q@capsule@ object by specifying a \Q@capsule@ method, only \Q@imm@ and \Q@capsule@ local variables can be captured.
-When creating a \Q@mut@ object by specifying a \Q@mut@ method, only \Q@imm@ and \Q@mut@ local variables can be captured.
+Here, we assume lambdas, as in Java, are sugar for normal objects that implement an interface with a single abstract method.
+As an example, we could use the following sound rules to determine what lambdas are allowed:
+\Q!imm! lambda objects implementing an interface with an \Q!imm! method which only captures final \Q!imm! variables,
+\Q!mut! lambdas implementing a \Q!mut! method which only captures final \Q!imm! and \Q!mut! variables,
+and \Q!capsule! lambdas implementing a \Q!capsule! method which only captures final \Q!imm! and \Q!capsule! variables.
 
 %The comment below was confusing when doing src/replace,
 %Please, check that the new version of capsule lambdas is OK
@@ -233,8 +231,7 @@ When creating a \Q@mut@ object by specifying a \Q@mut@ method, only \Q@imm@ and 
 %as if it was atomic.%
 %,  i.e. they can't see or update the other \Q!capsule! fields.
 
-\subheading{Using Patterns Together: A general and flexible Graph class}
-
+\subheading{Using Patterns Together: A General and Flexible Graph Class}
 Here we rely on all the patterns shown above to encode a general library for \Q@Graph@s
 of \Q@Node@s.
 Users of this library can define personalised kinds of nodes,

@@ -331,18 +331,18 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 		{\s,l_0\mapsto C\{\range{l}\}}{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}}
 		\text{, where:}}
 	\\\qquad l_0 = \fr(\s)\text{ and }C \neq \Kw{True}
-	\\[0ex]\smash{
+	\\\rowSpace\smash{
 		\rrule{new true}
 		{\s}{\new{\Kw{True}}{}}
 		{\s,l_0\mapsto \Kw{True}\{\}}{\Kw{mut}\,l_0}
 		\text{, where:}}
-	\\\qquad l_0 = \fr(\s)
-	\\[0ex]\smash{
+	\\[-2.5ex]\qquad l_0 = \fr(\s)
+	\\\rowSpace\smash{
 		\rrule{access}
 		{\s}{\mdf\,l\D f}
 		{\s}{\mdf'\,l'}
 		\text{, where:}}
-	\\\qquad
+	\\[-2.5ex]\qquad
 		\C{l}.f = \field{\fmdf}{\_}{f}
 		\text{, }\mdf' = \rmdf{\mdf}{\fmdf}
 		\text{, and }l' = \s[l.f]
@@ -366,7 +366,7 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 		{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
 		{\s}{\M{l_0}{\as{e}{\mdf'}}{\invariant{l_0}}}
 		\text{, where:}}
-	\\[\baselineskip]\qquad\begin{array}{l}
+	\\[-2.5ex]\qquad\begin{array}{l}
 		\C{l_0}.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{\E[\Kw{this}\D f]}\\*
 		\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\\*
 		e = \E[\Kw{this}\D f][\Kw{this}\coloneqq\Kw{mut}\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]
@@ -396,7 +396,7 @@ Our typesystem requirements in \autoref{s:proof} however only refer to the main 
 		}
 	\vspace{-2.5ex}
 	\end{array}$
-\caption{Reduction rules}\label{f:reductions}\IOComm{Make sure this is formatted properly!}
+\caption{Reduction rules}\label{f:reductions}
 \end{figure}%
 Our reduction rules are defined in \autoref{f:reductions}. We use the function $\fr(\s)$ to return an arbitrary $l$ such that $l \notin \dom(\s)$.
 The rules use $\EV$ to ensure that the sub-expression to be reduced is the left-most unevaluated one:
@@ -449,12 +449,13 @@ For example, in L42 they are implemented by statically injecting calls to \Q!inv
 %and $\s'|e'$ can be turned into $\s|e$ by using some renaming between the new objects in $\s$ and %$\s'$. 
 %}
 %
-We define a deterministic reduction arrow to mean that exactly one reduction is possible:\\*
-
-$\s|e \Rightarrow \s'|e'$ iff $\s|e \rightarrow \s'|e'$, and $\forall \s'', e''$, $\s|e \rightarrow \s''|e''$, implies $\s''|e'' = \s'|e'$\\
+We define a deterministic reduction arrow to mean that exactly one reduction is possible:\\
+\indent $\s|e \Rightarrow \s'|e'$ iff $\s|e \rightarrow \s'|e'$, and $\forall \s'', e''$, $\s|e \rightarrow \s''|e''$, implies $\s''|e'' = \s'|e'$\\
 %Set style definition:\\
 %\indent$\s|e \Rightarrow \s'|e'$ iff $\{\s'|e'\} = \{\s''|e'' \text{ where } \s|e \rightarrow \s''|e''\}$
 %Ok, I'm leaving the forall definition, not sure what is better.
+
+\LS
 
 \noindent We say that an object is \valid when calling its \Q@invariant()@ method would
 deterministically produce an $\Kw{imm}\,\Kw{True}$ in a finite number of steps, i.e. assuming the typesystem is sound, this means it does not evaluate to a non-$\Kw{True}$ reference, fail to terminate, or produce an \error.

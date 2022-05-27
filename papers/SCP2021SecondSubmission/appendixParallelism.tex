@@ -77,7 +77,7 @@ Other approaches to allocating work to threads could also be used provided the f
 The different forms of parallelism supported by L42 impose different requirements on the free variables that the initialisation expressions can use.
 
 Some readers may find it surprising that the \emph{non-mutable computation} pattern allows \Q@read@ references to be used, since there could also be \Q@mut@ references to the same objects.
-However, such \Q@mut@ references will all be unreachable from inside the initialisation expressions. This is because they cannot use \Q!mut! variables, and any \Q!capsule! variables they use will be encapsulated, and so hence will not alias anything reachable from such \Q!read! references.
+However, such \Q@mut@ references will all be unreachable from inside the initialisation expressions. This is because they cannot use \Q!mut! variables, and any \Q!capsule! variables they use will be encapsulated (thus they will not alias anything reachable from such \Q!read! references).
 %How the mutROG of \Q@capsule@ fields can be shared is not important here because in 42 there is no way to go from a \Q@capsule@ field back to a \Q@capsule@ reference.
 
 This form of parallelism is the only one proposed by Gordon; it is very expressive in their setting with destructive reads, but it is quite limited in L42. However L42 offers other forms of parallelism, as shown below.
@@ -179,9 +179,9 @@ top.op(a=15I, b=S"hello")
 
 This pattern relies on the fact that by using \Q@rep@ fields we can define arbitrary complex data structures composed of disjoint mutable object graphs.
 Note that \Q@read@ aliases to parts of the data structure can be visible outside.
-This is safe since we cannot access them during the initialisation expressions. This holds because the \Q!@Cache.Clear! method cannot have \Q@read@ parameters (and other parameters cannot have \Q!read! fields).
+This is safe since we cannot access them during the initialisation expressions. This holds because the \Q!@Cache.Clear! method cannot have \Q@read@ parameters. %(and other parameters cannot have \Q!read! fields).
 
-\subheading{Non fork--join parallelism in L42}
+\subheading{Non Fork--Join Parallelism in L42}
 L42 also supports eager caching using the \Q|@Cache.Eager| annotation.
 This form of parallelism can only start from fully immutable data.
 This can be used only on methods with no parameters,
