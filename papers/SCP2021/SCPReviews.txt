@@ -629,3 +629,47 @@ mrog(\sigma, l') \cap rog(\sigma, l) \not= \emptyset.
 - p43, l4: modify --> modifies
 //why the new version stops at pg 41? what is going on???
 - p43, l5: ; thus --> . Thus,
+
+
+
+------------------------------------
+
+
+Discussing 59
+-most of their focus on modular static verification of invariants does not apply to our runtime checks
+-we are encapsulation based, not visibility based
+but our encapsulation strategies are so much more flexible
+To get the invariants of their visibility based approaches,
+it is just sufficient to put the invariant into an outer box object
+-they do not bother about exceptions/IO/determinism
+-(as the rev noticed) they allow to observe broken invariants
+
+
+
+-------
+Cite this near 
+1635
+By looking to a survey by Voigt et al. [73] 
+>>By looking to surveies [73][..]
+@inproceedings{falcone:hal-01882410,
+  TITLE = {{A Taxonomy for Classifying Runtime Verification Tools}},
+  AUTHOR = {Falcone, Yli{\`e}s and Krsti{\'c}, Sr{\dj}an and Reger, Giles and Traytel, Dmitriy},
+  URL = {https://hal.inria.fr/hal-01882410},
+  BOOKTITLE = {{RV 2018 - 18th International Conference on Runtime Verification}},
+  ADDRESS = {Limassol, Cyprus},
+  PAGES = {1-18},
+  YEAR = {2018},
+  MONTH = Nov,
+  PDF = {https://hal.inria.fr/hal-01882410/file/rv18-1.pdf},
+  HAL_ID = {hal-01882410},
+  HAL_VERSION = {v1},
+}
+
+
+
+encapsulate 26 In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08,Detlefs98wrestlingwith} is needed.
+
+@MISC{Detlefs98wrestlingwith,
+    author = {David L. Detlefs and K. Rustan M. Leino and Greg Nelson},
+    title = {Wrestling With Rep Exposure},
+    year = {1998}

@@ -9,35 +9,31 @@ We thank the reviewers for pushing us in this direction. This makes our work muc
 
 2. We changed our terminology:
 Before we used "capsule fields" and "capsule references" and we spent quite some text explaining how 
-"capsule fields" can not easily be used to produce a capsule reference. Given the reaction of the reviewers, this terminology must have been
-intrinsically confusing.
+"capsule fields" can not easily be used to produce a capsule reference. Given the reaction of the reviewers, this terminology must have been intrinsically confusing.
 For example reviewer 1 asked "why capsule fields never hold capsule references"
 Conceptually, the answer would have been "because that is how we are defining it to be".
 That is, in L42 the keyword "capsule" means different things when applied to fields or local variables.
 This is similar to what happens in Java with the keyword "final", that means different things when it is applied to classes, methods and fields.
-Since the language we use in our presentation is already quite far from the concrete 42 syntax, there is no need to stick to the confusing 42 terminology and
-we have now changed our terminology.
+Since the language we use in our presentation is already quite far from the concrete 42 syntax, there is no need to stick to the confusing 42 terminology and we have now changed our terminology.
 We now refer to "rep fields" for what we used to call "capsule fields",
 while "capsule references" and "capsule local variables" are the same as before.
 That is, we havn't changed our approach, we have just changed how we explain it.
 
-3. We added Appendix C, containing an in depth explanation of parallelism in 42 and on how the restrictions and relaxations
+3. We added Appendix C, containing an in depth explanation of parallelism in L42 and on how the restrictions and relaxations
  about capsule references and capsule/rep fields do not prevent safe parallelism.
 We are unsure if this Appendix should stay in the final version of this work. 
-We inserted it because reviewer was concerned that our novel field type, was causing difficulties in connection with safe parallelism.
-To properly clarify that this was not the case, we had to explain how safe parallelism works in 42, and that required quite some text.
+We inserted it because reviewers were concerned that our novel field type was causing difficulties in connection with safe parallelism.
+To properly clarify that this was not the case, we had to explain how safe parallelism works in L42, and that required quite some text.
 
 About the 4 main points listed at the top of the reviews
 1. "better introduction of the various concepts used"
-Following the detaild comments of the revs we have improved the explanation in many points, in particular we have clarified much more how the
-try-catch and the corresponding restrictions work. The change in terminology (rep fields) is also designed to make the explanation more clear
+Following the detaild comments of the revs we have improved the explanation in many points, in particular we have clarified much more how the try-catch and the corresponding restrictions work. The change in terminology (rep fields) is also designed to make the explanation more clear.
 
 2. "improve the formalisation, and make it more precise, and more self-contained"
-This is where we spent most of our effort. Appendix B now makes our work self contained
+This is where we spent most of our effort. Appendix B now makes our work self contained.
 
 3. "improve discussion of related work"
-We integrated the paper suggested by the reviewers in our discussion, we recognize there are many more works we could discuss,
-and we are eager to lissen to more suggestions from the revs; however our work already has XX (more than 79) references.
+We integrated the papers suggested by the reviewers in our discussion, we recognize there are many more works we could discuss, and we are eager to lissen to more suggestions from the revs; however our work already has 82 XX references.
 This is because our work sits at the border between many areas: runtime verification, static verification, object capabilities, and reference capabilities.
  
 4. they also all have suggestions to improve the presentation of the paper.
@@ -59,8 +55,7 @@ Answers to Reviewer #1:
 >> Would aliasing of `this` be  a problem though? Is it a problem in the current system?
 Aliasing of the object with invariant is not a problem, our system is sound.
 Using the Box pattern, aliasing of the internal encapsulated object (as mut) is only possible when the outer object (the one with the invariant) is not visible.
-Aliasing of the internal object (as read) is possible everywhere, but if the outer object is visible, then the constraints induced by its invariant will
-be enforced on the internal object too. See section 7, the "subInvariant pattern" and when the "subInvariant" method can be observed as false
+Aliasing of the internal object (as read) is possible everywhere, but if the outer object is visible, then the constraints induced by its invariant will be enforced on the internal object too. See section 7, the "subInvariant pattern" and when the "subInvariant" method can be observed as false.
 
 
 >> How big is the actual gain between having `Range` and  `BoxRange` vs. having `Range` and `unpacked Range`?
@@ -69,7 +64,7 @@ But, in a fully fledged language it would be yet another language feature to con
 Moreover, adding this feature seams to invite even more features into the language:
 '(un)packed' is a kind of type state, so we could immagine more states objects could be in, and we may even want to define a metalanguage to support creation of user defined typestates.
 In this work we aimed at a minimal type system: when a feature could be expressed as a pattern we do not lift it to the type level.
-It would also be tempting to lift the 'sub-invariant' pattern to the type/language level
+It would also be tempting to lift the 'sub-invariant' pattern to the type/language level.
 Having many patterns lifted would expose them more to the programmers, and encourage their use.
 However, we think that there is greater value in minimality.
 Indeed, using patterns to express concepts also shows programmers how using patterns can help them encode all kinds of features they need, instead of having to rely on a limited set of language features.
@@ -82,8 +77,7 @@ by making the `Boxed` type private we can avoid client code every seeing said ty
 In contrast, if 'unpacked'/'invalid' was a type system feature than any user defined type would intrisically expose the existence of both variants in the public API.
 >> A nice thing  about the latter approach is that I know that I am indeed  handling a `Range` and that there are
 >> no discrepancies between the classes representing the different states (packed and  unpacked) of the object.
-While sometimes a guarancee of no discrepancy would be nice, one of the main pillars of OO is the concept of encapsulation, so that
-for example methods looking like getters and setters do not need to directly correspond to concrete fields in the object.
+While sometimes a guarancee of no discrepancy would be nice, one of the main pillars of OO is the concept of encapsulation, so that for example methods looking like getters and setters do not need to directly correspond to concrete fields in the object.
 Code enforcing their encapsulation boundaries would likelly not want to expose their true internal state as a Box object, they would likelly want to expose a wrapper whose
 API would be stable, while keeping the internal representation open to change for future maintanence.
 
@@ -93,9 +87,8 @@ We included some of these considerations in the sub-invariant pattern subsection
 >>there is a story for verification in a concurrent setting as well, since that is  the context for a lot of the work on reference capabilities.
 There could be interesting patterns merging parallelism and invariant based verification. We would like to explore this in future work.
 Right now, L42 does support unobservable parallelism, so invariants are already enforced in a parallel setting.
-We would not consider our work sound if this was not the case. To the best of our understanding, there is absolutelly no way 
-to observe broken invariants in 42, even when using all of the full features of 42 including parallelism and interaction with Java code.
-The details on how the 42 runtime is protected agains malicious Java code (and C code loaded from that Java) are outside of the scope of this work.
+We would not consider our work sound if this was not the case. To the best of our understanding, there is absolutelly no way to observe broken invariants in L42, even when using all of the full features of L42 including parallelism and interaction with Java code.
+The details on how the L42 runtime is protected agains malicious Java code (and C code loaded from that Java) are outside of the scope of this work.
 
 >>"This is different with respect to many other approaches"  -- Which approaches are these? 
 We refer to former work about aliasing and immutablity before Gordon, so fractional permissions, universe types, islands, raw and cooked types, external uniqueness and so on.
@@ -105,7 +98,7 @@ We refer to former work about aliasing and immutablity before Gordon, so fractio
 >>  Since Gordon et al. use flow sensitive typing,[..](with some restrictions on parameter and return types).
 >>  Note that it is always possible to permanently lose the capsule  capability following an arbitrary operation requiring a `mut` capability.
 Yes, that is exacly what we mean: while in 42 any way to read a capsule local variable gives you a capsule reference, in the other approaches the situation is more involved
- (in order to be more expressive) and sometime reading the capsule variable can give you some other kind of stuff, as you said.
+ (in order to be more expressive) and sometime reading the capsule variable can give you some other kind of reference, as you said.
 Also, you suggests that the other approaches also have a much simpler core 
 >>I believe some recovery/promotion is happening under the hood here
 but they have some syntactic sugar or programming patterns lifted at the language level that make the surface language more usable.
@@ -134,7 +127,7 @@ Yes, in minimalistic FJ inspired languages we often use methods with multiple ar
 >> "Our setting does ensure termination of the invariant of[..]so, this is a less  interesting property (albeit not uninteresting) in my opinion.
 Yes, solving the halting problem would have been much more interesting but would deserve a paper of its own.
 Here, more modesly, we just show that it terminates because of determinism and the fact it has already terminated.
-We clarified this in a foot note.
+We clarified this in a footnote.
 
 
 >>[..]Would you get the same pathological numbers if you removed the checks after pure methods? In that case, this experiment is a point in
@@ -168,15 +161,15 @@ The calculus we have shown have a mutable memory, so it is not pure.
 >>I assumed this fork of L42 had given up on safe concurrency.
 A full explanation of how L42 handles safe concurrency is out of the scope of the main text of the paper. 
 In this revision, we added Appendix C, where we explain in the details how 42 handle unobservable parallelism.
-We are open to either  keep this appendix in the final version of the paper or to remove it if it is considered out of scope. 
+We are open to either keep this appendix in the final version of the paper or to remove it if it is considered out of scope. 
 
 >and thus obscuring what seem to be subtle reliance on a novel twist to L42's already-unique view of what capsule means
-We hope that our new terminology (rep fields) clarifies how we do not rely on a L42 specific interpretation of capsulness and how 
-any system supporting iso of Gordon/Pony would work be able to support our rep fields just fine.
+We hope that our new terminology (rep fields) clarifies how we do not rely on a L42 specific interpretation of capsulness and how any system supporting iso of Gordon/Pony would work be able to support our rep fields just fine.
 
 
 >>I think this paper really needs to (1) include a concrete type system for the core language,
-Done in Appendix B
+Done in Appendix B.
+
 >> and (2) switch the informal "Java-like" intuitions in the start to be closer to the "Featherweight L42."
 This would require a full rewriting of most of the informal text and would make our work much less valuable.
 Our aim here is not to glorify 42 but to show a strategy that can be implemented by many different languages.
@@ -185,13 +178,13 @@ We hope that Section 8 and Appendix C can sufficiently show how our work looks l
 >>Without a formalization, of this change, it's not possible to fully understand the details of this paper's assumptions on capsule fields,[..]
 >>I'd settle for a clear formalization of an example type system
 We have now added Appendix B with a full type system and a proof showing that such type system satisfies our assumptions.
-Appendix C would also help to clarify the former work on 42.
+Appendix C would also help to clarify the former work on L42.
 
 
 >>How is this possible without *major* modifications or restrictions?
 >>the idea of shipping unique/isolated/capsule references to other threads
 >>What's to stop someone from writing "read C x = foo.myCapsuleField; send(swap/dread(foo.myCapsuleField)); x.someField" and causing a data race?
-Gordon and 42 aims to ensure the correctness of fork--joins. This means that we do not just 'ship work to another worker' and continue our work.
+Gordon and L42 aims to ensure the correctness of fork--joins. This means that we do not just 'ship work to another worker' and continue our work.
 We rather control the scope of the whole fork--join, and what variables can be seen in the various branches. Please refer to Appendix C for more details.
 
 
@@ -215,7 +208,7 @@ The full guarantee of "encapsulated" (that there is no other way to reach the no
 >> But I think because the paper hasn't actually applied this to a fully worked out semantics for types, the paper ends up at the very least not explaining its assumptions clearly,
 >> and is possibly making mutually inconsistent assumptions. 
 Yes, thanks to this comment instead of removing our assumptions and presenting a direct proof we have chosen to keep our assumptions based proof (Appendix A)
-and to prove that those assumptions can be satisfied by a practical type system (Appendix B)
+and to prove that those assumptions can be satisfied by a practical type system (Appendix B).
 
 
 >>[..]So, I can see two possibilities for fixing this in a Java-like language:
@@ -227,21 +220,19 @@ Formally, there is no need to encode them directly; it is well known that they c
 
 >>[..]there's *no* way to actually get data out of a try-catch directly
 >>This is okay (clearly there's a way to get a value out of the try block!)
-42 is an expression based language, and try-catches are expressions (including an 'else part' similarly to python's try-catch-else statements).
+L42 is an expression based language, and try-catches are expressions (including an 'else part' similarly to python's try-catch-else statements).
 Those expressions can return mutable data if such mutable data is created inside one of the catch bodies or if the try block completes successfully.
 Even in a statement based language with traditional try-catch statements, we still could get data out of a try-catch by using a 'return'.
 Again, try-catching on checked exceptions have none of these strong restrictions, they only apply to unchecked exceptions/errors.
 We clarified this in the text.
 
->>then implicitly suggests that as a result, more nuanced comparisons are uninteresting. This is rather unsatisfying.
->>I think this shallowness short-changes the reader ([..]). But it *also* does a disservice to this paper: [..]
-We agree. On the other side, our paper is already very long.
+>>For example, there are some similarities between this work and Müller et al.'s work [59]
 We added a couple of sentences about the relation with [59]//TODO:
 
 
 >>Please explain in more detail why distinguishing checked vs. unchecked exceptions makes any difference in the restrictions on try blocks [..]
->>I see clearly how the restrictions in the formal calculus ensure no broken invariants are exposed, but I cannot see any reason a checked exception would justify relaxing 
->>all of those restrictions.
+>>I see clearly how the restrictions in the formal calculus ensure no broken invariants are exposed,
+>>but I cannot see any reason a checked exception would justify relaxing all of those restrictions.
 >>""an exception thrown while an invariant doesn't hold has the potential to""
 We make sure that checked exceptions never leak outside of a scope where an object with a possibly broken invariant is involved in execution: 
   - 42 constructors (called factories) can not leak checked exceptions. In a language where they could,
@@ -276,7 +267,7 @@ More generally, all the content about invariants and their verification is a nov
 >>(a bit of integer arithmetic and Boolean expressions beyond 'true' and 'false', conditionals and loops).
 >>As such, your language is not even Turing-complete...
 >>The formal part of the paper is not self-contained since neither it defines a turing-complete language, nor explains all the introduce notations and rules.
-It is well known that FJ is turing complete, we have now provided a citation for this. You can easly encode lambda calculus in it.
+It is well known that FJ is turing complete, we have now provided a citation for this. You can easly encode lambda calculus in FJ.
 We have now made our work self contained by adding Appendix B.
 
 
@@ -289,14 +280,12 @@ We added a sentence explaining why this is important in our context.
 
 >>Purity: what about (deterministic) I/O?
 If you consider a single running process on any operating system, there is no such thing as deterministic IO:
-what we read always depends on what other processes may be doing,
-what we write can still non deterministically go in error if the HD fails or it is full, for example.
+what we read always depends on what other processes may be doing, what we write can still non deterministically go in error if the HD fails or it is full, for example.
 It is possible to talk about deterministic I/O only if we assume control over the whole system, not just our individual process.
 
 >>"it is guaranteed to be garbage collectable" --> "so it is out of scope when checking the invariant" 
 >>being guaranteed to be garbage collectable does not offer any strong guarantee since one cannot be sure that the GC will indeed collect it
 True, but actual collection is not important here. We are certain that it is never going to be involved in execution ever again.
-That is what being garbage collectable means.
 
 
 >>The verifier available online [...] behaves differently: please add explanations here (and maybe as plain text and not as a footnote).
@@ -313,9 +302,15 @@ That attempt woulds cause an invariant error to raise (and we would not see any 
 We wrote this example to accommodate for any kind of family, we wish not to offend any alternative form of family organisation.
 
 
->>a study [19] discovered that developers TODO we still need to handle this
+>>"a study [19] discovered that developers expect specification languages to follow the semantics of the underlying language"
+>>written this way, this statement is just wrong even
+>>though the two examples that follow are correct.
+We are confused about this remark. We checked again [19] (now called [XX]) and it seams to confirm our sentence (for example in pg10 Table 2).
+We wonder if this is simply an English problem. What should we say to be more clear?
 
->>a survey by Voigt et al. [76] and the extensive MOP project [52] --> these references are quite old TODO
+>>these references are quite old, see for instance
+We added this citation
+//TODO
 
 >>three times less annotation burden than [...] Spec# --> I do not agree with this conclusion if you only look at the number of annotations (which is the most meaningful measure IMO)
 Some Spec# annotations are very involved, consider this single annotation:
