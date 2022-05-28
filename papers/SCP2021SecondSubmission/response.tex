@@ -7,6 +7,9 @@ supports all the requirements of Appendix A. This is a concrete example showing 
 can be satisfied by a practical type system. The presented type system is a simplification of the current L42 type system.
 We thank the reviewers for pushing us in this direction. This makes our work much stronger from a formal perspective.
 
+Our previouse representation of the typing judgement was confusing. In this new version we instead instrument the
+reduction by encodeing reference capabilities directly in the reduction semantics. This also required us to add an explicit "as" expression.
+
 2. We changed our terminology:
 Before we used "capsule fields" and "capsule references" and we spent quite some text explaining how 
 "capsule fields" can not easily be used to produce a capsule reference. Given the reaction of the reviewers, this terminology must have been intrinsically confusing.
