@@ -11,7 +11,8 @@ Thus we parametrise our language formalism, and assume we already have an expres
 that we can separate our novel invariant protocol, from the non-novel reference capabilities.
 We clearly list in \autoref{s:proof} the requirements we make on such a type system, so that any language satisfying them can soundly support our invariant protocol.
 In \autoref{s:typesystem} we show an example type system, a restricted subset of L42, and prove that it satisfies our requirements. Conceptually our approach can parametrically be applied to any type system supporting these requirements, for example you could extend our type system with additional promotions or generic.
-To keep our small step reduction semantics as conventional as possible, we base our formalism on Featherweight Java~\cite[Chapter~19]{IgarashiEtAl01,pierce2002types}, which is a turing complete~\cite{10.1016/j.tcs.2013.08.017} minimalistic subset of Java.
+To keep our small step reduction semantics as conventional as possible, we base our formalism on Featherweight Java~
+\cite{IgarashiEtAl01}~\cite[Chapter~19]{pierce2002types}, which is a turing complete~\cite{10.1016/j.tcs.2013.08.017} minimalistic subset of Java.
 As such, we model an OO language where receivers are always specified explicitly, and the receivers of field accesses and updates in method bodies are always \Q!this!; that is, all fields are instance-private.
 Constructor declarations are not present explicitly, instead we assume they are all of the form $C\oR \drange{T}{x} \cR\oC \drange[\semicolon]{\Kw{this}\D f}{\Kw{=}\,x} \cC$, for appropriate types $\range[\text{, }]{T}$. %where the fields of $C$ are $\trange{\fmdf}{C}{f}$, and $\derep{\fmdf_i}$ gives the reference capability required for the field kind $\fmdf_i$, see below for the definition.
 Note that we do not model variable updates or traditional subclassing, since this would make the proofs more involved without adding any additional insight.
@@ -41,7 +42,7 @@ We use the following notational conventions:
 	%\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver. Such methods will model I/O.
 	%in particular, calling them can lead to non-deterministic behaviour.
 	
-	\item \Q!mut! methods on \Q!Cap!, unlike all other methods, can have the same method name declared multiple times. To enable a typesystem to be sound, we require that methods with the same name have identical signatures.
+	\item \Q!mut! methods on \Q!Cap! (unlike all other methods) can have the same method name declared multiple times, with identical signatures but different bodies.
 	Such methods will model I/O, for example reading a byte from a file could be modelled by having several different \Q!mut method imm Byte readByte()! implementations, each of which returns a different byte value,
 	a call to such a method will then non-deterministically reduce to one of these values.
 	%\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods can be declared with the same signature multiple times, thus a call to them will non-deterministically chose one of the implementations.
@@ -57,8 +58,8 @@ We encode booleans as ordinary objects, in particular we assume:
 \item Any other implementation of \Q!Bool!, such as a \Q!False! class, represent ``false''.
 \end{itemize}
 Other than the \Q!invariant! method of \Q!True!, we impose no requirements on the methods of the \Q!Bool! interface or its classes, in particular, they could be used to provide logical operations.\footnote{
-In particular, \Q!if! statements can be supported using Church encoding: we would have a \Q!Bool.if! method of form \Q!read method$\,T\,$if($T\,$ifTrue, $T\,$ifFalse)!, for an appropriate type $T$.
-The body of \Q!True.if! will then be \Q!ifTrue!, and the body of \Q!False.if! will be \Q!ifFalse!. In this way, \Q!$x$.if($t$, $f$)! will return $t$ if $x$ is ``true'' and $b$ if it is ``false''.}
+In particular, \Q!if! statements can be supported using Church encoding: we would have a \Q!Bool.i${}$f! method of form \Q!read method$\,T\,$i${}$f($T\,$ifTrue, $T\,$ifFalse)!, for an appropriate type $T$.
+The body of \Q!True.i${}$f! will then be \Q!ifTrue!, and the body of \Q!False.i${}$f! will be \Q!ifFalse!. In this way, \Q!$x$.i${}$f($t$, $f$)! will return $t$ if $x$ is ``true'' and $b$ if it is ``false''.}
 
 For simplicity, we do not formalise actual exception objects, rather we have expressions which are ``\error''s, these correspond to expressions which are currently `throwing' an unchecked exception;
 in this way there is no value associated with an \error.
@@ -318,8 +319,8 @@ Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{
 %we removed Ps, should we remove the macro and see what does not compile?
 \end{itemize}
 
-A typesystem, such as our example one in \autoref{s:typesystem}, may impose additional restrictions on method bodies, for example that they are well typed.
-Our typesystem requirements in \autoref{s:proof} however only refer to the main expression, and hence only the methods that could actually be called need to be restricted.
+%A typesystem, such as our example one in \autoref{s:typesystem}, may impose additional restrictions on method bodies, for example that they are well typed.
+%Our typesystem requirements in \autoref{s:proof} however only refer to the main expression, and hence only the methods that could actually be called need to be restricted.
 
 \subheading{Reduction Rules}
 \newcommand{\rowSpace}{\\\vspace{2.5ex}}%
@@ -412,7 +413,7 @@ Note that although we do not define what $\fr$ actually returns, since it is a \
 
 \item \textsc{access} looks up the value of a field in the memory and returns it, annotated with the appropriate reference capability (see above for the definition of $\rmdf{\mdf}{\fmdf}$).
 \item \textsc{update} updates the value of a field, returning a monitor that re-checks the invariant of the receiver, and if successful, will return the receiver of the update as \Q!mut!. Note that this does \emph{not} check that the receiver of the field update has an appropriate reference capability, it is the responsibility of the type-system to ensure that this rule is only applied to a \Q!mut! or \Q!capsule! receiver. For soundness, we return a \Q!mut! reference even when the receiver is \Q!capsule!. Promotion can then be used to convert the result to a \Q!capsule!, provided the new field value is appropriately encapsulated.
-\item \textsc{call/call mutator} looks for a corresponding method definition in the receiver's class, and reduces to its body with parameters appropriately substituted. The parameters are substituted with the reference capabilities of the method's signature, not the capabilities at the call-site, this is used by the proofs to show that further reductions will respect the capabilities in the method signature. We wrap the body of the method call in a \Q!as! expression to ensure that the returned $\mdf$ is actually as the method signature specified; for example, a method declared as returning a \Q!read! might actually return a \Q!mut!, but the \Q!as! expressions will soundly change it to a \Q!read!, thus preventing it from being used for mutation. As with \Q!as! expressions in general, the type system is required to ensure that this will not break our reference capability guarantees in \autoref{s:proof}.
+\item \textsc{call/call mutator} looks for a corresponding method definition in the receiver's class, and reduces to its body with parameters appropriately substituted. The parameters are substituted with the reference capabilities of the method's signature, not the capabilities at the call-site, this is used by the proofs to show that further reductions will respect the capabilities in the method signature. We wrap the body of the method call in an \Q!as! expression to ensure that the returned $\mdf$ is actually as the method signature specified; for example, a method declared as returning a \Q!read! might actually return a \Q!mut!, but the \Q!as! expressions will soundly change it to a \Q!read!, thus preventing it from being used for mutation. As with \Q!as! expressions in general, the type system is required to ensure that this will not break our reference capability guarantees in \autoref{s:proof}.
 The \textsc{call mutator} rule is like \textsc{call}, but is used when the method is a rep mutator (a \Q!mut! method that accesses a \Q!rep! field):
 it additionally wraps the method body in a monitor expression that will re-check the invariant of the receiver once the body of the method has finished reducing.
 Note that as \Q!Cap! has no \Q!rep! fields and can have multiple definitions of the same method, the \textsc{call} rule allows for non-determinism, but only if the receiver is of class \Q!Cap! and the method is a \Q!mut! method.

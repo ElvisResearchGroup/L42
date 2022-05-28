@@ -102,19 +102,17 @@ Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's reachable object graph. In pon
 In contrast, 
-Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference at all times, as it provides non-destructive reads.
+Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference at all times, as it provides also non-destructive reads.
 
 %Pony does not guarantee that \Q@capsule@ fields %contain a \Q!capsule! reference, as Pony provides non-%destructive reads.
 %Pony's \Q!capsule! fields are still useful for safe %parallelism, as destructive reads of a \Q!capsule! %field return a \Q!capsule! reference (which can then %be sent to other actors), however the reachable object graph of a \Q!%capsule! field can be mutated by the same actor, even %within methods of unrelated objects.
 %L42 supports another variation of \Q!capsule! fields %similar to Pony's, but does not support destructive %reads~\cite{ServettoEtAl13a,GIANNINI2019145}.
-Pony's \Q!capsule! fields
-% do not prevent representation exposure.
-%These forms of \Q!capsule! fields
- are useful for safe parallelism, but not invariant checking; while Gordon \etal's cannot be read non-destructively.
+%Pony's \Q!capsule! fields
+% are useful for safe parallelism, but not invariant checking; while Gordon \etal's cannot be read non-destructively.
 
 The formal model of L42~\cite{GIANNINI2019145} does not
 contains \Q@capsule@ fields.
-The L42 concrete language interprets the syntax for capsule fields as private \Q@mut@ fields with some extra restrictions, including being initialized an upudated only with \Q@capsule@ references.
+The L42 concrete language interprets the syntax for capsule fields as private \Q@mut@ fields with some extra restrictions, including being initialized and updated only with \Q@capsule@ references.
 Those \emph{encapsulated} fields allows to model various forms of ownership and parallelism.
 \footnote{It may seem surprising that 
 those weaker forms of encapsulation are still sufficient to ensure safe parallelism.
@@ -159,6 +157,7 @@ L42 also allows such expression to use \Q!read! free variables as well as \Q!mut
 %\footnote{
 %This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
 %}
+
 This is the main improvement on the flexibility of reference capabilities in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
 these reference capabilities are opt-in: a programmer can write many classes
@@ -204,7 +203,7 @@ is in the work of Lagorio and Servetto~\cite{JOT:issue_2011_01/article1}.
 if all variables declared outside of the block are \Q@final@ and all those of a \Q@mut@ type were \Q@read@.
 With such restrictions those \Q@try-catch@es can not rely on side effects
 to produce a result. In L42 \Q@try-catch@ is an expression, so the \Q@try@ can produce a result without the need of updating local variables.
-In a language where the \Q@try-catch@ is a statement, the \Q@try@ can still produce a result; for example using the \Q@return@ keywork.
+In a language where the \Q@try-catch@ is a statement, the \Q@try@ can still produce a result; for example using the \Q@return@ keyword.
 
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.

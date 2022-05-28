@@ -68,10 +68,12 @@ remotely breaking the invariant of \Q@person@ without any interaction with the \
 \begin{lstlisting}
 class MagicCounter {//INVALID EXAMPLE
   Int counter = 0;
-  method Int incr(){return unsafe{counter++}; /*using internal mutability*/}}
+  method Int incr(){return unsafe{counter++};} //using a backdoor
+}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);//can be 'imm' since it is 'unsafe'
-  @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
+  @Override read method Bool isEmpty(){return this.c.incr()!=2;}
+}
 ...
 NastyS name = new NastyS(); //the type system believes name's ROG is immutable
 Person person = new Person(name); // person is valid, counter=1

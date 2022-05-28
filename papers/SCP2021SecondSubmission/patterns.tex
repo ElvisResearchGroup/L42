@@ -203,7 +203,7 @@ static method Void zoom(mut Widget w) {
 In the context of reference capabilities, \Q@capsule@ lambdas/closures will only be allowed to capture \Q@imm@ and \Q@capsule@ local variables.
 Note that the \Q@Transformer@ parameter to \Q@transform@ is \Q@capsule@ and the method \Q@Trasformer.apply@ takes a \Q@capsule@ receiver. In particular, this means that \Q@transform@ will be able to call the lambda at most once,
 and that those lambdas cannot be saved and passed to multiple calls to \Q@transform@.
-However, we could instead make \Q@transform@ take an \Q@imm@ \Q@Transformer@, and make \Q@Transformer.apply@ be an \Q@imm@ method, this would allow those lambdas to be freely copied and called multiple times, however they would only be able to capture \Q@imm@ local variables.
+However, we could instead make \Q@transform@ take an \Q@imm@ \Q@Transformer@, and make \Q@Transformer.apply@ be an \Q@imm@ method. This would allow those lambdas to be freely copied and called multiple times, however they would only be able to capture \Q@imm@ local variables.
 %not be able to capture pre-existing mutable objects.
 
 Here, we assume lambdas, as in Java, are sugar for normal objects that implement an interface with a single abstract method.
@@ -282,10 +282,10 @@ others can be freely defined by the user code, as demonstrated below:
 class MyNode{
   mut Nodes directConnections;
   mut method mut Nodes directConnections(){ return this.directConnections; }
-  MyNode(mut Nodes directConnections){..}
+  MyNode(mut Nodes directConnections){../*presented later*/..}
   read method Bool subInvariant(read Nodes nodes){
     /* any user defined condition on this or nodes */}  
-  capsule method read MyNode addToGraph(mut Graph g){..}
+  capsule method read MyNode addToGraph(mut Graph g){../*presented later*/..}
   read method Void connectWith(read Node other, mut Graph g){..}
 }
 ...
