@@ -30,17 +30,14 @@ class SafeMovable implements Widget {
   @Override read method Int height() { return this.height; }
   @Override read method read Widgets children() { return this.box.c; }
   @Override mut method Void dispatch(Event e) {
-    for (Widget w:this.box.c) { w.dispatch(e); }
-  }
+    for (Widget w:this.box.c) { w.dispatch(e); }}
   read method Bool invariant() {../* presented later */..}
   SafeMovable(capsule Widgets c) { this.box = makeBox(c); }
   static method capsule Box makeBox(capsule Widgets c) {
     mut Box b = new Box(5, 5, c);
     b.c.add(new Button(0, 0, 10, 10, new MoveAction(b));
     return b;// mut b is soundly promoted to capsule
-  }
-}
-
+  }}
 class Box { Int l; Int t; mut Widgets c; Box(Int l, Int t, mut Widgets c) {..} }
 class MoveAction implements Action {
   mut Box outer;
@@ -94,17 +91,16 @@ however due to the `uniform access principle'~\cite{Meyer:1992:EL:129093}%\footn
 %L42 also follows the Eiffel uniform access principle: field accesses are the same as method calls.%
 %}
 , Eiffel allows fields to directly implement methods,
- allowing the% 
- \newlength{\imglength}%
- \setlength{\imglength}{0.40\textwidth}%
- \columnsep=0.5em%
- \begin{wrapfigure}{r}{\imglength}%
- 	\setbox0=\hbox{\strut}%
-% 	\vspace{-3\ht0}%
- 	\includegraphics[width=\imglength]{GuiImg}%
- 	\vspace{-2\ht0}%
- \end{wrapfigure}% 
- \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!'s \Q!width()! and \Q!height()! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would perform invariant checks.
+ allowing the \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!'s \Q!width()! and \Q!height()! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would perform invariant checks.
+\newlength{\imglength}%
+\setlength{\imglength}{0.44\textwidth}%
+\columnsep=0.5em%
+\begin{wrapfigure}{r}{\imglength}%
+	\setbox0=\hbox{\strut}%
+	\vspace{1\ht0}%
+	\includegraphics[width=\imglength]{GuiImg}%
+	\vspace{-2\ht0}%
+\end{wrapfigure}% 
 
 %though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
 % D and Eiffel have slightly different interpretation of
@@ -115,9 +111,7 @@ When we ran our test case following the D approach, the \Q!invariant()! method w
 \footnote{
 This difference is caused by Eiffel treating getters specially, and skipping invariant checks when calling a getter.
 Thus, even ignoring getter methods, the visible state semantic would still run 14 millions of invariant checks.
-}%
- %\footnote{%
-%We expect all (sound) runtime approaches based on visible state semantics ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design} to produce similar results.}
+}
 in comparison our invariant protocol only performed $77$ calls. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls may invoke further invariant checks. Note that \Q!width()! and \Q!height()! are simply getters for fields, whereas the other two are non-trivial \emph{methods}.
 Concluding, we have shown that when an invariant check queries other objects with invariants the visible state semantics may cause an exponential explosion in the number of checks.
 

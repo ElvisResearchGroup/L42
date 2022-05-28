@@ -142,34 +142,28 @@ different initialisation expressions must use rep mutators that operate on diffe
 In this way, L42 can express parallel computation processing arbitrary complex mutable objects inside well encapsulated data structures.
 Consider the following example, where instances of \Q@Foo@ could be arbitrarily complex; containing (possibly circular) graphs of mutable objects.
 \begin{lstlisting}[deletekeywords=label]
-
-
 Foo=Data:{... /*mut method Void op(I a, S b)*/ ...}
-
-Tree={interface [HasToS]
+Tree = {interface [HasToS]
   mut method Void op(I a, S b)
 }
-
 Node = Data:{[Tree] 
   capsule Tree left, capsule Tree right //the L42 syntax uses `capsule' instead of `rep'
   @Cache.ForkJoin
   mut method Void op(I a, S b) = (
     unused1 = this.leftOp(a=a, b=b)
     unused2 = this.rightOp(a=a, b=b)
-    void
-    )
+    void )
   @Cache.Clear
   class method Void leftOp(mut Tree left, I a, S b) = left.op(a=a, b=b)
   @Cache.Clear
-  class method Void rightOp(mut Tree right, I a, S b) = right.op(a=a, b=b)
-  }
+  class method Void rightOp(mut Tree right, I a, S b) = right.op(a=a, b=b) 
+}
 Leaf = Data:{[Tree]
   capsule Foo label
   @Cache.Clear
-  class method Void op(mut Foo label, I a, S b) = label.op(a=a, b=b)
-  }
-//usage
-mut Tree top = Node(
+  class method Void op(mut Foo label, I a, S b) = label.op(a=a, b=b) 
+}
+mut Tree top = Node( //usage
   left = Node(
     left = Leaf(label=...)
     right = Leaf(label=...)
@@ -177,8 +171,7 @@ mut Tree top = Node(
   right = Node(
     left = Leaf(label=...)
     right = Leaf(label=...)
-    )
-  )
+    ))
 top.op(a=15I, b=S"hello")
 \end{lstlisting}
 

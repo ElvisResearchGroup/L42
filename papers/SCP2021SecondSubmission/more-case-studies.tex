@@ -120,8 +120,7 @@ class Person {
   read method Bool invariant() {
     return !this.name.equals("") && this.daysLived >= 0 
         && this.birthday >= 0 && this.birthday < 365;
-  }
-}
+  }}
 class Family { 
   static class Box { 
     mut List<Person> parents;

@@ -192,6 +192,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 		The proof follows from induction on the number of reductions, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
 		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true}).
 	\qed\end{proof}
+	\LS
 	
 	\noindent We show that a sub-expression can mutate an object only if it is \muty:
 	
@@ -202,11 +203,8 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 		By \thm{No Dangling}, $l$ is always in the $\dom$ of memory, so 
 		by \thm{Mut Consistency}, $l$ never becomes $\muty$, and so we never obtain a $\Kw{mut}$ or $\Kw{capsule}$ reference to it, thus by \thm{Mut Update}, we never update the fields of $l$, and there are no reduction rules that remove from $\s$.
 		\qed\end{proof}
-	
-	
 	\LS
 	
-	\LS
 		We can use our object capability discipline (described in \autoref{s:formalism}) to prove that the \Q!invariant()! method is deterministic and does not mutate existing memory:%
 	
 \SS\begin{Lemma}[Determinism]\ \\
@@ -225,6 +223,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	As all other methods are uniquely defined, the reduction must have been deterministic, i.e.  $\s''|\e'' \Rightarrow \s'|e'$, and so by the inductive hypothesis, we have $\s|\invariant{l} \Rightarrow^{n} \s''|e''$.
 	\qed\end{proof}
 
+	\LS
 \subheading{Rep Field Soundness}
 Now we define and prove important properties about our novel \Q!rep! fields. We first start with a few core auxiliary definitions.
 To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! field names for $l$:\\
@@ -420,10 +419,9 @@ We then proceed by cases on the reduction rule applied, and prove the theorems c
 				Moreover, by the \textsc{call} rule, $e$ is not a rep mutator, if $e = \E[\mdf'\,l_0\D f]$, for some $f \in \rf(\s, l_0)$, we must have that $m$ was not a \Q!mut! method.
 				Since fields are instance-private, we must have $\mdf' \nleq \Kw{mut}$, and by our well-formedness rules on method bodies, $e$ doesn't contain any monitors, thus we can't have caused $l_0$ to be \RM.
 
-			\item Otherwise, the rule applied was \textsc{call mutator}, and $m$ is a rep mutator, so $e = \M{l_0}{e'}{\invariant{l_0}}$.
+			\item Otherwise, the rule applied was \textsc{call mutator}, and $m$ is a rep mutator, and hence we have $e = \M{l_0}{e'}{\invariant{l_0}}$.
 				By our rules for rep mutators, $m$ must be a \Q!mut! method with only \Q!imm! and \Q!capsule! parameters, thus by \thm{Type Consistency}, 
 				$\mdf_0 \leq \Kw{mut}$, and for each $i \in [1, n]$, $\mdf_i \in \{\Kw{imm},\Kw{capsule}\}$. 
-					
 				By \thm{Imm Consistency} and \thm{Capsule Consistency}, $l_0$ can't be reachable from any $l_i$. Since rep mutators use \Q!this! only once, to access a \Q!rep! field, $e' = \E[\Kw{mut}\,l_0\D f]$, for some $f \in \rf(\s, l_0)$. 
 				By our rules for rep mutators, $l_0 \notin \E$, and $l_0$ is not \reach from any $l_i$, and by our well-formedness rules for method bodies, 
 				there are no other $l$s in $\E$, thus we have that $l_0$ is not \reach from any $\E$, thus \HNO now holds for $l$.
