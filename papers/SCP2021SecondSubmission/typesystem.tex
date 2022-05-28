@@ -1,11 +1,7 @@
 \section{Example Type System and Proof of Requirements}
 \lstset{language=FortyFour} % Make all code bold
-
-\let\p=\undefined % so we dob't use it!
 \label{s:typesystem}
-\newcommand{\TODO}[1]{\IO{\textbf{TODO: #1}}}
-\newcommand{\EXPLAIN}{\TODO{ADD EXPLANATION HERE!!!}}
-\newcommand{\REFORMAT}{\color{orange}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In this section we formalise a lightweight version of the L42 type system. We then prove that it satisfies the requirements in \autoref{s:proof}, and hence soundly supports our invariant protocol. This demonstrates that our protocol can be satisfied by a realistic type system.
@@ -271,7 +267,6 @@ We note that if an expression is well-typed, then each subexpression must also b
 \qed\end{proof}
 
 Now we show that if we have a $\ty eT$ then we can substitute each variable in $\dom(\G)$ with an appropriate reference, and $e$ will still have type $T$:
-\IOComm{I made this lemma take an empty $\s$, to make the proofs simpler.}%
 \SS\begin{Lemma}[Substitution]\ \\
 	\indent If $\dom(\G) = \{x_1,\ldots,x_n\}$, $\ty[\emptyset] eT$, and $\mdf_1\,\C{l_1} \leq \G(x_1),\ldots,\mdf_n\,\C{l_n} \leq \G(x_n)$,\\
 	\indent then $\tyr {e[\trange x{\!\coloneqq\mdf}l]}T$.
@@ -310,7 +305,7 @@ Now we show that if we have a $\ty eT$ then we can substitute each variable in $
 			By the inductive hypothesis, we also have $\tyr{e'_1}T$.
 			Thus by the $\textsc{TTryCatch1}$ rule we have $\tyr{\try{e'_0}{e'_1}}T$.
 
-		\item \IO{Suppose the $\textsc{TRef}$ or $\textsc{TMonitor}$ rules applied, then we would have an $l \in \dom(\emptyset)$, a contradiction.}
+		\item Suppose the $\textsc{TRef}$ or $\textsc{TMonitor}$ rules applied, then we would have an $l \in \dom(\emptyset)$, a contradiction.
 		\item Otherwise, the $\textsc{TSub}$, $\textsc{TUpdate}$,
 		$\textsc{TNew}$, $\textsc{TAccess},$ $\textsc{TTryCatch2}$, 
 		$\textsc{TCall}$, or $\textsc{TAs}$ typing rule applied.
@@ -608,7 +603,6 @@ This lemma is needed to reason over our $\ty[\s][\demut{\G}]{e}{T}$ judgements: 
 	some $e'$ where $\s_0|e'_0\rightarrow^n\s_n|e'$ and $e\sim e'$.
 \end{Lemma}
 \SS\begin{proof}
-	\REFORMAT
 	The proof is by induction on $n$.
 	In the first base case, we assume $n = 0$, and
 	so we have $\s = \s_0$, $e = e_0$, and we can set $e' = e'_0$
@@ -623,10 +617,10 @@ This lemma is needed to reason over our $\ty[\s][\demut{\G}]{e}{T}$ judgements: 
 	with $\s|\EV'[e'_1]\rightarrow\s|\EV'[e'_2]$ and $e_2\sim e'_2$:\SS
 	\begin{itemize}
 		\item Suppose the $\textsc{access}$ rule applied, i.e. we have $e_1 = \mdf\,l\D f$,
-		$\s = \s_0$, and $e_2 = \rmdf{\mdf}{\fmdf}\,\s_0[l.f]$, where$\C{l}.f = \field{\fmdf}{\_}f$.
+		$\s = \s_0$, and $e_2 = \rmdf{\mdf}{\fmdf}\,\s_0[l.f]$, where $\C{l}.f = \field{\fmdf}{\_}f$.
 			Since $e_1\sim e{}'_1$, we have $e'_1 = \mdf'\,l\D f$, for
 			some $\mdf'$.
-			Let $e'_2 = \rmdf{\mdf'}{\fmdf}\,\s_0[l.f]$, and clearly $e_2\sim e'_2$.
+			Let $e'_2 = \rmdf{\mdf'}{\fmdf}\,\s_0[l.f]$, then clearly $e_2\sim e'_2$.
 			Since the value of $\fmdf$ does not depend on the value of $\mdf$,
 			we can apply the $\textsc{access}$ rule again to get $\s_0|\EV'[\mdf'\,l\D f]\rightarrow\s|\EV'[e_2]$,
 			as required.
@@ -669,12 +663,12 @@ This lemma is needed to reason over our $\ty[\s][\demut{\G}]{e}{T}$ judgements: 
 			right-hand-sides, $\s_0|\EV'[e'_1]\rightarrow\s|\EV'[e'_2]$ is also
 			a valid reduction, as required.
 	\end{itemize}\SS
-	As $\EV[e_1]\sim\EV'[e'_1]$ it follows from the above that $\EV[e_2]\sim\EV'[e'_2]$,
-	so set $e' = \EV'[e'_2]$, then we have $\s_0|e'_0\rightarrow\s|e'$
+	As $\EV[e_1]\sim\EV'[e'_1]$, it follows from the above that $\EV[e_2]\sim\EV'[e'_2]$,
+	so set $e' = \EV'[e'_2]$, and then we have $\s_0|e'_0\rightarrow\s|e'$
 	and $e\sim e'$, as required.
 	
 	In the inductive case, we have $n = k+1$ and $\s_0|e_0\rightarrow^{k}\s_k|e_k\rightarrow\s|e$.
-	By the inductive hypothesis we have some $e'_k$ such that $\s_0|e'_0\rightarrow^{k}\s_k|e'_k$
+	By the inductive hypothesis, we have some $e'_k$ such that $\s_0|e'_0\rightarrow^{k}\s_k|e'_k$
 	and $e_k\sim e'_k$, so by the base case for $n = 1$, we have
 	some $e'$ with $\s_k|e'_k\rightarrow\s|e'$ and $e'\sim e$, thus
 	we have $\s_0|e'_0\rightarrow^{k+1}\s|e'$ as required.
@@ -786,7 +780,6 @@ over expressions typed under a $\demut{\G}$.
 	and $\s|e\rightarrow^{n}\s'|e'$, then not $\muty(\s',e',l)$.
 \end{Lemma}
 \SS\begin{proof}
-	\REFORMAT
 	The proof is by induction on $n$.
 	In the first base case, we assume that $n = 0$, and our lemma trivially holds since $\s' = \s$ and $e' = e$. 
 
@@ -806,11 +799,11 @@ over expressions typed under a $\demut{\G}$.
 			$l_1\in\rog(\s',l)$ and some $l_2$ with $\Kw{mut}\,l_2\in e'$
 			or $\Kw{capsule}\,l_2\in e'$, and $l_1\in\mrog(\s',l_2)$.
 			Since $\s' = \s[l'.f = v]$ and $l$ was not previously $\muty$, we
-			must have made $l_1\in\mrog(\s',l_2)$ through the fact that
+			must have caused $l_1$ to be in $\mrog(\s',l_2)$ through the fact that
 			$\s'(l'.f) = l''$, and so we have that $\C[\s']{l'}.f = \field{\fmdf}Cf$
 			for some $\fmdf\in\{\Kw{mut},\Kw{rep}\}$.
 			Thus before the reduction, we had $l_1\in\mrog(\s,l'')$ and $l'\in\mrog(\s,l_2)$.
-			Thus we are extending the $\mrog$s by making $l'.f\to l''$.
+%			Thus we are extending the $\mrog$s by making $l'.f\to l''$.
 			By $\thm{Type Preservation}$, $\thm{Type Rule}$, and our $\textsc{TUpdate}$
 			typing rule, we have that $\mdf'\in\{\Kw{mut},\Kw{capsule}\}$.
 			Since $l_1\in\mrog(\s,l'')$ and $l_1\in\rog(\s,l)$, we thus
@@ -830,7 +823,7 @@ over expressions typed under a $\demut{\G}$.
 		\item Suppose that the $\textsc{new/new true}$ rule was
 		applied, i.e. we have some $\EV$ with $e = \EV[\new C{\drange{\mdf}l}]$,
 		$\s' = \s,l'\mapsto C\{\range l\}$, and $e'\in\{\EV[\M{l'}{\Kw{mut}\,l'}{\invariant{l'}}],\,\EV[\Kw{mut}\,l']\}$.
-			Since no-preexisting part of $\s$ is modified, we must have that
+			Since no preexisting part of $\s$ is modified, we must have that
 			$l$ is now $\muty$ through the $\Kw{mut}\,l'$ reference in $e'$,
 			i.e. we must have some $l''\in\rog(\s,l)$ with $l''\in\mrog(\s',l')$.
 			By $\thm{No Dangling}$ we have $l'' \neq  l'$, thus we have that
@@ -853,33 +846,33 @@ over expressions typed under a $\demut{\G}$.
 			was already $\muty$ through $\mdf\,l$, a contradiction.
 
 		\item Suppose that the $\textsc{call/call mutator}$ rule
-		was applied, i.e. we have some $\EV$ with $e = \EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]$,
+		was applied, i.e. we have some $\EV$ with\\
+		$e = \EV[\call{\mdf_0\,l_0}m{\drange{\mdf}l}]$,
 		$\s' = \s$, and $e'\in\{\as{e''}{\mdf''},\,\M{l_0}{\as{e''}{\mdf''}}{\invariant{l_0}}\}$,
 		$e'' = e'''[\Kw{this}\coloneqq\mdf'_0\,l_0,\trange x{\!\coloneqq\mdf'}l]$,
-		and $\C{l_0} = \method{\mdf'_0}Tm{\drange{\mdf'}{\_\,x}}{e'''}$
+		and $\C{l_0} = \method{\mdf'_0}Tm{\drange{\mdf'}{\_\,x}}{e'''}$.
 			As we haven't modified memory, for this reduction to have made $l$
 			$\muty$, we must have introduced a $\Kw{mut}$ or $\Kw{capsule}$ reference
 			in $e''$.
 			By our well-formedness rules on method bodies, there are no references
 			in $e'''$, thus $l$ must be $\muty$ through one of the $\mdf'_i\,l_i$
-			references we substituted into $e'''$, for some $i\in[1,n]$ where
+			references we substituted into $e'''$, for some $i\in[1,n]$, where
 			$\mdf'_i \leq \Kw{mut}$.
 			By $\thm{Type Preservation}$ and $\thm{Method Type}$, we have
-			that $\mdf_i \leq \mdf'_i$, and so $\mdf_i \leq \Kw{mut}$ and so
+			that $\mdf_i \leq \mdf'_i$, and so $\mdf_i \leq \Kw{mut}$ and hence
 			$e$ already had a reference, $\mdf_i\,l_i$, through which $l$
 			was $\muty$, a contradiction.
 
-		\item Otherwise, $\textsc{try enter/monitor exit/try ok/try error}$
-		was applied. However, memory was not modified, and no new references
+		\item Otherwise, the $\textsc{try enter}$, $\textsc{monitor exit}$, \textsc{try ok}, or \textsc{try error} rule was applied. However, memory was not modified, and no new references
 		where added to the main expression, thus we can't have caused $\muty$
 		to now hold, a contradiction.
 	\end{itemize}
 	
 	In the inductive case, we have
 	$n = k+1$ and $\s|e\rightarrow^{k}\s_k|e_k\rightarrow\s'|e'$. By the inductive hypothesis
-	we have not $\muty(\s_k,e_k,l)$. We clearly have $l\in\dom(\s_k)$
-	as no reduction rules remove from memory, thus by the base case for
-	$n = 1$, we have not $\muty(\s',e',l)$ as required.
+	we have not $\muty(\s_k,e_k,l)$. We clearly have $l\in\dom(\s_k)$,
+	as no reduction rule removes from memory, thus by the base case for
+	$n = 1$, we have not $\muty(\s',e',l)$, as required.
 \qed\end{proof}
 
 \LS
@@ -917,7 +910,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 	\end{ienumerate}
 \end{theorem}
 \SS\begin{proof}
-	\IO{We prove this by induction on the number of reductions since
+	We prove this by induction on the number of reductions since
 	the initial main expression and memory. The base case is trivial since
 	the main expression cannot contain any $\Kw{imm}$ references, and there
 	are no fields in memory, thus nothing can be $\immut$, moreover the
@@ -925,7 +918,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 	
 	In the inductive case we assume that our theorem holds for all previous
 	states, we then pick an arbitrary $l$ and prove the two conclusions
-	for the current $\s|e$.}
+	for the current $\s|e$.
 	
 	\begin{enumerate}
 		\item First we show that $\thm{Imm Consistency}$ holds.
@@ -993,10 +986,10 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 				As we haven't introduced any \Q!imm! references to the main expression, any only $\s'[l'.f]$ was modified, it follows that for $l$ to now be $\immut$ we must have $C.f = \field{\Kw{imm}}{\_}f$ and $l \in \rog(\s, l'')$.
 				\LSiitem
 				
-				\IO{Suppose $l \notin \rog(\s', l'')$.
-				But the only difference between $\s$ and $\s'$ is at $l'.f$.
+				Suppose $l \notin \rog(\s', l'')$.
+				The only difference between $\s$ and $\s'$ is at $l'.f$.
 				And so $l$ must have been added to the $\rog$ of $l''$ through the new value of $l'.f$, i.e. $\s[l'.f]$.
-				But as no other part of $\s'$ was modified, we must have $l \in \rog(\s', \s[l'.f])$, but $\s[l.f] = l''$, a contradiction.}
+				But as no other part of $\s'$ was modified, we must have $l \in \rog(\s', \s[l'.f])$, but $\s[l.f] = l''$, a contradiction.
 				\LSiitem
 				
 				Thus $l \in \rog(\s, l'')$.
@@ -1032,7 +1025,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 		\end{itemize}
 	
 	\item Now we show that \thm{Capsule Consistency} holds.
-		\IO{Suppose $e = \E[\Kw{capsule}\,l]$, for some $\E$,} and $\encap(\s,\E,l)$
+		Suppose $e = \E[\Kw{capsule}\,l]$, for some $\E$, and $\encap(\s,\E,l)$
 		doesn't hold.
 		\LSenum
 		
@@ -1041,20 +1034,20 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 		We now proceed by cases on the reduction rule we just applied, and
 		show a contradiction, thus proving that $l$ must in fact be $\encap$:
 		\begin{itemize}
-			\item \IO{$\crule{new/new true}{\s'}{\EV[e'']}{\s}{\E[\Kw{capsule}\,l]}$, where
+			\item $\crule{new/new true}{\s'}{\EV[e'']}{\s}{\E[\Kw{capsule}\,l]}$, where
 			$\s = \s',l_0\mapsto C\{\ls\}$, $\E[\Kw{capsule}\,l] = \EV[e']$, $e'\in\{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}},\,\Kw{mut}\,l_0\}$,
-			and $e'' = \new C{\vs}$.}
+			and $e'' = \new C{\vs}$.
 			\begin{itemize}
-				\item \IO{Suppose $\E$ is of form $\EV[\E']$, i.e. the hole in $\E$ is within
+				\item Suppose $\E$ is of form $\EV[\E']$, i.e. the hole in $\E$ is within
 				$e'$.
-					But there are no $\Kw{capsule}$s in $e'$, a contradiction.}
+					But there are no $\Kw{capsule}$s in $e'$, a contradiction.
 
-				\item \IO{Otherwise, $\E$ is not of form $\EV[\E']$, i.e. the hole in $\E$
+				\item Otherwise, $\E$ is not of form $\EV[\E']$, i.e. the hole in $\E$
 				is within $\EV$, and so $\Kw{capsule}\,l\in\EV$ and $e'\in\E$.
 					As we didn't modify $\EV$, this $\Kw{capsule}\,l$ must have been in the
 					previous state, i.e. we have some $\E'$ with $\EV[e''] = \E'[\Kw{capsule}\,l]$
 					and $e''\in\E'$ (since the hole in $\E$ is not within the hole
-					in $\EV$).}
+					in $\EV$).
 					By $\thm{No Dangling}$, $l\in\dom(\s')$, and since we didn't
 					modify any preexisting objects, we have $\rog(\s,l) = \rog(\s',l)$.
 					By the inductive hypothesis, we have $\encap(\s',\E',l)$, and by $\thm{Mut Consistency}$,
@@ -1062,11 +1055,11 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 					it follows that not $\reach(\s',\E',l')$.
 					\LSiitem
 					
-					\IO{Suppose $l'$ is $\reach$ through $\EV$, that overlaps with \E}, then there is some $l''\in\EV$
+					Suppose $l'$ is $\reach$ through the part of $\EV$ that overlaps with \E, then there is some $l''\in\EV$
 					with $l'\in\rog(\s,l'')$. By $\thm{No Dangling}$, $l''\in\dom(\s')$,
 					and since preexisting memory wasn't modified, it follows that $l'\in\rog(\s',l'')$;
-					\IO{since $l''$ is in the part of $\EV$ that overlaps with $E$, which is identical to the part of $\EV$ that overlaps with $\E'$,
-					we have $l''\in\E'$}, and so we have $\reach(\s',\E',l')$, a contradiction
+					since $l''$ is in the part of $\EV$ that overlaps with $\E$, which is identical to the part of $\EV$ that overlaps with $\E'$,
+					we have $l''\in\E'$, and so we have $\reach(\s',\E',l')$, a contradiction
 					\LSiitem
 					
 					Otherwise, $l'$ is $\reach$ through $e'$, clearly $l'\in\dom(\s')$,
@@ -1168,7 +1161,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 		
 			\item $\crule{as}{\s}{\EV[\as{\mdf\,l''}{\mdf'}]}{\s}e$, where $e = \EV[\mdf'\,l'']$.
 			\begin{itemize}
-				\item Suppose $\E = \EV$, and so $\mdf'\,l'' = \Kw{capsule}\,l$. \IO{This part of the proof is the most complex, as we need to use that fact that $\mdf\,l''$ is the result of reducing an expression that was originally typed under $\demut{\G}$. Thus we need to reason over the entire reduction sequence starting from when the $\Kw{as}$ was initially introduced into the main expression, moreover, the $\demut{\G}$ typing does not actually prevent the $\Kw{as}$ from originally containing $\Kw{mut}$ references, rather it only restricts how the $\Kw{as}$ can \emph{use} them.}
+				\item Suppose $\E = \EV$, and so $\mdf'\,l'' = \Kw{capsule}\,l$. This part of the proof is the most complex, as we need to use that fact that $\mdf\,l''$ is the result of reducing an expression that was originally typed under $\demut{\G}$. Thus we need to reason over the entire reduction sequence starting from when the $\Kw{as}$ was initially introduced into the main expression, moreover, the $\demut{\G}$ typing does not actually prevent the $\Kw{as}$ from originally containing $\Kw{mut}$ references, rather it only restricts how the body of the $\Kw{as}$ can \emph{use} them.
 				\begin{itemize}
 					\item Let $\s_0$ and $e_0$ be such that $\s_0|\EV[\cas{e_0}]$
 					is the earliest state in our reduction sequence where $\s_0|e_0\rightarrow^*\s|\cas{\mdf\,l}$.
@@ -1249,7 +1242,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 						Thus we must have $l_2 \notin \mrog(\s, l)$.
 						\LSiiitem
 						
-					\item \IO{Now consider any $l_4$ where $\reach(\s_0,\EV,l_4)$.}
+					\item Now consider any $l_4$ where $\reach(\s_0,\EV,l_4)$.
 						\LSiiitem
 											
 						Suppose $\s_0(l_4) \neq \s(l_4)$. By $\thm{Non Mutating}$, we must have 
@@ -1260,11 +1253,11 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 						have $\reach(\s_0,\EV[\E_4],l_4)$, a contradiction.
 						\LSiiitem
 					
-						\IO{Thus we must have $\s_0(l_4) = \s(l_4)$.}
+						Thus we must have $\s_0(l_4) = \s(l_4)$.
 						\LSiiitem
 						
-					\item \IO{By the above, reduction cannot have modified memory in such a way as to make something \reach in $\s|\EV$ that was not previously \reach in $\s_0|\EV$.
-					As $\reach(\s,\EV,l')$,  it follows that $\reach(\s_0,\EV,l')$ and $l'\in\dom(\s_0)$.}					
+					\item By the above, reduction cannot have modified memory in such a way as to make something \reach in $\s|\EV$ that was not previously \reach in $\s_0|\EV$.
+					As $\reach(\s,\EV,l')$,  it follows that $\reach(\s_0,\EV,l')$ and $l'\in\dom(\s_0)$.		
 					Since $\muty(\s,\EV[\Kw{capsule}\,l],l')$, by
 					$\thm{Mut Consistency}$, we have $\muty(\s_0,\EV[e_0],l')$.
 					Since $l'\in\rog(\s,l)$, it follows that $\reach(\s,\mdf\,l,l')$
@@ -1275,10 +1268,10 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 					Suppose $\mdf'''' = \Kw{capsule}$.
 							By the inductive hypothesis, we have $\encap(\s_0,\EV[\E'],l'')$, where $\E'[\Kw{capsule}\,l''] = e_0$.
 							Since $\muty(\s_0,\EV[e_0],l')$, from definition of \encap, we have not $\reach(\s_0,\EV[\E'],l')$,
-							and hence \IO{not $\reach(\s_0,\EV,l')$.
+							and hence not $\reach(\s_0,\EV,l')$.
 							By the above, we can't have mutated anything $\reach$
 							from $\EV$, so there is no way we could have made $\reach(\s,\EV,l')$ hold, a
-							contradiction.}
+							contradiction.
 					\LSiitem
 					
 					Suppose $\mdf'''' = \Kw{mut}$.
@@ -1305,12 +1298,10 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 							If $l'$ was in the $\rog$ of any $\Kw{imm}$ field in the $\rog$
 							of $l''$, then $\immut(\s_0,\EV[\cas{e_0}],l')$ would hold,
 							and by the case for $\mdf'''' = \Kw{imm}$ above, we would also have a contradiction.
-
 							Thus, $l'$ must only be $\reach$ through $\Kw{read}$ references
 							in $e_0$, and not through any $\Kw{imm}$ fields.
-						    %\IO{Consider our reduction sequence }
-						    
-							\IO{By $\thm{Type Consistency}$ and our typing rules, it follows that during reduction,
+							We now show that the body of the \Q!as! expression never obtains a non-$\Kw{read}$ reference to $l'$, and so it cannot possibly store $l'$ in the $\rog$ of $l$.			    
+							By $\thm{Type Consistency}$ and our typing rules, it follows that during reduction,
 							a $\Kw{read}$ reference cannot change reference capabilities (because our $\textsc{TAs}$,
 							$\textsc{TAsCapsule}$, and $\textsc{TCall}$ rules prohibit this),
 							$\Kw{read}$ references cannot be stored on the heap (our $\textsc{TUpdate}$
@@ -1324,7 +1315,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 							Moreover, as we cannot store a \Q!read! on the heap, during the reduction $\s_0|e_0\rightarrow^*\s|\mdf\,l$, $l'$ will never enter the \rog of an \Q!imm! field, and so will never become \reach through an \Q!imm! reference.
 							Thus we have that at each step of our $\s_0|e_0\rightarrow^*\s|\mdf\,l$ reduction: either $l'$ is not
 							$\reach$, or it is $\reach$ only
-							through $\Kw{read}$ references.}
+							through $\Kw{read}$ references.
 							By $\thm{Valid Type}$ and our $\textsc{TAs}$ and $\textsc{TAsCapsule}$
 							rules, we have that $\mdf \neq \Kw{read}$, hence $l'$ cannot
 							be $\reach$ through $\mdf\,l$.
@@ -1406,28 +1397,29 @@ Finally, we prove \thm{Strong Exception Safety}, in a manner similar to how we p
 		$\C[\s'_0]{l_i} \leq C_i$, and by $\thm{Substitution}$ we have $\tyr{\demut{e_0}}{T'}$.
 
 	Now let $l\in\dom(\s)$ with $\reach(\s,\EV[e'],l)$.
-	If we don't have $\reach(\s,e_0,l)$ then by $\thm{Lost Forever}$,
-	the reduction $\s|e_0\rightarrow^*\s'|e$ cannot involve a $\textsc{update}$
+	If we don't have $\reach(\s,e_0,l)$, then by $\thm{Lost Forever}$,
+	the reduction $\s|e_0\rightarrow^*\s'|e$ cannot involve an $\textsc{update}$
 	on $l$, i.e. we must have $\s'(l) = \s(l)$.
+	
 	Suppose $l$ is $\muty$ through a $\Kw{capsule}$ reference, i.e. we have
-	some $\E$, $l'$, and $l''$ with $l'\in\rog(\s,l)$, $e_0 = \E[\Kw{capsule}\,l'']$,
-	and $l'\in\mrog(\s,l'')$:
-	\begin{itemize}
-		\item Clearly we also have $\muty(\s,\EV[\trys{\s}{e_0}{e'_0}],l)$,
-		and since $\VS(\s,\EV[\trys{\s}{e_0}{e'_0}])$, by $\thm{Capsule Consistency}$
-		we have not $\reach(\s,\EV[\trys{\s}{\E}{e'_0}],l)$.
-		\item But this implies not $\reach(\s,\EV,l)$ and since $e'_0 = e'$,
-		not $\reach(\s,e',l)$. Thus we have not $\reach(\s,\EV[e'_0])$,
+	some $\E''$, $l'$, and $l''$, with $l'\in\rog(\s,l)$, $e_0 = \E''[\Kw{capsule}\,l'']$,
+	and $l'\in\mrog(\s,l'')$.
+		Clearly we also have $\muty(\s,\EV[\trys{\s}{e_0}{e'_0}],l)$,
+		and since $\VS(\s,\EV[\trys{\s}{e_0}{e'_0}])$, by $\thm{Capsule Consistency}$,
+		not $\reach(\s,\EV[\trys{\s}{\E}{e'_0}],l)$.
+		But this implies not $\reach(\s,\EV,l)$, and since $e'_0 = e'$,
+		not $\reach(\s,e',l)$ holds. Thus we have not $\reach(\s,\EV[e'_0])$,
 		a contradiction.
-	\end{itemize}
-	By the above, $l$ is not $\muty$ through any $\Kw{capsule}$ reference
-	in $\demut{e_0}$ either, as such a reference would be in $e_0$
-	as well.
+		
+	Therefore, $l$ is not $\muty$ through any $\Kw{capsule}$ reference
+	in $\demut{e_0}$, since such a reference would be in $e_0$, which yields a contradiction.
+	
+	
 	Since $\demut{e_0}$ has no $\Kw{mut}$ references, it follows that
 	not $\muty(\s,\demut{e_0},l)$.
 	Clearly $e_0\sim\demut{e_0}$, and since $\demut{e_0}$ $\s|e_0\rightarrow^*\s'|e$,
 	by $\thm{Bisimulation}$, there is some $e''$ such that $\s|\demut{e_0}\rightarrow^*\s'|e''$.
-	Since $\tyr{\demut{e_0}}{T'}$ holds and not $\muty(\s,\demut{e_0},l)$,
+	Moreover, by \thm{Valid Type}, $\vdash \s$. Thus since $\tyr{\demut{e_0}}{T'}$ holds and not $\muty(\s,\demut{e_0},l)$,
 	by $\thm{Stronger Non-Mutating}$, we have $\s(l) = \s'(l)$, as
 	required.
 \qed\end{proof}

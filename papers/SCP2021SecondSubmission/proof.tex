@@ -104,9 +104,8 @@ then it is \immut in $\E[e]$, and not \muty in any $e' \in \E[e]$.
 
 \noindent We require that if something was not \muty, it remains that way:%
 \SS\begin{restatable}[Mut Consistency]{Requirement}{REQMutCons}\ \\
-	\indent If $\VS(\s, \EV[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
+	\indent If $\VS(\s, \E[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
 \end{restatable}
-\IOComm{Verify the $\EV$ change doesn't break anything!}
 \SS\noindent Note that this holds even if $l$ is \muty through $\E$, thus an \Q!as! expression cannot change a \Q!read! or \Q!imm! reference to \Q!mut!, as the associated location will not be \muty within the body of the \Q!as! expression, even if there are \Q!mut! references to the same object outside the \Q!as!.
 
 \LS
@@ -163,18 +162,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	First we prove a few useful lemmas about the properties of references in our language.
 
 	\LS
-
-	\noindent We show that a sub-expression can mutate an object only if it is \muty:
 	
-\SS\begin{Lemma}[Non-Mutating]\ \\
-		\indent If $\VS(\s,\E[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^* \s'|e'$, then $\s'(l) = \s(l)$.
-	\end{Lemma}
-	\SS\begin{proof}
-	By \thm{Mut Consistency}, $l$ never becomes $\muty$, and so we never obtain a $\Kw{mut}$ or $\Kw{capsule}$ reference to it, thus by \thm{Mut Update}, we never update the fields of $l$, and there are no reduction rules that remove from $\s$.
-	\qed\end{proof}
-
-
-	\LS
 	By the definition of \VS and the reduction rules themselves, we can show that the main expression and heap never contain dangling references:
 	
 \SS\begin{Lemma}[No Dangling]\ \\
@@ -204,6 +192,19 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true}).
 	\qed\end{proof}
 	
+	\noindent We show that a sub-expression can mutate an object only if it is \muty:
+	
+	\SS\begin{Lemma}[Non-Mutating]\ \\
+		\indent If $\VS(\s,\E[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^* \s'|e'$, then $\s'(l) = \s(l)$.
+	\end{Lemma}
+	\SS\begin{proof}
+		By \thm{No Dangling}, $l$ is always in the $\dom$ of memory, so 
+		by \thm{Mut Consistency}, $l$ never becomes $\muty$, and so we never obtain a $\Kw{mut}$ or $\Kw{capsule}$ reference to it, thus by \thm{Mut Update}, we never update the fields of $l$, and there are no reduction rules that remove from $\s$.
+		\qed\end{proof}
+	
+	
+	\LS
+	
 	\LS
 		We can use our object capability discipline (described in \autoref{s:formalism}) to prove that the \Q!invariant()! method is deterministic and does not mutate existing memory:%
 	
@@ -223,7 +224,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	As all other methods are uniquely defined, the reduction must have been deterministic, i.e.  $\s''|\e'' \Rightarrow \s'|e'$, and so by the inductive hypothesis, we have $\s|\invariant{l} \Rightarrow^{n} \s''|e''$.
 	\qed\end{proof}
 
-\subheading{Rep Field Soundness}\IOComm{Re-read everything from this point!}
+\subheading{Rep Field Soundness}
 Now we define and prove important properties about our novel \Q!rep! fields. We first start with a few core auxiliary definitions.
 To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! field names for $l$:\\
 \indent $\rf(\s,l) = \{f  \text{ where } \C{l}.f = \field{\Kw{rep}}{\_}{f}\}$
@@ -648,7 +649,7 @@ modify the object, but not observe it; only after that moment, the object may be
 \end{ienumerate}
 \end{proof}
 
-\subheading{Proof of Soundness}\IOComm{I haven't checked the proofs here for correctness yet, I need a break...}
+\subheading{Proof of Soundness}
 First we need to prove that an object is not reachable from one of its \Q!imm! fields; if it were, \Q!invariant()! could access such a field and observe a potentially broken object:
 
 \SS\begin{Lemma}[Imm Not Circular]\ \\
