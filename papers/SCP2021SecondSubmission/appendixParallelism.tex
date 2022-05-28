@@ -71,7 +71,7 @@ That is, fork--join methods must follow this specific syntactic pattern:
   )
 \end{lstlisting}
 Here the initialisation expressions, $e_0,\ldots,e_k$, are executed in parallel, and the final expression $e$ is executed once the $e_0,\ldots,e_k$ have finished.
-A naive implementation would execute each of $e_0,\ldots,e_k$  into new threads, the main thread would wait for each of these threads to finish by ``joining'' on them and then execute $e$.
+A naive implementation would execute each $e_0,\ldots,e_k$ in new threads, the main thread would wait for each of these threads to finish by ``joining'' on them and then execute $e$.
 The L42 implementation however aims to be more efficient by not spawning new threads: $e_0,\ldots,e_{k-1}$ are executed by workers from a pool of preexisting threads,
 while $e_k$ executes on the current thread. When all the tasks are completed, $e$ is executed.
 Other approaches to allocating work to threads could also be used provided that the final expression $e$, is only executed after the initialisation expressions have finished.
@@ -109,7 +109,7 @@ UpdateList = Data:{
       this.of(current=current, elem=data.val(current), data=data)
     )
   @Cache.ForkJoin class method Void of(I current, S elem, mut S.List data) = (
-    S newElem = this.map(elem) //first initialization expr.
+    S newElem = this.map(elem) //first initialisation expr.
     this.of(current=current + 1I, data=data)//second init.  expr. (on an unused local var)
     data.set(current, val=newElem) //final expression
     )
@@ -205,7 +205,7 @@ where there were many more reference capabilities, including
 \Q@fresh@ and \Q@baloon@.
 In that version \Q@fresh@ is similar to the current \Q@capsule@ and \Q@baloon@ is similar to one of the various kinds of \Q@capsule@ fields available in L42 before we introduced our \Q@rep@ fields.
 That work was then summarised in a short 6 page paper~\cite{ServettoEtAl13a}, that
-paper uses the \Q!baloon! keyword to also refer to \Q!fresh!; it uses the different context of the reference capability (local variable, field, method parameter etc) to distinguish it's meaning.
+paper uses the \Q!baloon! keyword to also refer to \Q!fresh!; it uses the different context of the reference capability (local variable, field, method parameter etc) to determine it's meaning.
 Even in those earlier works there was no way to recover a \Q@fresh@ reference from a \Q@baloon@. A \Q@baloon@ was basically a kind of encapsulated reference that allowed other restricted kinds of references (\Q@external@ and \Q@external readonly@) to point to objects reachable from it. Looking back to those earlier work it is clear to us that the current L42 type system is much more minimal and elegant.
 Those works suggested forms of parallelism where the type system could cooperate with a few efficient runtime pointer equality checks to decide what to run in parallel.
 Such a direction has not been explored further and it is not currently present in modern versions of L42.
