@@ -89,23 +89,23 @@ As an experiment, we set our implementation to generate invariant checks followi
 where the invariant of the receiver is instead checked at the start and end of \emph{every} 
 public (in D) and qualified\footnote{That is, the receiver is not \Q!this!.} (in Eiffel) method call.
 
-\newlength{\imglength}%
-\setlength{\imglength}{0.40\textwidth}%
-\columnsep=0.5em%
-\begin{wrapfigure}{r}{\imglength}%
-	\setbox0=\hbox{\strut}%
-	\vspace{-3\ht0}%
-	\includegraphics[width=\imglength]{GuiImg}%
-	\vspace{-2\ht0}%
-\end{wrapfigure}%
-
-
 In our \Q!SafeMovable! class, all methods are public, and all calls (outside the invariant) are qualified, thus this difference is irrelevant. Neither protocol performs invariant checks on field accesses or updates,
 however due to the `uniform access principle'~\cite{Meyer:1992:EL:129093}%\footnote{%
 %L42 also follows the Eiffel uniform access principle: field accesses are the same as method calls.%
 %}
 , Eiffel allows fields to directly implement methods,
- allowing the \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!'s \Q!width()! and \Q!height()! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would perform invariant checks.
+ allowing the% 
+ \newlength{\imglength}%
+ \setlength{\imglength}{0.40\textwidth}%
+ \columnsep=0.5em%
+ \begin{wrapfigure}{r}{\imglength}%
+ 	\setbox0=\hbox{\strut}%
+% 	\vspace{-3\ht0}%
+ 	\includegraphics[width=\imglength]{GuiImg}%
+ 	\vspace{-2\ht0}%
+ \end{wrapfigure}% 
+ \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!'s \Q!width()! and \Q!height()! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would perform invariant checks.
+
 %though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
 % D and Eiffel have slightly different interpretation of
 % visible state semantic when qualified/unqualified method calls or field accesses are performed.
