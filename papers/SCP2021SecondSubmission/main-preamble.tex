@@ -147,6 +147,14 @@
 % Spacing hacks!
 \renewcommand{\SS}[1][0.5]{\vspace{-#1\baselineskip}}
 \newcommand{\LS}[1][0.5]{\vspace{#1\baselineskip}}
+% for paragraph breaks in itemize
+\newcommand{\LSitem}{\LS[0.2]}
+% for paragraph breaks in an itemize (inside an itemize or enumerate)
+\newcommand{\LSiitem}{\LS[0.35]}
+% for paragraph breaks in an enumerate
+\newcommand{\LSenum}{\LS[0.5]}
+% Paragraph breaks for an intemize nested within at leastt 2 itemize/enumerates
+\newcommand{\LSiiitem}{\LS[0.5]}
 
 \lstset{aboveskip=0.25\baselineskip,belowskip=0.25\baselineskip} % spacing arround lstlistings
 \newcommand{\SSI}{\SS} % spacing before top level itemizes/enumerations
@@ -216,8 +224,8 @@
 %\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
 \providecommand\G{}
 \renewcommand{\G}{\ensuremath{\Gamma}\xspace}
-\newcommand{\EV}{\ensuremath{\ctx_v{}}\xspace}
-\newcommand{\ER}{\ensuremath{\ctx_r{}}\xspace}
+\newcommand{\EV}{\ensuremath{\ctx_v}\xspace}
+\newcommand{\ER}{\ensuremath{\ctx_r}\xspace}
 \newcommand{\E}{\ensuremath{\ctx}\xspace}
 \newcommand{\s}{\ensuremath{\sigma}\xspace}
 %\renewcommand{\e}{\ensuremath{\sigma}\xspace}
