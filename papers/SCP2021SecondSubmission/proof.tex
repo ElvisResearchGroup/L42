@@ -66,6 +66,7 @@ This allows the type-system to be simpler, in particular, as the initial main ex
 
 First we require that fields and methods are only given values with the correct reference capabilities, i.e. the field initialisers of \Q!new! expressions, the right hand sides of update expressions, and the receiver and parameters of method calls have the capabilities required by the field declarations/method signatures:
 \SS\begin{restatable}[Type Consistency]{Requirement}{REQTypeCons}\
+\LSitem
 \begin{ienumerate}
 	\item If $\VS(\E[\new{C}{\drangex{\mdf}{\_}}])$, then:
 	\begin{nitemize}

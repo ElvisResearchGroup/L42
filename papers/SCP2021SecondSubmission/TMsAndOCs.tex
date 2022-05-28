@@ -102,7 +102,7 @@ Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's reachable object graph. In pon
 In contrast, 
-Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference at all times, as it provides also non-destructive reads.
+Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference at all times, as it also provides non-destructive reads.
 
 %Pony does not guarantee that \Q@capsule@ fields %contain a \Q!capsule! reference, as Pony provides non-%destructive reads.
 %Pony's \Q!capsule! fields are still useful for safe %parallelism, as destructive reads of a \Q!capsule! %field return a \Q!capsule! reference (which can then %be sent to other actors), however the reachable object graph of a \Q!%capsule! field can be mutated by the same actor, even %within methods of unrelated objects.
@@ -112,7 +112,7 @@ Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference 
 
 The formal model of L42~\cite{GIANNINI2019145} does not
 contains \Q@capsule@ fields.
-The L42 concrete language interprets the syntax for capsule fields as private \Q@mut@ fields with some extra restrictions, including being initialized and updated only with \Q@capsule@ references.
+The L42 concrete language interprets the syntax for capsule fields as private \Q@mut@ fields with some extra restrictions, including being initialised and updated only with \Q@capsule@ references.
 Those \emph{encapsulated} fields allows to model various forms of ownership and parallelism.
 \footnote{It may seem surprising that 
 those weaker forms of encapsulation are still sufficient to ensure safe parallelism.
