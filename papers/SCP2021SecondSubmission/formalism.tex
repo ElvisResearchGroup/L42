@@ -30,6 +30,10 @@ We use the following notational conventions:
 	We use the notation $\C{l}$ to get the class name of $l$, $\s[l.f=l']$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$ (this is only used in our proofs since our small step reduction does not need to delete individual locations). The notation $\s,\s'$ combines the two memories, and requires that $\dom(\s)$ is disjoint from $\dom(\s')$.
 	\item We assume a typing judgment of form $\ty{e}{T}$, this says that the expression $e$ has type $T$,
 	where the classes of any locations are stored in $\s$ and the types of variables are stored in the environment $\G : x\rightarrow T$.
+	
+	\item We assume that the type system imposes any additional constraints it needs on method bodies.
+	Our example type system in \autoref{s:typesystem} for example requires that the method bodies are well-typed and only use \Q!capsule! local variables once. However, our proofs in \autoref{s:proof} do not assume any such restrictions.
+	
 \end{itemize}
 
 \noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location can be used in the main expression and would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading/writing. In order to simplify our proof, we assume that:
@@ -318,9 +322,6 @@ Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{
 		then for all $S \in \Ss$, there is some $e$ with $S\,e \in \Ms$.
 %we removed Ps, should we remove the macro and see what does not compile?
 \end{itemize}
-
-%A typesystem, such as our example one in \autoref{s:typesystem}, may impose additional restrictions on method bodies, for example that they are well typed.
-%Our typesystem requirements in \autoref{s:proof} however only refer to the main expression, and hence only the methods that could actually be called need to be restricted.
 
 \subheading{Reduction Rules}
 \newcommand{\rowSpace}{\\\vspace{2.5ex}}%
