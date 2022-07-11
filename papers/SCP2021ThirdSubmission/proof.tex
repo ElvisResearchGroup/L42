@@ -1,0 +1,683 @@
+\section{Invariant Protocol Proof and Type System Requirements}
+
+\lstset{language=FortyFour} % Make all code bold
+\label{s:proof}
+As previously discussed, we provide a set of requirements that the type system needs to ensure, and prove the soundness of our invariant protocol over these,
+in this way we are parametric over the concrete typesystem. In \autoref{s:typesystem}, we present an example typesystem and prove that it satisfies these requirements.
+
+\subheading{Auxiliary Definitions}
+To express our type system assumptions, we first need some auxiliary definitions. 
+\LS
+
+\noindent First, we inductively define the set of objects in the reachable object graph (\rog) of a location $l$:\\
+\indent $l' \in \rog(\s, l)$ iff:%
+\begin{iitemize}
+	\item $l' = l$, or\SS
+	\item $\exists f$ such that $l' \in \rog(\s, \s[l.f])$
+\end{iitemize}
+\LS
+We define the \mrog of an $l$ to be the locations reachable from $l$ by traversing through any number of \Q!mut! and \Q!rep! fields:\\
+\indent $l' \in \mrog(\s, l)$ iff:%
+\begin{iitemize}
+	\item $l' = l$, or\SS
+	\item $\exists f$ such that $\C{l}.f = \field{\fmdf}{\_}{f}$, $\fmdf \in \{\Kw{mut},\Kw{rep}\}$, and $l' \in \mrog(\s, \s[l.f])$
+\end{iitemize}
+Thus the \mrog of $l$ are the objects that could be mutated via a reference to $l$.
+
+\LS
+\noindent We define what it means for an $l$ to be \reach from an expression or context:
+\begin{iitemize}
+\item $\reach(\s, e, l)$ iff $\exists l' \in e$ such that $l \in \rog(\s, l')$\SS
+\item $\reach(\s, \E, l)$ iff $\exists l' \in \E$ such that $l \in \rog(\s, l')$
+\end{iitemize}
+
+\LS
+
+We now define what it means for an object to be \immut: it is in the \rog of an \Q!imm! reference or a \reach \Q!imm! field:\\*
+\indent $\immut(\s, e, l)$ iff $\exists l'$ such that:
+\begin{iitemize}
+\item $\Kw{imm}\,l' \in e$, and $l \in \rog(\s, l')$, or\SS
+\item $\reach(\s, e, l')$, $\C{l'}.f = \field{\Kw{imm}}{\_}{f}$, and $l \in \rog(\s, \s[l'.f])$, for some $f$
+\end{iitemize}
+
+Now we can define what it means for an $l$ to be \muty\footnote{We use the term \muty and not `\emph{mutable}' as an object might be neither \muty nor im\emph{mutable}, e.g. if there are only \Q!read! references to it.} by an expression $e$: something reachable from $l$ can also be reached by using a \Q!mut! or \Q!capsule! reference in $e$, and traversing through any number of \Q!mut! or \Q!rep! fields:\\
+\indent $\muty(\s, e, l)$ iff $\exists l', l''$ such that:
+\begin{iitemize}
+	\item $l' \in \rog(\s,l)$\SS
+	\item $\mdf\,l'' \in e$ with $\mdf \in \{\Kw{mut}, \Kw{capsule}\}$\SS
+	\item $l' \in \mrog(\s,l'')$
+\end{iitemize}
+\noindent The idea is that $e$ could mutate something reachable from $l$: by using $l''$ to get a \Q!mut! reference to $l'$, and then performing a field update on it; the new field value for $l'$ would then be observable through $l$. In particular, we will require the typesystem to ensure that $e$ can only mutate state observable from $l$ if $l$ is \muty.
+
+\LS
+
+\noindent Finally, we model the \encap property of \Q!capsule! references:\\
+\indent $\encap(\s, \E, l)$ iff $\forall l' \in \rog(\s, l)$, if $\muty(\s, \E[\Kw{capsule}\,l], l')$, then  not $\reach(\s, \E, l')$.
+
+\noindent
+That is, a location $l$ found in a context $\E$ is encapsulated if all $\muty$ objects in its $\rog$ would be unreachable with that single use of $l$ removed.
+That single use of $l$ is the connection preventing those $\muty$ objects from being garbage collectable.
+
+\subheading{Type System Requirements}
+As we do not have a concrete type system, we need to assume some properties about the expressions that it admits.
+Rather than requiring each expression during reduction to be well-typed, we instead let the type-system impose restrictions on method bodies, and type-check the initial expression, we then require properties on all future memories and expressions (i.e. $\VS$s).
+In \autoref{s:typesystem} we show such a type-system and prove it satisfies these requirements, but these requirements do \emph{not} hold for arbitrary well-typed $\s|e$ pairs, only for $\VS$s.
+This allows the type-system to be simpler, in particular, as the initial main expression can only have \Q!mut! references to $c$ (an object with no fields(), the type-system need not check that the heap structure and reference capabilities in the main expressions are consistent.
+
+First we require that fields and methods are only given values with the correct reference capabilities, i.e. the field initialisers of \Q!new! expressions, the right hand sides of update expressions, and the receiver and parameters of method calls have the capabilities required by the field declarations/method signatures:
+\SS\begin{restatable}[Type Consistency]{Requirement}{REQTypeCons}\
+\LSitem
+\begin{ienumerate}
+	\item If $\VS(\E[\new{C}{\drangex{\mdf}{\_}}])$, then:
+	\begin{nitemize}
+		\item there is a $\clazz{C}{\_}{\Fs}{\_}$
+		\item $\Fs = \drangex{\fmdf}{\_\,\_}$
+		\item $\drange[\text{, }]{\mdf}{\!\leq \derep{\fmdf}}$
+	\end{nitemize}
+
+	\item If $\VS(\E[\_\,l\D f \equals \mdf\,\_])$, then:
+	\begin{nitemize}
+		\item $\C{l}.f = \field{\fmdf}{\_}{f}$\SS[0.15]
+		\item $\mdf \leq \derep{\fmdf}$
+	\end{nitemize}
+
+	\item If $\VS(\E[\call{\mdf_0\,l}{m}{\drangex{\mdf}{\_}}])$, then:
+	\begin{nitemize}
+		\item $\C{l}.m = \method{\mdf'_0}{\_}{m}{\drangex{\mdf'}{\_\,\_}}{\_}$\SS[0.15]
+		\item $\drange[\text{, }][0]{\mdf}{\!\leq\mdf'}$
+	\end{nitemize}
+\end{ienumerate}
+\end{restatable}%
+\SS\noindent This requirement also ensure that objects are created with the appropriate number of fields, and that fields and methods that are accessed/updated/called actually exist.
+
+\LS
+
+Now we define formal properties about our reference capabilities, thus giving them meaning. First we require that
+an \immut object can not also be \muty: i.e. if an object is reachable from an \Q!imm! reference or field, then no part of its \rog can be reached by starting at a \Q!mut! or \Q!capsule! reference, and then traversing through \Q!mut! and \Q!rep! fields:
+\SS\begin{restatable}[Imm Consistency]{Requirement}{REQImmCons}\ \\
+	\indent If $\VS(\s, \E[e])$ and $\immut(\s, e, l)$, then not $\muty(\s, e, l)$.
+\end{restatable}
+\SS\noindent Thus $e$ cannot use field accesses to obtain a \Q!mut! or \Q!capsule! reference to anything reachable from an \immut $l$.
+Note that this does not prevent \emph{promotion} from a \Q!mut! to an \Q!imm!: an \Q!as! expression can change a reference from \Q!mut! to \Q!imm!, provided that in the new state there are no longer any \Q!mut! references to the \rog of $l$. Note that from the definition of \muty and \immut, it follows that if $l$ is \immut in any $e$,
+then it is \immut in $\E[e]$, and not \muty in any $e' \in \E[e]$.
+
+\LS 
+
+\noindent We require that if something was not \muty, it remains that way:%
+\SS\begin{restatable}[Mut Consistency]{Requirement}{REQMutCons}\ \\
+	\indent If $\VS(\s, \E[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^{*} \s'|e'$, then not $\muty(\s', e', l)$.
+\end{restatable}
+\SS\noindent Note that this holds even if $l$ is \muty through $\E$, thus an \Q!as! expression cannot change a \Q!read! or \Q!imm! reference to \Q!mut!, as the associated location will not be \muty within the body of the \Q!as! expression, even if there are \Q!mut! references to the same object outside the \Q!as!.
+
+\LS
+
+We require that any \Q!capsule! reference is \encap, i.e. that no \muty part of its \rog is reachable through any other reference:%
+\SS\begin{restatable}[Capsule Consistency]{Requirement}{REQCapCons}\ \\
+\indent If $\VS(\s,\E[\Kw{capsule}\,l])$, then $\encap(\s, \E, l)$.
+\end{restatable}%
+\SS\noindent As all objects are created as \Q!mut!, the only way to actually get a \Q!capsule! reference is via an \Q!as! expression.
+As our reduction rules impose no constraints on such expressions, the type-system must ensure that it only accepts a $\Kw{as}\,\Kw{capsule}$ expression if it is guaranteed to 
+return an $\encap$ reference. Note that a specific typesystem's idea of ``capsuleness'' may in fact be stronger then \encap, but \encap is sufficient for our invariant protocol.
+
+\LS
+
+\noindent We require that field updates are only performed on \Q!mut!/\Q!capsule! receivers:%
+\SS\begin{restatable}[Mut Update]{Requirement}{REQMutUpd}\ \\
+	\indent If $\VS(\E[\mdf\_\D\_ \equals \_])$, then $\mdf \leq \Kw{mut}$.
+\end{restatable}
+\LS
+%Finally we require strong exception safety: the body of a \Q!try! block does not mutate objects that existed before the enclosing \Q!try!--\Q!catch! began executing:
+%\SS\begin{restatable}[Strong Exception Safety]{Requirement}{REQSES}\ \\
+%	\indent  If $\VS(\s', \E[\trys{\s}{e}{\_}])$, then $\s \subseteq \s'$.
+%\end{restatable}
+Finally we require strong exception safety: the body of a \Q!try! block does not mutate objects that existed before the enclosing \Q!try!--\Q!catch! began executing and are reachable outside the \Q!try! block:
+\SS\begin{restatable}[Strong Exception Safety]{Requirement}{REQSES}\ \\
+	\indent  If $\VS(\s', \EV[\trys{\s}{e}{e'}])$, then $\forall l \in \dom(\s)$, if $\reach(\s, \EV[e'], l)$, then $\s(l) = \s'(l)$.
+\end{restatable}
+\SS\noindent
+Note that this strong requirement \emph{only} needs to hold because our \Q@try@--\Q@catch@ can catch invariant failures: in L42, \Q@try@--\Q@catch@'s that catch \emph{checked} exceptions do not need this restriction.
+Note that as our reduction rules never modify the body of a \Q!catch!, it follows that if $\VS(\s', \EV[\trys{\s}{\_}{e}])$, then for any $l \in \dom(\s')$, if $l \notin \dom(\s)$, then $l$ is not \reach in $\EV[e]$.
+
+%Finally we require a form of strong exception safety: that the body of a \Q!try! block will never contain a field update or rep mutator call to any object that existed before the 
+%enclosing \Q!try!--\Q!catch! began executing:
+%	%the memory preserved by each \Q@try@--\Q@catch@ execution is never \muty within the \Q!try!:%
+%\SS\begin{restatable}[Strong Exception Safety]{Requirement}{REQSES}\ \\
+%	\indent If $\VS(\s', \E[\try{\s}{e}{\_}])$, then $\forall l \in \dom(\s)$:
+%	\begin{iitemize}
+%	\item $\_\,l.f \equals \_ \notin e$\SS
+%	\item forall $\call{\_\,l}{m}{e} \in e$, there is no $f$ with $C.f = \field{\Kw{rep}}{\_}{f}$ and $C.m = \method{\Kw{mut}}{\_}{m}{\_}{\E[\Kw{this}.f]}$
+%	\end{iitemize}
+%\end{restatable}
+%\SS\noindent By induction, it follows that the reduction of the try block never performs a field update or rep mutator call on an $l \in \dom(\s)$. By the fact that only the \textsc{update} reduction rule modifies memory, it follows that $\s \subseteq \s'$, i.e. $\s'$ is the same as $\s$, except it may have newly created objects. We explicitly require the absence of rep mutator calls, as even if the method's body does not perform a field update, the call will still insert a monitor over $l$. Note that \thm{Strong Exception Safety} \emph{only} needs to hold because our \Q@try@--\Q@catch@ can catch %invariant failures: in L42, \Q@try@--\Q@catch@'s that catch \emph{checked} exceptions do not need this restriction.
+%\LS
+%We use strong exception safety to prove that locations preserved by \Q@try@ blocks are never monitored (this is important as it means that a \Q!catch! that catches a monitor failure will not be able to see the responsible object),%
+%\SS\begin{Lemma}[Unmonitored Try]\ \\
+%	%If $\VS(\s, e)$, then $\forall \E$, $e = \E[\trys{\s_0}{\E'[\M{l}{\_}{\_}]}{\_}]$ implies $l\notin\s_0$
+%	\indent If $\VS(\s, e)$ and $e = \E[\trys{\s'}{\E'[\M{l}{\_}{\_}]}{\_}]$, then $l \notin \s'$.
+%\end{Lemma}
+%\begin{proof}
+%By $\VS$ we have $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^+ \s|e$, so we proceed by induction on the number of ``$\rightarrow$''s: in the base case, $e = e_0$ and so it cannot contain a monitor expression by %the definition of \VS. If this property holds for $\VS(\s, e)$ but not for $\s'|e'$ with $\s|e\rightarrow \s'|e'$, we must have applied the \textsc{new}, \textsc{update}, or \textsc{call} rules; since no %other reduction steps introduce a monitor expression. If the reduction was a \textsc{new}, $l$ will be fresh, so it could not have been in $\s'$. If the reduction was an \textsc{update}, by \thm{Mut %Update}, $\mdf\,l \in e$, with $\mdf \leq \Kw{mut}$, similarly (by our well-formedness rules on method bodies) \textsc{call} will only introduce a monitor over a call to a \Q!mut! method, so by \thm{Type %Consistency}, $\mdf\,l \in e$, with $\mdf \leq \Kw{mut}$; either way we have that $l$ was \muty, since our reductions never change the $\s'$ annotation, by \thm{Strong Exception Safety}, we have that $l %\notin \s'$.
+%\end{proof}
+
+\subheading{Usefull Lemmas}
+	First we prove a few useful lemmas about the properties of references in our language.
+
+	\LS
+	
+	By the definition of \VS and the reduction rules themselves, we can show that the main expression and heap never contain dangling references:
+	
+\SS\begin{Lemma}[No Dangling]\ \\
+		\indent If $\VS(\s, e)$ then:
+		\begin{iitemize}
+			\item $\forall l \in e$, $l \in \dom(\s)$\SS
+			\item $\forall l \in \dom(\s)$, if $\s(l) = C\{\ls\}$ then $\{\ls\} \subseteq \dom(\s)$
+		\end{iitemize}
+	\end{Lemma}\SS
+	\begin{proof}
+		The proof is by definition of \VS, and induction on the number of reductions since the initial memory and main-expression.
+		In the base case, by definition of \VS, the only $l$ in the main-expression and memory is $c$, which is defined in the memory.
+		In the inductive case, each reduction rule only introduces $l$s into the memory or main-expression that were either already there, or in the case of \textsc{new/new true}, that are simultaneously added to the \dom of the memory.
+		%By induction, in the base case, by definition of $\VS$, $\dom(\s) = \{c\}$ and $\s(c) = \Kw{Cap}\{\}$, and the only $l \in e$ is $c$, so the statement trivially holds.
+		%In the inductive case, we have $\s'|e' \rightarrow \s|e$ for some $\s'$ and $e'$ satisfying the lemma, each reduction rule only introduces $l$s into $\s$ and $e$ that were either already in $\s'$ or $e'$, or in the case of \textsc{new}, are simultaneously added to the \dom of $\s$, thus by the inductive hypothesis, every $l$ in $\s$ or $e$ is also in $\dom(\s)$. Note that this holds only because our well-formedness rules prevent $l$s from being in method bodies, otherwise the \textsc{call} rule could introduce dangling references.
+	\qed\end{proof}
+	\noindent As a simple corollary of this, we have that if $l \in \dom(\s)$, then $\rog(\s, l) \subseteq \dom(\s)$, similarly with \mrog.
+
+	\LS
+	Similarly, we show that once an $l$ becomes un-\reach, it remains that way:
+	
+\SS\begin{Lemma}[Lost Forever]\ \\
+		\indent If $\VS(\s, \E[e])$, and $\s|e \rightarrow^* \s'|e'$, then $\forall l \in \dom(\s)$, if not $\reach(\s, e, l)$, then not $\reach(\s', e', l)$.
+	\end{Lemma}\SS
+	\begin{proof}
+		The proof follows from induction on the number of reductions, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
+		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true}).
+	\qed\end{proof}
+	\LS
+	
+	\noindent We show that a sub-expression can mutate an object only if it is \muty:
+	
+	\SS\begin{Lemma}[Non-Mutating]\ \\
+		\indent If $\VS(\s,\E[e])$, $l \in \dom(\s)$, not $\muty(\s, e, l)$, and $\s|e \rightarrow^* \s'|e'$, then $\s'(l) = \s(l)$.
+	\end{Lemma}
+	\SS\begin{proof}
+		By \thm{No Dangling}, $l$ is always in the $\dom$ of memory, so 
+		by \thm{Mut Consistency}, $l$ never becomes $\muty$, and so we never obtain a $\Kw{mut}$ or $\Kw{capsule}$ reference to it, thus by \thm{Mut Update}, we never update the fields of $l$, and there are no reduction rules that remove from $\s$.
+		\qed\end{proof}
+	\LS
+	
+		We can use our object capability discipline (described in \autoref{s:formalism}) to prove that the \Q!invariant()! method is deterministic and does not mutate existing memory:%
+	
+\SS\begin{Lemma}[Determinism]\ \\
+	\indent If $\VS(\s, \E[\invariant{l}])$ and $\s|\invariant{l} \rightarrow^{n} \s'|e'$, for some $n \geq 0$, then:
+	\begin{iitemize}
+		%\item $\forall l' \in \dom(\s)$, not $\muty(\s', e', l')$
+		\item $\s \subseteq \s'$\SS
+		\item $\s|\invariant{l} \Rightarrow^{n} \s'|e'$
+	\end{iitemize}
+	\end{Lemma}\SS
+	\begin{proof}
+	As the only reference in $\invariant{l}$ is $\Kw{read}\,l$, it follows from the definition of \muty, that there is no $l'$ with $\muty(\s, \invariant{l}, l')$, thus by \thm{Mutatatable Update} we have that for all $l \in \dom(\s)$, $\s(l) = \s(l')$, i.e. $\s \subseteq \s'$
+
+	We show the second part by induction on $n$: if $n = 0$, then no reduction was performed, $e' = \invariant{l}$, and it trivially holds that $\s|\invariant{l} \Rightarrow^{0} \s|\invariant{l}$. In the inductive case, we have some $\s''$ and $\e''$ with $\s|\invariant{l} \rightarrow^{n - 1} \s''|e'' \rightarrow \s'|e'$, and assume our inductive hypothesis that $\s|\invariant{l} \Rightarrow^{n - 1} \s''|e''$.
+	As $c$ is not \muty in $\invariant{l}$, by \thm{Mut Consistency}, $\Kw{mut}\,c \notin e''$ and $\Kw{capsule}\,c \notin e''$. Since, by definition, there are never any other instances of \Q!Cap!, it follows from \thm{Type Consistency} that the reduction $\s''|\e'' \rightarrow \s'|e'$ was not due to \textsc{call/call mutator} reducing a call to a \Q!mut! method of \Q!Cap!.
+	As all other methods are uniquely defined, the reduction must have been deterministic, i.e.  $\s''|\e'' \Rightarrow \s'|e'$, and so by the inductive hypothesis, we have $\s|\invariant{l} \Rightarrow^{n} \s''|e''$.
+	\qed\end{proof}
+
+	\LS
+\subheading{Rep Field Soundness}
+Now we define and prove important properties about our novel \Q!rep! fields. We first start with a few core auxiliary definitions.
+To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! field names for $l$:\\
+\indent $\rf(\s,l) = \{f  \text{ where } \C{l}.f = \field{\Kw{rep}}{\_}{f}\}$
+\LS
+
+\noindent We say that an $l$ and $f$ is \CR if $l$ is reachable from $l.f$:\\
+\indent $\CR(\s, l, f)$ iff $l \in \rog(\s, \s[l.f])$.\\
+\noindent We say that an $l$ is \RCR if any its \Q!rep! fields are \CR:\\
+\indent $\exists f \in \rf(\s,l)$ such that $\CR(\s, l, f)$.
+\LS
+
+\noindent We say that an $l$ and $f$ is \CN if $l.f$ is not \muty without passing through $l$:\\
+\indent $\CN(\s, l, f)$ iff not $\muty(\s\setminus l, e, \s[l.f])$.\\
+\noindent We say that an $l$ is \RCN if each of its \Q!rep! fields are \CN:\\
+\indent $\forall f \in \rf(\s,l)$ we have $\CN(\s, l, f)$.
+\LS
+%not \RCR if it is not reachable from any of its \Q!rep! fields:\\
+%\indent $not \RCR(\s, l, f)$ iff $\isrep{l}{f}$ implies that $l \notin \rog(\s, \s[l.f])$
+%\indent $not \RCR(\s, l)$ iff $\forall f$, $not \RCR(\s, l, f)$
+%\LS 
+%
+%\noindent We say that an $l$ is \RCN if none of its \Q!rep! fields are \muty without passing through $l$:\\
+%\indent $\RCN(\s, e, l, f)$ iff $\isrep{l}{f}$ implies that not $\muty(\s\setminus l, e, \s[l.f])$.
+%\indent $\RCN(\s, e, l)$ iff $\forall f$, $\RCN(\s, e, l, f)$.
+%\LS 
+
+\noindent We say that an $l$ is \RM if we are in a monitor for $l$ which must have been introduced by \textsc{call mutator}:\\
+\indent $\RM(\s, e, l)$ iff $e = \E[\M{l}{e'}{\_}]$, with $e' \neq \Kw{mut}\,l$.
+%\item $e = \E[\Kw{mut}\,l\D f]$, with $f \in \rf(\s,l)$
+%\end{iitemize}
+\LS 
+
+\noindent Finally we say that $l$ is \HNO if we are in a monitor introduced for a call to a rep mutator, and $l$ is not reachable from inside this monitor, except perhaps through a single \Q!rep! field access:\\
+\indent $\HNO(\s, e, l)$ iff $e = \EV[\M{l}{e'}{\_}]$, and either:
+\begin{iitemize}
+\item not $\reach(\s, e', l)$, or\SS
+\item $e' = \E[\Kw{mut}\,l\D f]$, $f \in \rf(\s,l)$, and not $\reach(\s, \E, l)$
+\end{iitemize}
+
+\LS 
+
+\noindent Now we formally state the core properties of our \Q!rep! fields (informally described in \autoref{s:protocol}):%
+\SS\begin{theorem}[Rep Field Soundness]\ \\
+	\indent If $\VS(\s, e)$ then $\forall l$ with $\reach(\s, e, l)$, we have:
+	\begin{iitemize}
+		\item not $\RCR(\s, l, f)$, and\SS
+		\item one of the following holds:
+		\begin{iitemize}
+			\item $\RCN(\s, l)$ and not $\RM(\s, e, l)$, or\SS[0.15]
+			\item $\HNO(\s, e, l)$.
+		\end{iitemize}
+	\end{iitemize}
+\end{theorem}
+\SS\noindent That is, for every reachable object $l$: 
+	$l$ is not reachable through any of its \Q!rep! fields, 
+	and either we are in a rep mutator for $l$ and $l$ is not observable (except perhaps through a single \Q!rep! field access),
+	or we are not \RM $l$, and each of $l$s \Q!rep! fields are \CN.
+\begin{proof}
+By $\VS$ we have $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^{m} \s|e$, so we proceed by induction on $m$, the number of reductions. The base case when $m = 0$ is trivial, since \Q!Cap! has no \Q!rep! fields and the initial main expression $e_0$ cannot contain monitors.
+
+In the inductive case, where $m > 0$, we have $\drange[\rightarrow][0][m - 1]{\s}{\!|e} \rightarrow \s|e$, for some  $\range[,][0][m - 1]{\s}$ and $\range[,][0][m - 1]{e}$, where $\s_0|e_0$ is a valid initial memory and expression.
+Our inductive hypothesis is then that the conclusion of our theorem holds for each $\s_i|e_i$, for $i \in [0, m - 1]$.
+We then proceed by cases on the reduction rule applied, and prove the theorems conclusion for $\s|e$:
+\begin{ienumerate}
+	\item $\rrule{new/new true}{\s'}{\new{C}{\drange{\mdf}{l}}}{\s}{e'}$, 
+	\\where $\s = \s',l_0\mapsto C\{\range{l}\}$; by \thm{Type Cosnsistency}, we have $\clazz{C}{\_}{\drange{\fmdf}{\_\,f}}$.
+	\begin{enumerate}
+		\item We have that $l_0$ is not \RCR:
+			by \thm{No Dangling}, we have that $\forall l' \in \dom(\s')$, $\rog(\s', l') \subseteq \dom(\s')$.
+			By our notational conventions for ``$,$'', it follows that $l_0 \notin \dom(\s')$.
+			Now consider each $i \in [1, n]$, since the pre-existing $\s'$ was not modified, it follows that $\rog(\s', l_i) = \rog(\s, \s[l_0.f_i])$.
+			By \thm{No Dangling} we have that $\rog(\s, \s[l_0.f_i]) \subseteq \dom(\s)$, and so $l_0 \notin \rog(\s, \s[l_0.f_i])$, thus each $l_0.f_i$ is not \CR.
+			
+		\item Ever \reach $l' \neq l_0$ is not \RCR: 
+			Since reduction didn't modify the fields of any pre-existing $l'$, by the inductive hypothesis, we have that $l'$ is still not \RCR.
+		
+		\item The new $l_0$ is \RCN and not \RM:
+		\begin{itemize}
+			\item Consider each $i \in [1, n]$ with $\fmdf_i = \Kw{rep}$.
+				By \thm{Type Consistency} and \thm{Capsule Consistency}, $l_i$ was \encap and so $\rog(\s', l_i)$ cannot be \muty from \EV.
+				Thus, we don't have $\muty(\s\setminus l_0, \EV[e'], l_i)$, and so each of $l_0$s \Q!rep! fields is \CN.
+			\item We trivially have that $l_0$ is not \RM since $l_0 \notin \dom(\s')$, by \thm{No Dangling}, there can't be any monitor expressions for it in $\EV$.
+		\end{itemize}
+
+		\item Every \reach $l' \neq l_0$ that was \RCN and not \RM still is:
+		\begin{itemize}
+			\item Suppose we have made it so that for some $f' \in \rf(\s',l')$, $l'.f'$ is no longer \CN.
+				
+			Since we didn't modify the \rog of $l'$ nor the \rog of any other pre-existing $l''$, we must have that $\s'[l'.f']$ is now \muty through $l_0.f_i$, for some $i \in [1, n]$.
+			This requires that $l_i$ is an initialiser for a \Q!mut! or \Q!rep! field, which by \thm{Type Consistency} means that $\mdf_i \leq \Kw{mut}$.
+			But then $\s'[l'.f']$ was already \muty through $\mdf_i\,l_i$, so $l'.f'$ can't have already been \CN, a contradiction.
+
+			\item We can't have caused $l'$ to be \RM since we haven't introduced any monitor expressions, nor modified any existing ones.
+		\end{itemize}
+
+		\item Every \reach $l' \neq l_0$ is \HNO: 
+			by \thm{No Dangling}, $l' \in \dom(\s')$, so by \thm{Lost Forever}, $l'$ must have already been \reach.
+			Thus, by the inductive hypothesis, $l'$ must be \HNO, but we haven't removed any monitor expression or field accesses (because the arguments to the constructor are all fully reduced values), thus $l'$ is still \HNO.
+	\end{enumerate}
+	
+	\item $\rrule{access}{\s}{\mdf\,l\D f}{\s}{\rmdf{\mdf}{\fmdf}\,\s[l.f]}$, where $\C{l}.f = \field{\fmdf}{\_}{f}$:
+	\begin{enumerate}
+		\item No \reach $l'$ is \RCR: 
+			this holds by the inductive hypothesis and the fact that we haven't mutated memory.
+		
+		\item If $l$ is \reach and it was \RCN and not \RM, than it still is:
+		\begin{itemize}
+			\item If $\fmdf \neq \Kw{rep}$, then we can't have broken \CN for any $f' \in \rf(\s,l)$, since by definition of \RCN, $\s[l.f']$ can't have been \muty through $\s[l.f]$.
+			\item If $\fmdf = \Kw{rep}$, since $l'$ was not \RM, this field access can't have been inside a rep mutator (or else we would be inside a monitor).
+			As fields are instance private, we have $\mdf \neq \Kw{mut}$, or else the field access would have come from a rep mutator.
+			
+			If $\mdf = \Kw{capsule}$, then by \thm{Capsule Consistency} and \RCR, $l$ is not \reach from $\EV[\rmdf{\mdf}{\fmdf}\,\s[l.f]]$, so it is irrelevant if $l$ is no longer \RCN.
+			Otherwise, since $\mdf \notin \{Kw{capsule}, \Kw{mut}\}$, we have $\rmdf{\mdf}{\fmdf} \nleq \Kw{mut}$, so $l.f$ is still \CN.
+			By the above case for $\fmdf \neq \Kw{rep}$, every other $f' \in \rf(\s,l)$ is \CN.
+
+			\item We can't have made $l'$ \RM since we have introduced any monitor expressions.
+		\end{itemize}
+
+		\item If $l$ was \RM or not \RCN, than it is \HNO: 
+			by the inductive hypothesis, $l$ was \HNO before this reduction, thus $\EV = \EV'[\M{l}{\EV''}{\_}]$.
+			As $l$ is clearly \reach in $\EV''[\mdf\,l\D f]$, by definition of \HNO we must have that $l$ is not \reach from $\EV''$, and $\fmdf = \Kw{rep}$.
+			By \RCR, $l$ is not in the \rog of $\s[l.f]$, and so $l$ is not \reach from $\EV''[\rmdf{\mdf}{\fmdf}\,\s[l.f]]$, and so it is still \HNO.
+
+		\item Every \reach $l' \neq l$ that was \RCN and not \RM, still is:
+		\begin{itemize}
+			\item Since this reduction doesn't modify memory, and $\rmdf{\mdf}{\fmdf} \leq \Kw{mut}$ only if $\mdf \leq \Kw{mut}$, we can't have made the \rog of any \Q!rep! field $f'$ of $l'$ \muty without going through $l'$, so \RCN is preserved.
+			\item As in the \textsc{new/new true} case above, we can't have made \RM hold as we haven't introduced any monitor expressions.
+		\end{itemize}
+
+		\item If $l$ was \RM or not \RCN, than it is \HNO:
+			if $f \in \rf(\s, l)$, with $\EV$ of form $\EV'[\M{l}{\EV''}{\_}$ and $l$ not \reach through $\EV''$,
+			then $e$ is of form $\EV'[\M{l}{\EV''[\s[l.f]]}]$. By the above, $l$ is not \RCR, and so 
+			$l$ is not \reach through $\s[l.f]$, thus $l$ is not \reach through $\EV''[\s[l.f]]$, and so $l$ is \HNO.
+			Otherwise, by the inductive hypothesis, $l$ was \HNO, by definition of \HNO, since the above case does not hold,
+			then $\EV$ is of form $\EV'[\M{l}{\EV''}{\_}]$ with $l$ not \reach through $\EV''[\mdf\,l\D f]$, thus by \thm{Lost Forever}, $l$ is not \reach through $\EV''[\s[l.f]]$, thus $l$ is still \HNO.
+		
+		\item Every \reach $l' \neq l$ that was \RM or not \RCN is \HNO:
+			as this reduction doesn't create any new objects, by \thm{No Dangling} and \thm{Lost Forever}, anything \reach was already \reach, thus by the inductive hypothesis, $l'$ must have been \HNO.
+			but we haven't removed any monitor expression or field accesses on $l'$, thus $l'$ must still be \HNO.
+	\end{enumerate}
+
+	\item $\rrule{update}{\s'}{\mdf\,l\D f\equals \mdf'\,l'}{\s'[l.f=l']}{\M{l}{\Kw{mut}\,l}{\invariant{l}}}$:
+	\begin{enumerate}
+		\item For each $f' \in \rf(\s, l)$, $l.f'$ is still not \RCR: 
+		\begin{itemize} 
+			\item if $f' = f$, then by \thm{Type Consistency} and \thm{Capsule Consistency}, $\encap(\s', \EV[\mdf\,l\D f = \hole], l')$.
+			Hence $l$ is not \reach from $l'$, and so after the update, $l.f'$ cannot be \CR.
+			\item otherwise, by the inductive hypothesis, $l.f'$ was not \RCR, so $l \notin \rog(\s', \s'[l.f'])$,
+			and so this update couldn't have change the \rog of $l.f'$, and so it is still \RCR.
+		\end{itemize}
+		
+		\item For every \reach $l'' \neq l$, and $f' \in \rf(\s,l'')$, $l''.f'$ is still not \CR:
+		\begin{itemize}
+			\item By the inductive hypothesis, $l''.f'$ was not \CR.
+			\item 
+				If $l''$ was \RCN, by \thm{Mut Update}, $\mdf \leq \Kw{mut}$. 
+				By \RCN, the \rog of $\s'[l''.f']$ is not \muty, except through a \emph{field} access on $l''$,
+				but this rule doesn't perform a field access, 
+				so since $l'' \neq l$, we must have that $l \notin \rog(\s', \s'[l''.f'])$.
+				Since we can't have modified the \rog of $\s'[l''.f']$, $l''.f'$ is still not \CR.
+			
+			\item Otherwise, by the inductive hypothesis, $l''$ was \HNO, and so $l'' \notin \rog(\s', l')$, so we can't have added $l''$ to the \rog of anything,
+			thus $l''.f'$ is still not \CR.
+		\end{itemize}
+
+		\item Any \reach $l''$ that was \RCN and not \RM still is:
+		\begin{itemize}
+			\item Suppose $l'' = l$ and $f \in \rf(\s', l)$, by \thm{Type Consistency} and \thm{Capsule Consistency}, $l'$ is \encap, thus $l'$ is not \muty from \EV, and $l$ is not \reach from $l'$.
+				Hence $l'$ is still \encap, and so $l.f$ is still \CN.
+			\item Now consider any $f' \in \rf(\s', l'')$, with $l''.f' \neq l.f$; by the above, $l$ is not \RCR and so $l \notin \rog(\s', \s'[l''.f'])$.
+				If $f$ was a \Q!mut! or \Q!rep! field, by \thm{Type Consistency}, $\mdf' \leq \Kw{mut}$, so by \RCN, $l' \notin \rog(\s', \s'[l''.f'])$; thus we can't have made $\rog(\s', \s'[l''.f'])$ \muty through $l.f$; so $\s'[l''.f']$ can't now be \muty through $\Kw{mut}\,l$. 
+				By \thm{Mut Consitency}, we couldn't have have made $\s'[l''.f']$ \muty some other way, so $l''$ is still \RCN.
+			\item As in the above cases for \textsc{new/new true}, $l''$ is still not \RM as we haven't introduced any monitor expressions.
+		\end{itemize}
+		
+		\item Every \reach $l'$ that was \RM or not \RCN is \HNO:
+			similarly to the above case for \textsc{access},
+			as this reduction doesn't create any new objects, by by \thm{No Dangling} and \thm{Lost Forever}, anything \reach was already \reach, thus by the inductive hypothesis, $l'$ must have been \HNO.
+			but we haven't removed any monitor expression or field accesses, thus $l'$ must still be \HNO.
+	\end{enumerate}
+
+	\item $\rrule{call/call mutator}{\s}{\call{\mdf_0\,l_0}{m}{\drange{\mdf}{l}}}{\s}{e}$
+	\begin{enumerate}
+		\item Every \reach $l'$ is not \RCR:
+			as this rule doesn't mutate memory, by the inductive hypothesis, every \reach $l'$ is still not \RCR.
+		
+
+		\item If $l_0$ was \RCN and not \RM, it either still is, or is now \HNO:
+		\begin{itemize}
+			\item As we haven't modified memory, and by our well-formedness rules on method bodies, we haven't introduce any new $l$s into the main-expression, we must have that $l_0$ is still \RCN.
+			\item Suppose the rule applied was \textsc{call}, by our well-formedness rules for method bodies, $e$ doesn't contain a monitor. 
+				Moreover, by the \textsc{call} rule, $e$ is not a rep mutator, if $e = \E[\mdf'\,l_0\D f]$, for some $f \in \rf(\s, l_0)$, we must have that $m$ was not a \Q!mut! method.
+				Since fields are instance-private, we must have $\mdf' \nleq \Kw{mut}$, and by our well-formedness rules on method bodies, $e$ doesn't contain any monitors, thus we can't have caused $l_0$ to be \RM.
+
+			\item Otherwise, the rule applied was \textsc{call mutator}, and $m$ is a rep mutator, and hence we have $e = \M{l_0}{e'}{\invariant{l_0}}$.
+				By our rules for rep mutators, $m$ must be a \Q!mut! method with only \Q!imm! and \Q!capsule! parameters, thus by \thm{Type Consistency}, 
+				$\mdf_0 \leq \Kw{mut}$, and for each $i \in [1, n]$, $\mdf_i \in \{\Kw{imm},\Kw{capsule}\}$. 
+				By \thm{Imm Consistency} and \thm{Capsule Consistency}, $l_0$ can't be reachable from any $l_i$. Since rep mutators use \Q!this! only once, to access a \Q!rep! field, $e' = \E[\Kw{mut}\,l_0\D f]$, for some $f \in \rf(\s, l_0)$. 
+				By our rules for rep mutators, $l_0 \notin \E$, and $l_0$ is not \reach from any $l_i$, and by our well-formedness rules for method bodies, 
+				there are no other $l$s in $\E$, thus we have that $l_0$ is not \reach from any $\E$, thus \HNO now holds for $l$.
+		\end{itemize}
+
+		\item Every $l' \neq l_0$ that was \RCN and not \RM, still is:
+		\begin{itemize}
+			\item By the above, since we haven't modified memory or introduced any new $l$s, $l'$ must still be \RCN.
+			\item Since $l' \neq l_0$ and fields are instance-private, we must have that there is no $\mdf'\,l'\D f \in e$.
+				Moreover, by our well-formedness rules on method bodies, and the \textsc{call/call mutator} rules, the only monitor that could be in $e$ is a monitor on $l_0$, thus we can't have made $l'$ \RM.
+		\end{itemize}
+		
+
+		\item Every \reach $l'$ that was \RM or not \RCN is \HNO:
+			as in the \textsc{update} case above, by the inductive hypothesis, $l'$ must have been \HNO, as we haven't removed any monitor expressions or field accesses, $l'$ is still \HNO.
+	\end{enumerate}
+
+	\item $\rrule{try error}{\s}{\trys{\s'}{e}{e'}}{\s}{e'}$, where $\error(\s, e)$
+	\begin{enumerate}
+		\item Every \reach $l$ is not \RCR:
+			as in the \textsc{call/call mutator} case above, since this rule doesn't mutate memory, by the inductive hypothesis, every \reach $l$ is still not \RCR.
+	
+		\item Every \reach $l$ that was \RCN and not \RM still is: 
+			by \thm{Mut Consistency} and the fact that we haven't modified memory, $l$ must still be \RCN. Since we haven't introduced any monitor expressions or field accesses, $l$ cannot now be \RM.
+		
+		\item If $l$ is still \reach, and was \RM or not \RCN then it is now \RCN and not \RM:
+		\begin{itemize}
+			\item By definition of \error, we have $e = \EV'[\M{l}{v}{v'}]$.
+			
+			\item If the monitor was introduced by \textsc{new} or \textsc{update}, then $v = \Kw{mut}\,l$. And so \HNO can't have held for $l$ since $l = l'$, and $v$ was not the receiver of a field access.
+			Thus by the inductive hypothesis, $l$ must have been \RCN and not \RM, a contradiction.
+			\item By definition of \VS and our well-formedness rules on method bodies, we must have that monitor must introduced by \textsc{call mutator}, due to a call to a rep mutator on $l$.\footnote{
+				A type-system will likely prevent this case from happening, 
+				as this would require calling a \Q!mut! method on $l$, but $l$ is \reach outside the \Q!try! block. However, if the typesystem can prove that said \Q!mut! method will not actually mutate $l$, this would not violate our requirements.
+				Thus we still need to ensure that \thm{Rep Field Soundness} holds in this case.}
+			\item From our reduction rules, it follows that we were previously in a state $\s_i|e_i$, where $i \in [1, m - 1]$, $e_i$ is of form $\EV''[e'']$, and the next state was obtained by said application of the \textsc{call mutator} rule to $e''$.
+			\item Moreover, it follows that $\EV''= \EV[\trys{\s'}{\EV'}{e'}]$, as no reduction rules modify the $\EV$.
+			\item We must not have had that $l$ was \HNO, since $e''$ would contain $l$ as the receiver of a method call. Thus, by our inductive hypothesis, in state $i$, $l$ was \RCN and not \RM.
+		
+			\item By \thm{Strong Exception Safety} and \thm{No Dangling}, every $l'$ \reach from $\EV[e']$ has not been mutated, i.e. $\s(l') = \s_i(l') = \s'(l)$.
+			\item Since nothing \reach has been mutated, it follows that $l$ is still \RCN.
+			\item By \VS and our well-formedness rules on method bodies, it follows that $e'$ contains no monitor expressions.
+			\item Moreover, since $l$ was not \RM in $\EV[\trys{\s'}{\EV'[e'']}{e'}]$, and $e'$ contains no monitors, $l$ it follows that $l$ is not \RM in $\EV[e']$.
+		\end{itemize}
+
+		\item Every \reach $l'' \neq l$ that was \RM or not \RCN is \HNO: 
+			as in the above case for \textsc{update}, by the inductive hypothesis, $l''$ must have been \HNO, as we haven't removed any monitor expressions on $l''$, or any field accesses, $l''$ is still \HNO.
+	\end{enumerate}
+
+	\item $\rrule{monitor exit}{\s}{\M{l}{\mdf\,l'}{\_}}{\s}{\mdf\,l'}$
+	\begin{enumerate}
+		\item Every \reach $l''$ is not \RCR:
+			as in the \textsc{call/call mutator} case above, since this rule doesn't mutate memory, by the inductive hypothesis, every \reach $l''$ is still not \RCR.
+		
+		\item Every \reach $l''$ that was \RCN and not \RM still is:
+			as in the \textsc{try error} case above, by \thm{Mut Consistency} and the fact that we haven't modified memory, $l''$ must still be \RCN. Since we haven't introduced any monitor expressions or field accesses, $l''$ cannot now be \RM.
+
+		\item If $l$ is still \reach, and $l$ was \RM or not \RCN then it is now \RCN and not \RM:
+		\begin{itemize}
+			%Change e'' to e' and \EV'' to \EV' and other notations...
+			\item If the monitor was introduced by \textsc{new} or \textsc{update}, then $\mdf\,l' = \Kw{mut}\,l$. And so \HNO can't have held for $l$ since $l = l'$, and $v$ was not the receiver of a field access.
+			Thus by the inductive hypothesis, $l$ must have been \RCN and not \RM, a contradiction.
+			\item By definition of \VS and our well-formedness rules on method bodies, we must have that monitor must introduced by \textsc{call mutator}, due to a call to a rep mutator on $l$.
+			\item From our reduction rules, it follows that we were previously in a state $\s_i|e_i$, where $i \in [1, m - 1]$, $e_i$ is of form $\EV'[e']$, and the next state was obtained by said application of the \textsc{call mutator} rule to $e'$.
+			\item Moreover, it follows that $\EV'= \EV$, as no reduction rules modify the $\EV$.
+			\item We must not have had that $l$ was \HNO, since $e'$ would contain $l$ as the receiver of a method call. Thus, by our inductive hypothesis, in state $i$, $l$ was \RCN and not \RM.
+		
+			
+			\item As with the above case for \thm{try error}, by the inductive hypothesis, $l$ must have been \HNO, and so the monitor must have been introduced by \textsc{call mutator}.
+			\item Thus, we were previously in a state $\s_i|e_i$ where $i \in [1, m - 1]$, $e_i$ is of form $\EV[e']$, and the next state was obtained by said application of the \textsc{call mutator} rule to $e'$.
+			\item Thus, by the inductive hypothesis, in state $i$, $l$ must have been \RCN and not \RM.
+			
+			\item Because $l$ was not \RM in $\s_i|\EV[e']$, and $\mdf\,l'$ contains no monitors, $l$ is not \RM in $\EV[\mdf\,l']$.
+			
+			\item Since a rep mutator cannot have any \Q!mut! parameters, by \thm{Type Consistency} and \thm{Non-Mutating}, the body of the method can only modify things \muty through $l$, or a \Q!capsule! parameter.
+			\item By \thm{Type Consistency}, and \thm{Capsule Consistency}, every capsule parameter is \encap, and so anything mutated through such a parameter must have been un\reach outside the call.
+			\item Thus, forall $l' \in \dom(\s_i)$, if $\reach(\s_i, \EV, l')$ and $l' \notin \mrog(\s_i, l)$, then $ \s(l) = \s_i(l)$.
+		
+			\item If $\mdf = \Kw{capsule}$, then by \thm{Capsule Consistency}, not part of the \mrog of any \Q!rep! field of $l$ can be in the \rog of $l'$ (or else $l$ would have to be un\reach), so we can't have made such a field \muty.
+			\item If $\mdf \neq \Kw{capsule}$, then since a rep mutator cannot have a \Q!mut! return type, 
+				and our \textsc{call mutator} rule wraps the method body in a \Q!as! expression,
+				we must have that $\mdf \nleq \Kw{mut}$.
+				Thus  $\mdf \in \{\Kw{read}, \Kw{imm}\}$, and so by $l$ is not \muty through $\mdf\,l'$.
+			
+			\item As $l$ was \RCN in $\s_i|\EV[e']$, 
+				and we haven't modified anything \reach through $\s \setminus l$, 
+				nor have we made the \rog of $l$ \muty through $\mdf\,l'$,
+				it follows that $l$ is also \RCN in $\EV[\mdf\,l']$.
+		\end{itemize}
+
+		\item Every \reach $l'' \neq l$ that was \RM or not \RCN is \HNO: 
+			as in the \textsc{update} case above, by the inductive hypothesis, $l''$ must have been \HNO, as we haven't removed any monitor expressions on $l''$, or any field accesses, $l''$ is still \HNO.
+	\end{enumerate}
+
+	\item (\textsc{as}, \textsc{try enter}, and \textsc{try ok}) these are trivial, since as in the above cases:
+	\begin{enumerate}
+		\item Every \reach $l$ is not \RCR:
+			as in the \textsc{call/call mutator} case above, since these rules don't mutate memory, by the inductive hypothesis, every \reach $l$ is still not \RCR.
+
+		\item Every \reach $l$ that was \RCN and not \RM still is:
+			as in the \textsc{try error} case above, by \thm{Mut Consistency} and the fact that these rules don't modified memory, $l$ must still be \RCN. Since this rules don't introduce any monitor expressions or field accesses, $l$ cannot now be \RM.
+
+		\item Every \reach $l$ that was \RM or not \RCN is \HNO:
+			as in the \textsc{update} case above, by the inductive hypothesis, $l$ must have been \HNO, as these rules don't remove any monitor expressions or field accesses, $l''$ is still \HNO.
+	\qed\end{enumerate}
+\end{ienumerate}
+\end{proof}
+
+\subheading{Stronger Soundness}
+It is hard to prove \thm{Soundness} directly,
+so we first define a stronger property,
+called \thm{Stronger Soundness}.
+
+\LS
+
+We say that an object is \mony if execution
+is currently inside of a monitor for that object, and
+the monitored expression $e_1$ does not
+contain a reference to $l$ as a \emph{proper} sub-expression:\\
+\indent $\mony(e,l)$ iff
+$e=\EV[\M{l}{e'}{\_}]$ and $l \in e'$ only if $e' = \_\,l$.\\
+\noindent A monitored object is associated with an expression that cannot observe it, but may
+reference its internal representation directly.
+In this way, we can safely modify its representation before checking its invariant.
+The idea is that at the start the object will be valid and $e'$ will reference $l$;
+but during reduction, $l$ will be used to
+modify the object, but not observe it; only after that moment, the object may become invalid.
+
+\LS
+
+\thm{Stronger Soundness} says that starting from a well-typed and well-formed $\s_0|e_0$, and performing any number of reductions, every \reach object is either \valid or \mony:%
+\SS\begin{theorem}[Stronger Soundness]\ \\
+\indent If $\VS(\s, e)$ then $\forall l$, if $\reach(\s, e, l)$, then $\valid(\s, l)$ or $\mony(e, l)$.
+\end{theorem}\SS
+\begin{proof}
+	As with the above proof of \thm{Rep Field Soundness}, we will prove this inductively on the number of reductions.
+	By $\VS$ we have $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^{m} \s|e$, 
+		The base case when $m = 0$ is trivial, 
+			from our requirements for the \Q!Cap! class,
+			$\s|\invariant{c} \rightarrow \s|\new{\Kw{True}}{} \rightarrow  \s,l\mapsto \Kw{True}\{\}|l$, for some $l$, thus by \thm{Determinism}, it follows that $c$ (the only thing in the memory) is \valid.
+
+	In the inductive case, where $m > 0$, we have $\drange[\rightarrow][0][m - 1]{\s}{\!|e} \rightarrow \s|e$, for some  $\range[,][0][m - 1]{\s}$ and $\range[,][0][m - 1]{e}$, where $\s_0|e_0$ is a valid initial memory and expression.
+	Our inductive hypothesis is then that that everything \reach from the previous \VS is \valid or \mony. We then proceed by cases on the reduction rule that gets us to $\s|e$:
+\begin{ienumerate}
+	\item $\rrule{new}{\s'}{\new{C}{\range{\_\,l}}}{\s',l_0\mapsto C\{\range{l}\}}{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}}$:
+	\begin{itemize}
+		\item Clearly the newly created object, $l$, is \mony.
+		\item This rule does not modify pre-existing memory, introduce pre-existing $l$s into the main expression, nor remove monitors on other $l$s, by the inductive hypothesis, every $l' \neq l_0$ is still \valid (due to \thm{Determinism}), or \mony.
+	\end{itemize}
+	
+	\item $\rrule{new true}{\s'}{\new{\Kw{True}}{}}{\s',l_0\mapsto \Kw{True}\{\}}{\Kw{mut}\,l_0}$:
+	\begin{itemize}
+		\item The \Q!True! class is required to have an invariant of \Q!new True()!,
+		so as with $c$ in the base case above, we have that $l_0$ is \valid.
+		\item As in the above case for \textsc{new}, since we didn't modify pre-existing memory, introduce pre-existing $l$s into the main expression, nor remove monitors, by the inductive hypothesis, every $l' \neq l_0$ is still \valid or \mony.
+	\end{itemize}
+
+	\item $\rrule{update}{\s'}{\mdf\,l\D f\equals v}{\s}{e'}$, where $e' = \M{l}{\Kw{mut}\,l}{\invariant{l}}$:
+	\begin{itemize}
+		\item Clearly $l$ is now $\mony$.
+		\item Consider any other $l'$, where $l \in \rog(\s',l')$ and $l'$ was \valid; now suppose we just made $l'$ in\valid. 
+			By our well-formedness criteria, \Q@invariant()@ can only accesses \Q@imm@ and \Q@rep@ fields, thus by \thm{Non-Mutating}, 
+			and \thm{Determinism}, we must have that $l$ was in the \rog of $\s'[l'.f']$, for some $f' \in \rf(\s', l')$.
+			
+			Since $l \neq l'$, $l'$ can't have been \RCN. Thus, by \thm{Rep Field Soundness}, $l'$ was \HNO, and so $\EV[\mdf\,l\D f\equals v]$ is of form $\EV'[\M{l'}{e''}{e'''}]$:
+			\begin{itemize}
+				\item As the \rog of $l'$ has just been mutated, and since $e'''$ must have started off as $\invariant{l'''}$, if follows from \thm{Determinism}, that we cannot currently be inside $e'''$.
+				\item Thus, $\EV = \EV'[\M{l'}{\EV''}{e'''}]$, where $\EV''[\mdf\,l\D f\equals v] = e''$.
+				
+				\item Suppose that $l'$ was not \reach in $e''$, then clearly $l' \notin e''$, since $l' \neq l$, it follows that $l' \notin \EV''[e']$, and so $l'$ is \mony.
+
+				\item Otherwise, by definition of \HNO, we have that $e'' = \E[\Kw{mut}\,l'\D f'']$ for some $f'' \in \rf(\s', l')$, and where $l'$ is not \reach in $\E$.
+				
+				\item By the proof for the \textsc{try error} case of \thm{Rep Field Soundness}, the monitor must have come from a call to a rep mutator, in a state where $l'$ was \RCN.
+					Thus, we were previously in a state $\s_i|e_i$, for some $i \in [0, m - 1]$, immediately after a \textsc{call mutator};
+					moreover, $e_i$ is of form $\EV'[\M{l'}{e'_i}{\_}]$, immediately after a \textsc{call mutator}, where $e'_i$ is of form $\E'[\Kw{mut}\,l' \D f''']$.
+				
+				\item By \thm{Rep Field Soundness}, $l'$ is not \reach through $\s'[l'.f''']$,.
+					By the proof for the \textsc{call/call mutator} case of \thm{Rep Field Soundness}, we have that $l'$ is not \reach through $\E'$.
+					Thus, by \thm{Lost Forever}, once $\Kw{mut}\,l' \D f'''$ has been reduced, $l'$ must be un\reach, and it follows that $\Kw{mut}\,l'\D f'' = \Kw{mut}\,l' \D f'''$
+			
+				\item By \thm{Mut Update}, $l$ is \muty in the current state, thus by \thm{Mut Consistency}, we have that it was also \muty when \textsc{call mutator} rule was applied.
+					 But we have that $l'$ was \RCN, so since $l \in \rog(\s', \s'[l'.f'])$, we have that $l$ can only be \muty through $l'$.
+
+				\item By \thm{Lost Forever}, the only way we could have obtain a reference to $l$ was by reducing $\Kw{mut}\,l' \D f''$, but we haven't done that yet, a contradiction.
+			\end{itemize}
+
+		\item Every other \valid $l'$, where $l \notin \rog(\s',l')$ is still \valid by \thm{Determinism}.
+		\item As in the above case, since we don't remove any monitors, any other $l'$ that was \mony, is still \mony.
+	\end{itemize}
+
+			
+	\item $\rrule{try error}{\s}{\trys{\s'}{e}{e'}}{\s}{e'}$, where $\error(\s, e) = \EV'[\M{l}{\_}{\_}]$:
+	\begin{itemize}
+		\item As with the case for \textsc{try error} in the proof of \thm{Rep Field Soundnes}, we were previously in a state $\s_i|e_i$, where $e_i = \EV[\trys{\s'}{\_}{\_}]$, and $\s_i = \s'$.
+		\item By definition of \error, we have that $l$ is not \valid in $\s$, since monitor expressions always start of as an invariant calls.
+		\item Suppose $l$ is still \reach in $\s|\EV[e']$, by \thm{Strong Exception Safety}, we have $l \in \dom(\s')$. Thus by the inductive hypothesis, we have that $l$ was \valid or \mony in the state $\s'|e_i$.
+		\item If $l$ was \mony, then by \VS and our well-formedness rules on method bodies, said monitor must have been introduced by the \textsc{new}, \textsc{update}, or \textsc{call mutator} reduction rules.
+		\item The \textsc{new} and \textsc{update} rules monitor a value, which cannot reduce to a \Q!try!--\Q!catch!, so the monitor must have been introduced by \textsc{call mutator}.
+		\item But by our well-formedness rules on rep mutators, the body of the called method cannot mention $l$ except to read a field, 
+		as shown in the case for \textsc{update} above, $l$ will be un\reach once the field access has been reduced, which by \thm{Lost Forever} is a contradiction, as $l$ is \reach through $e$.
+		\item Thus, $l$ can't have been \mony in $\s'|e_i$, so it must have been \valid.
+
+		\item Also by \thm{Strong Exception Safety}, we have that nothing reachable from $l$ could have been modified, that is $\forall l' \in \rog(\s', l)$, we have $\s'(l') = \s(l')$.
+			By \thm{Lost Forever}, and our reduction rules, any memory location not \reach from a call $\invariant{l}$ cannot affect its reduction.
+		\item Thus, by \thm{Determinism}, and the fact that $l$ was valid in \s', we have that $l$ is still \valid, a contradiction.
+		\item Thus, $l$ cannot be \reach, so the fact that it is in\valid is irrelevant.
+		
+		\item As in the above case for \textsc{new}, since we didn't modify any memory, or remove any other monitors, by the inductive hypothesis every $l' \neq l$ is still \valid or \mony.
+	\end{itemize}
+
+		
+	\item $\rrule{monitor exit}{\s}{\M{l}{v}{\Kw{imm}\,l'}}{\s}{v}$, where $\C{l'} = \Kw{True}$:
+	\begin{itemize}
+		\item By \VS and our well-formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{call mutator}, or \textsc{new}. In each case the third expression started off as $\invariant{l}$, and it has now (eventually) been reduced to $\Kw{imm}\,l'$, thus by \thm{Determinism} $l$ is \valid.
+		
+		\item As in the above case for \textsc{new}, since we didn't modify any memory, or remove any other monitors, by the inductive hypothesis every \reach $l' \neq l$ is still \valid or \mony.
+	\end{itemize}
+
+	\item (\textsc{access}, \textsc{call/call mutator}, \textsc{as}, \textsc{try enter}, and \textsc{try ok}) these are trivial:
+	\begin{itemize}
+		\item As in the above case for \textsc{new}, since these rules don't modify memory or remove monitors, by the inductive hypothesis, every \reach $l$ is still \valid or \mony.
+	\qed\end{itemize}
+\end{ienumerate}
+\end{proof}
+
+\subheading{Proof of Soundness}
+First we need to prove that an object is not reachable from one of its \Q!imm! fields; if it were, \Q!invariant()! could access such a field and observe a potentially broken object:
+
+\SS\begin{Lemma}[Imm Not Circular]\ \\
+\indent If $\VS(\s, e)$, $\forall f,l$, if $\reach(\s, e, l)$, $\C{l}.f = \field{\Kw{imm}}{\_}{f}$, then $l \notin \rog(\s, \s[l.f])$.
+\end{Lemma}\SS
+\begin{proof}
+The proof is by induction; obviously the property holds in the initial $\s|e$, since $\s = c\mapsto \Kw{Cap}\{\}$. Now suppose it holds in a $\VS(\s', e')$ where $\s'|e' \rightarrow \s|e$:
+\begin{ienumerate}
+	\item Consider any pre-existing \reach $l$ and $f$ with $\C[\s']{l}.f = \field{\Kw{imm}}{\_}{f}$, by \thm{Imm Consistency} and \thm{Non-Mutating}, the only way $\rog(\s, \s[l.f])$ could have changed is if $e' = \EV[\mdf\,l\D f = \mdf'\,l']$, where $\mdf \leq \Kw{mut}$, i.e. we just applied the \textsc{update} rule. By \thm{Type Consistency}, $\mdf' \leq \Kw{imm}$, so by \thm{Imm Consistency}, $l \notin \rog(\s, l')$. Since $l' = \s[l.f]$, we now have $l \notin \rog(\s, \s[l.f])$.
+	\item The only rules that make an $l$ \reach are \textsc{new/new true}. So consider $e = \EV[\new{C}{\range{\_\,l}}]$, and each $i$ with $C.i = \field{\Kw{imm}}{\_}{f}$. But each of $\range{l}$ existed in the previous state and $l \notin \dom(\s')$; so by \VS and our reduction rules, $l \notin \rog(\s', l_i) = \rog(\s, \s[l.f])$.
+\qed\end{ienumerate}
+\end{proof}
+\noindent Note that the above only applies to \Q!imm! \emph{fields}: \Q!imm! \emph{references} to cyclic objects can be created by promoting a \Q!mut! reference, however the cycle must pass through a \emph{field} declared as \Q!read! or \Q!mut!, but such fields cannot be referenced in the invariant method.
+
+\LS
+
+We can now finally prove the soundness of our invariant protocol:
+
+\setcounter{theorem}{0}% We want to force it to use the original number
+\SS\THMSoundness\SS
+\setcounter{theorem}{3}% So further theorems are numbered appropriately
+
+\begin{proof}
+\noindent Suppose $\VS(\s, e)$, and $e = \ER[\_\,l]$. Suppose $l$ is not $\valid$; since $l$ is \reach, by \thm{Stronger Soundness}, $\mony(e,l)$, $e = \E[\M{l}{e_1}{e_2}]$, and either:
+\begin{iitemize}
+	\item $\ER = \E[\M{l}{\E'}{e_2}]$, that is $l$ was found inside of $e_1$, but by definition of $\ER$, we can't have $e_1 = \mdf\,l$, this contradicts the definition of \mony, or
+	\item $\ER = \E[\M{l}{e_1}{\E'}]$, and thus $l$ was found inside $e_2$. By our reduction rules, all monitor expressions start with $e_2=\invariant{l}$; if this has yet to be reduced, then $\E' = \E''[\call{\hole}{\Kw{invariant}}{}]$, thus $\trusted(\ER, l)$. By our well-formedness rules for \Q!invariant()!, the next reduction step will be a \textsc{call}, $e_2$ will only contain $l$ as the receiver of a field access; so if we just performed said \textsc{call}, $\E' = \E''[\hole\D f]$: hence $\trusted(\ER, l)$. Otherwise, by \thm{Imm Not Circular}, \thm{Rep Field Soundness}, and \RCR, no further reductions of $e_2$ could have introduced an occurrence of $l$, so we must have that $l$ was introduced by the \textsc{call} to \Q!invariant()!, and so $\trusted(\ER, l)$.
+\end{iitemize}
+Thus either $l$ is $\valid$ or $\trusted(\ER, l)$.
+\qed\end{proof}
+
+\lstset{language=FortyThree} % Back to default

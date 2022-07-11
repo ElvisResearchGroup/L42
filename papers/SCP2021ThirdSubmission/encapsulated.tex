@@ -1,0 +1,148 @@
+\subheading{Relaxing Restrictions on Rep Fields?}
+%\section{Invariants over encapsulated state}
+%\label{s:encapsulated}
+Rep fields allow expressing invariants over mutable object graphs.
+Consider managing the shipment of items, where there is a maximum combined weight:
+\begin{lstlisting}
+class ShippingList {
+  rep Items items;
+  read method Bool invariant(){ return this.items.weight()<=300; }
+  ShippingList(capsule Items items) {
+    this.items = items;
+    if (!this.invariant()){ throw Error(...); }//injected check
+  }
+  mut method Void addItem(Item item) {
+    this.items.add(item);
+    if (!this.invariant()){ throw Error(...); }//injected check
+  }
+}
+\end{lstlisting}
+We inject calls to \Q@invariant()@ at the end of the constructor and the \Q@addItem(item)@ method.
+This is safe since the \Q@items@ field is declared \Q@rep@.
+Relaxing our system to allow a \Q@mut@ reference capability for
+the \Q@items@ field and the corresponding constructor parameter would 
+make the above checks insufficient:
+it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items. 
+%Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters). % Isaac: I'm not sure this is correct, ownership transfer is a thing I've seen before, also freshly created objects would also be fine
+In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08,Detlefs98wrestlingwith}
+is needed.
+For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.%
+
+%\saveSpace
+\begin{lstlisting}
+mut Items items = ...;//INVALID EXAMPLE
+mut ShippingList l = new ShippingList(items); // l is valid
+items.addItem(new HeavyItem()); // l is now invalid!
+\end{lstlisting}
+If we were to allow \Q@x.items@ to be seen as \Q@mut@, where \Q@x@ is not \Q@this@, then  even if the \Q@ShippingList@ has full control of \Q!items! at initialisation time, such control may be lost later, and code unaware of the \Q@ShippingList@ could break it:
+\begin{lstlisting}
+//INVALID EXAMPLE: l.items can be exposed as mut
+mut ShippingList l = new ShippingList(new Items()); // l is ok
+mut Items evilAlias = l.items; // here l loses control
+evilAlias.addItem(new HeavyItem()); // now l is invalid!
+\end{lstlisting}
+Relaxing our requirements for rep mutators
+would break our protocol: if rep mutators could have a \Q@mut@ return type the following would be accepted:
+\begin{lstlisting}
+//INVALID EXAMPLE: rep mutator expose(c) return type is mut
+mut method mut Items expose(C c) {return c.foo(this.items);}
+\end{lstlisting}
+Depending on dynamic dispatch, \Q@c.foo()@ may just be the identity function, thus
+we would get in the same situation as the former example.
+%Static analysis is usually unable/unwilling to track precise behaviour of dynamic dispatch.
+
+
+%In addition to the above we put restrictions on any \Q@mut@ and \Q@capsule@ methods using a \Q@capsule@ field (we call such methods `rep mutators'):
+%\begin{itemize}
+%\item only a single use of \Q@this@ is allowed (and is the one that uses the field),
+%\item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter)
+%\item and the return type cannot be \Q@mut@.
+%\end{itemize}
+%\noindent  Moreover, if the used \Q!capsule! field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
+
+
+Allowing \Q@this@ to be used more than once 
+would allow the following code, where 
+\Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe an object that does not satisfying its invariant:
+\begin{lstlisting}
+mut method Void multiThis(C c) {//INVALID EXAMPLE: two `this'
+  read Foo f = c.foo(this);
+  this.items.add(new HeavyItem());
+  f.hi(); }//`this' could be observed here if it is in ROG(f)
+\end{lstlisting}
+\noindent In order to ensure that a second reference to \Q@this@ is not reachable through arguments to such methods, we only allow \Q@imm@ and \Q@capsule@ parameters.
+Accepting a \Q@read@ parameter, as in the example below,
+would cause the same problems as before, where \Q@f@ may contain
+a reference to \Q@this@:
+\begin{lstlisting}
+mut method Void addHeavy(read Foo f) {//INVALID EXAMPLE
+  this.items.add(new HeavyItem());
+  f.hi(); }//`this' could be observed here if it is in ROG(f)
+...
+mut ShippingList l = new ShippingList(new Items());
+read Foo f = new Foo(l);
+l.addHeavy(f); // We pass another reference to `l' through f
+\end{lstlisting}%
+%
+%, we would have the same problem with a \Q@read@ paramater. ... justify why we ned capsule
+% The boat will sink if the weight of the cargo goes over 300. However, 
+% \Q@Item@ and \Q@Items@ come from a third party library,  are not annotated with contracts and the authors may change their behaviour in the future. 
+% All the code using \Q@Boat@  (client code) would like to  assume the boat has not sunk yet.
+% In turn, that depends on the behaviour of \Q@Items.weight()@, thus the meaning of the \Q@Boat@ invariant is parametric on the everchanging meaning of  \Q@Items.weight()@.
+% Can the code in the \Q@Boat@ class somehow enforce that for every possible well typed \Q@Item@ and \Q@Items@, client code will interact only with valid (non sunk)  boats?
+% That is, we are unable or unwilling to constrain \Q@Item@ and \Q@Items@ to
+% cooperate into making \Q@Boat@s unsinkable; 
+% we aim to make so that \Q@Boat@s can be correct independently of
+% possibly buggy, possibly even malicious \Q@Item@ and \Q@Items@ implementations.
+% Indeed, thanks to the encapsulation, any kind of check in the language,
+% as in `\Q@if(cargo.weight()>=300){..}@', would delegate the 
+% behaviour to untrusted code in \Q@Items@.
+%
+% \textbf{without any knowledge about the behaviour of \Q@add()@ and \Q@weight()@}
+% \footnote{A statically verified system with contracts on all methods may have this kind of knowledge.}
+% there is no way we can discover the invariant violation without actually adding the objects and checking the 
+% weight after the fact; thus in the general case violations can only be detected 
+% when a broken object is already present in the system.
+% Remember that to keep our approach lightweight,
+% we do not rely on pre-post conditions; thus
+% the behaviour of \Q@Items.weight()@ and \Q@Items.add(item)@ is uncertain.
+% The names may suggest a specific behaviour, but there is no contract annotated on such methods.
+%
+% Note also that in the general case there is no way to fix a broken object,
+%or to perform a deep clone and to test the operation on the clone first.
+%
+%
+%REWRITE THIS BIT
+%Here \Q!capsule! fields 
+%as input to our code-generation / \Q@validate()@-injection; that is, \Q@capsule T f@ is expanded by the language into:
+%\begin{itemize}
+%\item Induce a \Q@capsule@ parameter for the generated %constructor.
+%\item Require to be updated with a \Q@capsule@ expression.
+%\item Are accessed as a \Q@mut@ field.
+%Access is \textbf{not} a destructive read.
+% However methods accessing them are kept under
+%strict control; either
+%\begin{itemize}
+%\item they have \Q@read this@: they act like a normal %getter, and can not propagate
+%writing permission over the reachable object graph of that field.
+%Indeed, with \Q@read this@, any field access \Q@this.f@ will be typed \Q@read@ or \Q@imm@.
+%\item they have \Q@mut this@, no parameter is \Q@mut@ or \Q@read@,
+%the return type is not \Q@mut@ and \Q@this@ appear exactly one time in
+%the method body: we call those methods \textbf{exposers}, and the invariant is going to be checked at the end of
+%the exposers.
+%\end{itemize}
+%
+%
+%\end{itemize}
+%Exposers are the key part of our solution.
+%
+%
+% Those restrictions also enforce that while executing a rep mutator no object outside the reachable object graph of \Q@this@ can be mutated, and thus capability objects cannot be usedI/O can not be performed: the capability objects are externally visible mutable objects and thus the type system will never place them into a \Q@capsule@.
+%\subheading{The true expressibility of capsule modifiers}
+%A rep mutator method is a wrapper of a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
+%Thus, if \Q@this@ where to become broken during 
+%the method's execution, we could not observe it until after. At first glance, it may seems that capsule %mutators allows for limited kinds of mutations.
+%This is however not the case, consider the following
+%general rep mutator method that allows to apply any possible transformation over the content of a capsule %field:
+%At first glance it mayseem from
+%

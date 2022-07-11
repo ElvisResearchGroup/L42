@@ -1,0 +1,515 @@
+\section{Formal Language Model}
+\lstset{language=FortyFour} % Make all code bold
+\label{s:formalism}
+To model our system we need to formalise an imperative OO language
+with exceptions, object capabilities, and type system
+support for reference capabilities and strong exception safety.
+Formal models of the runtime semantics of such languages are simple, but
+defining and proving the correctness of such a type system 
+is quite complex, and indeed many such papers exist that have already done this~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,JOT:issue_2011_01/article1}.
+Thus we parametrise our language formalism, and assume we already have an expressive and sound type system enforcing the properties we need, so
+that we can separate our novel invariant protocol, from the non-novel reference capabilities.
+We clearly list in \autoref{s:proof} the requirements we make on such a type system, so that any language satisfying them can soundly support our invariant protocol.
+In \autoref{s:typesystem} we show an example type system, a restricted subset of L42, and prove that it satisfies our requirements. Conceptually our approach can parametrically be applied to any type system supporting these requirements, for example you could extend our type system with additional promotions or generic.
+To keep our small step reduction semantics as conventional as possible, we base our formalism on Featherweight Java~
+\cite{IgarashiEtAl01}~\cite[Chapter~19]{pierce2002types}, which is a turing complete~\cite{10.1016/j.tcs.2013.08.017} minimalistic subset of Java.
+As such, we model an OO language where receivers are always specified explicitly, and the receivers of field accesses and updates in method bodies are always \Q!this!; that is, all fields are instance-private.
+Constructor declarations are not present explicitly, instead we assume they are all of the form $C\oR \drange{T}{x} \cR\oC \drange[\semicolon]{\Kw{this}\D f}{\Kw{=}\,x} \cC$, for appropriate types $\range[\text{, }]{T}$. %where the fields of $C$ are $\trange{\fmdf}{C}{f}$, and $\derep{\fmdf_i}$ gives the reference capability required for the field kind $\fmdf_i$, see below for the definition.
+Note that we do not model variable updates or traditional subclassing, since this would make the proofs more involved without adding any additional insight.
+
+\subheading{Notational Conventions}
+We use the following notational conventions:
+\begin{itemize}
+	\item Class, method, parameter, and field names are denoted by $C$, $m$, $x$, and $f$, respectively.
+	\item We use ``$\vs$'' and ``$\ls$'' as metavariables denoting a sequence of form $\range{v}$ and $\range{l}$, similarly with other metavariables ending in ``$s$''.
+	\item We use ``$\_$'' to stand for any single piece of syntax.
+	\item Memory locations are denoted by $l$.
+	\item We assume an implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$ within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
+	\item Memory, denoted by $\s : l\rightarrow C\{\ls\}$, is a finite map from locations, $l$, to annotated tuples, $C\{\ls\}$, representing objects; here $C$ is the class name and $\ls$ are the 
+	field values.
+	We use the notation $\C{l}$ to get the class name of $l$, $\s[l.f=l']$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$ (this is only used in our proofs since our small step reduction does not need to delete individual locations). The notation $\s,\s'$ combines the two memories, and requires that $\dom(\s)$ is disjoint from $\dom(\s')$.
+	\item We assume a typing judgment of form $\ty{e}{T}$, this says that the expression $e$ has type $T$,
+	where the classes of any locations are stored in $\s$ and the types of variables are stored in the environment $\G : x\rightarrow T$.
+	
+	\item We assume that the type system imposes any additional constraints it needs on method bodies.
+	Our example type system in \autoref{s:typesystem} for example requires that the method bodies are well-typed and only use \Q!capsule! local variables once. However, our proofs in \autoref{s:proof} do not assume any such restrictions.
+	
+\end{itemize}
+
+\noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location can be used in the main expression and would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading/writing. In order to simplify our proof, we assume that:
+\begin{itemize}
+	\item \Q@Cap@ has no fields,
+	\item instances of \Q@Cap@ cannot be created with a \Q@new@ expression,
+	\item \Q@Cap@'s \Q@invariant()@ method is defined to have a body of `\Q!new True()!', and
+	
+
+	%\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver. Such methods will model I/O.
+	%in particular, calling them can lead to non-deterministic behaviour.
+	
+	\item \Q!mut! methods on \Q!Cap! (unlike all other methods) can have the same method name declared multiple times, with identical signatures but different bodies.
+	Such methods will model I/O, for example reading a byte from a file could be modelled by having several different \Q!mut method imm Byte readByte()! implementations, each of which returns a different byte value,
+	a call to such a method will then non-deterministically reduce to one of these values.
+	%\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods can be declared with the same signature multiple times, thus a call to them will non-deterministically chose one of the implementations.
+\end{itemize}
+We only model a single \Q@Cap@ capability class for simplicity, as modelling user-definable capability classes as described in \autoref{s:OCs} is unnecessary for the soundness of our invariant protocol.
+
+We encode booleans as ordinary objects, in particular we assume:
+\begin{itemize}
+\item There is a \Q!Bool! interface, a ``boolean'' value is any instance of this interface.
+\item There is a \Q!True! class that implements \Q!Bool!, an instance of this class represents ``true''.
+\item The \Q!True! class has no fields, so it can be created with \Q!new True()!.
+\item The \Q!True! class has a trivial invariant (i.e. its body is \Q!new True()!).
+\item Any other implementation of \Q!Bool!, such as a \Q!False! class, represent ``false''.
+\end{itemize}
+Other than the \Q!invariant! method of \Q!True!, we impose no requirements on the methods of the \Q!Bool! interface or its classes, in particular, they could be used to provide logical operations.\footnote{
+In particular, \Q!if! statements can be supported using Church encoding: we would have a \Q!Bool.i${}$f! method of form \Q!read method$\,T\,$i${}$f($T\,$ifTrue, $T\,$ifFalse)!, for an appropriate type $T$.
+The body of \Q!True.i${}$f! will then be \Q!ifTrue!, and the body of \Q!False.i${}$f! will be \Q!ifFalse!. In this way, \Q!$x$.i${}$f($t$, $f$)! will return $t$ if $x$ is ``true'' and $b$ if it is ``false''.}
+
+For simplicity, we do not formalise actual exception objects, rather we have expressions which are ``\error''s, these correspond to expressions which are currently `throwing' an unchecked exception;
+in this way there is no value associated with an \error.
+Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as (unchecked) exceptions, formalising exceptions in such way would not cause any interesting variation of our proofs.
+
+\begin{figure}
+	\centering
+	\begin{grammatica}
+		\produzione{e}{
+			\x
+			\mid \new{C}{\es}
+			\mid \Kw{this}\D f
+			\mid \Kw{this}\D f\equals e
+			\mid \call{e}{m}{\es}
+		}{expression}\\
+		\seguitoProduzione{
+			\as{e}{\mdf}
+			\mid \try{e}{e'}
+		}{}\\
+		\seguitoProduzione{
+    		v
+			\mid v\D f
+    		\mid v\D f\equals e
+			\mid \trys{\s}{e}{e'}
+			\mid \M{l}{e}{e'}
+		}{runtime expression}\\
+
+		\produzione{v}{
+			\mdf\,l
+		}{value}\\
+
+		\produzione{\EV}{
+			\hole
+			\mid \new{C}{\vs,\EV,\es}
+			\mid v\D f\equals\EV
+			\mid \call{\EV}{m}{\es}
+			\mid \call{v}{m}{\vs,\EV,\es}
+		}{evaluation context}\\
+		\seguitoProduzione{
+			\as{\EV}{\mdf}
+			\mid \trys{\s}{\EV}{e}
+			\mid \M{l}{\EV}{e}
+			\mid \M{l}{v}{\EV}
+		}{}\\
+		
+		\produzione{\E}{
+			\hole
+			\mid \new{C}{\es,\E,\es'}
+			\mid \E\D f
+			\mid \E\D f\equals e
+			\mid e\D f\equals\E
+			\mid \call{\E}{m}{\es}
+		}{full context}\\
+		\seguitoProduzione{
+			\call{e}{m}{\es,\E,\es'}
+			\mid \as{\E}{\mdf}
+			\mid \try{\E}{e}
+			\mid \try{e}{\E}
+		}{}\\
+		\seguitoProduzione{
+			\trys{\s}{\E}{e}
+			\mid \trys{\s}{e}{\E}
+			\mid \M{l}{\E}{e}
+			\mid \M{l}{e}{\E}
+		}{}\\
+		
+		%\produzione{M_l}{\E[M\oR l,e\cR]}{}\\
+		%\produzione{\EG_l}{
+		%  M_l\D m\oR\es_1,\E,\es_2\cR
+		% |e\D m\oR\es_1, M_l, \es_2, \E, \es_3\cR
+		% |M_l\D f\equals\E
+		% |\Kw{new}\ C\oR\es_1,M_l,\es_2,\E,\es_3\cR
+		% |\Kw{try}\oC\E\cC\ \Kw{catch}\ \oC e\cC
+		% |\E[\EG_l]}{}\\
+		\produzione{\CD}{
+			\clazz{C}{\Cs}{\Fs}{\Ms}
+			\mid \iclazz{C}{\Cs}{\Ss}
+		}{class declaration}\\
+
+		\produzione{F}{
+			\field{\fmdf}{C}{f}
+		}{field}\\
+
+		\produzione{S}{
+			\methods{\mdf}{T}{m}{\drange{T}{x}}
+		}{method signature}\\
+
+		\produzione{M}{
+			S\,e			
+		}{method}\\
+
+		%\produzione{P}{
+		%	T\,x
+		%}{parameter}\\
+
+		\produzione{T}{
+			\mdf\,C}{type}\\
+
+		\produzione{\mdf}{
+			\Kw{mut}
+			\mid \Kw{imm}
+			\mid \Kw{read}
+			\mid \Kw{capsule}
+		}{reference capability}\\
+
+		\produzione{\fmdf}{
+			\Kw{mut}
+			\mid \Kw{imm}
+			%\mid \Kw{read}
+			\mid \Kw{rep}
+		}{field kind}\\
+
+		\produzione{\ER}{
+			\EV[\new{C}{\vs,\hole,\vs'}]
+			\mid \EV[\hole\D f]
+			\mid \EV[\hole\D f\equals v]
+			\mid \EV[v\D f\equals\hole]
+		}{redex context}\\
+		\seguitoProduzione{
+			\EV[\call{\hole}{m}{\vs}]
+			\mid \EV[\call{v}{m}{\vs,\hole,\vs'}]
+			\mid \EV[\as{\hole}{\mdf}]
+		}{}\\
+	\end{grammatica}%\vspace{-1em}
+\caption{Grammar}\label{f:grammar}
+\end{figure}
+
+\subheading{Grammar}
+The grammar is defined in \autoref{f:grammar}.
+
+We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. We don't model the preexisting L42 \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values. If \Q!capsule! fields where added, they would not make our invariant protocol more interesting, as long as they do not provide a backdoor to create improper \Q!capsule! references.
+
+We use $v$, of form $\mdf\,l$, to keep track of the reference capabilities in the runtime, as it allows multiple references to the same location to co-exist with different reference capabilities; however $\mdf$'s are not stored in memory.
+The reduction rules do not change behaviour based on these $\mdf$'s, they are merely used by our proofs to keep track of the guarantees enforced by the typesystem.
+
+Our expressions ($e$), include variables ($x$), object creations ($\new{C}{\es})$, field accesses ($\Kw{this}\D f$ and $v\D f$), field updates ($\Kw{this}\D f \equals e$ and $v\D f \equals e$), method calls ($\call{e}{m}{\es}$), and values ($v$). Note that these are sufficient to model standard constructs, for example a sequencing ``$\semiColon$'' operator could be simulated by a method which simply returns its last argument.
+The expressions with $\Kw{this}$ will only occur in method bodies, at runtime $\Kw{this}$ will be substituted for a $\mdf\,l$.
+
+The three other expressions are:
+\begin{itemize}
+	\item \Q!as! expressions ($\as{e}{\mdf}$), these evaluate $e$ and change the reference capability of the result to $\mdf$.
+	This is important for our proofs in \autoref{s:proof}, were we require the typesystem to ensure certain properties for all references with a given $\mdf$.
+	The typesystem is then responsible for rejecting any \Q!as! expression that could violate this.
+	For example, a $\as{\Kw{mut}\,l}{\Kw{read}}$ could be used to prevent $l$ from being used for further mutation, and a  $\as{\Kw{mut}\,l}{\Kw{capsule}}$ (if accepted by the typesystem) will guarantee that $l$ is properly \encap.
+	These \Q!as! expressions are merely a proof device, they do not effect the runtime behaviour, and as in L42, they could simply be inferred by the typesystem when it would be sound to do so.
+	%This is similar to Pony's promote expressions. It is up to the typesystem what promotions it accepts as valid, provided they cannot be used to violate our requirements in \autoref{s:proof}. 
+	%However, an ``as'' expression can also be used to ``demote'', e.g. demoting a \Q!mut! to a \Q!read! to prevent the reference from being used for mutation.
+	%Using an explicit promotion makes the proofs much simpler, but a typesystem could simply wrap expressions with a $\as{\_}{\mdf}$ when necessary.
+	\item Monitor expressions ($\M{l}{e}{e'}$) represent our runtime injected invariant checks. The location $l$ refers to the object whose invariant is being checked, $e$ represents the behaviour of the expression, and $e'$ is the invariant check, which will initially be $\invariant{l}$. The body of the monitor, $e$, is evaluated first, then the invariant check in $e'$ is evaluated. If $e'$ evaluates to an $\Kw{imm}\,\Kw{True}$ (i.e. an \Q!imm! reference to an instance of \Q!True!), then the whole monitor expression will return the value of $e$, otherwise if it evaluates to a reference to a non-$\Kw{True}$ value (i.e. an \Q!imm! reference to an instance of a class other than $\Kw{True}$), the monitor expression is an $\error$, and evaluation will proceed with the nearest enclosing $\Kw{catch}$ block, if any.
+	\item \Q!try!--\Q!catch! expressions ($\try{e}{e'}$), which as in many other expression based languages\footnote{
+		This differs from \emph{statement} based languages like Java, were a \Q!try!-\Q!catch!, does not return a value.
+		The expression-based form can be translated to a call to a method whose body is ``%For some reason this footnote breaks with \Q, so I do it all in math mode
+		$\Kw{try}\ %
+			\oC\Kw{return}\,e\semiColon\cC\ %
+		\Kw{catch}\ %
+			\oR\Kw{Throwable}\, t\cR\ %
+			\oC\Kw{return}\,e'\semiColon\cC$%
+		''.},
+		evaluate $e$, and if successful, return its result, otherwise if $e$ is an $\error$, evaluation will reduce to $e'$.
+	%\Q!try {return $e$;} catch(Throwable t) {return $e'$;}!
+	During reduction, \Q!try!--\Q!catch! expressions will be annotated as $\trys{\s}{e}{e'}$, where $\s$ is the state of the memory before the body of the \Q!try! block begins execution. This annotation has no effect on the runtime, but is used by the proofs to model strong exception safety: objects in $\s$ are not mutated by the body of the \Q!try!. Note that as mentioned before, this strong limitation is only needed for unchecked exceptions, in particular, invariant failures. Our calculus only models unchecked exceptions/errors, however L42 also supports checked exceptions, and \Q@try-catch@es over them impose no limits on object mutation during the \Q@try@.
+    This is safe since checked exceptions can not leak out of invariant methods or ref mutators: in both cases our protocol requires their \Q@throws@ clause to be empty.
+
+\end{itemize}
+
+We say that an $e$ is an $\error$ if it represents an uncaught invariant failure, i.e. a runtime-injected invariant check that has failed and is not enclosed in a \Q!try! block:\\
+\indent $\error(\s, e)$ iff:
+\begin{iitemize}
+	\item $e = \EV[\M{l}{v}{\mdf\,l'}]$\SS
+	\item $\C{l'} \neq \Kw{True}$\SS
+	\item $\EV$ is not of form $\EV'[\trys{\s'}{\EV''}{\_}]$
+\end{iitemize}
+This ensures that the body of a \Q!try! block will only be an $\error$ if there is no inner \Q!try!--\Q!catch! that should catch it instead.
+
+Locations ($l$), annotated tries ($\trys{\s}{e}{e'}$), and monitors $\M{l}{e}{e'}$ are runtime expressions: they are not written by the programmer, instead they are introduced internally by our reduction rules.
+
+We provide several expression contexts, $\E$, $\EV$, and $\ER$. 
+The standard evaluation context~\cite[Chapter~19]{pierce2002types}, $\EV$, represents the left-to-right evaluation order, an $\EV$ is like an $e$, but with a \emph{hole} ($\hole$) in place of a sub-expression,
+	but all the expression to the left of the hole must already be fully evaluated. This is used to model the standard left to right evaluation order: the hole denotes the location of the next sub-expression that will be evaluated. We use the notation $\EV[e]$ to fill in the hole, i.e. $\EV[e]$ returns $\EV$ but with the single occurrence of $\hole$ replaced by $e$.
+	For example, if $\EV = \call{\hole}{m}{}$ then $\EV[\new{C}{}] = \call{\new{C}{}}{m}{}$.
+
+The full expression context, $\E$, is like an $\EV$, but nothing needs to have been evaluated yet, i.e. the hole can occur in place of any sub-expression.
+The context $\ER$ is also like an $\EV$, but instead has a hole in an argument to a \emph{redex} (i.e. an expression that is about to be reduced).
+	This captures our previously informal notion: a value $v$ is \emph{involved in execution} if we have an $\ER[v]$.
+	For example, if $\ER$ = $\EV[\new{C}{v_1,\square,v_3}]$, then $\ER[v_2] = \EV[\new{C}{v_1,v_2,v_3}]$, i.e. we are about to perform an operation (creating a new object) that is involving the value $v_2$.
+
+%As is standard, an $\E$ represents an expression with a single \emph{hole} ($\hole$) in place of a sub-expression. We use the notation $\E[e]$ to fill in the hole, i.e. $\E[e]$ returns $\E$ but with the single occurrence of $\hole$ replaced %by $e$.
+%For example, if $\E = \call{\hole}{m}{}$ then $\E[\new{C}{}]$ = $\call{\new{C}{}}{m}{}$.
+%An evaluation context, $\EV$, represents the standard left-to-right evaluation order, an $\EV$ is like an $\E$, but all the expression to the left of the hole are already fully evaluated. This is used to model the standard left to right %evaluation order: the hole denotes the location of the next expression to be evaluated.
+
+
+The rest of our grammar is standard and follows Java, except that types ($T$) contain a reference capability ($\mdf$), and fields ($F$) contain a field kind ($\fmdf$).
+
+\subheading{Reference Capability Operations}
+We define the following properties of our reference capabilities and field kinds:
+\begin{itemize}
+	\item $\mdf \leq \mdf'$ indicates that a reference of capability $\mdf$ can be used whenever 
+    one of capability $\mdf'$ is expected. This defines a partial order:\\
+	\SS[1]\begin{iitemize}
+	\item $\mdf \leq \mdf$, for any $\mdf$\SS
+	\item $\Kw{imm} \leq \Kw{read}$\SS
+	\item $\Kw{mut} \leq \Kw{read}$\SS
+	\item $\Kw{capsule} \leq \Kw{mut}$, $\Kw{capsule} \leq \Kw{imm}$, and $\Kw{capsule} \leq \Kw{read}$
+	\end{iitemize}
+	
+	\item $\derep{\fmdf}$ denotes the reference capability that a field with kind $\fmdf$ requires when initialised/updated:\\
+	\SS[1]\begin{iitemize}
+	\item $\derep{\Kw{rep}} = \Kw{capsule}$\SS
+	\item $\derep{\fmdf} = \fmdf$, otherwise (in which case $\fmdf$ is also of form $\mdf$)
+	\end{iitemize}
+	
+	\item $\rmdf{\mdf}{\fmdf}$ denotes the reference capability that is returned when accessing a field with kind $\fmdf$, on a receiver with capability $\mdf$:\\
+	\SS[1]\begin{iitemize}
+	\item $\rmdf{\mdf}{\Kw{imm}} = \Kw{imm}$\SS
+	\item $\rmdf{\mdf}{\Kw{mut}} = \rmdf{\mdf}{\Kw{rep}} = \mdf$
+	\end{iitemize}
+\end{itemize}
+
+The $\leq$ notation and $\derep{\fmdf}$ notations are used later in \autoref{s:proof} and \autoref{s:typesystem}.
+
+\subheading{Well-Formedness Criteria}
+%\subheading{Reduction Rules}
+We additionally restrict the grammar with the following well-formedness criteria:
+\begin{itemize}
+	\item \Q@invariant()@ methods must follow the requirements of \autoref{s:protocol}, except that for simplicity method calls on \Q!this! are not allowed.\footnote{Such method calls could be inlined or rewritten to take the field values themselves as parameters.} This means that for every non-interface class $C$, $C.\Kw{invariant} = \method{\Kw{read}}{\Kw{imm}\,\Kw{Bool}}{\Kw{invariant}}{}e$, where $e$ can only use \Q!this! as the receiver of an \Q!imm! or \Q!rep! field access. Formally, this means that forall $\E$ where $e = \E[\Kw{this}]$, we have:
+	\begin{iitemize}
+		\item $\E = \E'[\hole\D f]$, for some $\E'$\SS[0.15]
+		\item $C.f = \field{\fmdf}{\_}{f}$\SS[0.15]
+		\item $\fmdf \in \{\Kw{imm},\Kw{rep}\}$
+	\end{iitemize}
+	
+	\item Rep mutators must also follow the requirements in \autoref{s:protocol},
+such methods must not use \Q!this!, except for the single access to the \Q!rep! field, and they must not have \Q!mut! or \Q!read! parameters, or a \Q!mut! return type.
+Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{\_}{f}$ and $C.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drangex{\mdf}{\_\,\_}}{\E[\Kw{this}\D f]}$:
+	\begin{iitemize}
+		\item $\Kw{this} \notin \E$\SS[0.15]
+		\item $\drangex[\text{, }]{\mdf}{\!\notin \{\Kw{mut},\Kw{read}\}}$\SS[0.15]
+		\item $\mdf' \neq \Kw{mut}$
+	\end{iitemize}
+
+	\item We require that the method bodies do not contain runtime expressions. Formally, for all $C_0$ and $m$ with 
+	$C_0.m = \method{\_}{\_}{m}{\rangex{\_\,\_}}{e}$, $e$ contains no $l$, $\M{\_}{\_}{\_}$, or $\trys{\s'}{\_}{\_}$ expressions.
+	
+	%are type checked against their declared return type, under the assumption that their parameters and receiver have the appropriate type we also require that they do not contain runtime expressions. Formally, for all $C_0$ and $m$ with 
+	%$C_0.m = \method{\mdf_0}{T}{m}{\trange{\mdf}{C}{x}}{e}$, we have:
+	%\begin{iitemize}
+	%	\item $\ty[\emptyset][\Kw{this} \mapsto \mdf_0\,C_0, \trange{x}{\!\mapsto \mdf}{C}]{e}{T}$
+	%	\item $e$ contains no $l$, $\M{\_}{\_}{\_}$, or $\trys{\s'}{\_}{\_}$ expressions
+	%\end{iitemize}
+
+	\item We also assume some general sanity requirements:
+	every $C$ mentioned in the program or in any well typed expression has a single corresponding \Q!class!/\Q!interface! definition; the $C$s in an \Q!implements! are all names of \Q!interface!s; the $C$ in a $\new{C}{\es}$ expression denotes a \Q!class!; the \Q!implements! relationship is acyclic; the fields of a \Q!class! have unique names; 
+	methods within a \Q!class!/\Q!interface! (other than \Q!mut! methods in \Q!Cap!) have unique names; and parameters of a method have unique names and are not named \Q!this!.
+
+	\item For simplicity of the type-system and associated proof, we require that every method in the (indirect) super-interfaces of a class be implemented with exactly the same signature, i.e. if we have a $\clazz{C}{\_}{\_}{\Ms}$, and $\iclazz{C'}{\_}{\Ss}$, where $C'$ is reachable through the \Q!implements! clauses starting from $C$,
+		then for all $S \in \Ss$, there is some $e$ with $S\,e \in \Ms$.
+%we removed Ps, should we remove the macro and see what does not compile?
+\end{itemize}
+
+\subheading{Reduction Rules}
+\newcommand{\rowSpace}{\\\vspace{2.5ex}}%
+\begin{figure}
+	\!\!$\!\!\!\!\!\begin{array}{l}
+	\smash{
+		\rrule{new}
+		{\s}{\new{C}{\range{\_\,l}}}
+		{\s,l_0\mapsto C\{\range{l}\}}{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}}
+		\text{, where:}}
+	\\\qquad l_0 = \fr(\s)\text{ and }C \neq \Kw{True}
+	\\\rowSpace\smash{
+		\rrule{new true}
+		{\s}{\new{\Kw{True}}{}}
+		{\s,l_0\mapsto \Kw{True}\{\}}{\Kw{mut}\,l_0}
+		\text{, where:}}
+	\\[-2.5ex]\qquad l_0 = \fr(\s)
+	\\\rowSpace\smash{
+		\rrule{access}
+		{\s}{\mdf\,l\D f}
+		{\s}{\mdf'\,l'}
+		\text{, where:}}
+	\\[-2.5ex]\qquad
+		\C{l}.f = \field{\fmdf}{\_}{f}
+		\text{, }\mdf' = \rmdf{\mdf}{\fmdf}
+		\text{, and }l' = \s[l.f]
+	\\\rowSpace\smash{
+		\rrule{update}
+		{\s}{\_\,l\D f\equals\_\,l'}
+		{\s[l.f=l']}{\M{l}{\Kw{mut}\,l}{\invariant{l}}}
+	}
+	\\[0ex]\smash{
+		\rrule{call}
+		{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
+		{\s}{\as{e'}{\mdf'}}
+		\text{, where:}}
+	\\\qquad\begin{array}{l}
+		\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e}\\*
+		e' = e[\Kw{this}\coloneqq\mdf_0\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]\\*
+		\text{if }\mdf_0 = \Kw{mut}\text{ then there are no }f\text{ and }\E \text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]
+	\end{array} % because otherwise there seems to be too much space between this and as
+	\\\rowSpace\smash{
+		\rrule{call mutator}
+		{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
+		{\s}{\M{l_0}{\as{e}{\mdf'}}{\invariant{l_0}}}
+		\text{, where:}}
+	\\[-2.5ex]\qquad\begin{array}{l}
+		\C{l_0}.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{\E[\Kw{this}\D f]}\\*
+		\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\\*
+		e = \E[\Kw{this}\D f][\Kw{this}\coloneqq\Kw{mut}\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]
+	\end{array}\vspace{-0.5ex} % because otherwise there seems to be too much space between this and as
+	\\\rowSpace\smash{
+		\rrule{as}
+		{\s}{\as{\_\,l}{\mdf}}
+		{\s}{\mdf\,l}}
+	\\\smash{
+		\rrule{try enter}
+		{\s}{\try{e}{e'}}
+		{\s}{\trys{\s}{e}{e'}}}
+	\\\rowSpace\smash{
+		\rrule{try ok}
+		{\s}{\trys{\s'}{v}{\_}}
+		{\s}{v}}
+	\\\smash{
+		\rrule{try error}
+		{\s}{\trys{\s'}{e}{e'}}
+		{\s}{e'}
+		\text{, where } \error(\s,e)}
+	\\\rowSpace\smash{
+		\rrule{monitor exit}
+		{\s}{\M{l}{v}{\mdf\,l'}}
+		{\s}{v}
+		\text{, where } \C{l'} = \Kw{True}
+		}
+	\vspace{-2.5ex}
+	\end{array}$
+\caption{Reduction rules}\label{f:reductions}
+\end{figure}%
+Our reduction rules are defined in \autoref{f:reductions}. We use the function $\fr(\s)$ to return an arbitrary $l$ such that $l \notin \dom(\s)$.
+The rules use $\EV$ to ensure that the sub-expression to be reduced is the left-most unevaluated one:
+\begin{itemize}
+\item \textsc{new/new true} creates a new object.
+\textsc{new} is used when creating a non-\Q!True! object, it returns a monitor expression that will check the new object's invariant, and if that succeeds, return a \Q!mut! reference to the object.
+\textsc{new true} is for creating an instance of \Q!True!, 
+	it simply returns a \Q!mut! reference to the new object, \emph{without} checking its invariant.
+	The separate \textsc{new true} rule is needed as the invariant of \Q!True! is itself defined to perform \Q!new True()!, so using the \textsc{new} rule would cause an infinite recursion.
+	This is sound since \emph{manually} calling invariant on \Q!True! will return a \Q!True! reference.
+Note that although we do not define what $\fr$ actually returns, since it is a \emph{function} these reduction rules are deterministic: $l_0$ is uniquely defined for any given $\s$.
+%Note the use of $\s,l_0 \mapsto C\{\_\}$ implies that $l_0 \notin \dom(\s)$, since $\s,l_0\mapsto C\{\_\}$ would be undefined otherwise.
+
+\item \textsc{access} looks up the value of a field in the memory and returns it, annotated with the appropriate reference capability (see above for the definition of $\rmdf{\mdf}{\fmdf}$).
+\item \textsc{update} updates the value of a field, returning a monitor that re-checks the invariant of the receiver, and if successful, will return the receiver of the update as \Q!mut!. Note that this does \emph{not} check that the receiver of the field update has an appropriate reference capability, it is the responsibility of the type-system to ensure that this rule is only applied to a \Q!mut! or \Q!capsule! receiver. For soundness, we return a \Q!mut! reference even when the receiver is \Q!capsule!. Promotion can then be used to convert the result to a \Q!capsule!, provided the new field value is appropriately encapsulated.
+\item \textsc{call/call mutator} looks for a corresponding method definition in the receiver's class, and reduces to its body with parameters appropriately substituted. The parameters are substituted with the reference capabilities of the method's signature, not the capabilities at the call-site, this is used by the proofs to show that further reductions will respect the capabilities in the method signature. We wrap the body of the method call in an \Q!as! expression to ensure that the returned $\mdf$ is actually as the method signature specified; for example, a method declared as returning a \Q!read! might actually return a \Q!mut!, but the \Q!as! expressions will soundly change it to a \Q!read!, thus preventing it from being used for mutation. As with \Q!as! expressions in general, the type system is required to ensure that this will not break our reference capability guarantees in \autoref{s:proof}.
+The \textsc{call mutator} rule is like \textsc{call}, but is used when the method is a rep mutator (a \Q!mut! method that accesses a \Q!rep! field):
+it additionally wraps the method body in a monitor expression that will re-check the invariant of the receiver once the body of the method has finished reducing.
+Note that as \Q!Cap! has no \Q!rep! fields and can have multiple definitions of the same method, the \textsc{call} rule allows for non-determinism, but only if the receiver is of class \Q!Cap! and the method is a \Q!mut! method.
+
+\item \textsc{as} simply changes the reference capability to the one indicated. Note that our requirements on the type-system, given in \autoref{s:proof}, ensure that inappropriate promotions (e.g. \Q!imm! to \Q!mut!) will be ill-typed.
+
+\item \textsc{try enter} will annotate a \Q!try!--\Q!catch! with the current memory state, before any reduction occurs within the \Q!try! part. In \autoref{s:proof}, we require the type system to ensure strong exception safety: that the objects in the saved $\s$ are never modified. Note that the grammar for $\EV$ prevents the body of an \emph{unannotated} \Q!try! block from being reduced, thus ensuring that this rule is applied first.
+
+\item \textsc{try ok} simply returns the body of a \Q!try! block once it has successfully reduced to a value. \textsc{try error} on the other hand reduces to the body of the \Q!catch! block if its \Q!try! block is an $\error$ (an invariant failure that is \emph{not} enclosed by an inner \Q!try! block). Note that the grammar for $\EV$ prevents the body of a \Q!catch! block from being reduced, instead \textsc{try error} must be applied first; this ensures that the body of a \Q!catch! is only reduced if the \Q!try! part has reduced to an $\error$.
+
+\item \textsc{monitor exit} reduces a successful invariant check to the body of the monitor. If the invariant check on the other hand has failed, i.e. has returned a non-$\Kw{True}$ reference, it will be an $\error$, and \textsc{try error} will proceed to the nearest enclosing $\Kw{catch}$ block.
+\end{itemize}
+
+Note that as with most OO languages, an expression $e$ can always be reduced, unless: $e$ is already a value, $e$ contains an uncaught invariant failure, or $e$ attempts to perform an ill-defined operation (e.g. calling a method that doesn't exist). The latter case can be prevented by any standard sound OO typesystem.
+However, invalid use of reference capabilities (e.g. having both an \Q!imm! and \Q!mut! reference to the same location) does \emph{not} cause reduction to get stuck, instead, in \autoref{s:proof} we explicitly require that the typesystem prevents such things from happening, which our example type system in \autoref{s:typesystem} proves to be the case.
+
+Note that the monitor expressions are only a proof device, they need not be implemented directly as presented.
+For example, in L42 they are implemented by statically injecting calls to \Q!invariant()! at the end of setters (for \Q@imm@ and \Q@rep@ fields), factory methods, and rep mutators; this works as L42 follows the uniform access principle, so it does not have primitive expression forms for field updates and constructors, rather they are uniformly represented as method calls.
+
+\subheading{Statement of Soundness}
+%
+%\newcommand{\sims}[3]{#2 \approx_{#1} #3}
+%%Blahblah blah, why we need this
+%We define $\sims{\s_0}{\s|e}{\s'|e'}$ iff, $\exists \range{l}$ and $\range{l'}$ with \\
+%\begin{iitemize}
+%\item $n = |\dom(\s) \setminus \dom(\s_0)| = |\dom(\s') \setminus \dom(\s_0)|$
+%\item $\dom(\s) \setminus \dom(\s_0) = \{\range{l}\}$
+%\item $\dom(\s') \setminus \dom(\s_0) = \{\range{l'}\}$
+%\item $\forall i \in [1, n]$, $\s'(l'_i)[\drange{l'}{\!\coloneqq l}] = \s(l_i)$
+%\item $\forall l_0 \in \dom(\s_0)$, $\s'(l_0)[\drange{l'}{\!\coloneqq l}] = \s(l_0)$
+%\item $e'[\drange{l'}{\!\coloneqq l}] = e$
+%\end{iitemize}
+%That is, $\s$ and $\s'$ have the same number of new objects ($n$)
+%and $\s'|e'$ can be turned into $\s|e$ by using some renaming between the new objects in $\s$ and %$\s'$. 
+%}
+%
+We define a deterministic reduction arrow to mean that exactly one reduction is possible:\\
+\indent $\s|e \Rightarrow \s'|e'$ iff $\s|e \rightarrow \s'|e'$, and $\forall \s'', e''$, $\s|e \rightarrow \s''|e''$, implies $\s''|e'' = \s'|e'$\\
+%Set style definition:\\
+%\indent$\s|e \Rightarrow \s'|e'$ iff $\{\s'|e'\} = \{\s''|e'' \text{ where } \s|e \rightarrow \s''|e''\}$
+%Ok, I'm leaving the forall definition, not sure what is better.
+
+\LS
+
+\noindent We say that an object is \valid when calling its \Q@invariant()@ method would
+deterministically produce an $\Kw{imm}\,\Kw{True}$ in a finite number of steps, i.e. assuming the typesystem is sound, this means it does not evaluate to a non-$\Kw{True}$ reference, fail to terminate, or produce an \error.
+We also require that evaluating \Q@invariant()@ preserves existing memory, however new objects can be freely created and mutated:
+
+\indent$\valid(\s,l)$ iff $\s | \invariant{l} \Rightarrow^+ \s,\s' | \Kw{imm}\,l$ where  $\C[\s,\s']{l} = \Kw{True}$.%\loseSpace
+
+\noindent
+To allow the \Q!invariant()! method to be called on an invalid object, and access fields on such an objects, we define the set of trusted execution steps as the call to \Q@invariant()@ itself, and any field accesses inside its evaluation:
+
+%\loseSpace
+\indent $\trusted(\ER, l)$ iff, either:
+\begin{iitemize}
+\item $\ER=\EV[\M{l}{\_}{\call{\hole}{\Kw{invariant}}{}}]$, or\SS
+\item $\ER=\EV[\M{l}{\_}{\EV'[\hole\D f]}]$.
+\end{iitemize}
+
+The idea being that the $\ER$ is like an $\EV$ but it has a hole where a reference can be, thus $\trusted(\ER, l)$ holds when the very next reduction we are about to perform is $\call{\mdf\,l}{\Kw{invariant}}{}$ or $\mdf\,l\D f$.
+As we discuss in our proof of $\thm{Soundness}$, any such $\mdf\,l\D f$ expression came from the body of the \Q!invariant()! method itself, since $l$ can not occur in the $\rog$ of any of its fields mentioned in the \Q!invariant()! method.\footnote{Invariants only see \Q@imm@ and \Q@rep@ fields (as \Q@read@), neither of which can alias the current object.}
+
+We define a \VS as one that was obtained by any number of reductions from a well typed initial main expression and memory:\\
+\indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^* \s|e$, for some $e_0$ such that:
+\begin{iitemize}
+\item $\tyr[c\mapsto\Kw{Cap}\{\}]{e_0}{T}$, for some $T$\SS
+\item $e_0$ contains no $\M{\_}{\_}{\_}$, $\trys{\s'}{\_}{\_}$, $\try{\_}{\_}$,  or $\as{\_}{\mdf}$ expressions\SS
+\item $\forall\mdf\,l \in e_0$, $\mdf\,l = \Kw{mut}\,c$
+\end{iitemize}
+By restricting which initial expressions are well-typed, the type-system (such as the one presented in \autoref{s:typesystem}) can ensure the required properties of our reference-capabilities (see \autoref{s:proof}); any standard OO type system can also be used to reject expressions that might try to perform an ill-defined reduction (like reading a field that does not exist).
+The initial expression cannot contain any runtime expressions, except for \Q!mut! references to the single pre-existing \Q!Cap! object.
+Note that as \Q!Cap! has no fields and \Q!this! is not of form $l$, field accesses/updates in the initial main expression can never be reduced.
+To make the type system and proofs presented in \autoref{s:typesystem} simpler, we require that $c$ can only be initially referenced as \Q!mut! and that there are no \Q!try!--\Q!catch! or \Q!as! expressions in $e_0$. This restriction does not effect expressivity, as you can pass $c$ to a method whose parameters have the desired reference capability, and whose body contains the desired  \Q!try!--\Q!catch! and/or \Q!as! expressions.
+%\loseSpace
+
+Finally, we define what it means to soundly enforce our invariant protocol:
+
+\SS\begin{restatable}[Soundness]{theorem}{THMSoundness}\ \\ %Creates a \THMSoundness macro that restates the theorem with the correct number
+\indent If $\VS(\s, \ER[\_\,l])$, then either $\valid(\s,l)$ or $\trusted(\ER,l)$.
+\end{restatable}\SS\noindent
+%Every object referenced by any untrusted redex, within a \VS, is valid.
+Except for the injected invariant checks (and fields they directly access),
+any redex in the execution of a well typed program takes as input only valid objects.
+In particular, no method call (other than \emph{injected} invariant checks themselves) can see an object which is being checked for validity.
+
+This is a very strong statement because $\valid(\s,l)$ requires
+the invariant of $l$ to deterministically terminate.
+Our setting does ensure termination of the invariant of any $l$ that is now within a redex (as opposed to an $l$ that is on the heap, or is being monitored).
+This works because non terminating \Q@invariant()@ methods would cause the monitor expression to never terminate. Thus, an
+$l$ with a non terminating \Q@invariant()@ is never involved in an untrusted redex.
+This works as invariants are deterministic computations that depend only on the state reachable from $l$.
+In particular, if $l$ is in a redex, a monitor expression must have terminated after the object instantiation
+and after any updates to the state of $l$.
+
+%We believe this property captures very precisely our statements in \autoref{s:protocol}.
+
+\lstset{language=FortyThree} % Back to default

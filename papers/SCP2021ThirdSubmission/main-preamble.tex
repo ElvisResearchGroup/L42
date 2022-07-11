@@ -1,0 +1,300 @@
+\usepackage{verbatim}
+%\addbibresource{main.bib}
+\usepackage{wrapfig}
+\usepackage{etoolbox}
+\usepackage{xparse}
+%\usepackage[stable]{footmisc}
+%
+\makeatletter
+% Make code font lighter?
+\DeclareFontSeriesDefault[tt]{md}{l}
+%\DeclareFontSeriesDefault[tt]{bf}{b}
+\renewcommand{\ttdefault}{lmtt}
+
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother
+
+\usepackage{mathpartir}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\ifdefined\proof%
+\else%
+\usepackage{amsthm}
+\usepackage{thm-restate}
+%\theoremstyle{plain}
+\makeatletter
+\newtheoremstyle{romansans} % Based on plain, with upright body and sans serif note
+	{\topsep}{\topsep}  % Space above/below (plain)
+	{\upshape}{}        % Body font & indent (changed to upright)
+	{\bfseries}{.}      % Theorem head font  (plain) and punctuation (plain)
+	{.5em}{\thmhead@plain{#1}{#2}{\textsf{#3}}} % Space after theorem head (plain) and head formatting (custom note shape)
+\theoremstyle{romansans}
+\newcommand{\providecounter}[1]{%
+  \ifcsname c@#1\endcsname % do nothing, counter allready defined
+  \else
+    \newcounter{#1}%
+  \fi
+}
+\makeatother
+
+
+\newcounter{definition}
+\newtheorem{Definition}[definition]{Definition}
+\fi%
+\usepackage{xspace}
+\newcounter{requirement}
+\newtheorem{Requirement}[requirement]{Requirement}
+\newcounter{llemma} % For some reason 'lemma' dosn't work, so I've called it llemma
+\newtheorem{Lemma}[llemma]{Lemma}
+\newcounter{corollary}
+\newtheorem{Corollary}[corollary]{Corollary}
+
+\let\origMapsTo=\mapsto % save it as Def redefines it
+\input{../Def/Def}
+\let\mapsto=\origMapsTo % undo changes
+%\renewcommand{\mapsto}{\mathrel{\origMapsTo\!}}
+\renewcommand\scaleKw{1} % Turn off the horrible keyword squashing in the formalism
+
+% The following code defines a macro, \markLine that puts it’s argument in the margins on either side of the next line
+% it can be called multiple times for the same line, causing the arguments to placed next to eachother
+\begin{comment} 
+\usepackage{lineno}
+\linenumbers
+\renewcommand\makeLineNumber{}
+\newbox\LeftMarkers \newbox\RightMarkers
+\newcommand{\markLine}[2]{%
+\setbox\LeftMarkers\hbox{#1\unhbox\LeftMarkers}%
+\setbox\RightMarkers\hbox{\unhbox\RightMarkers#1}}
+
+\newcommand{\markLineD}[1]{\markLineD{#1}{#1}} % just a shortcut
+\renewcommand{\makeLineNumber}{%
+\ifvoid\LeftMarkers%
+\else \hss\unhcopy\LeftMarkers\ \rlap{\hskip\textwidth\ \unhbox\RightMarkers}%
+\fi}
+\end{comment}
+
+%\newcommand{\saveSpace}{\vspace{-3px}}
+%\newcommand{\loseSpace}{\vspace{1ex}}
+\newcommand{\etal}{\emph{et~al.}\xspace}
+\newcommand{\REV}[3]{%
+	\NoteColour{red}{#1\NoteText{\footnote{%
+				\textcolor{red}{\textbf{REV#2{:} #3}}}}}}
+			
+\newcommand{\REVm}[1]{\NoteColour{red}{#1\NoteText{\footnotemark}}}
+\newcommand{\REVt}[2]{\footnotetext{\textcolor{red}{\textbf{REV#1{:} #2}}}}
+			
+\newcommand{\subheading}[1]{%
+	\vspace{1ex}%
+	\noindent\textsf{\textbf{#1\\\noindent}}
+}
+
+
+
+%Make the "." in the syntax bigger so it stands out more, but give it less spacing
+\newcommand{\D}{\scalebox{1.2}{\kern-0.1em\singleDot\kern-0.1em}}
+
+% Reduce spacing arround the '.' so it looks nicer in math
+\newcommand{\MD}{\kern-0.3pt\text{.}\kern-0.9pt}
+% Hack (see https://tex.stackexchange.com/questions/299798/make-characters-active-via-macro-in-math-mode)
+% this reduces the spacing around '.' in math mode
+\newcommand{\defActiveMathChar}[2]{%
+	\begingroup\lccode`~=`#1\relax%
+	\lowercase{\endgroup\def~}{#2}%
+	\AtBeginDocument{\mathcode`#1="8000}%
+}
+\defActiveMathChar{.}{\MD} 
+%This way 'l.f' looks good as does 'l\D f', but the latter is clearly different; not that it really matters, but it's nice to have "code symbols" look like code and math symbols look like math
+
+% Just to ensure consistency amongst the various syntactic forms when we use them in maths
+\newcommand{\M}[3]{\ensuremath{\Kw{M}\oR{}#1\semiColon\,#2\semiColon\,#3\cR}}
+\newcommand{\as}[2]{\ensuremath{#1\,\Kw{as}\,#2}} %#1\ \Kw{promote}\ \oC#2\cC}}
+\newcommand{\cas}[1]{\as{#1}{\Kw{capsule}}}
+\newcommand{\call}[3]{#1\D #2\oR#3\cR}
+\newcommand{\new}[2]{\Kw{new}\ #1\oR#2\cR}
+\newcommand{\field}[3]{#1\,#2\,#3}
+\newcommand{\try}[2]{\Kw{try}\ \oC#1\cC\ \Kw{catch}\ \oC#2\cC}
+\newcommand{\clazz}[4]{\Kw{class}\ #1\ \Kw{implements}\ #2\ \oC#3\semiColon#4\cC}
+\newcommand{\iclazz}[3]{\Kw{interface}\ #1\ \Kw{implements}\ #2\ \oC#3\cC}
+\newcommand{\methods}[4]{#1\,\Kw{method}\,#2\,#3\oR#4\cR}
+\newcommand{\method}[5]{\methods{#1}{#2}{#3}{#4}\,#5}
+\newcommand{\trys}[3]{\Kw{try}^{#1}\oC#2\cC\ \Kw{catch}\ \oC#3\cC}
+
+\newcommand{\fmdf}{\V\kappa} % field modifier metavariable, I'm open to different letters
+
+\newcommand{\invariant}[1]{\call{\Kw{read}\,#1}{\Kw{invariant}}{}}
+\renewcommand\ttfamilywithbold\ttfamily
+\lstset{
+%  basicstyle=\ttfamilywithbold,
+%  keywordstyle=\small\ttfamily\bfseries\color{darkRed},
+  morekeywords={assert, expose, iso, isolated, baloon, rep}
+  }
+
+\lstdefinelanguage{FortyThree}[]{FortyTwo}{literate={@}{@}{1},morekeywords={rep,as,promote}} % 42 but with rep keyword, also stops @ from being treated as part of an identifier
+\lstdefinelanguage{FortyFour}[]{FortyThree}{basicstyle=\small\ttfamilywithbold\bfseries} % 43 but all code in bold, for use in math sections
+\lstset{language=FortyThree}
+
+\newcommand{\thm}[1]{\textsf{#1}}
+
+%\HideNotes
+
+% Spacing hacks!
+\renewcommand{\SS}[1][0.5]{\vspace{-#1\baselineskip}}
+\newcommand{\LS}[1][0.5]{\vspace{#1\baselineskip}}
+% for paragraph breaks in itemize
+\newcommand{\LSitem}{\LS[0.2]}
+% for paragraph breaks in an itemize (inside an itemize or enumerate)
+\newcommand{\LSiitem}{\LS[0.35]}
+% for paragraph breaks in an enumerate
+\newcommand{\LSenum}{\LS[0.5]}
+% Paragraph breaks for an intemize nested within at leastt 2 itemize/enumerates
+\newcommand{\LSiiitem}{\LS[0.5]}
+
+\lstset{aboveskip=0.25\baselineskip,belowskip=0.25\baselineskip} % spacing arround lstlistings
+\newcommand{\SSI}{\SS} % spacing before top level itemizes/enumerations
+
+\newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}	}
+\newmathword{\fr}{fresh}
+\newmathword{\HNO}{headNotObservable}
+\newmathword{\dom}{dom}
+
+\newmathword{\CR}{circular}
+\newmathword{\RCR}{repCircular}
+
+\newmathword{\RM}{repMutating}
+%\newcommand{\NRM}{\text{not }\RM}
+
+\newmathword{\CN}{confined}
+\newmathword{\RCN}{repConfined}
+\newmathword{\rog}{ROG}
+\newmathword{\mrog}{MROG}
+\newmathword{\rf}{repFields}
+\newmathword{\muty}{mutatable}
+\newmathword{\mony}{monitored}
+\newmathword{\valid}{valid}
+\newmathword{\trusted}{trusted}
+\newmathword{\reach}{reachable}
+\newmathword{\error}{error}
+\newmathword{\encap}{encapsulated}
+\newmathword{\immut}{immutable}
+\newmathword{\VS}{validState}
+
+\let\f=\undefined
+\let\m=\undefined
+\let\T=\undefined
+\let\Many=\undefined
+
+\newcommand{\CD}{\mathit{CD}}
+\renewcommand{\vs}{\mathit{vs}}
+\newcommand{\ls}{\mathit{ls}}
+\renewcommand{\es}{\mathit{es}}
+\newcommand{\ws}{\mathit{ws}}
+\newcommand{\Cs}{\mathit{Cs}}
+\newcommand{\Ms}{\mathit{Ms}}
+\newcommand{\Fs}{\mathit{Fs}}
+\newcommand{\Ps}{\mathit{Ps}}
+\newcommand{\Ss}{\mathit{Ss}}
+
+
+% Change the spacing of enumerates slightly to be consistenct with itemize
+\renewcommand{\labelenumi}{\theenumi.\hskip-0.25em}
+
+% Too much space arround itemizes used in definitions, so fix that
+\newenvironment{iitemize}{\SS\begin{itemize}}{\end{itemize}\SS}
+\newenvironment{ienumerate}{\SS\begin{enumerate}}{\end{enumerate}\SS}
+% Like the above, but when nested one level deep within an outer itemize/enumerate
+\newenvironment{nitemize}{\SS[0.15]\begin{itemize}}{\end{itemize}\SS[0.15]}
+\newenvironment{nenumerate}{\SS[0.15]\begin{enumerate}}{\end{enumerate}\SS[0.15]}
+
+\NewDocumentCommand\ty{O{\s} O{\G} O{\vdash} m m}{\ensuremath{#1; #2 #3 #4 : #5}\xspace}
+\NewDocumentCommand\nty{O{\s} O{\G} m m}{\ty[#1][#2][\nvdash]{#3}{#4}}
+\NewDocumentCommand\tyr{O{\s} m m}{\ty[#1][\emptyset]{#2}{#3}}
+\NewDocumentCommand\ntyr{O{\s} m m}{\nty[#1][\emptyset]{#2}{#3}}
+
+
+\NewDocumentCommand\tye{O{\s} O{\G} O{\vdash} m m}{\ensuremath{#1; #2 #3 #4 :: #5}\xspace}
+\NewDocumentCommand\tyer{O{\s} m m}{\tye		[#1][\emptyset]{#2}{#3}}
+%\renewcommand{\h}{\ensuremath{\square}\xspace}
+%\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
+\providecommand\G{}
+\renewcommand{\G}{\ensuremath{\Gamma}\xspace}
+\newcommand{\EV}{\ensuremath{\ctx_v}\xspace}
+\newcommand{\ER}{\ensuremath{\ctx_r}\xspace}
+\newcommand{\E}{\ensuremath{\ctx}\xspace}
+\newcommand{\s}{\ensuremath{\sigma}\xspace}
+%\renewcommand{\e}{\ensuremath{\sigma}\xspace}
+%\renewcommand{\l}{\ensuremath{\sigma}\xspace}
+%\renewcommand{\v}{\ensuremath{\sigma}\xspace}
+
+\let\@=\undefined % So I don't accidently type it!
+%\HideNotes
+%\NoNotes
+%\newcommand{\square}{[]} % use an actual square as it's more standard
+%\newcommand{\nvdash}{\not\vdash}
+
+\newcommand{\C}[2][\s]{\ensuremath{\mathrm{C}^{#1}_{#2}}}
+\newcommand{\rmdf}[2]{\ensuremath{#1{::}#2}}
+\newcommand{\derep}[1]{\widetilde{#1}}
+\newcommand{\demut}[1]{\widehat{#1}}
+\renewcommand{\equals}{\,\Kw{=}\,} % Because there are usually modifies on both the left and right, it looks better with spaces
+\renewcommand{\Terminale}[1]{\text{\lstinline|#1|}}
+%\newcommand{\WT}[2][\s]{#1 \vdash #2}
+
+
+\NewDocumentCommand\rangeX{O{,} m m}{\ensuremath{#2 #1 \ldots #1 #3}}
+
+% For dot dot dot expantions \range[<sep>][<start>][<end>]{<body>} == <body>_<start> <sep>...<sep> <body>_<end>
+% Using the default parameter vlaues, this is "<body>_1 , ..., <body>_n"
+\NewDocumentCommand\range{O{,} O{1} O{n} m}{\rangeX[#1]{#4_{#2}}{#4_{#3}}}
+% Similarly, but with two bodiies:   <body1>_1 <body2>_1 ,..., <body2>_n <body2>_n
+% This automatically add a space beetween the <body1>_i and <body2>_i, so start <body2> with a \! to supress this (e.g. if <body2> starts with an operator, and so comes with it's own spacing)
+\NewDocumentCommand\drange{O{,} O{1} O{n} m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}}{#4_{#3}\,#5_{#3}}}
+% Ditto, but with 3 bodies
+\NewDocumentCommand\trange{O{,} O{1} O{n} m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6_{#2}}{#4_{#3}\,#5_{#3}\,#6_{#3}}}
+% 4 bodies
+\NewDocumentCommand\qrange{O{,} O{1} O{n} m m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6_{#2}\,#7_{#2}}{#4_{#3}\,#5_{#3}\,#6_{#3}\,#7_{#3}}}
+
+% Like \drange, but the second body does not get a subscript:  <body1>_1 <body2> ... <body2>_n <body2>
+% Usefull for symbols or constants
+\NewDocumentCommand\rangex{O{,} m}{\rangeX[#1]{#2}{#2}}
+\NewDocumentCommand\drangex{O{,} O{1} O{n} m m}{\rangeX[#1]{#4_{#2}\,#5}{#4_{#3}\,#5}}
+% Like \trange, but the 3rd argument doesn't get a subscript
+\NewDocumentCommand\trangex{O{,} O{1} O{n} m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6}{#4_{#3}\,#5_{#3}\,#6}}
+% Dittot, but for \qrange
+\NewDocumentCommand\qrangex{O{,} O{1} O{n} m m m m}{\rangeX[#1]{#4_{#2}\,#5_{#2}\,#6_{#2}\,#7}{#4_{#3}\,#5_{#3}\,#6_{#3}\,#7}}
+
+% Reduction rule: \crule{<name>}{<s1>}{<e1>}{<s2>}{<e2>}
+% Just put side conditions after it in \text{...}
+\newcommand{\crule}[5]{\textsc{(#1)}\ #2|#3 \rightarrow #4|#5}
+\newcommand{\rrule}[5]{\crule{#1}{#2}{\EV[#3]}{#4}{\EV[#5]}}
+% Typing rule: \irule{<name>}{<premises>\...}{<conclusion>}
+\newcommand{\irule}[3]{\inferrule*[vcenter,left={(\textsc{#1})}]{#2}{#3}}
+% Typing rule: \irules{<name>}{<premises>\...}{<conclusion>}{<side-conditions...>}
+\newcommand{\irules}[4]{\inferrule*[vcenter,left={(\textsc{#1})},right={%
+	\!\!\!\ensuremath{\begin{array}{l}#4\end{array}}%
+}]{#2}{#3}}
+%Like \irule but for use in typing derivations
+\newcommand{\iruled}[3]{\inferrule*[left={(\textsc{#1})}]{#2}{#3}}
+\newcommand{\irulesd}[4]{\inferrule*[vcenter,left={(\textsc{#1})},right={%
+		\!\!\!\ensuremath{\begin{array}{l}#4\end{array}}%
+	}]{#2}{#3}}
+% So a line containing \vdots has the same height as a normal line, and the \vdots are properly centered
+\let\ovdots=\vdots
+\renewcommand{\vdots}{\smash{\raisebox{-0.5ex}{\ovdots}}}
+
+\renewcommand{\seguitoProduzione}[2]{&\!\!\!\hphantom{\produzioneDef}\llap{$\mid$}\!\!&#1&\!\!\mbox{{\small{#2}}}}
+
+% Right justify the grammar names
+\renewenvironment{grammatica}{$\begin{array}[t]{lclr}}{\end{array}$}
+
+\renewcommand{\sectionautorefname}{Section} % Capatalise references to sections (whereas figures and appendices capatalise by default)
+\renewcommand{\subsectionautorefname}{Section} % So 'Section 1.2' instead of 'subsection 1.2'
+\makeatletter
+\renewcommand{\appendixname}{\@gobble} % Surpresses the extra "Appendix " that gets added when you use \autoref
+\makeatother

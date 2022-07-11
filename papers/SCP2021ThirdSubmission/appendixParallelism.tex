@@ -1,0 +1,204 @@
+\section{Safe Parallelism in L42}
+\label{s:parallelism}
+
+This section discusses the relationship between our work and L42's support for safe unobservable parallelism.
+
+From its inception, the work on L42 tried to build a system supporting flexible, elegant, and soundly unobservable parallelism without needing to rely on destructive reads.
+L42 uses  the same kind of reference and object capabilities used by Pony and Gordon, but while they allow for \emph{true} isolated fields with destructive reads, L42 avoids them.
+For example, in Pony/Gordon we can easy define a class boxing a capsule references as follows
+\begin{lstlisting}[morekeywords={iso}]
+class Box{ //pseudocode for clarity
+  iso Foo foo;//isolated field
+  Box(iso Foo foo){this.foo=foo;}//initialised with an iso reference
+  mut method iso Foo getFoo(){return this.foo;}//destructive read here
+  }//the getter mutates the box (destructive read)
+   //and returns the stored iso reference
+
+//usage example
+iso Foo myFoo = ...
+mut Box box = new Box(myFoo);//this must be the only usage of `myFoo'
+//box is now a mut object and can be freely passed around and aliased
+iso Foo foo1 = box.getFoo();//this foo1 can now be used for parallelism
+iso Foo foo2 = box.getFoo();//either foo2==null or an exception is thrown here
+\end{lstlisting}
+L42 does not support destructive reads. Thus, there is no way to declare such a \Q@getFoo()@ method.
+This also means that after putting encapsulated data into a field of any kind, it is not possible to extract the data back as encapsulated.
+Indeed, if L42 where to somehow allow the initialisation of \Q@foo1@ we would then have two ways to reach the 'encapsulated' data, thus breaking the encapsulation guarantee.
+Thus, L42 research has explored various ways to access those fields, that are initialised with encapsulated data but can not soundly release the data as capsule.
+From a research perspective, it was interesting to discover many different access patterns that allowed preserving some encapsulation properties but not others.
+On the other hand, it is worth noticing that exploring these different kinds of encapsulated data does not impact the way capsule references are treated when passed around as method parameters or saved in local variables, nor their safety when used in parallelism.
+
+Indeed, in L42, as in Gordon, we can do fork--join parallelism where the parallel branches can use \Q@capsule@ variables.
+The difference is that in L42 those variables will not be able to come from reading ``encapsulated'' fields of \Q@mut@ objects.
+Note that this is because, as a research question, the L42 developers are trying to understand how far they can go without resorting to destructive reads.
+They could easily add a primitive datatype that works as a \emph{consumable} mutable box storing a true capsule. Such a primitive data type would behave exactly like the \Q@Box@ type above.
+Then, a 42 user could chose to use such boxes to recover all the expressive power (and risks) of destructive reads.
+However, L42 specifically wishes to demonstrate support for expressive automatic parallelism without needing such destructive reads.
+
+The current version of L42 relies on a \Q|@Cache.ForkJoin| annotation and the \Q@Data@ decorator to activate various forms of (unobservable) automatic parallelism. We show these forms below.
+Of course, the invariant protocol described in this paper also works with \Q|@Cache.ForkJoin|, thus it is impossible to observe a broken invariant, even when using parallelism. This is a direct result of the fact that parallelism in 42 is unobservable: the semantics of parallel code is equivalent to the semantics of the corresponding sequential code, only the performance changes.
+
+
+\subheading{Non-Mutable Computation in L42}
+This is the simplest parallelism pattern in L42:
+%This is more expressive than Wcode(Cache.Eager) since it allows us to run parallel code on Wcode(read) references of mutable objects.
+\begin{lstlisting}[deletekeywords=label]
+Example = Data:{
+  @Cache.ForkJoin class method 
+  capsule D foo(capsule A a, capsule B b, imm C c, read D d, mut E e) = (
+    mut A a0 = a.op(d)
+    mut B b0 = b.op(c)
+    mut C c0 = c.op(d)
+    a0.and(b0).and(c0).and(e)//this is the final result
+    )
+  }
+\end{lstlisting}
+The first part consists of the initialisation expressions for \Q@a0@, \Q@b0@, and 
+\Q@c0@, which are run in parallel, the final expression, which is run only when 
+all of the initialisation expressions have completed.
+The \Q!foo! method itself can take any kind of parameters, and they can all be used in the final expression, but the initialisation expressions need to fit a recognised
+safe parallelism pattern. In \emph{non-mutable computation} only \Q@read@, \Q@capsule@, and \Q@imm@ parameters can be used in the initialisation expressions.
+The name \emph{non-mutable computation} comes from the fact that even if the \Q!capsules! are mutated, nothing that is visible outside of the fork--join can be mutated while the initialisation expressions are running; thus parallelism is unobservable.
+
+In general, \Q|@Cache.ForkJoin| works only on methods whose body is a round parenthesis block, with some local variable initialisation expressions followed by a final expression.
+That is, fork--join methods must follow this specific syntactic pattern:
+\begin{lstlisting}[deletekeywords=label]
+@Cache.ForkJoin $\mdf$ method $T_0$ $m$($T_1$ $x_1$, $\ldots$, $T_n$ $x_n$) = (
+  $T'_0$ $x_0$ = $e_0$
+  $\ldots$
+  $T'_k$ $x_k$ = $e_k$
+  $e$
+  )
+\end{lstlisting}
+Here the initialisation expressions, $e_0,\ldots,e_k$, are executed in parallel, and the final expression $e$ is executed once the $e_0,\ldots,e_k$ have finished.
+A naive implementation would execute each $e_0,\ldots,e_k$ in new threads, the main thread would wait for each of these threads to finish by ``joining'' on them and then execute $e$.
+The L42 implementation however aims to be more efficient by not spawning new threads: $e_0,\ldots,e_{k-1}$ are executed by workers from a pool of preexisting threads,
+while $e_k$ executes on the current thread. When all the tasks are completed, $e$ is executed.
+Other approaches to allocating work to threads could also be used provided that the final expression $e$, is only executed after the initialisation expressions have finished.
+
+The different forms of parallelism supported by L42 impose different requirements on the free variables that the initialisation expressions can use.
+
+Some readers may find it surprising that the \emph{non-mutable computation} pattern allows \Q@read@ references to be used, since there could also be \Q@mut@ references to the same objects.
+However, such \Q@mut@ references will all be unreachable from inside the initialisation expressions. This is because they cannot use \Q!mut! variables, and any \Q!capsule! variables they use will be encapsulated (thus they will not alias anything reachable from such \Q!read! references).
+%How the mutROG of \Q@capsule@ fields can be shared is not important here because in 42 there is no way to go from a \Q@capsule@ field back to a \Q@capsule@ reference.
+
+This form of parallelism is the only one proposed by Gordon; it is very expressive in their setting with destructive reads, but it is quite limited in L42. However L42 offers other forms of parallelism, as shown below.
+
+%The following inductive reasoning can clarify the confusion:
+%Base case: we are at top level in the fork-join hierarky, so no code is executing in parallem until we start our fork join.
+%Inductive case: we are executing any number of nested fork-joins, but by inductive hypothesis the 
+%All the branches of our fork join does not contain any \Q@mut@ free variables.
+ %The while mutROG of \Q@capsule@ free variables is encapsulated, thus the
+%\Q@read@ variables can not point into those.
+
+
+\subheading{Single-Mutable Computation}
+In this pattern, a single initialisation expression can use any kind of parameter, while the other ones can not 
+use \Q@mut@, \Q@lent@ (a variation of \Q@mut@ present in L42), or \Q@read@ parameters.
+This pattern allows the single initialisation expression that uses \Q@mut@ to recursively explore a complex mutable data structure and replace arbitrary immutable elements nested inside of it.
+Consider for example the following code, which computes, in parallel,
+new immutable string values for all of
+the entries in a mutable list:
+
+\begin{lstlisting}[deletekeywords=label]
+UpdateList = Data:{
+  class method S map(S that) = that ++ that//could be any user defined code
+  class method Void of(mut S.List that) = this.of(current=0I, data=that)  
+  class method Void of(I current, mut S.List data) = (
+    if current < data.size() 
+      this.of(current=current, elem=data.val(current), data=data)
+    )
+  @Cache.ForkJoin class method Void of(I current, S elem, mut S.List data) = (
+    S newElem = this.map(elem) //first initialisation expr.
+    this.of(current=current + 1I, data=data)//second init.  expr. (on an unused local var)
+    data.set(current, val=newElem) //final expression
+    )
+  }
+//usage
+mut S.List data = S.List[S"a"; S"b"; S"c"; S"d"; S"e";]
+UpdateList.of(data)
+Debug(data)//["aa"; "bb"; "cc"; "dd"; "ee"]
+\end{lstlisting}
+As you can see, we do not need to copy the whole list. We can update the elements in place one by one.
+If the operation \Q@map(that)@ is complex enough, running it in parallel could be beneficial.
+
+As you can see, it is trivial to adapt the above code to explore other kinds of collections, for example a binary tree.
+The visit of the tree would be performed recursively and sequentially in the current thread, the operations on the data of each node will execute in parallel, and their results will be composed at the end of each recursion.
+
+These two forms of parallelism where already possible on the L42 model before our work on invariants and our \Q@rep@ fields.
+We think that it is particularly interesting that this kind of parallelism can be obtained without destructive reads.
+Building on top of our \Q@rep@ fields and on the concept of \emph{rep mutators}, a new form of parallel fork--join computation was recently added:
+\emph{This-Mutable computation}.
+
+\subheading{This-Mutable Computation}
+In this pattern, the \Q@this@ variable is considered specially.
+The method must be declared \Q@mut@, and the 
+initialisation expressions cannot
+use \Q@mut@, \Q@lent@, or \Q@read@ parameters.
+However, the \Q@mut@ \Q@this@ can be used to directly call
+rep mutator methods (marked by \Q|@Cache.Clear| in the L42 syntax).
+Since a rep mutator can mutate the reachable object graph of a \Q@rep@ field, and the \mrog of different \Q@rep@ fields is always disjoint, 
+different initialisation expressions must use rep mutators that operate on different \Q@rep@ fields.
+In this way, L42 can express parallel computation processing arbitrary complex mutable objects inside well encapsulated data structures.
+Consider the following example, where instances of \Q@Foo@ could be arbitrarily complex; containing (possibly circular) graphs of mutable objects.
+\begin{lstlisting}[deletekeywords=label]
+Foo=Data:{... /*mut method Void op(I a, S b)*/ ...}
+Tree = {interface [HasToS]
+  mut method Void op(I a, S b)
+}
+Node = Data:{[Tree] 
+  capsule Tree left, capsule Tree right //the L42 syntax uses `capsule' instead of `rep'
+  @Cache.ForkJoin
+  mut method Void op(I a, S b) = (
+    unused1 = this.leftOp(a=a, b=b)
+    unused2 = this.rightOp(a=a, b=b)
+    void )
+  @Cache.Clear
+  class method Void leftOp(mut Tree left, I a, S b) = left.op(a=a, b=b)
+  @Cache.Clear
+  class method Void rightOp(mut Tree right, I a, S b) = right.op(a=a, b=b) 
+}
+Leaf = Data:{[Tree]
+  capsule Foo label
+  @Cache.Clear
+  class method Void op(mut Foo label, I a, S b) = label.op(a=a, b=b) 
+}
+mut Tree top = Node( //usage
+  left = Node(
+    left = Leaf(label=...)
+    right = Leaf(label=...)
+    )
+  right = Node(
+    left = Leaf(label=...)
+    right = Leaf(label=...)
+    ))
+top.op(a=15I, b=S"hello")
+\end{lstlisting}
+
+This pattern relies on the fact that by using \Q@rep@ fields we can define arbitrary complex data structures composed of disjoint mutable object graphs.
+Note that \Q@read@ aliases to parts of the data structure can be visible outside.
+This is safe since we cannot access them during the initialisation expressions. This holds because the \Q!@Cache.Clear! method cannot have \Q@read@ parameters. %(and other parameters cannot have \Q!read! fields).
+
+\subheading{Non Fork--Join Parallelism in L42}
+L42 also supports eager caching using the \Q|@Cache.Eager| annotation.
+This form of parallelism can only start from fully immutable data.
+This can be used only on methods with no parameters,
+whose receiver only has final \Q!imm! fields.
+When such an object is created, these methods are executed in parallel, when the method finishes executing it will cache the result (either a value or exception).
+When a \Q|@Cache.Eager| is called by the user, it will wait for the aforementioned parallel execution to finish, and then return the result saved in the cache.
+This is observably equivalent to not having the \Q|@Cache.Eager| annotation, where each call to the method would recompute the result.
+This works because L42's reference and object capability discipline guarantees that any method taking only \Q!imm! data is pure and deterministic.
+
+This form of parallelism allows expressing computation in a very declarative style, but it does not interact with capsule references, our rep fields, or rep mutators, so an in-depth discussion of \Q|@Cache.Eager| is out of scope.
+
+\subheading{Parallelism in Older Versions of the L42 Type System}
+L42 has been undergoing many changes over the years.
+The earliest version of the L42 type system with reference capabilities was based on~\cite{servettoballoon},
+where there were many more reference capabilities, including
+\Q@fresh@ and \Q@baloon@.
+In that version \Q@fresh@ is similar to the current \Q@capsule@ and \Q@baloon@ is similar to one of the various kinds of \Q@capsule@ fields available in L42 before we introduced our \Q@rep@ fields.
+That work was then summarised in a short 6 page paper~\cite{ServettoEtAl13a}, that
+paper uses the \Q!baloon! keyword to also refer to \Q!fresh!; it uses the different context of the reference capability (local variable, field, method parameter etc) to determine it's meaning.
+Even in those earlier works there was no way to recover a \Q@fresh@ reference from a \Q@baloon@. A \Q@baloon@ was basically a kind of encapsulated reference that allowed other restricted kinds of references (\Q@external@ and \Q@external readonly@) to point to objects reachable from it. Looking back to those earlier work it is clear to us that the current L42 type system is much more minimal and elegant.
+Those works suggested forms of parallelism where the type system could cooperate with a few efficient runtime pointer equality checks to decide what to run in parallel.
+Such a direction has not been explored further and it is not currently present in modern versions of L42.
