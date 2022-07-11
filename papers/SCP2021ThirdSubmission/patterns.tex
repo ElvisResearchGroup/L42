@@ -244,7 +244,7 @@ with their own personalised sub invariant.
 The library will ensure that no matter how the library is used, for any accessible \Q@Graph@, each user defined sub invariant of its \Q@Node@s holds.
 Note that those sub invariants are not restricted to the local state of a node; since they can explore the state of all reachable nodes, they may even depend upon the whole graph.
 
-The \Q@Node@s are guaranteed to be encapsulated by the \Q@Graph@, however they can be arbitrarily modified by user defined transformations using the Transform Pattern.
+The \Q@Node@s are guaranteed to be encapsulated by the \Q@Graph@, however they can be arbitrarily modified by user defined transformations using the transform pattern.
 %interface Transform<T>{ method read T apply(mut Nodes nodes); }//can capture only imm
 \begin{lstlisting}
 interface Transform<T>{ capsule method read T apply(mut Nodes nodes); }

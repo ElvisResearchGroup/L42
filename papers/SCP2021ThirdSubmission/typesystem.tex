@@ -19,6 +19,15 @@ In this section we formalise a lightweight version of the L42 type system. We th
 \indent $\mdf\,C \leq \mdf'\,C'$ iff $\mdf \leq \mdf'$ and $C \leq C'$
 
 \LS
+\noindent \IO[9]{Recall our definition for $\mdf \leq \mdf'$:
+\begin{iitemize}
+	\item $\mdf \leq \mdf$, for any $\mdf$\SS
+	\item $\Kw{imm} \leq \Kw{read}$\SS
+	\item $\Kw{mut} \leq \Kw{read}$\SS
+	\item $\Kw{capsule} \leq \Kw{mut}$ and $\Kw{capsule} \leq \Kw{imm}$, and $\Kw{capsule} \leq \Kw{read}$
+	\end{iitemize}}
+
+\LS
 
 \noindent Note that $\mdf \leq \mdf'$, $C \leq C'$, and $T \leq T'$ are all reflexive and transitive.
 
@@ -220,7 +229,7 @@ to this aim we define a slightly different typing judgement that excludes the \t
 
 \LS
 
-Now we prove that we can always extract a $\tye{e}{T}$ from a $\tye{e}{T'}$ judgement:
+Now we prove that we can always extract a $\tye{e}{T}$ from a $\ty{e}{T'}$ judgement:
 
 \SS\begin{Lemma}[Type Rule]\ \\
 	\indent $\ty{e}{T}$ holds if and only if $\tye{e}{T'}$ holds for some $T' \leq T$

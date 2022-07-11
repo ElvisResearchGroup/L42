@@ -1,3 +1,5 @@
+// TODO run spell check once we've addressed all the reviewers comments!
+
 The reviewers agree that the paper has been improved. Reviewer 1 and 2
 are quite happy, but reviewer 3 still has major concerns, and feels
 that some of his comments have been addressed in an unsatisfactory
@@ -28,37 +30,51 @@ sentence "The type-system requires that any method that could
 alter the result of a `@Cache.Now` method (except via a field
 update) must be marked with `@Cache.Clear` [...]" makes perfect
 sense to me now.
+// DONE: We've removed appendix C
 
 ** Highlights (same comments as last time)
 - "magnitudo" -> "magnitude"
 - "Much less annotation burden" --> "Lighter annotation burden"?
   "Lower annotation burden?"
+// TODO: Marco needs to update this in the submission system
 
 ** Section 1
 - 61: In this example I was thinking that it would be a problem if
   you could pass `this` to `box.set()`. Later it was explained
   that this was not allowed. You might consider mentioning it.
+// DONE: See ˆ1
 - 88: "of the L42, and similar, type systems" --> "of the type
   system of L42 and similar languages"
+// DONE
 - 94: "show" --> "shows"
+// DONE
 
 ** Section 2
 - This section is a lot better now!
+// Thanks!
 - 112: "Very useful" --> "useful"
+// DONE
 - 129: "the referenced object cannot mutate" --> "the referenced
   object cannot be mutated"
+// DONE
 - 140: Somewhere around here I started getting annoyed at the many
   sentences and paragraphs beginning with "That is,". Many times,
   these words could be removed without changing the meaning of the
   sentence.
+// DONE: See ˆ2
 - 188: "contains" --> "contain"
+// DONE
 - 190: I can see how one could use `capsule` fields to "model
   various kinds of ownership", but what does it mean to model
   parallelism? Maybe "facilitate parallelism"?
+// DONE: See ˆ3
 - 192: "alias to" --> "aliases to"
+// DONE
 - 216: "immagine" -> "imagine"
+// DONE
 - 216: "in a simple minded imperative style:" remove altogether:
   "...belong to classes designed without worrying..."
+// DONE
 
 ** Section 3
 - 291: I don't see why you couldn't write invariants over a doubly
@@ -71,51 +87,65 @@ sense to me now.
     the invariant of the list cannot dereference an element and
     thus the state of the elements cannot affect the result of the
     invariant.
+// DONE see ˆ4	
 - 302: When you talk about pure methods not mutating existing
   memory, maybe clarify that you mean heap memory (writing to
   local variables on the stack is fine).
+// RESPONSE: writing to *existing* stack locations (e.g. the variables of a calling method) is not ok. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called). So our statement applies to both heap and stack memory.
+
 - 344: It was not immediately obvious to me why a rep mutator must
   "have no mut or read parameters". After some thinking it made
   sense (you might otherwise bring an alias of `this`), but you
   might consider clarifying this point (and the others in the same
   list).
+// DONE see ˆ5
 - 350: "than" -> "then"
+// DONE
 
 ** Section 4
 - Some of these examples use inheritance, which is a bit strange
   since you ended the previous section explaining how L42 does not
   have sub-classing.
+// DONE: see ˆ6
 - I still like this section very much!
+// Thanks!
 
 ** Section 5
 - 537: "generic" --> "generics"
+// DONE
 - 563: "We assume that the type system imposes any additional
   constraints it needs on method bodies". This seems like it
   doesn't add anything. If anything, maybe phrase it as "We
   *allow* the type system to impose any additional constraints it
   needs...".
+// DONE
 - 585: You should move the explanations of booleans before 573
   where it is used.
+// DONE
 - 619: "read l.invariant()". Consider adding parentheses for
   clarity: "(read l).invariant()".
+// DONE
 - 645: You should move the explanation of the different expression
   contexts before the definition of error states, which requires
   them.
+// DONE
 - Figure 2: Consider adding parentheses as suggested for 619.
-
+// DONE
 ** Section 6
 - 815: Consider replacing "many" by a number (or weaken to
   "several").
+// DONE (used "several") // TODO should we count them?
 
 ** Section 7
 - I find it interesting how the transform pattern basically solves
   the same problem as iterators in ownership systems; it is easier
   to move computations to the data than the other way around.
+// TODO: mention this in the paper or just ignore?
 
 ** Section 8
 - "In the last version of L42 [...]". What does this mean? Do you
   mean "the latest"?
-
+// DONE
 ** Section 9
 - 1535: "However, ownership does not require the whole reachable
   object graph of an object to be 'owned'. This complicates
@@ -125,13 +155,17 @@ sense to me now.
   that is not passed any external owners will dominate its whole
   reachable object graph (with the possible exception of the
   top-level `World` owner, if that exists).
+// TODO: help here please?
 - 1575: This whole paragraph makes some vague claims about the
   field of "static verification" and does not back it up with any
   citations.
+  // TODO: help here please?
 - 1613: "difficoult" --> "difficult"
 - 1651: Unless you have a strict page limit, I would avoid
+// DONE
   introducing the abbreviation "RV". As far as I can tell you only
   use it twice.
+// DONE
 
 ** Section 10
 - 1695: I disagree that you have "identified the essential
@@ -141,37 +175,49 @@ sense to me now.
   invariants in an efficient manner, but there is nothing that
   says that they are the only set of features or that they are
   more essential than any other features.
+// DONE: see ˆ7
 - 1698: "we require many order of magnitude less runtime checking".
   "order" --> "orders", and strike "many". Also, "less runtime
   checking" reads weird to me. "fewer runtime checks" maybe?
+// DONE
 - 1708: "such a support" --> "such support"
+// DONE
 - This ending is much stronger than before!
+// Thanks!
 
 ** Appendix A
 - 1906: "typesystem" --> "type system" (twice, and again later)
+// DONE
 - 1943: "As we do not have a concrete type system [...]". Yes you
   do! It's in Appendix B!
+// DONE: see ˆ8
 - 2004: "Usefull" --> "Useful"
+// DONE
 
 ** Appendix B
 - Consider restating the `<=` relation for capabilities here for
   completeness.
+// DONE: see ˆ9
 - 2538: "...we can always extract a \sigma; \Gamma |- e :: T from a
 \sigma; \Gamma |- e :: T'
   judgement". One of these should only have a single colon.
+// DONE
 
 ** Appendix C
 - 3196: "references" --> "reference"
+// N/A: appendix has been deleted
 - 3211: "L42 does not support destructive reads". This surprised
   me! It may make sense to make this point clear earlier in the
   main part of the paper. While I agree that adding uniqueness
   tracking complicates the story, it seems like allowing moving
   capsules between objects would make your verification story
   stronger, especially in a concurrent setting.
+// TODO: Discuss earlier in the paper?
 - 3226: "a 42 user" --> "an L42 user"
+// N/A: appendix has been deleted
 - 3232: "parallelism in 42 is unobservable" --> "parallelism in   L42
 is unobservable:"
-
+// N/A: appendix has been deleted
 
 
 Reviewer #2: I am generally quite happy with this revision. Much of my
@@ -207,6 +253,7 @@ fork-join parallelism supported in L42 earlier in the paper (perhaps
 where the claims about supporting safe parallelism are made), at a
 high level, and how they are tied to the reference capabilities here,
 without any syntax or examples, would be sufficient.
+// DONE: removed the appendix // TODO: add such a paragraph?
 
 This paper is mostly in great shape now, and definitely the most
 thorough examination of invariant protocols I've ever seen. I do
@@ -240,6 +287,7 @@ plumbing those requirements the rest of the way through the other
 proofs (Appendix A Theorem 2 Rep Field Soundness, Appendix A
 Lemma 5 Imm Not Circular, and Appendix A Theorem 1 Soundness, plus the
 proofs in Appendix B that Theorem 6 implies Requirements 2 and 3).
+// RESPONSE: The definition of ValidState directly requires that such reduction sequences exist // TODO: ISAAC I'll clarify this in the proofs.?
 
 I have one other general comment on a general way the paper could be
 strengthened, but I consider it optional (I'd be okay with the authors
@@ -264,15 +312,19 @@ alternative would be to commit to the type system of Appendix B, but I
 think that would require more substantial rewriting to accomplish, and
 would actually make the paper weaker by de-emphasizing the abstract
 requirements for the type system that I like in this paper.)
-
+// TODO: Use this term? (Will need a reread to determine where exactly to use it)
 Miscellaneous comments:
 
 - p3 (paper page number, not pdf page number), line 73: A one-line
 summary of Gopinathan et al.'s work here would be helpful
+// DONE: See ˆ10
 - p4 line 112: "usueful" please run spell check; there aren't too many
 misspellings, but I'm not going to document them all
+// DONE
 - p12 line 466: "well-typed" Is this paper about the type system, or not?
+// TODO: Umm??
 - p13 line 539: "turing complete" should be "Turing-complete"
+// DONE
 - p14 footnote 17: This is actually broken as written, because the
 formal calculus uses call-by-value semantics, so "b.if(t,f)" would
 execute *both* branches' side effects. t and f would need to be
@@ -282,12 +334,15 @@ common exercise when teaching CBV vs. CBN semantics.) For the paper,
 I'd actually just abstract even further in this footnote, and just
 note that in a language where one can implement thunks, one can
 implement conditionals.
+// DONE see ˆ11
 - p34 line 1497: "last version of L42"? Last rather than latest? This
 wording suggests work on L42 has stopped.
+// DONE
 - p35 line 1519: "current concrete L42 syntax.... various kinds of
 restrictions over fields" This is hard to interpret from seeing just a
 single use, which inherently doesn't demonstrate "various"
 restrictions.
+// DONE: Todo Marco, check this?
 
 
 Reviewer #3: It is my second review of this paper. I would like  to

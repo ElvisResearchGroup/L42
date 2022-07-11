@@ -82,7 +82,9 @@ While in very specific situations the overhead of creating such additional box o
 Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}
 This is even more applicable in languages with inlined structs, like C++ or C\#.
 }
-With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution.
+
+With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}
+
 %In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
 %No, I looked again at this text, it is just broken.
 %For example, you can have many methods taking a box and mutating it without the invariant being recheched.
@@ -91,7 +93,8 @@ With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is acc
 Invariant protocols allow for objects to make necessary changes that might make their invariant temporarily broken.
 In visible state semantics any object that has an active method call anywhere on the call stacks is potentially invalid;
 arguably not a very useful guarantee as observed by
-Gopinathan \etal's work.~\cite{Gopinathan:2008:RMO:1483018.1483028}
+Gopinathan \etal's work~\cite{Gopinathan:2008:RMO:1483018.1483028},
+\IO[10]{which used runtime instrumentation to determine if a memory update has violated the invariant of any live object, even if it is not reachable from the current stack frame}.
 Approaches such as \textit{pack/unpack}~\cite{DBLP:journals/jot/BarnettDFLS04} 
 represent potentially invalid objects in the type system; this
 encumbers the type system and the syntax with features whose only purpose is to distinguish objects with broken invariants. %, while (at least in the case of Spec\#) still not soundly supporting I/O and exceptions.
@@ -134,10 +137,10 @@ The remainder of this paper proceeds as follows:
 \begin{itemize}
 	\item \autoref{s:TMsAndOCs} explains background information necessary to understand our approach
 	\item \autoref{s:protocol} fully explains our novel invariant protocol, and our novel field type for mutable data
-	\item \autoref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the L42, and similar, type systems
+	\item \autoref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the type system of L42, and similar languages
 	\item \autoref{s:formalism} formalises our runtime invariant checking, and what it means to soundly enforce our invariant protocol
 	\item \autoref{s:case-studyAll} contains many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic
-	\item \autoref{s:patterns} show how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around
+	\item \autoref{s:patterns} shows how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around
 	\item \autoref{s:L42} summarises how we have implemented our protocol in L42
 	\item \autoref{s:related} presents related work, and \autoref{s:conclusion} concludes
 	\item \autoref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in \autoref{s:formalism} sound

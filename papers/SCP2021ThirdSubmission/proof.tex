@@ -3,7 +3,7 @@
 \lstset{language=FortyFour} % Make all code bold
 \label{s:proof}
 As previously discussed, we provide a set of requirements that the type system needs to ensure, and prove the soundness of our invariant protocol over these,
-in this way we are parametric over the concrete typesystem. In \autoref{s:typesystem}, we present an example typesystem and prove that it satisfies these requirements.
+in this way we are parametric over the concrete type system. In \autoref{s:typesystem}, we present an example type system and prove that it satisfies these requirements.
 
 \subheading{Auxiliary Definitions}
 To express our type system assumptions, we first need some auxiliary definitions. 
@@ -47,7 +47,7 @@ Now we can define what it means for an $l$ to be \muty\footnote{We use the term 
 	\item $\mdf\,l'' \in e$ with $\mdf \in \{\Kw{mut}, \Kw{capsule}\}$\SS
 	\item $l' \in \mrog(\s,l'')$
 \end{iitemize}
-\noindent The idea is that $e$ could mutate something reachable from $l$: by using $l''$ to get a \Q!mut! reference to $l'$, and then performing a field update on it; the new field value for $l'$ would then be observable through $l$. In particular, we will require the typesystem to ensure that $e$ can only mutate state observable from $l$ if $l$ is \muty.
+\noindent The idea is that $e$ could mutate something reachable from $l$: by using $l''$ to get a \Q!mut! reference to $l'$, and then performing a field update on it; the new field value for $l'$ would then be observable through $l$. In particular, we will require the type system to ensure that $e$ can only mutate state observable from $l$ if $l$ is \muty.
 
 \LS
 
@@ -59,7 +59,7 @@ That is, a location $l$ found in a context $\E$ is encapsulated if all $\muty$ o
 That single use of $l$ is the connection preventing those $\muty$ objects from being garbage collectable.
 
 \subheading{Type System Requirements}
-As we do not have a concrete type system, we need to assume some properties about the expressions that it admits.
+\IO[8]{As we do not want to require a specific concrete type system, we instead assume some properties about the expressions that it admits.}
 Rather than requiring each expression during reduction to be well-typed, we instead let the type-system impose restrictions on method bodies, and type-check the initial expression, we then require properties on all future memories and expressions (i.e. $\VS$s).
 In \autoref{s:typesystem} we show such a type-system and prove it satisfies these requirements, but these requirements do \emph{not} hold for arbitrary well-typed $\s|e$ pairs, only for $\VS$s.
 This allows the type-system to be simpler, in particular, as the initial main expression can only have \Q!mut! references to $c$ (an object with no fields(), the type-system need not check that the heap structure and reference capabilities in the main expressions are consistent.
@@ -117,7 +117,7 @@ We require that any \Q!capsule! reference is \encap, i.e. that no \muty part of 
 \end{restatable}%
 \SS\noindent As all objects are created as \Q!mut!, the only way to actually get a \Q!capsule! reference is via an \Q!as! expression.
 As our reduction rules impose no constraints on such expressions, the type-system must ensure that it only accepts a $\Kw{as}\,\Kw{capsule}$ expression if it is guaranteed to 
-return an $\encap$ reference. Note that a specific typesystem's idea of ``capsuleness'' may in fact be stronger then \encap, but \encap is sufficient for our invariant protocol.
+return an $\encap$ reference. Note that a specific type system's idea of ``capsuleness'' may in fact be stronger then \encap, but \encap is sufficient for our invariant protocol.
 
 \LS
 
@@ -159,7 +159,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 %By $\VS$ we have $c\mapsto\Kw{Cap}\{\}|e_0\rightarrow^+ \s|e$, so we proceed by induction on the number of ``$\rightarrow$''s: in the base case, $e = e_0$ and so it cannot contain a monitor expression by %the definition of \VS. If this property holds for $\VS(\s, e)$ but not for $\s'|e'$ with $\s|e\rightarrow \s'|e'$, we must have applied the \textsc{new}, \textsc{update}, or \textsc{call} rules; since no %other reduction steps introduce a monitor expression. If the reduction was a \textsc{new}, $l$ will be fresh, so it could not have been in $\s'$. If the reduction was an \textsc{update}, by \thm{Mut %Update}, $\mdf\,l \in e$, with $\mdf \leq \Kw{mut}$, similarly (by our well-formedness rules on method bodies) \textsc{call} will only introduce a monitor over a call to a \Q!mut! method, so by \thm{Type %Consistency}, $\mdf\,l \in e$, with $\mdf \leq \Kw{mut}$; either way we have that $l$ was \muty, since our reductions never change the $\s'$ annotation, by \thm{Strong Exception Safety}, we have that $l %\notin \s'$.
 %\end{proof}
 
-\subheading{Usefull Lemmas}
+\subheading{Useful Lemmas}
 	First we prove a few useful lemmas about the properties of references in our language.
 
 	\LS
@@ -455,7 +455,7 @@ We then proceed by cases on the reduction rule applied, and prove the theorems c
 			Thus by the inductive hypothesis, $l$ must have been \RCN and not \RM, a contradiction.
 			\item By definition of \VS and our well-formedness rules on method bodies, we must have that monitor must introduced by \textsc{call mutator}, due to a call to a rep mutator on $l$.\footnote{
 				A type-system will likely prevent this case from happening, 
-				as this would require calling a \Q!mut! method on $l$, but $l$ is \reach outside the \Q!try! block. However, if the typesystem can prove that said \Q!mut! method will not actually mutate $l$, this would not violate our requirements.
+				as this would require calling a \Q!mut! method on $l$, but $l$ is \reach outside the \Q!try! block. However, if the type system can prove that said \Q!mut! method will not actually mutate $l$, this would not violate our requirements.
 				Thus we still need to ensure that \thm{Rep Field Soundness} holds in this case.}
 			\item From our reduction rules, it follows that we were previously in a state $\s_i|e_i$, where $i \in [1, m - 1]$, $e_i$ is of form $\EV''[e'']$, and the next state was obtained by said application of the \textsc{call mutator} rule to $e''$.
 			\item Moreover, it follows that $\EV''= \EV[\trys{\s'}{\EV'}{e'}]$, as no reduction rules modify the $\EV$.

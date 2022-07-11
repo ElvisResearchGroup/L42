@@ -10,9 +10,9 @@ is quite complex, and indeed many such papers exist that have already done this~
 Thus we parametrise our language formalism, and assume we already have an expressive and sound type system enforcing the properties we need, so
 that we can separate our novel invariant protocol, from the non-novel reference capabilities.
 We clearly list in \autoref{s:proof} the requirements we make on such a type system, so that any language satisfying them can soundly support our invariant protocol.
-In \autoref{s:typesystem} we show an example type system, a restricted subset of L42, and prove that it satisfies our requirements. Conceptually our approach can parametrically be applied to any type system supporting these requirements, for example you could extend our type system with additional promotions or generic.
+In \autoref{s:typesystem} we show an example type system, a restricted subset of L42, and prove that it satisfies our requirements. Conceptually our approach can parametrically be applied to any type system supporting these requirements, for example you could extend our type system with additional promotions or generics.
 To keep our small step reduction semantics as conventional as possible, we base our formalism on Featherweight Java~
-\cite{IgarashiEtAl01}~\cite[Chapter~19]{pierce2002types}, which is a turing complete~\cite{10.1016/j.tcs.2013.08.017} minimalistic subset of Java.
+\cite{IgarashiEtAl01}~\cite[Chapter~19]{pierce2002types}, which is a Turing-complete~\cite{10.1016/j.tcs.2013.08.017} minimalistic subset of Java.
 As such, we model an OO language where receivers are always specified explicitly, and the receivers of field accesses and updates in method bodies are always \Q!this!; that is, all fields are instance-private.
 Constructor declarations are not present explicitly, instead we assume they are all of the form $C\oR \drange{T}{x} \cR\oC \drange[\semicolon]{\Kw{this}\D f}{\Kw{=}\,x} \cC$, for appropriate types $\range[\text{, }]{T}$. %where the fields of $C$ are $\trange{\fmdf}{C}{f}$, and $\derep{\fmdf_i}$ gives the reference capability required for the field kind $\fmdf_i$, see below for the definition.
 Note that we do not model variable updates or traditional subclassing, since this would make the proofs more involved without adding any additional insight.
@@ -31,10 +31,24 @@ We use the following notational conventions:
 	\item We assume a typing judgment of form $\ty{e}{T}$, this says that the expression $e$ has type $T$,
 	where the classes of any locations are stored in $\s$ and the types of variables are stored in the environment $\G : x\rightarrow T$.
 	
-	\item We assume that the type system imposes any additional constraints it needs on method bodies.
+	\item We allow the type system to impose any additional constraints it needs on method bodies.
 	Our example type system in \autoref{s:typesystem} for example requires that the method bodies are well-typed and only use \Q!capsule! local variables once. However, our proofs in \autoref{s:proof} do not assume any such restrictions.
 	
 \end{itemize}
+
+We encode booleans as ordinary objects, in particular we assume:
+\begin{itemize}
+\item There is a \Q!Bool! interface, a ``boolean'' value is any instance of this interface.
+\item There is a \Q!True! class that implements \Q!Bool!, an instance of this class represents ``true''.
+\item The \Q!True! class has no fields, so it can be created with \Q!new True()!.
+\item The \Q!True! class has a trivial invariant (i.e. its body is \Q!new True()!).
+\item Any other implementation of \Q!Bool!, such as a \Q!False! class, represent ``false''.
+\end{itemize}
+Other than the \Q!invariant! method of \Q!True!, we impose no requirements on the methods of the \Q!Bool! interface or its classes, in particular, they could be used to provide logical operations.\footnote{
+In particular, \Q!if! statements can be supported using Church encoding: we would have a \Q!Bool.i${}$f! method of form \Q!read method$\,T\,$i${}$f($T\,$ifTrue, $T\,$ifFalse)!, for an appropriate type $T$.
+The body of \Q!True.i${}$f! will then be \Q!ifTrue!, and the body of \Q!False.i${}$f! will be \Q!ifFalse!. In this way, \Q!$x$.i${}$f($t$, $f$)! will return $t$ if $x$ is ``true'' and $b$ if it is ``false''.
+\IO[11]{To ensure that $t$ and $f$ themselves are evaluated if and only if $x$ is ``true'', the \Q!Bool.i${}f! method could instead require an object with an \Q!apply! method, whose body will be $t$ or $f$, respectively. If we added syntax sugar for lambdas, as in Java 8, we could then call it with
+\Q!$x$.i${}$f(() -> $t$, () -> $f$)!}}
 
 \noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location can be used in the main expression and would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading/writing. In order to simplify our proof, we assume that:
 \begin{itemize}
@@ -52,18 +66,6 @@ We use the following notational conventions:
 	%\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods can be declared with the same signature multiple times, thus a call to them will non-deterministically chose one of the implementations.
 \end{itemize}
 We only model a single \Q@Cap@ capability class for simplicity, as modelling user-definable capability classes as described in \autoref{s:OCs} is unnecessary for the soundness of our invariant protocol.
-
-We encode booleans as ordinary objects, in particular we assume:
-\begin{itemize}
-\item There is a \Q!Bool! interface, a ``boolean'' value is any instance of this interface.
-\item There is a \Q!True! class that implements \Q!Bool!, an instance of this class represents ``true''.
-\item The \Q!True! class has no fields, so it can be created with \Q!new True()!.
-\item The \Q!True! class has a trivial invariant (i.e. its body is \Q!new True()!).
-\item Any other implementation of \Q!Bool!, such as a \Q!False! class, represent ``false''.
-\end{itemize}
-Other than the \Q!invariant! method of \Q!True!, we impose no requirements on the methods of the \Q!Bool! interface or its classes, in particular, they could be used to provide logical operations.\footnote{
-In particular, \Q!if! statements can be supported using Church encoding: we would have a \Q!Bool.i${}$f! method of form \Q!read method$\,T\,$i${}$f($T\,$ifTrue, $T\,$ifFalse)!, for an appropriate type $T$.
-The body of \Q!True.i${}$f! will then be \Q!ifTrue!, and the body of \Q!False.i${}$f! will be \Q!ifFalse!. In this way, \Q!$x$.i${}$f($t$, $f$)! will return $t$ if $x$ is ``true'' and $b$ if it is ``false''.}
 
 For simplicity, we do not formalise actual exception objects, rather we have expressions which are ``\error''s, these correspond to expressions which are currently `throwing' an unchecked exception;
 in this way there is no value associated with an \error.
@@ -197,7 +199,7 @@ The grammar is defined in \autoref{f:grammar}.
 We use $\mdf$ for our reference capabilities, and $\fmdf$ for field kinds. We don't model the preexisting L42 \Q!capsule! fields, but instead model our novel \Q!rep! fields, which can only be initialised/updated with \Q!capsule! values. If \Q!capsule! fields where added, they would not make our invariant protocol more interesting, as long as they do not provide a backdoor to create improper \Q!capsule! references.
 
 We use $v$, of form $\mdf\,l$, to keep track of the reference capabilities in the runtime, as it allows multiple references to the same location to co-exist with different reference capabilities; however $\mdf$'s are not stored in memory.
-The reduction rules do not change behaviour based on these $\mdf$'s, they are merely used by our proofs to keep track of the guarantees enforced by the typesystem.
+The reduction rules do not change behaviour based on these $\mdf$'s, they are merely used by our proofs to keep track of the guarantees enforced by the type system.
 
 Our expressions ($e$), include variables ($x$), object creations ($\new{C}{\es})$, field accesses ($\Kw{this}\D f$ and $v\D f$), field updates ($\Kw{this}\D f \equals e$ and $v\D f \equals e$), method calls ($\call{e}{m}{\es}$), and values ($v$). Note that these are sufficient to model standard constructs, for example a sequencing ``$\semiColon$'' operator could be simulated by a method which simply returns its last argument.
 The expressions with $\Kw{this}$ will only occur in method bodies, at runtime $\Kw{this}$ will be substituted for a $\mdf\,l$.
@@ -205,10 +207,10 @@ The expressions with $\Kw{this}$ will only occur in method bodies, at runtime $\
 The three other expressions are:
 \begin{itemize}
 	\item \Q!as! expressions ($\as{e}{\mdf}$), these evaluate $e$ and change the reference capability of the result to $\mdf$.
-	This is important for our proofs in \autoref{s:proof}, were we require the typesystem to ensure certain properties for all references with a given $\mdf$.
-	The typesystem is then responsible for rejecting any \Q!as! expression that could violate this.
-	For example, a $\as{\Kw{mut}\,l}{\Kw{read}}$ could be used to prevent $l$ from being used for further mutation, and a  $\as{\Kw{mut}\,l}{\Kw{capsule}}$ (if accepted by the typesystem) will guarantee that $l$ is properly \encap.
-	These \Q!as! expressions are merely a proof device, they do not effect the runtime behaviour, and as in L42, they could simply be inferred by the typesystem when it would be sound to do so.
+	This is important for our proofs in \autoref{s:proof}, were we require the type system to ensure certain properties for all references with a given $\mdf$.
+	The type system is then responsible for rejecting any \Q!as! expression that could violate this.
+	For example, a $\as{\Kw{mut}\,l}{\Kw{read}}$ could be used to prevent $l$ from being used for further mutation, and a  $\as{\Kw{mut}\,l}{\Kw{capsule}}$ (if accepted by the type system) will guarantee that $l$ is properly \encap.
+	These \Q!as! expressions are merely a proof device, they do not effect the runtime behaviour, and as in L42, they could simply be inferred by the type system when it would be sound to do so.
 	%This is similar to Pony's promote expressions. It is up to the typesystem what promotions it accepts as valid, provided they cannot be used to violate our requirements in \autoref{s:proof}. 
 	%However, an ``as'' expression can also be used to ``demote'', e.g. demoting a \Q!mut! to a \Q!read! to prevent the reference from being used for mutation.
 	%Using an explicit promotion makes the proofs much simpler, but a typesystem could simply wrap expressions with a $\as{\_}{\mdf}$ when necessary.
@@ -229,15 +231,6 @@ The three other expressions are:
 
 \end{itemize}
 
-We say that an $e$ is an $\error$ if it represents an uncaught invariant failure, i.e. a runtime-injected invariant check that has failed and is not enclosed in a \Q!try! block:\\
-\indent $\error(\s, e)$ iff:
-\begin{iitemize}
-	\item $e = \EV[\M{l}{v}{\mdf\,l'}]$\SS
-	\item $\C{l'} \neq \Kw{True}$\SS
-	\item $\EV$ is not of form $\EV'[\trys{\s'}{\EV''}{\_}]$
-\end{iitemize}
-This ensures that the body of a \Q!try! block will only be an $\error$ if there is no inner \Q!try!--\Q!catch! that should catch it instead.
-
 Locations ($l$), annotated tries ($\trys{\s}{e}{e'}$), and monitors $\M{l}{e}{e'}$ are runtime expressions: they are not written by the programmer, instead they are introduced internally by our reduction rules.
 
 We provide several expression contexts, $\E$, $\EV$, and $\ER$. 
@@ -249,6 +242,15 @@ The full expression context, $\E$, is like an $\EV$, but nothing needs to have b
 The context $\ER$ is also like an $\EV$, but instead has a hole in an argument to a \emph{redex} (i.e. an expression that is about to be reduced).
 	This captures our previously informal notion: a value $v$ is \emph{involved in execution} if we have an $\ER[v]$.
 	For example, if $\ER$ = $\EV[\new{C}{v_1,\square,v_3}]$, then $\ER[v_2] = \EV[\new{C}{v_1,v_2,v_3}]$, i.e. we are about to perform an operation (creating a new object) that is involving the value $v_2$.
+
+We say that an $e$ is an $\error$ if it represents an uncaught invariant failure, i.e. a runtime-injected invariant check that has failed and is not enclosed in a \Q!try! block:\\
+\indent $\error(\s, e)$ iff:
+\begin{iitemize}
+	\item $e = \EV[\M{l}{v}{\mdf\,l'}]$\SS
+	\item $\C{l'} \neq \Kw{True}$\SS
+	\item $\EV$ is not of form $\EV'[\trys{\s'}{\EV''}{\_}]$
+\end{iitemize}
+This ensures that the body of a \Q!try! block will only be an $\error$ if there is no inner \Q!try!--\Q!catch! that should catch it instead.
 
 %As is standard, an $\E$ represents an expression with a single \emph{hole} ($\hole$) in place of a sub-expression. We use the notation $\E[e]$ to fill in the hole, i.e. $\E[e]$ returns $\E$ but with the single occurrence of $\hole$ replaced %by $e$.
 %For example, if $\E = \call{\hole}{m}{}$ then $\E[\new{C}{}]$ = $\call{\new{C}{}}{m}{}$.
@@ -428,8 +430,8 @@ Note that as \Q!Cap! has no \Q!rep! fields and can have multiple definitions of 
 \item \textsc{monitor exit} reduces a successful invariant check to the body of the monitor. If the invariant check on the other hand has failed, i.e. has returned a non-$\Kw{True}$ reference, it will be an $\error$, and \textsc{try error} will proceed to the nearest enclosing $\Kw{catch}$ block.
 \end{itemize}
 
-Note that as with most OO languages, an expression $e$ can always be reduced, unless: $e$ is already a value, $e$ contains an uncaught invariant failure, or $e$ attempts to perform an ill-defined operation (e.g. calling a method that doesn't exist). The latter case can be prevented by any standard sound OO typesystem.
-However, invalid use of reference capabilities (e.g. having both an \Q!imm! and \Q!mut! reference to the same location) does \emph{not} cause reduction to get stuck, instead, in \autoref{s:proof} we explicitly require that the typesystem prevents such things from happening, which our example type system in \autoref{s:typesystem} proves to be the case.
+Note that as with most OO languages, an expression $e$ can always be reduced, unless: $e$ is already a value, $e$ contains an uncaught invariant failure, or $e$ attempts to perform an ill-defined operation (e.g. calling a method that doesn't exist). The latter case can be prevented by any standard sound OO type system.
+However, invalid use of reference capabilities (e.g. having both an \Q!imm! and \Q!mut! reference to the same location) does \emph{not} cause reduction to get stuck, instead, in \autoref{s:proof} we explicitly require that the type system prevents such things from happening, which our example type system in \autoref{s:typesystem} proves to be the case.
 
 Note that the monitor expressions are only a proof device, they need not be implemented directly as presented.
 For example, in L42 they are implemented by statically injecting calls to \Q!invariant()! at the end of setters (for \Q@imm@ and \Q@rep@ fields), factory methods, and rep mutators; this works as L42 follows the uniform access principle, so it does not have primitive expression forms for field updates and constructors, rather they are uniformly represented as method calls.
@@ -460,7 +462,7 @@ We define a deterministic reduction arrow to mean that exactly one reduction is 
 \LS
 
 \noindent We say that an object is \valid when calling its \Q@invariant()@ method would
-deterministically produce an $\Kw{imm}\,\Kw{True}$ in a finite number of steps, i.e. assuming the typesystem is sound, this means it does not evaluate to a non-$\Kw{True}$ reference, fail to terminate, or produce an \error.
+deterministically produce an $\Kw{imm}\,\Kw{True}$ in a finite number of steps, i.e. assuming the type system is sound, this means it does not evaluate to a non-$\Kw{True}$ reference, fail to terminate, or produce an \error.
 We also require that evaluating \Q@invariant()@ preserves existing memory, however new objects can be freely created and mutated:
 
 \indent$\valid(\s,l)$ iff $\s | \invariant{l} \Rightarrow^+ \s,\s' | \Kw{imm}\,l$ where  $\C[\s,\s']{l} = \Kw{True}$.%\loseSpace

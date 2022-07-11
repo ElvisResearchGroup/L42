@@ -7,7 +7,7 @@ it is becoming more popular to verify aliasing and immutability properties using
 For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use \emph{reference capabilities}\footnote{reference capabilities are called \emph{Type Modifiers} in former works on L42.} and \emph{object capabilities} to statically ensure  deterministic parallelism and the absence of data races.
 While studying those languages, we discovered an elegant way to enforce invariants: we use capabilities to restrict how/when the result of invariant methods changes; this is done by restricting I/O, and how mutation through aliases can affect the state seen by invariants.
 
-That is, our work shows that reference and object capabilities are very usueful also outside of the context of safe parallelism.
+That is, our work shows that reference and object capabilities are useful also outside of the context of safe parallelism.
 
 % We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See \autoref{s:protocol} for the exact details of our invariant protocol.
 %We aim to leverage these existing TM guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
@@ -32,7 +32,7 @@ Reference capabilities
 \item Mutable (\Q@mut@): the referenced object can be mutated and shared/aliased without restriction; as in most imperative languages without reference capabilities.
 
 %\noindent\rule{1.2ex}{1.2ex}
-\item Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object}.
+\item Immutable (\Q@imm@): the referenced object cannot be mutated, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object}.
 Any other object is a \emph{mutable object}.
 All objects are born mutable and may later become immutable.
 Thus, an object can be classified as \emph{mutable} even if it has no fields that can be updated or mutated.
@@ -47,8 +47,8 @@ Immutable objects in the reachable object graph of a capsule reference are not c
 \end{itemize}
 %This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
 %\end{itemize}
-\noindent That is, there are only two kinds of objects: mutable and immutable, but there are more kinds of reference capabilities.
-In L42 only \Q@mut@ and \Q@imm@ references can be saved on the heap; that is, \Q@capsule@ and \Q@read@ references only exists on the stack.
+\noindent \IO[2]{Thus}, there are only two kinds of objects: mutable and immutable, but there are more kinds of reference capabilities.
+In L42 only \Q@mut@ and \Q@imm@ references can be saved on the heap\IO[2]{:} \Q@capsule@ and \Q@read@ references only exists on the stack.
 %the 'read' field in 42 can indeed be understood as a 'mut' field of an object that is born 'read'
 
 Reference capabilities are different to field or variable qualifiers like Java's \Q@final@: reference capabilities apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
@@ -111,9 +111,9 @@ Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference 
 % are useful for safe parallelism, but not invariant checking; while Gordon \etal's cannot be read non-destructively.
 
 The formal model of L42~\cite{GIANNINI2019145} does not
-contains \Q@capsule@ fields.
+contain \Q@capsule@ fields.
 The L42 concrete language interprets the syntax for capsule fields as private \Q@mut@ fields with some extra restrictions, including being initialised and updated only with \Q@capsule@ references.
-Those \emph{encapsulated} fields allows to model various forms of ownership and parallelism.
+Those \emph{encapsulated} fields \IO[3]{facilitate parallelism and can model various forms of ownership.}
 \footnote{It may seem surprising that 
 those weaker forms of encapsulation are still sufficient to ensure safe parallelism.
 The detailed way L42 parallelism works is unrelated to the presented work.
@@ -165,7 +165,7 @@ simply using \Q@mut@ types and be free to have rampant aliasing.
 Then, at a later stage, another programmer may still 
 be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@capsule@ reference.
 
-For example, immagine a program where most objects belong to classes designed in a simple minded imperative style: without worrying about ownership, aliasing and encapsulation and with most methods requiring mutation.
+For example, imagine a program where most objects belong to classes designed without worrying about ownership, aliasing and encapsulation and with most methods requiring mutation.
 Thanks to the flexibility discussed above, those objects can still take advantage of our invariant protocol; we just need to apply our Box pattern around those.
 
 \subheading{Exceptions}\label{s:exceptions}
@@ -212,9 +212,8 @@ This strategy does not restrict when exceptions can be \emph{thrown}, but only r
 Strong exception safety allows us to throw invariant failures as unchecked exceptions: if an object's reachable object graph was mutated into a broken state within a \Q@try@, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since strong exception safety guarantees that no object mutated within a \Q@try@ is visible when it catches an unchecked exception.%
 \footnote{Transactions are another way of enforcing strong exception safety, but they require specialised and costly run time support.}
 
-Similarly to Java, L42 distinguishes between checked and unchecked exceptions,
-and \Q@try-catch@es over checked exceptions impose no limits on object mutation during the \Q@try@.
-That is, strong exception safety is only enforced for unchecked exceptions.
+Similarly to Java, L42 distinguishes between checked and unchecked exceptions, \IO[2]{strong exception safety is only enforced for unchecked exceptions, and so}
+\Q@try-catch@es over checked exceptions impose no limits on object mutation during the \Q@try@.
 %Similarly to what happens in Java, the L42 type system simply restricts where checked exceptions can be thrown, but does not enforce strong exception safety for checked exceptions. 
 
 %For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.

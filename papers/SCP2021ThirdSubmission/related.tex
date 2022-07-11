@@ -2,7 +2,7 @@
 \section[Integration in L42]{Integration in L42}
 \label{s:L42}
 \vspace{-1ex}
-In the last version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this article's scope to explain 
+In the latest version of L42, invariants have been integrated with caching and automatic parallelism; it would be out of this article's scope to explain 
 in detail this integration, but the overall idea is that an invariant
 is seen as a \Q@Void@ \Q!@Cache.Now! method.
 %, who's result is pre-computed.
@@ -30,7 +30,7 @@ ShippingList = Data:{
 }
 \end{lstlisting}
 In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. 
-In particular, note how the current concrete L42 syntax uses the keyword \Q@capsule@ to represent various kinds of restrictions over fields.
+In particular, \IO[12]{the current concrete L42 syntax uses the \Q@capsule@ keyword to ensure various properties of the field.}
 The language relies on the presence of annotations or other specific methods
 to decide what restrictions to apply. In this case, the presence of the \Q!@Cache.Now! annotation clarifies that the field \Q@capsule Items items@
 is actually a \Q@rep@ field as discussed in our work.
@@ -174,7 +174,7 @@ Spec\# also works with existing .NET libraries by annotating them with contracts
 
 %many works on static verification, such as thoser Spec\#~\cite{??}
 
-Static verification of multi object invariants is a very difficoult problem. 
+Static verification of multi object invariants is a very difficult problem. 
 Many of the modularity issues discussed
 in ``Modular invariants for layered object structures''~\cite{DBLP:journals/scp/MullerPL06}
 do not apply to our environment: by checking the invariant at run time it is not a problem if we do not know the implementation we depends on, making us more flexible.
