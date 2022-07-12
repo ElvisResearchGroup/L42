@@ -23,9 +23,9 @@ An equivalent alternative design could instead rely on static \Q@invariant(..)@ 
 Invariants can only refer to immutable and encapsulated state. Thus while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
 we can not do the same for a doubly linked lists of \IO[4]{unenscapsulated} mutable elements.
-\IO[4]{In order for the nodes to be referenced in the \Q!invariant! method, since they contain mutable data, they must be reacheable from a \Q!rep! field, but then the elements of the list cannot be made accesible as \Q!mut! from outside the list. However, we could use the transform pattern presented in \autoref{s:patterns} to mutate the elements of such a list, in a way that does not allow aliases to be saved outside.\footnote{\IO[4]{If our protocol was extended to support polymorphic reference capabilities (as in Gordon \etal's work~\cite{GordonEtAl12}), we could allow a reference with an polymorphic reference capability to be reachable from a \Q!rep! field, provided that the state reachable from such a reference cannot be read from the \Q!invariant! method. This could be done by supporting a reference capability that prevents reading state (such as the \Q!tag! capability of Pony~\cite{clebsch2015deny}), and requiring that such a polymorphic reference capability be type checked as if it were \Q!tag!.
-Outside the list however, if the polymorphic reference capability is known to be \Q!mut!, the elements could then be freely accessed and aliases, as the \Q!invariant! would be guaranteed not to depend on them}}
-however,} we do not make it harder to correctly implement such data structures.
+\IO[4]{In order for the nodes to be referenced in the \Q!invariant! method, since they contain mutable data, they must be reacheable from a \Q!rep! field, but then the elements of the list cannot be made accesible as \Q!mut! from outside the list. However, we could use the transform pattern presented in \autoref{s:patterns} to mutate the elements of such a list, in a way that does not allow aliases to be saved outside.\footnote{\IO[4]{If our protocol was extended to support polymorphic reference capabilities (as in Gordon \etal's work~\cite{GordonEtAl12}), we could allow a reference with a polymorphic reference capability to be reachable from a \Q!rep! field, provided that the state reachable from such a reference cannot be read from the \Q!invariant! method. This could be done by supporting a reference capability that prevents reading state (such as the \Q!tag! capability of Pony~\cite{clebsch2015deny}), and requiring that such a polymorphic reference capability be type checked as if it were \Q!tag!.
+Outside the list however, if the polymorphic reference capability is known to be \Q!mut!, the elements could then be freely accessed and aliased, as the \Q!invariant! would be guaranteed not to depend on them.}}
+We do not however} make it harder to correctly implement such data structures.
 
 There is a line of work~\cite{DBLP:conf/mpc/BarnettN04} striving to allow invariants over other forms of state.
 %It would not be technically difficult to 
@@ -161,7 +161,7 @@ The following rules define our novel \Q!rep! fields:
 \noindent The above rules ensure that rep mutators control the mutation of the reachable object graph of \Q!rep! fields, and 
  ensures our points (1), (2), and (3):
 $o$ will not be in the reachable object graph of $o.f$ and
-only a rep mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way to mutate the reachable object graph of $o.f$ is through such methods. \IO[5]{The restriction on the paramater types of a rep mutator ensure that $o$ will not be reacheable from any of the methods arguments, nor could these arguments be made reacheable through $o.f$, which would violate point (3).}
+only a rep mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way to mutate the reachable object graph of $o.f$ is through such methods. \IO[5]{The restriction on the paramater types of a rep mutator ensure that $o$ will not be reacheable from any of the method's arguments, nor can these arguments be made reacheable through $o.f$, which would violate our point (3).}
 %When a rep mutator is not executing, no object in the reachable object graph of $o.f$ can be seen as \Q!mut! or \Q!capsule!. 
 %(using any sequence of field accesses on a local variable).
 If execution is (indirectly) in a rep mutator, then $o$ is only used as the receiver of the \Q!this.f! expression in the rep mutator.
@@ -233,7 +233,7 @@ The language runtime will automatically perform calls to \Q!invariant()!, if suc
 \noindent In \autoref{s:formalism}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that the invariants of all objects involved in execution hold. %(except the invariant of \Q!this! when used to access fields in a runtime-generated call to the \Q!invariant()! method itself).
 
 \subheading{Traditional Constructors and Subclassing}
-L42 constructors directly initialise all the fields using the parameters, and L42 does not provide traditional subclassing \IO[6]{(it provides other forms of code reuse), it does however provide sub-typing similar to Java 7's interfaces.}
+L42 constructors directly initialise all the fields using the parameters, and L42 does not provide traditional subclassing \IO[6]{(it provides other forms of code reuse), it does however provide subtyping similar to Java 7's interfaces.}
 This works naturally with our invariant protocol.
 We can support traditional constructors as in Pony and Gordon \etal's language, 
 by requiring that constructors only use \Q@this@ as the receiver of a field initialisation.
