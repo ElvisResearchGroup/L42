@@ -176,6 +176,27 @@ That is, rep mutators pretend
   This is similar to the ideas of the Focus operation~\cite{DBLP:journals/jot/BarnettDFLS04}
  and View-point adaptation~\cite{DietlEtAl07}.
 }
+
+\IO{17}{Consider the following example:
+\begin{lstlisting}
+class Foo {
+	imm Int n; rep Point p;
+
+	read method Bool invariant() {
+		return this.p.x + this.p.y < this.n;
+	}
+	read method read Point bar() {
+		return p;
+	} // ok
+	mut method read Point baz(imm Qux q) {
+		mut Point my_p = this.p; // ok, single use of 'this'
+		my_p.x = q.compute_x(my_p)
+		// ok if invariant doesn't hold, as 'q' cannot possibly notice
+		my_p.y = q.compute_y(my_p)
+		return my_p // invariant check here
+	}
+}
+\end{lstlisting}}
 %INTERESTING, the commented text down here looks a lot like the rev suggestion above...
 %As the expression is \Q!capsule!, we can be sure that the object being initialised/updated will have the only external alias to the reachable object graph of the field's new value. In addition, since the reference was \Q!capsule!, the initialised/updated object could not already alias it, thus after the initialisation/update, the initilised/updated \Q!capsule! field will not alias the object.
 

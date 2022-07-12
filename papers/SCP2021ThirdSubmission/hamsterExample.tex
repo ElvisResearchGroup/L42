@@ -124,7 +124,7 @@ Owner.AssignSame(pl, Owner.ElementProxy(pl));
 Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 \end{lstlisting}
 
-\noindent In Spec\# objects start their life as un-owned, so each \Q@new@ instruction above returns an unowned object. However when the \Q@Point@s are placed inside the \Q@pl@ list, Spec\# loses track of this. Thus the \Q@AssignSame@ call is needed to mark the elements of \Q@pl@ as still being unowned (since \Q@pl@ itself is unowned).
+\noindent In Spec\#, objects start their life as un-owned, so each \Q@new@ instruction above returns an unowned object. However when the \Q@Point@s are placed inside the \Q@pl@ list, Spec\# loses track of this. Thus the \Q@AssignSame@ call is needed to mark the elements of \Q@pl@ as still being unowned (since \Q@pl@ itself is unowned).
 Contrast this with our system which requires no such operation; we can simply write:
 \begin{lstlisting}
 Cage c=new Cage(new Hamster(new Point(0,0)),List.of(new Point(0,0),new Point(0,1)));

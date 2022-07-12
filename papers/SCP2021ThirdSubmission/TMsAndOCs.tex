@@ -98,6 +98,23 @@ In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this 
 Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however in those cases the result will not be a \Q!capsule! reference but another kind of reference, that can be promoted to \Q!capsule!, but only under certain conditions. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
 %Later on, we discuss \Q!capsule! fields, which behave differently to \Q@capsule@ local variables.
 
+\IO[14]{
+For example, following L42's approach:
+%\begin{lstlisting}
+%method capsule foo(capsule Point cp) {
+%	mut Point mp = cp // ok, cp is used exactly once
+%	mp.x = mp.x + 3 // mp is mut, so it can be used twice
+%	mp.y = mp.x + 3
+%	return mp // mp is promoted back to capsule
+%}
+%
+%capsule Point cp = new Point(1, 2)
+%//cp.x = 3; cp.y = 3 // type error: cannot use 'cp' more than once
+%capsule Point cp2 = foo(cp) // ok, cp is used only once
+%foo(cp2) // ok, cp2 is used only once
+%\end{lstlisting}
+}
+
 Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature, however they must always be initialised and updated with \Q!capsule! references. In order for access to a \Q!capsule! field to safely produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's reachable object graph. In pon
@@ -160,7 +177,7 @@ L42 also allows such expression to use \Q!read! free variables as well as \Q!mut
 
 This is the main improvement on the flexibility of reference capabilities in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
-these reference capabilities are opt-in: a programmer can write many classes
+these reference capabilities are opt-in: \IO[15]{a programmer can choose to use them only when desired,} for example they can write many classes
 simply using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
 be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@capsule@ reference.
@@ -211,6 +228,35 @@ In a language where the \Q@try-catch@ is a statement, the \Q@try@ can still prod
 This strategy does not restrict when exceptions can be \emph{thrown}, but only restricts when unchecked exceptions can be \emph{caught}.
 Strong exception safety allows us to throw invariant failures as unchecked exceptions: if an object's reachable object graph was mutated into a broken state within a \Q@try@, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since strong exception safety guarantees that no object mutated within a \Q@try@ is visible when it catches an unchecked exception.%
 \footnote{Transactions are another way of enforcing strong exception safety, but they require specialised and costly run time support.}
+
+\IO[16]{Consider the following example:
+%\begin{lstlisting}
+%// A kind of UncheckedException
+%class PointException extends UncheckedException {
+%	mut Point data }
+%
+%imm Point p1 = new Point(1, 2)
+%final mut Point p2 = new Point(3, 4)
+%try {
+%	if (p2.x != p1.x) {
+%		//throw new PointException(p2) // Type error, the PointException is mut
+%		throw new PointException(new Point(p2.x, p2.y)) // Ok, the PointException can be promoted to imm
+%	} else if (p2.y == p1.y) {
+%		//p1 = new Point(1, 2) // type error, cannot update a variable
+%		//p2.x = 3 // type error, p2 is typed as read, not mut
+%		mut Point p = new Point(p2.x, p2.y)
+%		p.x = 3 // ok, p is inside the try
+%		return p // ok, we can return a mut
+%	}
+%}
+%catch (PointException e) {
+%	// we can be sure that p1 and p2 have not been modified in any way
+%	p1 = e.data // Ok, we are outside the try
+%}
+%p2.y = p2.x + 1 // Ok, outside the try
+%...
+%\end{lstlisting}
+}
 
 Similarly to Java, L42 distinguishes between checked and unchecked exceptions, \IO[2]{strong exception safety is only enforced for unchecked exceptions, and so}
 \Q@try-catch@es over checked exceptions impose no limits on object mutation during the \Q@try@.

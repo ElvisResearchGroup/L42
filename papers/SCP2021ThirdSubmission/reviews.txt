@@ -287,7 +287,7 @@ plumbing those requirements the rest of the way through the other
 proofs (Appendix A Theorem 2 Rep Field Soundness, Appendix A
 Lemma 5 Imm Not Circular, and Appendix A Theorem 1 Soundness, plus the
 proofs in Appendix B that Theorem 6 implies Requirements 2 and 3).
-// RESPONSE: The definition of ValidState directly requires that such reduction sequences exist // TODO: ISAAC I'll clarify this in the proofs.?
+// RESPONSE: The definition of ValidState directly requires that such reduction sequences exist //TODO: ISAAC will clarify this in the proofs.?
 
 I have one other general comment on a general way the paper could be
 strengthened, but I consider it optional (I'd be okay with the authors
@@ -372,14 +372,18 @@ functional setting than in an impure one.
 [1] Jean-Christophe Filliâtre and Clément Pascutto. Ortac: Runtime
 Assertion Checking for OCaml. In International Conference on Runtime
 Verification, 2021.
+// DONE see ˆ12 // TODO: be more detailed?
 
 ** New typos
 
 p3, l21--44: a dot is missing at the end of each itemize
+// DONE
 p26, l25, In Spec# objects --> In Spec#, objects
+// DONE
 p31, l13: interface HasSubInvariant, that --> remove the comma
+// DONE
 p43, l29: need not --> does not need to
-
+// DONE
 ** Comments from review 1 that are answered in a partial or unsatisfactory way:
 
 - p16, l56: The verifier available online [...] behaves differently:
@@ -394,7 +398,7 @@ Actually, this online verifier does not exist anymore because rise4fun
 is dead (see [2] for instance). Therefore, this sentence should be
 removed.
 [2] https://github.com/Z3Prover/z3/discussions/5473
-
+// DONE
 - p17, l27: the number of characters is meaningless (e.g., it is
 debatable which keyword is better between 'mut' and 'mutable'). I am
 not even sure whether the number of tokens is relevant (liking
@@ -425,6 +429,8 @@ should explain why you use these new metrics in your context, and be
 more cautious about your conclusion that relies on them (except if you
 have a very strong convincing statement about why your metrics is
 better that the number of annotations).
+// TODO: umm, we could count each "element" of an annotation, e.g. each method-call and paramater-name in it? I completely disagree with the reviewer here, maybe we should find some other papers that use tokens or something else? It does make sense to compare only the number of annotations when they are similar in complexity, but that is not the case here.
+
 
 - p30, l18: a study [19] discovered that developers expect
 specification languages to follow the semantics of the underlying
@@ -459,6 +465,7 @@ numerical types. Therefore, in your paper, you can talk about the
 particular cases of short-circuits and exceptions (for which the
 developers indeed expect the same semantics), but not about the
 general case because there is at least one counter-example.
+// TODO: I will actually read the relevant parts of this paper ok
 
 ** Comments from review 1 that remains unanswered (as far as I have seen):
 (the page and line numbers are not the same in the current version of the paper)
@@ -469,45 +476,56 @@ visible state semantics and Spec#, it only refers to non-recent papers
 before 2013). For instance, the authors do not compare their notion of
 invariants to invariants of other (non-OO) specification language such
 as ACSL, Spark2014 and WhyML.
+// TODO: Ok I'll look up those and comment on them
 
 - p2, l21: the execution of this.min = min will --> use "would" (this
 line of code is actually never executed)
-
+// DONE
 - p2, l29: at this point, the reader cannot understand the advantage
 of using the Box pattern (as opposed to its drawbacks, which are easy
 to see)
+// TODO: Hmm, this is actually a bad motivating example for the box pattern as min & max would likely be of an immutable numeric type, so the box is completely unnecessary.
 
 - p2, l46: With appropriate type annotations --> which ones?
-
+// DONE see ˆ13
 - p4, l45-51: examples for mut and capsule variables would be welcome
+// DONE see ˆ14, we already have an example for mut variables above. // TODO: Updating capsule local variables in L42 is pointless right?
 
 - p5, l29: what does "opt-in" mean?
+// DONE see ˆ15 // TODO: do they literally not know what that English term means? Or do they not understand it's use in the given context? Because we literally explain what we mean immediately afterwards.
 
 - p5, Exceptions: an example would be welcome
+// DONE see ˆ16
 
 - p7, Capsule Fields: an example would be welcome
+// DONE see ˆ17
 
 - p11, Formal Language Model: it should be clear from the introduction
 of this section that it handles OC and I/O.
+// DONE see ˆ18
 
 - p12, l29: the notation '\sigma \setminus l' looks to be only used in
 the Appendix. Therefore, it should be introduced there and not in the
 core paper.
+// DONE see ˆ19
 
 - p13, l27: an example for M(l;e1;e2) would be welcome, as well as
 another one for the strong exception safety remark.
+// DONE see ˆ20 and ˆ21 // TODO: random question, would it be ok to throw a capsule unchecked-exception object? I know you say it must be "imm", but why?
 
 - p13, l49: "For example, in L42 we implement [...]" --> do not mix
 the formal presentation with implementation details. Instead, you
 could add this remark in Section 8.
+// DONE I've just deleted it, as we mentioned our implementation strategy elsewhere already
 
 - p15, l50-54: the invariant performs n*n comparisons while it could
 do only n*(n+1)/2 (if not comparing twice each pair of widgets). If
 you do not want to rewrite it, add at least a remark explaining that
 the code efficiency is not the priority here.
-
+// DONE: we had already fixed this, see see ˆ22
 - p35, l28: the formal definition of 'rog' is missing
-
+// DONE: it had already been fixed, see ˆ23 (in the appendix as we don't use it formally within the main-paper)
 - p1, l37: boolean --> Boolean
-
+// DONE
 - p2, l21: >= --> greater than
+// DONE: used "greater than or equal to"

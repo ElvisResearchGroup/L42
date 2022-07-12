@@ -6,9 +6,9 @@ Representation invariants (sometimes called class invariants, object invariants,
 a useful concept when reasoning about software correctness, particularly with Object Oriented (OO) languages. Such invariants are predicates on the state of an object and its reachable object graph (ROG).
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a method called \Q@invariant()@
-that returns a boolean.
+that returns a Boolean.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
-In a purely functional setting, sound runtime checking is trivial: the runtime simply needs to check the invariant each time a value/object is created (or in the case of refinement types, converted to such a type).
+In a purely functional setting, \IO[12]{once the programmer has written the invariant code itself,} sound runtime checking is trivial: the runtime simply needs to check the invariant each time a value/object is created (or in the case of refinement types, converted to such a type).
 
 In an impure setting, like most OO languages, 
 operations on data structures are often implemented as complex sequences of mutations,
@@ -45,8 +45,8 @@ class Range{
 In this example we omit types to focus on the runtime semantics.
 The code of \Q@set@ does not violate visible state semantics:
 \Q@this.min@ \Q@=@ \Q@min@ may temporarily break the invariant of \Q!this!, however it will be fixed after executing \Q@this.max@ \Q@=@ \Q@max@. Visible state allows such temporary breaking of invariants since we are inside a method on \Q!this!, and by the time it returns, the invariant will be re-established.
-However, if \Q@min@ is $\geq$ \Q@this.max@, \Q@set@ will violate our stricter approach. The execution of
-\Q@this.min@ \Q@=@ \Q@min@ will break the invariant of \Q@this@ and \Q@this.max@ \Q@=@ \Q@max@ would then involve a broken object. If we were to inject a call
+However, if \Q@min@ is greater than or equal to \Q@this.max@, \Q@set@ will violate our stricter approach. The execution of
+\Q@this.min@ \Q@=@ \Q@min@ would break the invariant of \Q@this@ and \Q@this.max@ \Q@=@ \Q@max@ would then involve a broken object. If we were to inject a call
 \Q@Do.stuff(this);@ between the two field updates, arbitrary user code could observe a broken object; 
   adding such a call is however allowed by visible state semantics.
 
@@ -76,14 +76,14 @@ The call to
 unreachable, and thus not involved in execution.
 That is, the \Q@Range@ object is not in the reachable object graph of the receiver or the parameters of \Q@BoxRange.set(min,max)@.
  Thus \Q@Range.set(min,max)@ can temporarily break the \Q@Range@'s invariant.
-By using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the object \Q@Range@ is modified.%
+By using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the object \Q@Range@ is modified. %
 \footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator pattern, but with a different goal.
 While in very specific situations the overhead of creating such additional box object may be unacceptable, we designed our work for environments where such fine performance differences are negligible.
 Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}
 This is even more applicable in languages with inlined structs, like C++ or C\#.
 }
 
-With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}
+With appropriate type annotations (\IO[13]{namely, reference capabilities on fields, method receivers, paramaters, and their return type}), the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}
 
 %In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
 %No, I looked again at this text, it is just broken.
@@ -135,16 +135,16 @@ It is important to note that unlike most prior work, we soundly handle catching 
 
 The remainder of this paper proceeds as follows:
 \begin{itemize}
-	\item \autoref{s:TMsAndOCs} explains background information necessary to understand our approach
-	\item \autoref{s:protocol} fully explains our novel invariant protocol, and our novel field type for mutable data
-	\item \autoref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the type system of L42, and similar languages
-	\item \autoref{s:formalism} formalises our runtime invariant checking, and what it means to soundly enforce our invariant protocol
-	\item \autoref{s:case-studyAll} contains many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic
-	\item \autoref{s:patterns} shows how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around
-	\item \autoref{s:L42} summarises how we have implemented our protocol in L42
-	\item \autoref{s:related} presents related work, and \autoref{s:conclusion} concludes
-	\item \autoref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in \autoref{s:formalism} sound
-	\item \autoref{s:typesystem} presents a simple L42-inspired type system and proves that it satisfies the requirements in \autoref{s:proof}	
+	\item \autoref{s:TMsAndOCs} explains background information necessary to understand our approach.
+	\item \autoref{s:protocol} fully explains our novel invariant protocol, and our novel field type for mutable data.
+	\item \autoref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the type system of L42, and similar languages.
+	\item \autoref{s:formalism} formalises our runtime invariant checking, and what it means to soundly enforce our invariant protocol.
+	\item \autoref{s:case-studyAll} contains many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic.
+	\item \autoref{s:patterns} shows how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around.
+	\item \autoref{s:L42} summarises how we have implemented our protocol in L42.
+	\item \autoref{s:related} presents related work, and \autoref{s:conclusion} concludes.
+	\item \autoref{s:proof} formally specifies the properties a type system needs to guarantee, and proves the formalism in \autoref{s:formalism} sound.
+	\item \autoref{s:typesystem} presents a simple L42-inspired type system and proves that it satisfies the requirements in \autoref{s:proof}.
 \end{itemize}
 
 %We proposed our approach for integration in the L42 language, and after minor reworking it has been accepted, and the current version of L42 integrated our 

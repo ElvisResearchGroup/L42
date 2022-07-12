@@ -9,12 +9,13 @@ in this way we are parametric over the concrete type system. In \autoref{s:types
 To express our type system assumptions, we first need some auxiliary definitions. 
 \LS
 
-\noindent First, we inductively define the set of objects in the reachable object graph (\rog) of a location $l$:\\
+\noindent \IO[23]{First, we inductively define the set of objects in the reachable object graph (\rog) of a location $l$}:\\
 \indent $l' \in \rog(\s, l)$ iff:%
 \begin{iitemize}
 	\item $l' = l$, or\SS
 	\item $\exists f$ such that $l' \in \rog(\s, \s[l.f])$
 \end{iitemize}
+
 \LS
 We define the \mrog of an $l$ to be the locations reachable from $l$ by traversing through any number of \Q!mut! and \Q!rep! fields:\\
 \indent $l' \in \mrog(\s, l)$ iff:%
@@ -62,7 +63,7 @@ That single use of $l$ is the connection preventing those $\muty$ objects from b
 \IO[8]{As we do not want to require a specific concrete type system, we instead assume some properties about the expressions that it admits.}
 Rather than requiring each expression during reduction to be well-typed, we instead let the type-system impose restrictions on method bodies, and type-check the initial expression, we then require properties on all future memories and expressions (i.e. $\VS$s).
 In \autoref{s:typesystem} we show such a type-system and prove it satisfies these requirements, but these requirements do \emph{not} hold for arbitrary well-typed $\s|e$ pairs, only for $\VS$s.
-This allows the type-system to be simpler, in particular, as the initial main expression can only have \Q!mut! references to $c$ (an object with no fields(), the type-system need not check that the heap structure and reference capabilities in the main expressions are consistent.
+This allows the type-system to be simpler, in particular, as the initial main expression can only have \Q!mut! references to $c$ (an object with no fields), the type-system does not need to check that the heap structure and reference capabilities in the main expressions are consistent.
 
 First we require that fields and methods are only given values with the correct reference capabilities, i.e. the field initialisers of \Q!new! expressions, the right hand sides of update expressions, and the receiver and parameters of method calls have the capabilities required by the field declarations/method signatures:
 \SS\begin{restatable}[Type Consistency]{Requirement}{REQTypeCons}\
@@ -236,6 +237,8 @@ To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! f
 \indent $\exists f \in \rf(\s,l)$ such that $\CR(\s, l, f)$.
 \LS
 
+\noindent \IO[19]{We use $\s \setminus l$ to remove the location $l$, thus $(\s,l \mapsto C\{\ls\}) \setminus l = \s$.}
+\LS
 \noindent We say that an $l$ and $f$ is \CN if $l.f$ is not \muty without passing through $l$:\\
 \indent $\CN(\s, l, f)$ iff not $\muty(\s\setminus l, e, \s[l.f])$.\\
 \noindent We say that an $l$ is \RCN if each of its \Q!rep! fields are \CN:\\
