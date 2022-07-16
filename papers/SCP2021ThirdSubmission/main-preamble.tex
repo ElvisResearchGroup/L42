@@ -298,8 +298,9 @@
 \makeatletter
 \renewcommand{\appendixname}{\@gobble} % Surpresses the extra "Appendix " that gets added when you use \autoref
 
+\usepackage{marginnote}
 \renewcommand{\IO}[2][\@nil]{\NoteColour{Blue}{%
-	\def\tmp{#1}\ifx\tmp\@nnil\else{\textsuperscript{\^{}#1}}\fi%
+	\def\tmp{#1}\ifx\tmp\@nnil\else{\marginnote{\footnotesize{\^{}#1}}}\fi%
 	#2}}
-
+\usepackage{nicefrac}
 \makeatother

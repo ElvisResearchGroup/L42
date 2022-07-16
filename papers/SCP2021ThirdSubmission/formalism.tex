@@ -47,7 +47,7 @@ We encode Booleans as ordinary objects, in particular we assume:
 Other than the \Q!invariant! method of \Q!True!, we impose no requirements on the methods of the \Q!Bool! interface or its classes, in particular, they could be used to provide logical operations.\footnote{
 In particular, \Q!if! statements can be supported using Church encoding: we would have a \Q!Bool.i${}$f! method of form \Q!read method$\,T\,$i${}$f($T\,$ifTrue, $T\,$ifFalse)!, for an appropriate type $T$.
 The body of \Q!True.i${}$f! will then be \Q!ifTrue!, and the body of \Q!False.i${}$f! will be \Q!ifFalse!. In this way, \Q!$x$.i${}$f($t$, $f$)! will return $t$ if $x$ is ``true'' and $b$ if it is ``false''.
-\IO[11]{
+\IO[11]{%
 To ensure that $t$ and $f$ themselves are evaluated if and only if $x$ is ``true'', the \Q!Bool.i${}$f! method could instead require an object with an \Q!apply! method, whose body will be $t$ or $f$, respectively. If we added syntax sugar for lambdas, as in Java 8, we could then do \Q@$x$.i${}$f(() -> $\ t$, () -> $\ f$)@}}
 
 \noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location can be used in the main expression and would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading/writing. In order to simplify our proof, we assume that:

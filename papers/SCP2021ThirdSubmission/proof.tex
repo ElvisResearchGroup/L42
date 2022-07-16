@@ -190,7 +190,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 		\indent If $\VS(\s, \E[e])$, and $\s|e \rightarrow^* \s'|e'$, then $\forall l \in \dom(\s)$, if not $\reach(\s, e, l)$, then not $\reach(\s', e', l)$.
 	\end{Lemma}\SS
 	\begin{proof}
-		The proof follows from induction on the number of reductions, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
+		The proof follows from \IO[27.1]{the definition of \VS and induction on the number of reductions since the initial memory and main-expression}, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
 		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true}).
 	\qed\end{proof}
 	\LS
@@ -659,7 +659,7 @@ First we need to prove that an object is not reachable from one of its \Q!imm! f
 \indent If $\VS(\s, e)$, $\forall f,l$, if $\reach(\s, e, l)$, $\C{l}.f = \field{\Kw{imm}}{\_}{f}$, then $l \notin \rog(\s, \s[l.f])$.
 \end{Lemma}\SS
 \begin{proof}
-The proof is by induction; obviously the property holds in the initial $\s|e$, since $\s = c\mapsto \Kw{Cap}\{\}$. Now suppose it holds in a $\VS(\s', e')$ where $\s'|e' \rightarrow \s|e$:
+The proof is by \IO[27.2]{the definition of \VS and induction on the number of reductions}; obviously the property holds in the initial $\s|e$, since $\s = c\mapsto \Kw{Cap}\{\}$. Now suppose it holds in a $\VS(\s', e')$ where $\s'|e' \rightarrow \s|e$:
 \begin{ienumerate}
 	\item Consider any pre-existing \reach $l$ and $f$ with $\C[\s']{l}.f = \field{\Kw{imm}}{\_}{f}$, by \thm{Imm Consistency} and \thm{Non-Mutating}, the only way $\rog(\s, \s[l.f])$ could have changed is if $e' = \EV[\mdf\,l\D f = \mdf'\,l']$, where $\mdf \leq \Kw{mut}$, i.e. we just applied the \textsc{update} rule. By \thm{Type Consistency}, $\mdf' \leq \Kw{imm}$, so by \thm{Imm Consistency}, $l \notin \rog(\s, l')$. Since $l' = \s[l.f]$, we now have $l \notin \rog(\s, \s[l.f])$.
 	\item The only rules that make an $l$ \reach are \textsc{new/new true}. So consider $e = \EV[\new{C}{\range{\_\,l}}]$, and each $i$ with $C.i = \field{\Kw{imm}}{\_}{f}$. But each of $\range{l}$ existed in the previous state and $l \notin \dom(\s')$; so by \VS and our reduction rules, $l \notin \rog(\s', l_i) = \rog(\s, \s[l.f])$.

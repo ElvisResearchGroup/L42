@@ -22,8 +22,8 @@ An equivalent alternative design could instead rely on static \Q@invariant(..)@ 
 
 Invariants can only refer to immutable and encapsulated state. Thus while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
-we can not do the same for a doubly linked lists of \IO[4]{unenscapsulated} mutable elements.
-\IO[4]{In order for the nodes to be referenced in the \Q!invariant! method, since they contain mutable data, they must be reacheable from a \Q!rep! field, but then the elements of the list cannot be made accesible as \Q!mut! from outside the list. However, we could use the transform pattern presented in \autoref{s:patterns} to mutate the elements of such a list, in a way that does not allow aliases to be saved outside.\footnote{\IO[4]{If our protocol was extended to support polymorphic reference capabilities (as in Gordon \etal's work~\cite{GordonEtAl12}), we could allow a reference with a polymorphic reference capability to be reachable from a \Q!rep! field, provided that the state reachable from such a reference cannot be read from the \Q!invariant! method. This could be done by supporting a reference capability that prevents reading state (such as the \Q!tag! capability of Pony~\cite{clebsch2015deny}), and requiring that such a polymorphic reference capability be type checked as if it were \Q!tag!.
+we can not do the same for a doubly linked lists of \IO[4.1]{unenscapsulated} mutable elements.
+\IO[4.2]{In order for the nodes to be referenced in the \Q!invariant! method, since they contain mutable data, they must be reacheable from a \Q!rep! field, but then the elements of the list cannot be made accesible as \Q!mut! from outside the list. However, we could use the transform pattern presented in \autoref{s:patterns} to mutate the elements of such a list, in a way that does not allow aliases to be saved outside.\footnote{\IO[4.3]{If our protocol was extended to support polymorphic reference capabilities (as in Gordon \etal's work~\cite{GordonEtAl12}), we could allow a reference with a polymorphic reference capability to be reachable from a \Q!rep! field, provided that the state reachable from such a reference cannot be read from the \Q!invariant! method. This could be done by supporting a reference capability that prevents reading state (such as the \Q!tag! capability of Pony~\cite{clebsch2015deny}), and requiring that such a polymorphic reference capability be type checked as if it were \Q!tag!.
 Outside the list however, if the polymorphic reference capability is known to be \Q!mut!, the elements could then be freely accessed and aliased, as the \Q!invariant! would be guaranteed not to depend on them.}}
 We do not however} make it harder to correctly implement such data structures.
 
@@ -166,7 +166,7 @@ only a rep mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way
 %(using any sequence of field accesses on a local variable).
 If execution is (indirectly) in a rep mutator, then $o$ is only used as the receiver of the \Q!this.f! expression in the rep mutator.
 Thus we can be sure that the reachable object graph of $o.f$ will only be mutated within a rep mutator, and only after the single use of $o$ to access $o.f$.
-Since such mutation could invalidate the invariant of $o$, we call the \Q@invariant()@ method at the end of the rep mutator body; before $o$ can be used again. Provided that the invariant is re-established before a rep mutator returns, no invariant failure will be thrown, even if the invariant was temporarily broken \emph{during} the body of the method.
+Since such mutation could invalidate the invariant of $o$, we call the \Q@invariant()@ method at the end of the rep mutator body; before $o$ can be used again. Provided that the invariant is re-established before a rep mutator returns, no invariant failure will be thrown, even if the invariant was temporarily broken \emph{during} the body of the method.%
 \footnote{
 That is, rep mutators pretend
   that \Q@this@ is linear by requiring it to be used exactly once to read the \Q@rep@ field. By burying the
@@ -177,7 +177,7 @@ That is, rep mutators pretend
  and View-point adaptation~\cite{DietlEtAl07}.
 }
 
-\IO{17}{Consider the following example:
+\IO[17]{Consider the following example:}
 \begin{lstlisting}
 class Foo {
 	imm Int n; rep Point p;
@@ -196,7 +196,7 @@ class Foo {
 		return my_p // invariant check here
 	}
 }
-\end{lstlisting}}
+\end{lstlisting}
 %INTERESTING, the commented text down here looks a lot like the rev suggestion above...
 %As the expression is \Q!capsule!, we can be sure that the object being initialised/updated will have the only external alias to the reachable object graph of the field's new value. In addition, since the reference was \Q!capsule!, the initialised/updated object could not already alias it, thus after the initialisation/update, the initilised/updated \Q!capsule! field will not alias the object.
 

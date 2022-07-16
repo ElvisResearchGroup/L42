@@ -61,7 +61,7 @@ sense to me now.
   sentences and paragraphs beginning with "That is,". Many times,
   these words could be removed without changing the meaning of the
   sentence.
-// DONE: See ˆ2
+// DONE: See ˆ2.1, ˆ2.2, and ˆ2.3
 - 188: "contains" --> "contain"
 // DONE
 - 190: I can see how one could use `capsule` fields to "model
@@ -87,7 +87,7 @@ sense to me now.
     the invariant of the list cannot dereference an element and
     thus the state of the elements cannot affect the result of the
     invariant.
-// DONE see ˆ4	
+// DONE see ˆ4.1, ˆ4.2, and ˆ4.3
 - 302: When you talk about pure methods not mutating existing
   memory, maybe clarify that you mean heap memory (writing to
   local variables on the stack is fine).
@@ -212,7 +212,7 @@ sense to me now.
   tracking complicates the story, it seems like allowing moving
   capsules between objects would make your verification story
   stronger, especially in a concurrent setting.
-// TODO: Discuss earlier in the paper?
+// TODO: see ˆ25
 - 3226: "a 42 user" --> "an L42 user"
 // N/A: appendix has been deleted
 - 3232: "parallelism in 42 is unobservable" --> "parallelism in   L42
@@ -253,7 +253,7 @@ fork-join parallelism supported in L42 earlier in the paper (perhaps
 where the claims about supporting safe parallelism are made), at a
 high level, and how they are tied to the reference capabilities here,
 without any syntax or examples, would be sufficient.
-// DONE: removed the appendix // TODO: add such a paragraph?
+// DONE: removed the appendix, also see ˆ26.1 and ˆ26.2
 
 This paper is mostly in great shape now, and definitely the most
 thorough examination of invariant protocols I've ever seen. I do
@@ -287,7 +287,7 @@ plumbing those requirements the rest of the way through the other
 proofs (Appendix A Theorem 2 Rep Field Soundness, Appendix A
 Lemma 5 Imm Not Circular, and Appendix A Theorem 1 Soundness, plus the
 proofs in Appendix B that Theorem 6 implies Requirements 2 and 3).
-// RESPONSE: The definition of ValidState directly requires that such reduction sequences exist //TODO: ISAAC will clarify this in the proofs.?
+// RESPONSE: The definition of ValidState directly requires that such reduction sequences exist, we have clarified the proofs, see ˆ27.1, ˆ27.2, and ˆ27.3
 
 I have one other general comment on a general way the paper could be
 strengthened, but I consider it optional (I'd be okay with the authors
@@ -312,7 +312,7 @@ alternative would be to commit to the type system of Appendix B, but I
 think that would require more substantial rewriting to accomplish, and
 would actually make the paper weaker by de-emphasizing the abstract
 requirements for the type system that I like in this paper.)
-// TODO: Use this term? (Will need a reread to determine where exactly to use it)
+// TODO: Use this term? I can't work out where we should use it though
 Miscellaneous comments:
 
 - p3 (paper page number, not pdf page number), line 73: A one-line
@@ -342,7 +342,7 @@ wording suggests work on L42 has stopped.
 restrictions over fields" This is hard to interpret from seeing just a
 single use, which inherently doesn't demonstrate "various"
 restrictions.
-// DONE: Todo Marco, check this?
+// DONE: Todo Marco, check this? see ˆ27
 
 
 Reviewer #3: It is my second review of this paper. I would like  to
@@ -429,8 +429,7 @@ should explain why you use these new metrics in your context, and be
 more cautious about your conclusion that relies on them (except if you
 have a very strong convincing statement about why your metrics is
 better that the number of annotations).
-// TODO: umm, we could count each "element" of an annotation, e.g. each method-call and paramater-name in it? I completely disagree with the reviewer here, maybe we should find some other papers that use tokens or something else? It does make sense to compare only the number of annotations when they are similar in complexity, but that is not the case here.
-
+// TODO: umm, we could count each "element" of an annotation, e.g. each method-call and paramater-name in it? I completely disagree with the reviewer here, maybe we should find some other papers that use tokens or something else? It does make sense to compare only the number of annotations when they are similar in complexity, but that is not the case here. // I don't think we've said anything bad, see ˆ28.1, ˆ28.2, ˆ28.3, and ˆ28.4; I've made our counting of both the number of annotations and tokens consistent, see ˆ29.1, ˆ29.2, and ˆ29.3
 
 - p30, l18: a study [19] discovered that developers expect
 specification languages to follow the semantics of the underlying
@@ -465,7 +464,11 @@ numerical types. Therefore, in your paper, you can talk about the
 particular cases of short-circuits and exceptions (for which the
 developers indeed expect the same semantics), but not about the
 general case because there is at least one counter-example.
-// TODO: I will actually read the relevant parts of this paper ok
+// DONE: see ˆ30 // TODO: The very next paragraph of the paper says exactly that:
+//	"The purpose of C.3 was to determine, from the respondent’s point of view, if there should be any difference in
+//	the semantic interpretation of a Boolean expression when used as an assertion vs. outside the context of an assertion. 
+//	Seventy percent (70%) of respondents answered that //expressions should be given the same interpretation."
+// So I still think we are correct, but I've made our statement weaker to avoid more argument
 
 ** Comments from review 1 that remains unanswered (as far as I have seen):
 (the page and line numbers are not the same in the current version of the paper)
@@ -476,7 +479,7 @@ visible state semantics and Spec#, it only refers to non-recent papers
 before 2013). For instance, the authors do not compare their notion of
 invariants to invariants of other (non-OO) specification language such
 as ACSL, Spark2014 and WhyML.
-// TODO: Ok I'll look up those and comment on them
+// DONE: See ˆ31.1, ˆ31.2, and ˆ31.3 // TODO: this was hard to write as such languages use very different terminology, for e.g. "ada" doesn't use "public" or "method", but uses "visible outside" and "subprogram".
 
 - p2, l21: the execution of this.min = min will --> use "would" (this
 line of code is actually never executed)
@@ -484,7 +487,7 @@ line of code is actually never executed)
 - p2, l29: at this point, the reader cannot understand the advantage
 of using the Box pattern (as opposed to its drawbacks, which are easy
 to see)
-// TODO: Hmm, this is actually a bad motivating example for the box pattern as min & max would likely be of an immutable numeric type, so the box is completely unnecessary.
+// DONE: see ˆ24
 
 - p2, l46: With appropriate type annotations --> which ones?
 // DONE see ˆ13

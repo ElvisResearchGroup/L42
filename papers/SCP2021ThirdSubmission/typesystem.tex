@@ -404,7 +404,7 @@ Monitor expressions starting with an invariant call are well-typed provided the 
 
 We now prove the standard soundness property of any type system: reduction respects the type of an expression.
 Note that this holds for any well-typed expression and well-formed memory, even those that are not \VS.
-Note as discussed before, our type system does not directly verify the required properties of our reference capabilities (such as preventing simultaneous \Q!imm! and \Q!mut! references to the same object), rather we prove those separately bellow.
+Note as discussed before, our type system does not directly verify the required properties of our reference capabilities (such as preventing simultaneous \Q!imm! and \Q!mut! references to the same object), rather we prove those separately below.
 \SS\begin{theorem}[Type Preservation]\ \\
 	\indent If $\vdash\s$, $\tyr eT$ and $\s|e\rightarrow^n\s'|e'$, then $\vdash\s'$
 	and $\tyr[\s']{e'}T$.
@@ -690,7 +690,7 @@ This lemma is needed to reason over our $\ty[\s][\demut{\G}]{e}{T}$ judgements: 
 
 \subheading{Conventional Soundness}
 For the purposes of our invariant protocol and the requirements in \autoref{s:proof}, we do not require that well-typed programs do not get stuck during reduction, e.g. because a non-existent method is called.
-However, to show that our system is practical, we prove the key property bellow:
+However, to show that our system is practical, we prove the key property below:
 every well-typed expression can either continue to be reduced, it is a value, or it contains an uncaught exception (i.e. an invariant failure).
 Thus showing that our type system satisfies the conventional soundness notion of \thm{Progress} + \thm{Type Preservation}.
 
@@ -919,7 +919,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 	\end{ienumerate}
 \end{theorem}
 \SS\begin{proof}
-	We prove this by induction on the number of reductions since
+	We prove this by \IO[27.3]{definition of \VS and} induction on the number of reductions since
 	the initial main expression and memory. The base case is trivial since
 	the main expression cannot contain any $\Kw{imm}$ references, and there
 	are no fields in memory, thus nothing can be $\immut$, moreover the
