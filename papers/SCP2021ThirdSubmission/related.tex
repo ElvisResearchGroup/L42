@@ -104,9 +104,10 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 
 \item The invariant of an object is assumed only when a contract requires the object be `packed'. It is checked after an explicit `pack' operation, and objects can later be `unpacked'~\cite{DBLP:journals/jot/BarnettDFLS04}.
 
-\item \IO[31.1]{The invariant of each object passed to a method\footnote{\IO[31.2]{or function/subprogram}} call, and every parameter and result upon a method return, must be ensured:
-either for every method ~\cite{ACSL,WhyML}; only for methods declared within the same scope as the invariant's declaration, but visible outside~\cite{Ada}; or for such methods as well as all calls that are within the scope of the invariant's declaration, but are to methods outside~\cite{Spark}.}
-\item \IO{The same as above, but an invariant may be declared as ``strong'', requiring that it must hold for every variable/paramater at every step of execution (a ``sequence point")~\cite{ACSL}.}
+\item \IO[31.1]{Upon calling a method\footnote{\IO[31.2]{or function/subprogram}}, the invariant of each parameter (and part/field of a parameter) must be shown to hold;
+upon returning from a method, the invariant of each parameter (and part) must still hold, and the invariant of the return value (and part) must hold~\cite{ACSL,WhyML}. As a relaxation, one approach only requires such invariants to hold if the method is declared within the scope of the invariant's declaration, but visible outside of it~\cite{Ada}. To enable encapsulation of invariants, for any method call located within the scope of an invariant, but calling a method outside this scope, the invariants of each of the call's arguments (and parts thereof) must be shown to hold~\cite{Spark}.}
+
+\item \IO{The same as above, but an invariant may optionally be declared `strong', requiring that it must hold for every variable/paramater at every well-defined step of execution (a `sequence point')~\cite{ACSL}.}
 
 %\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
 %constantly maintained when the object is \textit{closed};

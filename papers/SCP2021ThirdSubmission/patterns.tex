@@ -264,7 +264,7 @@ class Graph{
   Graph(capsule Nodes nodes){..}
   read method read Nodes getNodes(){ return this.nodes; }
   <T> mut method read T transform(capsule Transform<T> t){
-    mut Nodes ns=this.nodes;//rep mutator with a single use of 'this'
+    mut Nodes ns=this.nodes;//rep mutator with a single use of `this'
     return t.apply(ns);//single call of the capsule lambda
   }
   read method Bool invariant(){
@@ -317,7 +317,7 @@ read method Void connectWith(read Node other,mut Graph g){
 }
 capsule method read MyNode addToGraph(mut Graph g){
 	return g.transform(ns->{
-	mut MyNode n1=this;//single usage of capsule 'this'
+	mut MyNode n1=this;//single use of capsule `this'
 	ns.add(n1);
 	});
 }

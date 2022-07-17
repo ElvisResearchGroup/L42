@@ -59,7 +59,7 @@ In order to perform this case study we had to first implement a simple GUI Libra
 
 \subheading{The Invariant}
 \Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch(e)@ method (which is a rep mutator). There are no other checks inserted since we never do a direct field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:\footnote{
-	\IO[22]{We could make the code slightly more efficient by not comparing each pair of widgets twice. However, code efficiency is not the priority here.}
+\IO[22]{}We could make the code slightly more efficient by not comparing each pair of widgets twice. However, code efficiency is not the priority here.
 }
 \begin{lstlisting}
 read method Bool invariant() {
