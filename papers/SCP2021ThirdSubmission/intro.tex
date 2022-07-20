@@ -8,7 +8,7 @@ They can be presented as documentation, checked as part of static verification, 
 In our system, a class specifies its invariant by defining a method called \Q@invariant()@
 that returns a Boolean.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
-In a purely functional setting, \IO[12]{once the programmer has written the invariant code itself,} sound runtime checking is \IO[21]{easy}: the runtime simply needs to check the invariant each time a value/object is created (or in the case of refinement types, converted to such a type).
+In a purely functional setting, the programmer only needs to write the code for the invariant check itself, then the runtime simply needs to call this code each time a value/object is created (or in the case of refinement types, converted to such a type).
 
 In an impure setting, like most OO languages, 
 operations on data structures are often implemented as complex sequences of mutations,
@@ -84,7 +84,7 @@ Also note that many VMs and compilers can optimize away wrapper objects in many 
 This is even more applicable in languages with inlined structs, like C++ or C\#.
 }
 
-With appropriate type annotations (\IO[13]{namely, reference capabilities on fields, method receivers, paramaters, and return types}), the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}\footnote{\IO[24]{Note that our system does not require that the \Q!min! and \Q!max! fields use primitive immutable number types, in fact, they could store complex (and possibly cyclic) mutable data; our system will ensure that this data can only be mutated within the \Q!Range.set! method (or other similar methods within the enclosing \Q!Range!). We would like to keep the language as simple as possible, and so we have opted to add simple restrictions over pre-existing type systems, instead of trying to find an alternative design that doesn't require such a box pattern.}}s
+With appropriate type annotations (\IO[13]{namely, reference capabilities on fields, method receivers, paramaters, and return types}), the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}\footnote{\IO[24]{Note that our system does not require that the \Q!min! and \Q!max! fields use primitive immutable number types, in fact, they could store complex (and possibly cyclic) mutable data; our system will ensure that this data can only be mutated within the \Q!Range.set! method (or other similar methods within the enclosing \Q!Range!). We would like to keep the language as minimal as possible, and so we have opted to add simple restrictions over pre-existing type systems.}}
 
 %In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
 %No, I looked again at this text, it is just broken.
@@ -140,7 +140,7 @@ The remainder of this paper proceeds as follows:
 	\item \autoref{s:protocol} fully explains our novel invariant protocol, and our novel field kind for mutable data.
 	\item \autoref{s:immutable} demonstrates why the soundness of our protocol depends on the properties of the type system of L42, and similar languages.
 	\item \autoref{s:formalism} formalises our runtime invariant checking, and what it means to soundly enforce our invariant protocol.
-	\item \autoref{s:case-studyAll} contains many case studies, showing that our protocol is \IO[28.2]{}more succinct than the pack/unpack approach and much more efficient then the visible state semantic.
+	\item \autoref{s:case-studyAll} contains many case studies, showing that our protocol is more succinct than the pack/unpack approach and much more efficient then the visible state semantic.
 	\item \autoref{s:patterns} shows how our approach does not hamper expressiveness, by showing programming patterns that can be used to perform batch mutation operations with a single invariant check, and how the state of a `broken' object can be safely passed around.
 	\item \autoref{s:L42} summarises how we have implemented our protocol in L42.
 	\item \autoref{s:related} presents related work, and \autoref{s:conclusion} concludes.

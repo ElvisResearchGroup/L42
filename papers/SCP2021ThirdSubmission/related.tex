@@ -30,9 +30,9 @@ ShippingList = Data:{
 }
 \end{lstlisting}
 In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. 
-In particular, \IO[27]{the current concrete L42 syntax uses the \Q@capsule@ keyword to ensure various properties of the field.}
+In particular, \IO[27.1]{the current concrete L42 syntax uses the \Q@capsule@ keyword to ensure various properties of a field.}
 The language relies on the presence of annotations or other specific methods
-to decide what restrictions to apply. In this case, the presence of the \Q!@Cache.Now! annotation clarifies that the field \Q@capsule Items items@
+to decide what restrictions to apply \IO[27.2]{and properties to ensure}. In this case, the presence of the \Q!@Cache.Now! annotation clarifies that the field \Q@capsule Items items@
 is actually a \Q@rep@ field as discussed in our work.
 The \Q!@Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@Cache.Clear! method is called.
 
@@ -104,10 +104,10 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 
 \item The invariant of an object is assumed only when a contract requires the object be `packed'. It is checked after an explicit `pack' operation, and objects can later be `unpacked'~\cite{DBLP:journals/jot/BarnettDFLS04}.
 
-\item \IO[31.1]{Upon calling a method\footnote{\IO[31.2]{or function/subprogram}}, the invariant of each parameter (and part/field of a parameter) must be shown to hold;
-upon returning from a method, the invariant of each parameter (and part) must still hold, and the invariant of the return value (and part) must hold~\cite{ACSL,WhyML}. As a relaxation, one approach only requires such invariants to hold if the method is declared within the scope of the invariant's declaration, but visible outside of it~\cite{Ada}. To enable encapsulation of invariants, for any method call located within the scope of an invariant, but calling a method outside this scope, the invariants of each of the call's arguments (and parts thereof) must be shown to hold~\cite{Spark}.}
+\item \IO[31.1]{Upon calling a method (a.k.a a function/subprogram), the invariant of each parameter (and part/field of a parameter) must be shown to hold;
+upon returning from a method, the invariant of each parameter (and their parts) must still hold, and the invariant of the return value (and their parts) must hold~\cite{ACSL,WhyML}. As a relaxation, one approach only requires such invariants to hold if the method is declared within the scope of the invariant's declaration, but visible outside of it~\cite{Ada}. To enable encapsulation of invariants, for any method call located within the scope of an invariant, but calling a method outside this scope, the invariants of each of the call's arguments (and their parts) must be shown to hold~\cite{Spark}.}
 
-\item \IO{The same as above, but an invariant may optionally be declared `strong', requiring that it must hold for every variable/paramater at every well-defined step of execution (a `sequence point')~\cite{ACSL}.}
+\item \IO{The same as above, but an invariant may optionally be declared `strong', requiring that it must hold for every variable/paramater (and their parts) at every well-defined step of execution (a `sequence point')~\cite{ACSL}.}
 
 %\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
 %constantly maintained when the object is \textit{closed};

@@ -92,7 +92,7 @@ sense to me now.
 - 302: When you talk about pure methods not mutating existing
   memory, maybe clarify that you mean heap memory (writing to
   local variables on the stack is fine).
-// RESPONSE: writing to *existing* stack locations (e.g. the variables of a calling method) is not ok. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called). So our statement applies to both heap and stack memory.
+// RESPONSE: Our statement applies to both heap and stack memory. Writing to *existing* stack locations (e.g. the variables of a calling method) is not ok. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called).
 
 - 344: It was not immediately obvious to me why a rep mutator must
   "have no mut or read parameters". After some thinking it made
@@ -135,13 +135,13 @@ sense to me now.
 ** Section 6
 - 815: Consider replacing "many" by a number (or weaken to
   "several").
-// DONE (used "several") // TODO should we count them?
+// DONE (used "several")
 
 ** Section 7
 - I find it interesting how the transform pattern basically solves
   the same problem as iterators in ownership systems; it is easier
   to move computations to the data than the other way around.
-// TODO: mention this in the paper or just ignore?
+// Thank you, we've mentioned this in the paper, see ^32 // TODO: I'm worried what I said was wrong!
 
 ** Section 8
 - "In the last version of L42 [...]". What does this mean? Do you
@@ -156,14 +156,15 @@ sense to me now.
   that is not passed any external owners will dominate its whole
   reachable object graph (with the possible exception of the
   top-level `World` owner, if that exists).
-// TODO: help here please?
+// TODO: read up on this properly when I'm not exhausted
+
 - 1575: This whole paragraph makes some vague claims about the
   field of "static verification" and does not back it up with any
   citations.
-  // TODO: help here please?
+// TODO: read up on this properly when I'm not exhausted// Cite hoare, dafny, spec#
 - 1613: "difficoult" --> "difficult"
-- 1651: Unless you have a strict page limit, I would avoid
 // DONE
+- 1651: Unless you have a strict page limit, I would avoid
   introducing the abbreviation "RV". As far as I can tell you only
   use it twice.
 // DONE
@@ -213,7 +214,7 @@ sense to me now.
   tracking complicates the story, it seems like allowing moving
   capsules between objects would make your verification story
   stronger, especially in a concurrent setting.
-// TODO: see ^25
+// DONE: we pointed this out earlier ^25
 - 3226: "a 42 user" --> "an L42 user"
 // N/A: appendix has been deleted
 - 3232: "parallelism in 42 is unobservable" --> "parallelism in   L42
@@ -313,7 +314,7 @@ alternative would be to commit to the type system of Appendix B, but I
 think that would require more substantial rewriting to accomplish, and
 would actually make the paper weaker by de-emphasizing the abstract
 requirements for the type system that I like in this paper.)
-// TODO: Use this term? I can't work out where we should use it though
+// NO: I can't work out where we should use it though
 Miscellaneous comments:
 
 - p3 (paper page number, not pdf page number), line 73: A one-line
@@ -343,7 +344,7 @@ wording suggests work on L42 has stopped.
 restrictions over fields" This is hard to interpret from seeing just a
 single use, which inherently doesn't demonstrate "various"
 restrictions.
-// DONE: Todo Marco, check this? see ^27
+// DONE: see ^32.1 and ^32.2
 
 
 Reviewer #3: It is my second review of this paper. I would like  to
@@ -373,7 +374,7 @@ functional setting than in an impure one.
 [1] Jean-Christophe Filliâtre and Clément Pascutto. Ortac: Runtime
 Assertion Checking for OCaml. In International Conference on Runtime
 Verification, 2021.
-// DONE see ^12 // TODO: be more detailed?
+// DONE see ^12
 
 ** New typos
 
@@ -430,7 +431,22 @@ should explain why you use these new metrics in your context, and be
 more cautious about your conclusion that relies on them (except if you
 have a very strong convincing statement about why your metrics is
 better that the number of annotations).
-// TODO: umm, we could count each "element" of an annotation, e.g. each method-call and paramater-name in it? I completely disagree with the reviewer here, maybe we should find some other papers that use tokens or something else? It does make sense to compare only the number of annotations when they are similar in complexity, but that is not the case here. // I don't think we've said anything bad, see ^28.1, ^28.2, ^28.3, and ^28.4; I've made our counting of both the number of annotations and tokens consistent, see ^29.1, ^29.2, and ^29.3
+// RESPONSE: we have updated our conclusion to report both the difference in annotations, and the total difference in tokens ^29.1, ^29.2, and ^29.3.
+// The reason why we use 'tokens' and not just number of 'annotations', is that the latter is actually more arbitrary.
+// For example in our Spec# code we have annotated a method with two annotations:
+// 	   ensures Owner.Same(Owner.ElementProxy(list), list);
+//     ensures result == list;
+// Whereas we could have equivalently written
+//     ensures Owner.Same(Owner.ElementProxy(list), list) && result == list;
+// Which would be 1 annotation.
+// Whereas 1 annotation in our approach is always just a single concept: a keyword such as mut, or rep.
+// The point here is that in Spec# the annotations are often arbitrary Spec# expressions (which is roughly a superset of C#, a general-purpose language)
+// such expressions could be arbitrarily complex and represent many different things.
+// Some of the token counts here depend on uninteresting language design decision for example using `Owner.Same` instead of say calling the method `Owner_Same`, which would be a simple token.
+// But other complexity, such as having to specify that the owners must be the same in the first place, and having to specify that you want to talk about  the `ElementProxy` of the list (and not just the list itself) are fundamental requirements of Spec#'s ownership disciple.
+// So though the token count is not a perfect metric, we believe it compliments the count of the number of annotations as it helps give an idea of this extra complexity that programmers would need to consider.
+// As for the character counts, we agree this is not very relevant as it depends heavily on uninteresting design decisions like whitespace sensitivity or how much to abbreviate English words.
+// Please marco, can we just delete the character count? As the reviewer doesn't like those either, and I can't really defend them.
 
 - p30, l18: a study [19] discovered that developers expect
 specification languages to follow the semantics of the underlying
@@ -465,11 +481,11 @@ numerical types. Therefore, in your paper, you can talk about the
 particular cases of short-circuits and exceptions (for which the
 developers indeed expect the same semantics), but not about the
 general case because there is at least one counter-example.
-// DONE: see ^30 // TODO: The very next paragraph of the paper says exactly that:
+// DONE: we have weakened our claim in paper ^30, we were confused by the paragraph in [69], immediately following the one you quoted above:
 //	"The purpose of C.3 was to determine, from the respondent’s point of view, if there should be any difference in
 //	the semantic interpretation of a Boolean expression when used as an assertion vs. outside the context of an assertion. 
 //	Seventy percent (70%) of respondents answered that //expressions should be given the same interpretation."
-// So I still think we are correct, but I've made our statement weaker to avoid more argument
+// Which lead us to our more general claim.
 
 ** Comments from review 1 that remains unanswered (as far as I have seen):
 (the page and line numbers are not the same in the current version of the paper)
@@ -480,7 +496,7 @@ visible state semantics and Spec#, it only refers to non-recent papers
 before 2013). For instance, the authors do not compare their notion of
 invariants to invariants of other (non-OO) specification language such
 as ACSL, Spark2014 and WhyML.
-// DONE: See ^31.1, ^31.2, and ^31.3 // TODO: this was hard to write as such languages use very different terminology, for e.g. "ada" doesn't use "public" or "method", but uses "visible outside" and "subprogram".
+// DONE: See ^31.1, ^31.2, and ^31.3
 
 - p2, l21: the execution of this.min = min will --> use "would" (this
 line of code is actually never executed)
@@ -493,10 +509,10 @@ to see)
 - p2, l46: With appropriate type annotations --> which ones?
 // DONE see ^13
 - p4, l45-51: examples for mut and capsule variables would be welcome
-// DONE see ^14, we already have an example for mut variables above. // TODO: Updating capsule local variables in L42 is pointless right?
+// DONE see ^14, we already have an example for mut variables above.
 
 - p5, l29: what does "opt-in" mean?
-// DONE see ^15 // TODO: do they literally not know what that English term means? Or do they not understand it's use in the given context? Because we literally explain what we mean immediately afterwards.
+// DONE we decided not to use that term, and clarified what we meant, see ^15
 
 - p5, Exceptions: an example would be welcome
 // DONE see ^16
@@ -515,7 +531,7 @@ core paper.
 
 - p13, l27: an example for M(l;e1;e2) would be welcome, as well as
 another one for the strong exception safety remark.
-// DONE see ^20 and ^21 // TODO: random question, would it be ok to throw a capsule unchecked-exception object? I know you say it must be "imm", but why?
+// DONE see ^20 and ^21
 
 - p13, l49: "For example, in L42 we implement [...]" --> do not mix
 the formal presentation with implementation details. Instead, you

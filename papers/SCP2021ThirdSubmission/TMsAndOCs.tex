@@ -94,15 +94,11 @@ Another common misconception is the belief that \Q!capsule! fields and \Q!capsul
 How \Q!capsule! local variables are handled differs widely in the literature:
 
 %\noindent
-In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be read only once (similar to linear and affine types~\cite{boyland2001alias}). 
-Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however in those cases the result will not be a \Q!capsule! reference but another kind of reference, that can be promoted to \Q!capsule!, but only under certain conditions. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
-%Later on, we discuss \Q!capsule! fields, which behave differently to \Q@capsule@ local variables.
-
-\IO[14]{For example, following L42's approach:}\SS
+In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be read only once (similar to linear and affine types~\cite{boyland2001alias}). \IO[14]{For example:}\SS
 \begin{lstlisting}
-method mut Point foo(mut Point that) {
-	mp.x = mp.x + 3; // mp is mut, so it can be used twice
-	mp.y = mp.y - 3;
+method mut Point foo(mut Point mp) {
+	mp.x += 3; // mp is mut, so it can be used twice
+	mp.y -= 3;
 }
 \end{lstlisting}
 \begin{lstlisting}
@@ -111,6 +107,10 @@ capsule Point cp = new Point(1, 2);
 capsule Point cp2 = foo(cp); // ok, since foo(cp) only uses capsule variables
 foo(cp2); // ok, `cp2' is used only once
 \end{lstlisting}
+
+Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however in those cases the result will not be a \Q!capsule! reference but another kind of reference, that can be promoted to \Q!capsule!, but only under certain conditions. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
+%Later on, we discuss \Q!capsule! fields, which behave differently to \Q@capsule@ local variables.
+
 
 Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature, however they must always be initialised and updated with \Q!capsule! references. In order for access to a \Q!capsule! field to safely produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
@@ -174,7 +174,7 @@ L42 also allows such expression to use \Q!read! free variables as well as \Q!mut
 
 This is the main improvement on the flexibility of reference capabilities in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
-these reference capabilities are opt-in: \IO[15]{a programmer can choose to use them only when desired,} for example they can write many classes
+\IO[15]{programmers can put less thought into their use of reference capabilities: a programmer can choose to use more restrictive them only when desired,} for example they can write many classes
 simply using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
 be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@capsule@ reference.
@@ -229,36 +229,37 @@ Strong exception safety allows us to throw invariant failures as unchecked excep
 \IO[16]{For example:}\SS
 \begin{lstlisting}
 // unchecked and checked exception types
-class UncheckedP extends RuntimeException { mut Point data; }
-class CheckedP extends Exception { mut Point data; }
+class MyUnchecked extends RuntimeException { }
+class MyChecked extends Exception { }
 
 class Point {
 	imm Int x; imm Int y;
-	read method imm Point clone() { // Creates an immutable copy of this
-		return new Point(this.x, this.y); }
-	mut method Void add(imm Int d) throws CheckedP {
-		this.x = this.x + d; this.y = this.y + d;
+	mut method Void add(imm Int d) throws MyChecked {
+		this.x += d; this.y += d;
 		if (d < 0) {
-			// throw new UncheckedP(this); // Type error: cannot throw mut
-			throw new UncheckedP(this.clone()); // Ok, exception is promoted to imm
+			throw new MyUnchecked(); // Ok, can always throw an unchecked exception
 		} else if (d == 0) {
-			throw new CheckedP(this); // Ok: `CheckedP' is in the `throws' list
+			throw new MyChecked(); // Ok: `MyChecked' is in the `throws' list
 	}}}
 
 try {
 	mut Point p = new Point(1, 2)
 	try {
-		p.add(someNumber); // could throw a CheckedP, or any kind of unchecked exception
-		p = new Point(...);
-	} catch (CheckedP e) {
+		p.add(someNumber); // could throw a MyChecked, or any kind of unchecked exception
+		if (...) {
+			p = new Point(...); } // update a local variable
+	} catch (MyChecked e) {
 		... // Ok
-	} catch (UncheckedP e) // Type error: body of try needs `p' to be non-final and mut
+	}
+	// Adding the following would be a type error, as the body of the try needs `p' to be non-final and mut
+	// catch (MyUnchecked e) { ... }
 
 	try {
-		if (p.x != p.y) { throw new UncheckedP(p.clone()); }
-	} catch (UncheckedP e) { // Ok: body can be typed where `p' is seen as `read'
-		.. } // we can be sure the value of `p' has not changed
-} catch (UncheckedP e) {
+		if (p.x != p.y) { throw new MyUnchecked(); }
+	} catch (MyUnchecked e) { // Ok: body can be typed where `p' is seen as final and read
+		.. // we can be sure the value of `p' has not changed
+	}
+} catch (MyUnchecked e) {
 	... } // ok, `p' is guaranteed to be unreachable
 \end{lstlisting}
 

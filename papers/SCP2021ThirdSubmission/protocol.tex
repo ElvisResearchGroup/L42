@@ -179,23 +179,23 @@ That is, rep mutators pretend
 \IO[17]{The following example illustrates these properties of rep mutators:}
 \begin{lstlisting}
 class Foo {
-	imm Int n; rep Point p;
+	rep Point p;
 
 	read method Bool invariant() {
-		return this.p.x + this.p.y < this.n;
+		return this.p.x < this.p.y;
 	}
-	mut method read Point bar() {
-		return new Point(this.p.x, this.p.y); // ok, not a rep mutator
+	read method read Point get_p() {
+		return this.p; // ok, not a rep mutator
 	}
-	mut method read Point baz(capsule Qux q) {
+	mut method read Point baz(capsule Qux q) { // a rep mutator
 		mut Qux my_q = q; // Ok, q is used exactly once
 		mut Point my_p = this.p; // ok, single use of `this'
 		my_p.x = my_q.compute_x(my_p); // may break the invariant
-		// it is ok if th invariant doesn't hold, as `this' cannot be reachable
+		// it is ok if the invariant doesn't hold, as `this' cannot be reachable
 		// from `my_q' or `my_p', this holds since `q' is capsule, and so cannot
 		// alias `this'; if `q' were instead mut or read, this would not be guaranteed.
 		my_p.y = my_q.compute_y(my_p);
-		return my_p; // invariant check here
+		return my_p; // invariant check here; type checks as return type is read
 	}
 }
 \end{lstlisting}
