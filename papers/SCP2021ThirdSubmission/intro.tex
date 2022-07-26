@@ -8,7 +8,7 @@ They can be presented as documentation, checked as part of static verification, 
 In our system, a class specifies its invariant by defining a method called \Q@invariant()@
 that returns a Boolean.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
-In a purely functional setting, the programmer only needs to write the code for the invariant check itself, then the runtime simply needs to call this code each time a value/object is created (or in the case of refinement types, converted to such a type).
+In a purely functional setting, \IO[12]{the programmer only needs to write the code for the invariant check itself, then the runtime needs to call this code} each time a value/object is created (or in the case of refinement types, converted to such a type).
 
 In an impure setting, like most OO languages, 
 operations on data structures are often implemented as complex sequences of mutations,

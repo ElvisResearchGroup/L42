@@ -184,7 +184,7 @@ class Foo {
 	read method Bool invariant() {
 		return this.p.x < this.p.y;
 	}
-	read method read Point get_p() {
+	read method read Point getP() {
 		return this.p; // ok, not a rep mutator
 	}
 	mut method read Point baz(capsule Qux q) { // a rep mutator

@@ -92,7 +92,7 @@ sense to me now.
 - 302: When you talk about pure methods not mutating existing
   memory, maybe clarify that you mean heap memory (writing to
   local variables on the stack is fine).
-// RESPONSE: Our statement applies to both heap and stack memory. Writing to *existing* stack locations (e.g. the variables of a calling method) is not ok. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called).
+// RESPONSE: Our statement applies to both heap and stack memory. Writing to *existing* stack locations (e.g. the variables of a calling method) would make the method impure. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called).
 
 - 344: It was not immediately obvious to me why a rep mutator must
   "have no mut or read parameters". After some thinking it made
@@ -156,7 +156,30 @@ sense to me now.
   that is not passed any external owners will dominate its whole
   reachable object graph (with the possible exception of the
   top-level `World` owner, if that exists).
-// TODO: read up on this properly when I'm not exhausted
+// There are multiple forms of ownership in the literature, and we have not examined all of them, but in the seminal owners-as-dominators paper
+// "Ownership types for flexible alias protection" by David Clarke, John Pottern, and James Noble (https://dl.acm.org/doi/10.1145/286942.286947),
+// our understanding, the restriction is only that "rep" data cannot be accessed outside of the owning object's methods ("rep" data being data owned by "this"). 
+// It does not restrict the access of data owned by someone else, provided you can determine it's type.
+// For example, we believe the following would be valid:
+// class Baz {
+//     ... 
+//    norep Boolean something() { ... }
+// }
+// class Foo<m> {
+//     m Baz x;
+//     norep Baz y;
+// }
+// class Bar<m> {
+//     rep Foo<m> f;
+//     norep Boolean invariant() {
+//         this.f.x.something() && this.f.y.something(); }
+// }
+// The problem with the above is that 'this.f.x' and 'this.f.y' are NOT owned by the 'this' in the invariant method,
+// in particular, their could be aliases to these objects elsewhere, and thus be mutated (changing the result of something),
+// in a context that is unaware of Bar's invariant, thus breaking it without performing a runtime check.
+// We do not see an obvious restriction we could place on the invariant method that would fix this, especially if 'Foo' where an interface,
+// and so the ownership statuses of the objects reacheable from it would not be statically known.
+// The ownership type system does prevent other objects from accessing things owned by the 'Bar': i.e. other objects cannot read or write directly to the object in the 'f' field of a Bar, except by going through Bar itself. However it does not prevent the invariant method from accessing things that are not owned by the Bar: either because the are globally owned (as in norep), or because they are owned by a paramater to the Bar class ('m').
 
 - 1575: This whole paragraph makes some vague claims about the
   field of "static verification" and does not back it up with any
@@ -431,22 +454,30 @@ should explain why you use these new metrics in your context, and be
 more cautious about your conclusion that relies on them (except if you
 have a very strong convincing statement about why your metrics is
 better that the number of annotations).
-// RESPONSE: we have updated our conclusion to report both the difference in annotations, and the total difference in tokens ^29.1, ^29.2, and ^29.3.
-// The reason why we use 'tokens' and not just number of 'annotations', is that the latter is actually more arbitrary.
+
+// RESPONSE: we have updated our conclusion to report both the difference in annotations, and the total difference in tokens ^29.1, ^29.2, and
+^29.3.
+// One of the reasons why we also report 'tokens' and not just the number of 'annotations', is that in Spec# the number of annotations
+ depends of the programmer's style.
 // For example in our Spec# code we have annotated a method with two annotations:
-// 	   ensures Owner.Same(Owner.ElementProxy(list), list);
-//     ensures result == list;
+//   ensures Owner.Same(Owner.ElementProxy(list), list);
+//   ensures result == list;
 // Whereas we could have equivalently written
 //     ensures Owner.Same(Owner.ElementProxy(list), list) && result == list;
-// Which would be 1 annotation.
-// Whereas 1 annotation in our approach is always just a single concept: a keyword such as mut, or rep.
-// The point here is that in Spec# the annotations are often arbitrary Spec# expressions (which is roughly a superset of C#, a general-purpose language)
-// such expressions could be arbitrarily complex and represent many different things.
-// Some of the token counts here depend on uninteresting language design decision for example using `Owner.Same` instead of say calling the method `Owner_Same`, which would be a simple token.
-// But other complexity, such as having to specify that the owners must be the same in the first place, and having to specify that you want to talk about  the `ElementProxy` of the list (and not just the list itself) are fundamental requirements of Spec#'s ownership disciple.
+// Which would be 1 annotation (but both options have the same number of tokens).
+// On the other hand, 1 annotation in our approach is always just a single concept: a keyword such as mut, or rep.
+// That is, many Spec# annotations can be arbitrarily complex Spec# expressions (which is roughly a superset of C#, a general-purpose language)
+//
+// The exact token count depends on uninteresting language design //decisions, for example using `Owner.Same` instead of `Owner_Same`,
+ which would be a simple token.
+// However, other complexity, such as having to specify that the owners
+ must be the same in the first place, and having to specify that you
+ want to talk about  the `ElementProxy` of the list (and not just the list itself) are fundamental requirements of Spec#'s ownership discipline.
 // So though the token count is not a perfect metric, we believe it compliments the count of the number of annotations as it helps give an idea of this extra complexity that programmers would need to consider.
-// As for the character counts, we agree this is not very relevant as it depends heavily on uninteresting design decisions like whitespace sensitivity or how much to abbreviate English words.
-// Please marco, can we just delete the character count? As the reviewer doesn't like those either, and I can't really defend them.
+//
+// The exact character count is the least important of the three.
+// It depends heavily on uninteresting design decisions like whitespace sensitivity or how much to abbreviate English words.
+// We could remove character counts, but we think it sill gives a nice and intuitive feel for the diffence.
 
 - p30, l18: a study [19] discovered that developers expect
 specification languages to follow the semantics of the underlying

@@ -174,7 +174,7 @@ L42 also allows such expression to use \Q!read! free variables as well as \Q!mut
 
 This is the main improvement on the flexibility of reference capabilities in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
-\IO[15]{programmers can put less thought into their use of reference capabilities: a programmer can choose to use more restrictive them only when desired,} for example they can write many classes
+\IO[15]{programmers can} write many classes
 simply using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
 be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@capsule@ reference.
@@ -253,11 +253,13 @@ try {
 	}
 	// Adding the following would be a type error, as the body of the try needs `p' to be non-final and mut
 	// catch (MyUnchecked e) { ... }
-
+	...
 	try {
 		if (p.x != p.y) { throw new MyUnchecked(); }
-	} catch (MyUnchecked e) { // Ok: body can be typed where `p' is seen as final and read
-		.. // we can be sure the value of `p' has not changed
+	} catch (MyUnchecked e) { // Ok: try body can be typed where `p' is seen as final and read
+		// we can be sure the value of `p' has not changed
+		// but we can change it here
+		p = new Point(...)
 	}
 } catch (MyUnchecked e) {
 	... } // ok, `p' is guaranteed to be unreachable
