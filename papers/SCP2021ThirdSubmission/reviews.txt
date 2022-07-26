@@ -1,5 +1,9 @@
 // TODO run spell check once we've addressed all the reviewers comments!
 
+// INTRO: We have made all the spelling/grammar changes you have suggested.
+// All other changes we have highlighted in blue in the pdf, which we have
+// placed markers, of form ^<number>, which we refer to in our responses bellow.
+
 The reviewers agree that the paper has been improved. Reviewer 1 and 2
 are quite happy, but reviewer 3 still has major concerns, and feels
 that some of his comments have been addressed in an unsatisfactory
@@ -92,7 +96,7 @@ sense to me now.
 - 302: When you talk about pure methods not mutating existing
   memory, maybe clarify that you mean heap memory (writing to
   local variables on the stack is fine).
-// RESPONSE: Our statement applies to both heap and stack memory. Writing to *existing* stack locations (e.g. the variables of a calling method) would make the method impure. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called).
+// RESPONSE: Our statement applies to both heap and stack memory. Writing to *existing* stack locations (e.g. languages where you can take references/pointers local variables, or those with out paramaters) would make the method impure. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called).
 
 - 344: It was not immediately obvious to me why a rep mutator must
   "have no mut or read parameters". After some thinking it made
@@ -141,7 +145,7 @@ sense to me now.
 - I find it interesting how the transform pattern basically solves
   the same problem as iterators in ownership systems; it is easier
   to move computations to the data than the other way around.
-// Thank you, we've mentioned this in the paper, see ^32 // TODO: I'm worried what I said was wrong!
+// Thank you, we've mentioned this in the paper, see ^32
 
 ** Section 8
 - "In the last version of L42 [...]". What does this mean? Do you
@@ -156,13 +160,13 @@ sense to me now.
   that is not passed any external owners will dominate its whole
   reachable object graph (with the possible exception of the
   top-level `World` owner, if that exists).
-// There are multiple forms of ownership in the literature, and we have not examined all of them, but in the seminal owners-as-dominators paper
-// "Ownership types for flexible alias protection" by David Clarke, John Pottern, and James Noble (https://dl.acm.org/doi/10.1145/286942.286947),
-// our understanding, the restriction is only that "rep" data cannot be accessed outside of the owning object's methods ("rep" data being data owned by "this"). 
+// There are multiple forms of ownership in the literature, and we have not examined all of them. We have consider the seminal owners-as-dominators paper
+// "Ownership types for flexible alias protection" by David Clarke, John Pottern, and James Noble (https://dl.acm.org/doi/10.1145/286942.286947).
+// In our understanding, the restriction is only that "rep" data cannot be accessed outside of the owning object's methods ("rep" data being data owned by "this").
 // It does not restrict the access of data owned by someone else, provided you can determine it's type.
 // For example, we believe the following would be valid:
 // class Baz {
-//     ... 
+//     ...
 //    norep Boolean something() { ... }
 // }
 // class Foo<m> {
@@ -177,14 +181,12 @@ sense to me now.
 // The problem with the above is that 'this.f.x' and 'this.f.y' are NOT owned by the 'this' in the invariant method,
 // in particular, their could be aliases to these objects elsewhere, and thus be mutated (changing the result of something),
 // in a context that is unaware of Bar's invariant, thus breaking it without performing a runtime check.
-// We do not see an obvious restriction we could place on the invariant method that would fix this, especially if 'Foo' where an interface,
-// and so the ownership statuses of the objects reacheable from it would not be statically known.
 // The ownership type system does prevent other objects from accessing things owned by the 'Bar': i.e. other objects cannot read or write directly to the object in the 'f' field of a Bar, except by going through Bar itself. However it does not prevent the invariant method from accessing things that are not owned by the Bar: either because the are globally owned (as in norep), or because they are owned by a paramater to the Bar class ('m').
 
 - 1575: This whole paragraph makes some vague claims about the
   field of "static verification" and does not back it up with any
   citations.
-// TODO: read up on this properly when I'm not exhausted// Cite hoare, dafny, spec#
+// TODO: Cite hoare, dafny, spec#
 - 1613: "difficoult" --> "difficult"
 // DONE
 - 1651: Unless you have a strict page limit, I would avoid
@@ -514,7 +516,7 @@ developers indeed expect the same semantics), but not about the
 general case because there is at least one counter-example.
 // DONE: we have weakened our claim in paper ^30, we were confused by the paragraph in [69], immediately following the one you quoted above:
 //	"The purpose of C.3 was to determine, from the respondent’s point of view, if there should be any difference in
-//	the semantic interpretation of a Boolean expression when used as an assertion vs. outside the context of an assertion. 
+//	the semantic interpretation of a Boolean expression when used as an assertion vs. outside the context of an assertion.
 //	Seventy percent (70%) of respondents answered that //expressions should be given the same interpretation."
 // Which lead us to our more general claim.
 
