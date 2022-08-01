@@ -1,3 +1,5 @@
+% !TEX root = SCP.tex
+
 \vspace{-1ex}
 \section[Integration in L42]{Integration in L42}
 \label{s:L42}
@@ -140,7 +142,7 @@ Some approaches like JML suggest verifying a simpler approach (that method calls
 
 \subheading{Security and Scalability}
 Our approach allows verifying an object's invariant independently of the execution context.
-This is in contrast to the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
+This is in contrast to the main strategy of static verification~\cite{10.1145/363235.363259,DBLP:conf/sigada/Leino12,Barnett:2004:SPS:2131546.2131549}: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
 Thus, static verification proceeds like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
 %This is less problematic with a type system, since its properties are more coarse grained, simpler and easier to check.
  Static verification has more flexible and fine-grained annotations and often relies on a fragile theorem prover as a backend.
