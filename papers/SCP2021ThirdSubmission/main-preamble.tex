@@ -302,8 +302,13 @@
 
 \usepackage{marginnote}
 \usepackage[T1]{fontenc}% needed so ^ outputs as U+005E and not U+02C6
+
 \renewcommand{\IO}[2][\@nil]{\NoteColour{Blue}{%
 	\def\tmp{#1}\ifx\tmp\@nnil\else\marginnote{\footnotesize{\char`\^#1}}\fi%
 	#2}}
+
+% to remove changes annotations, uncomment this line:
+%\renewcommand{\IO}[2][\@nil]{{\def\tmp{#1}#2}}
+
 \usepackage{nicefrac}
 \makeatother

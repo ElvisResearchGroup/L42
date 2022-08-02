@@ -253,12 +253,14 @@ try {
 	} catch (MyChecked e) {
 		... // Ok
 	}
-	// Adding the following would be a type error, as the body of the try needs `p' to be non-final and mut
+	// Adding the following would be a type error,
+	// as the body of the try needs `p' to be non-final and mut:
 	// catch (MyUnchecked e) { ... }
 	...
 	try {
 		if (p.x != p.y) { throw new MyUnchecked(); }
-	} catch (MyUnchecked e) { // Ok: try body can be typed where `p' is seen as final and read
+	} catch (MyUnchecked e) { // Ok:
+	    // try body can be typed where `p' is seen as final and read
 		// we can be sure the value of `p' has not changed
 		// but we can change it here
 		p = new Point(...)

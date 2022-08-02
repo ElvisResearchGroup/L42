@@ -9,6 +9,7 @@ manner. I would like to ask you address the remaining comments. If you
 feel that certain comments should not be addressed in the paper, I
 would like to see a clear explanation of why you decided to do so.
 
+
 Reviewer #1: * Comments after revision
 I think this revised version does a good job of addressing my
 previous critique without compromising the strong points. The
@@ -34,10 +35,12 @@ update) must be marked with `@Cache.Clear` [...]" makes perfect
 sense to me now.
 // DONE: We've removed appendix C
 
+
 ** Highlights (same comments as last time)
 - "magnitudo" -> "magnitude"
 - "Much less annotation burden" --> "Lighter annotation burden"?
   "Lower annotation burden?"
+
 
 ** Section 1
 - 61: In this example I was thinking that it would be a problem if
@@ -49,6 +52,7 @@ sense to me now.
 // DONE
 - 94: "show" --> "shows"
 // DONE
+
 
 ** Section 2
 - This section is a lot better now!
@@ -93,7 +97,7 @@ sense to me now.
 - 302: When you talk about pure methods not mutating existing
   memory, maybe clarify that you mean heap memory (writing to
   local variables on the stack is fine).
-// RESPONSE: Our statement applies to both heap and stack memory. Writing to *existing* stack locations (e.g. languages where you can take references/pointers local variables, or those with out paramaters) would make the method impure. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called).
+// RESPONSE: Our statement applies to both heap and stack memory. Writing to *existing* stack locations (e.g. languages where you can take references/pointers local variables, or those with out parameters) would make the method impure. Writing to new variables is ok, but then those stack locations will not  be "existing" (i.e. they'd have been pushed/reserved on the stack when the pure method is called).
 
 - 344: It was not immediately obvious to me why a rep mutator must
   "have no mut or read parameters". After some thinking it made
@@ -104,6 +108,7 @@ sense to me now.
 - 350: "than" -> "then"
 // DONE
 
+
 ** Section 4
 - Some of these examples use inheritance, which is a bit strange
   since you ended the previous section explaining how L42 does not
@@ -111,6 +116,7 @@ sense to me now.
 // DONE: see ^6
 - I still like this section very much!
 // Thanks!
+
 
 ** Section 5
 - 537: "generic" --> "generics"
@@ -133,10 +139,13 @@ sense to me now.
 // DONE
 - Figure 2: Consider adding parentheses as suggested for 619.
 // DONE
+
+
 ** Section 6
 - 815: Consider replacing "many" by a number (or weaken to
   "several").
 // DONE (used "several")
+
 
 ** Section 7
 - I find it interesting how the transform pattern basically solves
@@ -144,10 +153,13 @@ sense to me now.
   to move computations to the data than the other way around.
 // Thank you, we've mentioned this in the paper, see ^32
 
+
 ** Section 8
 - "In the last version of L42 [...]". What does this mean? Do you
   mean "the latest"?
 // DONE
+
+
 ** Section 9
 - 1535: "However, ownership does not require the whole reachable
   object graph of an object to be 'owned'. This complicates
@@ -158,8 +170,9 @@ sense to me now.
   reachable object graph (with the possible exception of the
   top-level `World` owner, if that exists).
 // There are multiple forms of ownership in the literature, and we have not examined all of them. We have consider the seminal owners-as-dominators paper
-// "Ownership types for flexible alias protection" by David Clarke, John Pottern, and James Noble (https://dl.acm.org/doi/10.1145/286942.286947).
+// "Ownership types for flexible alias protection" by David Clarke, John Potter, and James Noble (https://dl.acm.org/doi/10.1145/286942.286947).
 // In our understanding, the restriction is only that "rep" data cannot be accessed outside of the owning object's methods ("rep" data being data owned by "this").
+
 // It does not restrict the access of data owned by someone else, provided you can determine it's type.
 // For example, we believe the following would be valid:
 // class Baz {
@@ -178,7 +191,9 @@ sense to me now.
 // The problem with the above is that 'this.f.x' and 'this.f.y' are NOT owned by the 'this' in the invariant method,
 // in particular, their could be aliases to these objects elsewhere, and thus be mutated (changing the result of something),
 // in a context that is unaware of Bar's invariant, thus breaking it without performing a runtime check.
-// The ownership type system does prevent other objects from accessing things owned by the 'Bar': i.e. other objects cannot read or write directly to the object in the 'f' field of a Bar, except by going through Bar itself. However it does not prevent the invariant method from accessing things that are not owned by the Bar: either because the are globally owned (as in norep), or because they are owned by a paramater to the Bar class ('m').
+
+// The ownership type system does prevent other objects from accessing things owned by the 'Bar': i.e. other objects cannot read or write directly to the object in the 'f' field of a Bar, except by going through Bar itself. However it does not prevent the invariant method from accessing things that are not owned by the Bar: either because the are globally owned (as in norep), or because they are owned by a parameter to the Bar class ('m').
+
 
 - 1575: This whole paragraph makes some vague claims about the
   field of "static verification" and does not back it up with any
@@ -190,6 +205,7 @@ sense to me now.
   introducing the abbreviation "RV". As far as I can tell you only
   use it twice.
 // DONE
+
 
 ** Section 10
 - 1695: I disagree that you have "identified the essential
@@ -209,6 +225,7 @@ sense to me now.
 - This ending is much stronger than before!
 // Thanks!
 
+
 ** Appendix A
 - 1906: "typesystem" --> "type system" (twice, and again later)
 // DONE
@@ -218,6 +235,7 @@ sense to me now.
 - 2004: "Usefull" --> "Useful"
 // DONE
 
+
 ** Appendix B
 - Consider restating the `<=` relation for capabilities here for
   completeness.
@@ -226,6 +244,7 @@ sense to me now.
 \sigma; \Gamma |- e :: T'
   judgement". One of these should only have a single colon.
 // DONE
+
 
 ** Appendix C
 - 3196: "references" --> "reference"
@@ -279,6 +298,7 @@ high level, and how they are tied to the reference capabilities here,
 without any syntax or examples, would be sufficient.
 // DONE: removed the appendix, also see ^26.1
 
+
 This paper is mostly in great shape now, and definitely the most
 thorough examination of invariant protocols I've ever seen. I do
 however have some mild concerns about the newly-added material;
@@ -313,6 +333,7 @@ Lemma 5 Imm Not Circular, and Appendix A Theorem 1 Soundness, plus the
 proofs in Appendix B that Theorem 6 implies Requirements 2 and 3).
 // RESPONSE: The definition of ValidState directly requires that such reduction sequences exist, we have clarified the proofs, see ^27.1, ^27.2, and ^27.3
 
+
 I have one other general comment on a general way the paper could be
 strengthened, but I consider it optional (I'd be okay with the authors
 *not* taking action on this). Currently it seems like the paper is of
@@ -337,6 +358,8 @@ think that would require more substantial rewriting to accomplish, and
 would actually make the paper weaker by de-emphasizing the abstract
 requirements for the type system that I like in this paper.)
 // NO: I can't work out where we should use it though
+
+
 Miscellaneous comments:
 
 - p3 (paper page number, not pdf page number), line 73: A one-line
@@ -383,6 +406,7 @@ answer each remark: either explain why you do not take it into
 account, or precisely indicate which part of the paper has been
 modified accordingly (and how).
 
+
 ** New technical remarks
 
 p1,l38: "In a pure functional setting, sound runtime checking is trivial"
@@ -398,6 +422,7 @@ Assertion Checking for OCaml. In International Conference on Runtime
 Verification, 2021.
 // DONE see ^12
 
+
 ** New typos
 
 p3, l21--44: a dot is missing at the end of each itemize
@@ -408,6 +433,8 @@ p31, l13: interface HasSubInvariant, that --> remove the comma
 // DONE
 p43, l29: need not --> does not need to
 // DONE
+
+
 ** Comments from review 1 that are answered in a partial or unsatisfactory way:
 
 - p16, l56: The verifier available online [...] behaves differently:
@@ -418,11 +445,14 @@ Answer: "Unfortunately it was a long time ago so we do not rember the
 exact details, but the online verifier was accepting incorrect
 programs that the offline verifier was appropriately rejecting."
 
+
 Actually, this online verifier does not exist anymore because rise4fun
 is dead (see [2] for instance). Therefore, this sentence should be
 removed.
 [2] https://github.com/Z3Prover/z3/discussions/5473
 // DONE
+
+
 - p17, l27: the number of characters is meaningless (e.g., it is
 debatable which keyword is better between 'mut' and 'mutable'). I am
 not even sure whether the number of tokens is relevant (liking
@@ -454,6 +484,7 @@ more cautious about your conclusion that relies on them (except if you
 have a very strong convincing statement about why your metrics is
 better that the number of annotations).
 
+
 // RESPONSE: we have updated our conclusion to report both the difference in annotations, and the total difference in tokens ^29.1, ^29.2, and
 ^29.3.
 // One of the reasons why we also report 'tokens' and not just the number of 'annotations', is that in Spec# the number of annotations
@@ -477,6 +508,7 @@ better that the number of annotations).
 // The exact character count is the least important of the three.
 // It depends heavily on uninteresting design decisions like whitespace sensitivity or how much to abbreviate English words.
 // We could remove character counts, but we think it sill gives a nice and intuitive feel for the diffence.
+
 
 - p30, l18: a study [19] discovered that developers expect
 specification languages to follow the semantics of the underlying
@@ -511,11 +543,13 @@ numerical types. Therefore, in your paper, you can talk about the
 particular cases of short-circuits and exceptions (for which the
 developers indeed expect the same semantics), but not about the
 general case because there is at least one counter-example.
+
 // DONE: we have weakened our claim in paper ^30, we were confused by the paragraph in [69], immediately following the one you quoted above:
 //	"The purpose of C.3 was to determine, from the respondent’s point of view, if there should be any difference in
 //	the semantic interpretation of a Boolean expression when used as an assertion vs. outside the context of an assertion.
 //	Seventy percent (70%) of respondents answered that //expressions should be given the same interpretation."
 // Which lead us to our more general claim.
+
 
 ** Comments from review 1 that remains unanswered (as far as I have seen):
 (the page and line numbers are not the same in the current version of the paper)
