@@ -238,35 +238,30 @@ class Point {
 	imm Int x; imm Int y;
 	mut method Void add(imm Int d) throws MyChecked {
 		this.x += d; this.y += d;
-		if (d < 0) {
-			throw new MyUnchecked(); // Ok, can always throw an unchecked exception
-		} else if (d == 0) {
-			throw new MyChecked(); // Ok: `MyChecked' is in the `throws' list
-	}}}
-
+		if (...) { throw new MyUnchecked(); }//Always ok throwing unchecked exceptions
+		if (...) { throw new MyChecked(); }//Ok: `MyChecked' is in the `throws'
+	}}
+...
 try {
 	mut Point p = new Point(1, 2)
 	try {
 		p.add(someNumber); // could throw a MyChecked, or any kind of unchecked exception
-		if (...) {
-			p = new Point(...); } // update a local variable
-	} catch (MyChecked e) {
-		... // Ok
-	}
-	// Adding the following would be a type error,
+		if (...) { p = new Point(...); } // update a local variable
+	} 
+	catch (MyChecked e) { ... }// Ok
+	// Adding the following `catch' would be a type error,
 	// as the body of the try needs `p' to be non-final and mut:
 	// catch (MyUnchecked e) { ... }
 	...
-	try {
-		if (p.x != p.y) { throw new MyUnchecked(); }
-	} catch (MyUnchecked e) { // Ok:
-	    // try body can be typed where `p' is seen as final and read
+	try { if (p.x != p.y) { throw new MyUnchecked(); } }
+	catch (MyUnchecked e) { // Ok:
+		// try body can be typed where `p' is seen as final and read
 		// we can be sure the value of `p' has not changed
 		// but we can change it here
-		p = new Point(...)
+		p = new Point(...) // or p.x+1;
 	}
-} catch (MyUnchecked e) {
-	... } // ok, `p' is guaranteed to be unreachable
+}
+catch (MyUnchecked e) { ... } // ok, `p' is guaranteed to be unreachable
 \end{lstlisting}
 
 Similarly to Java, L42 distinguishes between checked and unchecked exceptions\IO[2.3]{,} strong exception safety is only enforced for unchecked exceptions\IO[2.4]{, and so}

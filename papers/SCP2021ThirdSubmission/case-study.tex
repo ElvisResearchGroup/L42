@@ -78,6 +78,18 @@ read method Bool invariant() {
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!rep! fields.
 
 \subheading{Our Experiment}
+
+\newlength{\imglength}%
+\setlength{\imglength}{0.44\textwidth}%
+\columnsep=0.5em%
+\begin{wrapfigure}{r}{\imglength}%
+	\setbox0=\hbox{\strut}%
+	\vspace{1\ht0}%
+	\includegraphics[width=\imglength]{GuiImg}%
+	\vspace{-2\ht0}%
+\end{wrapfigure}% 
+
+
 As shown in the figure below, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 This set up is not overly complicated, the maximum nesting level of \Q@Widget@s is $5$.
@@ -94,28 +106,20 @@ however due to the `uniform access principle'~\cite{Meyer:1992:EL:129093}%\footn
 %}
 , Eiffel allows fields to directly implement methods,
  allowing the \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!'s \Q!width()! and \Q!height()! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would perform invariant checks.
-\newlength{\imglength}%
-\setlength{\imglength}{0.44\textwidth}%
-\columnsep=0.5em%
-\begin{wrapfigure}{r}{\imglength}%
-	\setbox0=\hbox{\strut}%
-	\vspace{1\ht0}%
-	\includegraphics[width=\imglength]{GuiImg}%
-	\vspace{-2\ht0}%
-\end{wrapfigure}% 
+When we ran our test case following the D approach, the \Q!invariant()! method was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times;%
+\footnote{
+This difference is caused by Eiffel treating getters specially, and skipping invariant checks when calling a getter.
+Thus, even ignoring getter methods, the visible state semantic would still run 14 millions of invariant checks.
+}
+in comparison our invariant protocol only performed $77$ calls.
+ The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls may invoke further invariant checks. Note that \Q!width()! and \Q!height()! are simply getters for fields, whereas the other two are non-trivial \emph{methods}.
+Concluding, we have shown that when an invariant check queries other objects with invariants the visible state semantics may cause an exponential explosion in the number of checks.
 
 %though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
 % D and Eiffel have slightly different interpretation of
 % visible state semantic when qualified/unqualified method calls or field accesses are performed.
 % However, in our GUI example those corner cases are
 % not relevant. To be sure, we implemented both of their strategies and obtained the same results.
-When we ran our test case following the D approach, the \Q!invariant()! method was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times;%
-\footnote{
-This difference is caused by Eiffel treating getters specially, and skipping invariant checks when calling a getter.
-Thus, even ignoring getter methods, the visible state semantic would still run 14 millions of invariant checks.
-}
-in comparison our invariant protocol only performed $77$ calls. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls may invoke further invariant checks. Note that \Q!width()! and \Q!height()! are simply getters for fields, whereas the other two are non-trivial \emph{methods}.
-Concluding, we have shown that when an invariant check queries other objects with invariants the visible state semantics may cause an exponential explosion in the number of checks.
 
  % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
 % Note that 42 represents field accesses as method calls, this is similar to the Eiffel uniform access principle; but for a fair comparison with D we treat private accesses to them like field accesses.
