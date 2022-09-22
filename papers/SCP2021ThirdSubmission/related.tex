@@ -32,9 +32,9 @@ ShippingList = Data:{
 }
 \end{lstlisting}
 In this example, the \Q@Data@ decorator generates a factory method, a \Q@mut method Void addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string. 
-In particular, \IO[27.1]{the current concrete L42 syntax uses the \Q@capsule@ keyword to ensure various properties of a field.}
+In particular, the current concrete L42 syntax uses the \Q@capsule@ keyword to ensure various properties of a field.
 The language relies on the presence of annotations or other specific methods
-to decide what restrictions to apply \IO[27.2]{and properties to ensure}. In this case, the presence of the \Q!@Cache.Now! annotation clarifies that the field \Q@capsule Items items@
+to decide what restrictions to apply and properties to ensure. In this case, the presence of the \Q!@Cache.Now! annotation clarifies that the field \Q@capsule Items items@
 is actually a \Q@rep@ field as discussed in our work.
 The \Q!@Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@Cache.Clear! method is called.
 
@@ -106,17 +106,17 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 
 \item The invariant of an object is assumed only when a contract requires the object be `packed'. It is checked after an explicit `pack' operation, and objects can later be `unpacked'~\cite{DBLP:journals/jot/BarnettDFLS04}.
 
-\item \IO[31.1]{Upon calling a method (a.k.a a function/subprogram), the invariant of each parameter (and part/field of a parameter) must be shown to hold;
-upon returning from a method, the invariant of each parameter (and their parts) must still hold, and the invariant of the return value (and their parts) must hold~\cite{ACSL,WhyML}. As a relaxation, one approach only requires such invariants to hold if the method is declared within the scope of the invariant's declaration, but visible outside of it~\cite{Ada}. To enable encapsulation of invariants, for any method call located within the scope of an invariant, but calling a method outside this scope, the invariants of each of the call's arguments (and their parts) must be shown to hold~\cite{Spark}.}
+\item Upon calling a method (a.k.a a function/subprogram), the invariant of each parameter (and part/field of a parameter) must be shown to hold;
+upon returning from a method, the invariant of each parameter (and their parts) must still hold, and the invariant of the return value (and their parts) must hold~\cite{ACSL,WhyML}. As a relaxation, one approach only requires such invariants to hold if the method is declared within the scope of the invariant's declaration, but visible outside of it~\cite{Ada}. To enable encapsulation of invariants, for any method call located within the scope of an invariant, but calling a method outside this scope, the invariants of each of the call's arguments (and their parts) must be shown to hold~\cite{Spark}.
 
-\item \IO{The same as above, but an invariant may optionally be declared `strong', requiring that it must hold for every variable/parameter (and their parts) at every well-defined step of execution (a `sequence point')~\cite{ACSL}.}
+\item The same as above, but an invariant may optionally be declared `strong', requiring that it must hold for every variable/parameter (and their parts) at every well-defined step of execution (a `sequence point')~\cite{ACSL}.
 
 %\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
 %constantly maintained when the object is \textit{closed};
 %invariant can be manually opened and closed by using special operations; % Add cite here!
 \end{itemize}\SS\LS[0.5]
 \noindent These different protocols can be deceivingly similar.
-Note that all\IO[31.3]{, except the last,} of those approaches fail our strict requirements and allow for broken objects to be observed.
+Note that all, except the last, of those approaches fail our strict requirements and allow for broken objects to be observed.
 Some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
 
 
@@ -194,7 +194,7 @@ Our box pattern can be used to emulate many \emph{visibility based} invariants, 
 
 \subheading{Specification Languages}
 Using a specification language based on the mathematical metalanguage and different from the programming language's semantics may seem attractive, since it can express uncomputable concepts, has no mutation or non-determinism, and is often easier to formally reason about.
-However, a study~\cite{chalin2007logical} discovered that developers expect \IO[30]{short-circuit semantics and arithmetic exceptions in} specification languages to follow the semantics of the underlying language; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should, thanks to short circuiting.
+However, a study~\cite{chalin2007logical} discovered that developers expect short-circuit semantics and arithmetic exceptions in specification languages to follow the semantics of the underlying language; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should, thanks to short circuiting.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
 Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets, whereas runtime contexts allow mutation, object allocation and print statements. The semantics of shared constructs (such as short circuiting logic operators) is the same in both contexts.

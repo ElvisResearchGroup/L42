@@ -4,12 +4,12 @@
 \lstset{language=FortyFour} % Make all code bold
 \label{s:formalism}
 To model our system we need to formalise an imperative OO language
-with exceptions, \IO[18]{non determinism (modelling I/O),} object capabilities, and type system
+with exceptions, non determinism (modelling I/O), object capabilities, and type system
 support for reference capabilities and strong exception safety.
 Formal models of the runtime semantics of such languages are simple, but
 defining and proving the correctness of such a type system 
 is quite complex, and indeed many such papers exist that have already done this~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,JOT:issue_2011_01/article1}.
-Thus we parametrise our language formalism, and assume we already have an expressive and sound type system enforcing the properties we need, so
+Thus we parameterise our language formalism, and assume we already have an expressive and sound type system enforcing the properties we need, so
 that we can separate our novel invariant protocol, from the non-novel reference capabilities.
 We clearly list in \autoref{s:proof} the requirements we make on such a type system, so that any language satisfying them can soundly support our invariant protocol.
 In \autoref{s:typesystem} we show an example type system, a restricted subset of L42, and prove that it satisfies our requirements. Conceptually our approach can parametrically be applied to any type system supporting these requirements, for example you could extend our type system with additional promotions or generics.
@@ -30,7 +30,7 @@ We use the following notational conventions:
 	\item Memory, denoted by $\s : l\rightarrow C\{\ls\}$, is a finite map from locations, $l$, to annotated tuples, $C\{\ls\}$, representing objects; here $C$ is the class name and $\ls$ are the 
 	field values.
 	We use the notation $\C{l}$ to get the class name of $l$ and $\s[l.f=l']$ to update a field of $l$, $\s[l.f]$ to access one. The notation $\s,\s'$ combines the two memories, and requires that $\dom(\s)$ is disjoint from $\dom(\s')$.
-	\item We assume a typing judgment of form $\ty{e}{T}$, this says that the expression $e$ has type $T$,
+	\item We assume a typing judgement of form $\ty{e}{T}$, this says that the expression $e$ has type $T$,
 	where the classes of any locations are stored in $\s$ and the types of variables are stored in the environment $\G : x\rightarrow T$.
 	
 	\item We allow the type system to impose any additional constraints it needs on method bodies.
@@ -49,7 +49,7 @@ We encode Booleans as ordinary objects, in particular we assume:
 Other than the \Q!invariant! method of \Q!True!, we impose no requirements on the methods of the \Q!Bool! interface or its classes, in particular, they could be used to provide logical operations.\footnote{
 In particular, \Q!if! statements can be supported using Church encoding: we would have a \Q!Bool.i${}$f! method of form \Q!read method$\,T\,$i${}$f($T\,$ifTrue,$\ T\,$ifFalse)!, for an appropriate type $T$.
 The body of \Q!True.i${}$f! will then be \Q!ifTrue!, and the body of \Q!False.i${}$f! will be \Q!ifFalse!. In this way, \Q!$x$.i${}$f($t$, $f$)! will return $t$ if $x$ is ``true'' and $b$ if it is ``false''.
-\IO[11]{To ensure that $t$ and $f$ themselves are evaluated if and only if $x$ is ``true'', the \Q!Bool.i${}$f! method could instead be passed objects with \Q!apply! methods, whose bodies will be $t$ and $f$, respectively. If we added syntax sugar for lambdas, as in Java 8, we could then do \Q@$x$.i${}$f(() -> $\ t$, () -> $\ f$).apply()@}% Marco: check this
+To ensure that $t$ and $f$ themselves are evaluated if and only if $x$ is ``true'', the \Q!Bool.i${}$f! method could instead be passed objects with \Q!apply! methods, whose bodies will be $t$ and $f$, respectively. If we added syntax sugar for lambdas, as in Java 8, we could then do \Q@$x$.i${}$f(() -> $\ t$, () -> $\ f$).apply()@% Marco: check this
 }
 
 \noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location can be used in the main expression and would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading/writing. In order to simplify our proof, we assume that:
@@ -216,10 +216,10 @@ The three other expressions are:
 	%This is similar to Pony's promote expressions. It is up to the typesystem what promotions it accepts as valid, provided they cannot be used to violate our requirements in \autoref{s:proof}. 
 	%However, an ``as'' expression can also be used to ``demote'', e.g. demoting a \Q!mut! to a \Q!read! to prevent the reference from being used for mutation.
 	%Using an explicit promotion makes the proofs much simpler, but a typesystem could simply wrap expressions with a $\as{\_}{\mdf}$ when necessary.
-	\item Monitor expressions ($\M{l}{e}{e'}$) represent our runtime injected invariant checks. The location $l$ refers to the object whose invariant is being checked, $e$ represents the behaviour of the expression, and $e'$ is the invariant check, which will initially be $\invariant{l}$. The body of the monitor, $e$, is evaluated first, then the invariant check in $e'$ is evaluated. If $e'$ evaluates to an $\Kw{imm}\,\Kw{True}$ (i.e. an \Q!imm! reference to an instance of \Q!True!), then the whole monitor expression will return the value of $e$, otherwise if it evaluates to a reference to a non-$\Kw{True}$ value (i.e. an \Q!imm! reference to an instance of a class other than $\Kw{True}$), the monitor expression is an $\error$, and evaluation will proceed with the nearest enclosing $\Kw{catch}$ block, if any. \IO[20]{For example, assuming $\invariant{l}$ terminates, we will have
+	\item Monitor expressions ($\M{l}{e}{e'}$) represent our runtime injected invariant checks. The location $l$ refers to the object whose invariant is being checked, $e$ represents the behaviour of the expression, and $e'$ is the invariant check, which will initially be $\invariant{l}$. The body of the monitor, $e$, is evaluated first, then the invariant check in $e'$ is evaluated. If $e'$ evaluates to an $\Kw{imm}\,\Kw{True}$ (i.e. an \Q!imm! reference to an instance of \Q!True!), then the whole monitor expression will return the value of $e$, otherwise if it evaluates to a reference to a non-$\Kw{True}$ value (i.e. an \Q!imm! reference to an instance of a class other than $\Kw{True}$), the monitor expression is an $\error$, and evaluation will proceed with the nearest enclosing $\Kw{catch}$ block, if any. For example, assuming $\invariant{l}$ terminates, we will have
 	$\s |\M{l}{\new{\Kw{Foo}}{}}{\invariant{l}} \rightarrow \s, l' \mapsto \Kw{Foo}\{\} |\M{l}{l'}{\invariant{l}} \rightarrow^{*} \s' |\M{l}{l'}{\mdf\,l''}$, i.e. we first reduce $\new{\Kw{Foo}}{}$ to a value, then we reduce $\invariant{l}$.
 	If $\C{l''} = \Kw{True}$, then the invariant check succeeded and so the monitor will reduce to the result of $\new{\Kw{Foo}}{}$, i.e.
-	$\s |\M{l}{\new{\Kw{Foo}}{}}{\invariant{l}} \rightarrow^{*} \s' |l'$; otherwise, the monitor expression $\M{l}{l'}{\mdf\,l''}$ will be stuck (it is an $\error$), and the reduction will proceed to the \Q!catch! block of the nearest enclosing \Q!try!--\Q!catch! (if any).}
+	$\s |\M{l}{\new{\Kw{Foo}}{}}{\invariant{l}} \rightarrow^{*} \s' |l'$; otherwise, the monitor expression $\M{l}{l'}{\mdf\,l''}$ will be stuck (it is an $\error$), and the reduction will proceed to the \Q!catch! block of the nearest enclosing \Q!try!--\Q!catch! (if any).
 	\item \Q!try!--\Q!catch! expressions ($\try{e}{e'}$), which as in many other expression based languages\footnote{
 		This differs from \emph{statement} based languages like Java, were a \Q!try!-\Q!catch!, does not return a value.
 		The expression-based form can be translated to a call to a method whose body is ``%For some reason this footnote breaks with \Q, so I do it all in math mode
@@ -233,7 +233,7 @@ The three other expressions are:
 	%\Q!try {return $e$;} catch(Throwable t) {return $e'$;}!
 	During reduction, \Q!try!--\Q!catch! expressions will be annotated as $\trys{\s}{e}{e'}$, where $\s$ is the state of the memory before the body of the \Q!try! block begins execution. This annotation has no effect on the runtime, but is used by the proofs to model strong exception safety: objects in $\s$ are not mutated by the body of the \Q!try!. Note that as mentioned before, this strong limitation is only needed for unchecked exceptions, in particular, invariant failures. Our calculus only models unchecked exceptions/errors, however L42 also supports checked exceptions, and \Q@try-catch@es over them impose no limits on object mutation during the \Q@try@.
     This is safe since checked exceptions can not leak out of invariant methods or ref mutators: in both cases our protocol requires their \Q@throws@ clause to be empty.
-	\IO[21]{For example, we could have $\s|\try{\e}{e'} \rightarrow \s|\trys{\s}{e}{e'} \rightarrow^{*} \s,\s' |\trys{\s}{\error}{e'} \rightarrow \s,\s' | e' \rightarrow^{*} \s'',\s' | v$. Thus the body of the \Q!try! ($e$) has not modified $\s$, but it may have created new objects, which will be in $\s'$; the \Q!catch! block on the other hand ($e'$) can freely mutate $\s$ into $\s''$. Note that the objects that $e$ created (i.e. those in $\s'$), will not be reachable in $e'$ (since $\s$ has not been modified), i.e. an implementation could garbage collect them upon entering the \Q!catch! block.}
+	For example, we could have $\s|\try{\e}{e'} \rightarrow \s|\trys{\s}{e}{e'} \rightarrow^{*} \s,\s' |\trys{\s}{\error}{e'} \rightarrow \s,\s' | e' \rightarrow^{*} \s'',\s' | v$. Thus the body of the \Q!try! ($e$) has not modified $\s$, but it may have created new objects, which will be in $\s'$; the \Q!catch! block on the other hand ($e'$) can freely mutate $\s$ into $\s''$. Note that the objects that $e$ created (i.e. those in $\s'$), will not be reachable in $e'$ (since $\s$ has not been modified), i.e. an implementation could garbage collect them upon entering the \Q!catch! block.
 
 \end{itemize}
 
@@ -297,7 +297,7 @@ The $\leq$ notation and $\derep{\fmdf}$ notations are used later in \autoref{s:p
 %\subheading{Reduction Rules}
 We additionally restrict the grammar with the following well-formedness criteria:
 \begin{itemize}
-	\item \Q@invariant()@ methods must follow the requirements of \autoref{s:protocol}, except that for simplicity method calls on \Q!this! are not allowed.\footnote{Such method calls could be inlined or rewritten to take the field values themselves as parameters.} This means that for every non-interface class $C$, $C.\Kw{invariant} = \method{\Kw{read}}{\Kw{imm}\,\Kw{Bool}}{\Kw{invariant}}{}e$, where $e$ can only use \Q!this! as the receiver of an \Q!imm! or \Q!rep! field access. Formally, this means that forall $\E$ where $e = \E[\Kw{this}]$, we have:
+	\item \Q@invariant()@ methods must follow the requirements of \autoref{s:protocol}, except that for simplicity method calls on \Q!this! are not allowed.\footnote{Such method calls could be inlined or rewritten to take the field values themselves as parameters.} This means that for every non-interface class $C$, $C.\Kw{invariant} = \method{\Kw{read}}{\Kw{imm}\,\Kw{Bool}}{\Kw{invariant}}{}e$, where $e$ can only use \Q!this! as the receiver of an \Q!imm! or \Q!rep! field access. Formally, this means that for all $\E$ where $e = \E[\Kw{this}]$, we have:
 	\begin{iitemize}
 		\item $\E = \E'[\hole\D f]$, for some $\E'$\SS[0.15]
 		\item $C.f = \field{\fmdf}{\_}{f}$\SS[0.15]

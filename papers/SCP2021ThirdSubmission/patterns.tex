@@ -194,7 +194,7 @@ class SafeMovable implements Widget { ...
 % Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus  it is \emph{not} a rep mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other \Q!capsule! fields.
-The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.\footnote{\IO[32]{Note how this kind of pattern solves a similar problem in ownership systems where an object cannot be modified except under the control of the owner. In our example, this would correspond to the \Q!SafeMovable! being the `owner' of it's `box.c' field.}}  With a \Q@Transformer@, a \Q@zoom(w)@ function could be simply written as:
+The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.\footnote{Note how this kind of pattern solves a similar problem in ownership systems where an object cannot be modified except under the control of the owner. In our example, this would correspond to the \Q!SafeMovable! being the `owner' of it's `box.c' field.}  With a \Q@Transformer@, a \Q@zoom(w)@ function could be simply written as:
 \begin{lstlisting}
 static method Void zoom(mut Widget w) {
   w.transform(ws -> { for (wi : ws) { zoom(wi); } });

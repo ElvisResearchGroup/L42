@@ -11,7 +11,7 @@ in this way we are parametric over the concrete type system. In \autoref{s:types
 To express our type system assumptions, we first need some auxiliary definitions. 
 \LS
 
-\noindent \IO[23]{}First, we inductively define the set of objects in the reachable object graph (\rog) of a location $l$:\\
+\noindent First, we inductively define the set of objects in the reachable object graph (\rog) of a location $l$:\\
 \indent $l' \in \rog(\s, l)$ iff:%
 \begin{iitemize}
 	\item $l' = l$, or\SS
@@ -62,7 +62,7 @@ That is, a location $l$ found in a context $\E$ is encapsulated if all $\muty$ o
 That single use of $l$ is the connection preventing those $\muty$ objects from being garbage collectable.
 
 \subheading{Type System Requirements}
-\IO[8]{As we do not want to require a specific concrete type system, we instead assume some properties about the expressions that it admits.}
+As we do not want to require a specific concrete type system, we instead assume some properties about the expressions that it admits.
 Rather than requiring each expression during reduction to be well-typed, we instead let the type-system impose restrictions on method bodies, and type-check the initial expression, we then require properties on all future memories and expressions (i.e. $\VS$s).
 In \autoref{s:typesystem} we show such a type-system and prove it satisfies these requirements, but these requirements do \emph{not} hold for arbitrary well-typed $\s|e$ pairs, only for $\VS$s.
 This allows the type-system to be simpler, in particular, as the initial main expression can only have \Q!mut! references to $c$ (an object with no fields), the type-system does not need to check that the heap structure and reference capabilities in the main expressions are consistent.
@@ -192,7 +192,7 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 		\indent If $\VS(\s, \E[e])$, and $\s|e \rightarrow^* \s'|e'$, then $\forall l \in \dom(\s)$, if not $\reach(\s, e, l)$, then not $\reach(\s', e', l)$.
 	\end{Lemma}\SS
 	\begin{proof}
-		The proof follows from \IO[27.1]{the definition of \VS and induction on the number of reductions since the initial memory and main-expression}, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
+		The proof follows from the definition of \VS and induction on the number of reductions since the initial memory and main-expression, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
 		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true}).
 	\qed\end{proof}
 	\LS
@@ -239,7 +239,7 @@ To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! f
 \indent $\exists f \in \rf(\s,l)$ such that $\CR(\s, l, f)$.
 \LS
 
-\noindent \IO[19]{We use $\s \setminus l$ to remove the location $l$, thus $(\s,l \mapsto C\{\ls\}) \setminus l = \s$.}
+\noindent We use $\s \setminus l$ to remove the location $l$, thus $(\s,l \mapsto C\{\ls\}) \setminus l = \s$.
 \LS
 
 \noindent We say that an $l$ and $f$ is \CN if $l.f$ is not \muty without passing through $l$:\\
@@ -661,7 +661,7 @@ First we need to prove that an object is not reachable from one of its \Q!imm! f
 \indent If $\VS(\s, e)$, $\forall f,l$, if $\reach(\s, e, l)$, $\C{l}.f = \field{\Kw{imm}}{\_}{f}$, then $l \notin \rog(\s, \s[l.f])$.
 \end{Lemma}\SS
 \begin{proof}
-The proof is by \IO[27.2]{the definition of \VS and induction on the number of reductions}; obviously the property holds in the initial $\s|e$, since $\s = c\mapsto \Kw{Cap}\{\}$. Now suppose it holds in a $\VS(\s', e')$ where $\s'|e' \rightarrow \s|e$:
+The proof is by the definition of \VS and induction on the number of reductions; obviously the property holds in the initial $\s|e$, since $\s = c\mapsto \Kw{Cap}\{\}$. Now suppose it holds in a $\VS(\s', e')$ where $\s'|e' \rightarrow \s|e$:
 \begin{ienumerate}
 	\item Consider any pre-existing \reach $l$ and $f$ with $\C[\s']{l}.f = \field{\Kw{imm}}{\_}{f}$, by \thm{Imm Consistency} and \thm{Non-Mutating}, the only way $\rog(\s, \s[l.f])$ could have changed is if $e' = \EV[\mdf\,l\D f = \mdf'\,l']$, where $\mdf \leq \Kw{mut}$, i.e. we just applied the \textsc{update} rule. By \thm{Type Consistency}, $\mdf' \leq \Kw{imm}$, so by \thm{Imm Consistency}, $l \notin \rog(\s, l')$. Since $l' = \s[l.f]$, we now have $l \notin \rog(\s, \s[l.f])$.
 	\item The only rules that make an $l$ \reach are \textsc{new/new true}. So consider $e = \EV[\new{C}{\range{\_\,l}}]$, and each $i$ with $C.i = \field{\Kw{imm}}{\_}{f}$. But each of $\range{l}$ existed in the previous state and $l \notin \dom(\s')$; so by \VS and our reduction rules, $l \notin \rog(\s', l_i) = \rog(\s, \s[l.f])$.

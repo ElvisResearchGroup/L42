@@ -21,13 +21,13 @@ In this section we formalise a lightweight version of the L42 type system. We th
 \indent $\mdf\,C \leq \mdf'\,C'$ iff $\mdf \leq \mdf'$ and $C \leq C'$
 
 \LS
-\noindent \IO[9]{Recall our definition for $\mdf \leq \mdf'$:
+\noindent Recall our definition for $\mdf \leq \mdf'$:
 \begin{iitemize}
 	\item $\mdf \leq \mdf$, for any $\mdf$\SS
 	\item $\Kw{imm} \leq \Kw{read}$\SS
 	\item $\Kw{mut} \leq \Kw{read}$\SS
 	\item $\Kw{capsule} \leq \Kw{mut}$ and $\Kw{capsule} \leq \Kw{imm}$, and $\Kw{capsule} \leq \Kw{read}$
-	\end{iitemize}}
+	\end{iitemize}
 
 \LS
 
@@ -921,7 +921,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 	\end{ienumerate}
 \end{theorem}
 \SS\begin{proof}
-	We prove this by \IO[27.3]{definition of \VS and} induction on the number of reductions since
+	We prove this by definition of \VS and induction on the number of reductions since
 	the initial main expression and memory. The base case is trivial since
 	the main expression cannot contain any $\Kw{imm}$ references, and there
 	are no fields in memory, thus nothing can be $\immut$, moreover the

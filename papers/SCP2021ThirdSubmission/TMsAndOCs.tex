@@ -49,8 +49,8 @@ Immutable objects in the reachable object graph of a capsule reference are not c
 \end{itemize}
 %This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
 %\end{itemize}
-\noindent \IO[2.1]{There} are only two kinds of objects: mutable and immutable, but there are more kinds of reference capabilities.
-In L42 only \Q@mut@ and \Q@imm@ references can be saved on the heap\IO[2.2]{:} \Q@capsule@ and \Q@read@ references only exists on the stack.
+\noindent There are only two kinds of objects: mutable and immutable, but there are more kinds of reference capabilities.
+In L42 only \Q@mut@ and \Q@imm@ references can be saved on the heap: \Q@capsule@ and \Q@read@ references only exists on the stack.
 %the 'read' field in 42 can indeed be understood as a 'mut' field of an object that is born 'read'
 
 Reference capabilities are different to field or variable qualifiers like Java's \Q@final@: reference capabilities apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
@@ -96,7 +96,7 @@ Another common misconception is the belief that \Q!capsule! fields and \Q!capsul
 How \Q!capsule! local variables are handled differs widely in the literature:
 
 %\noindent
-In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be read only once (similar to linear and affine types~\cite{boyland2001alias}). \IO[14]{For example:}\SS
+In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be read only once (similar to linear and affine types~\cite{boyland2001alias}). For example:\SS
 \begin{lstlisting}
 method mut Point foo(mut Point mp) {
 	mp.x += 3; // mp is mut, so it can be used twice
@@ -129,9 +129,9 @@ Pony does not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference 
 The formal model of L42~\cite{GIANNINI2019145} does not
 contain \Q@capsule@ fields.
 The L42 concrete language interprets the syntax for capsule fields as private \Q@mut@ fields with some extra restrictions, including being initialised and updated only with \Q@capsule@ references.
-Those \emph{encapsulated} fields \IO[25]{(which do not support destructive reads)} \IO[3]{facilitate parallelism and can model various forms of ownership.}%
+Those \emph{encapsulated} fields (which do not support destructive reads) facilitate parallelism and can model various forms of ownership.%
 \footnote{It may seem surprising that 
-those weaker forms of encapsulation are still sufficient to ensure safe \IO[26.1]{unobservable} parallelism.
+those weaker forms of encapsulation are still sufficient to ensure safe unobservable parallelism.
 The detailed way L42 parallelism works is unrelated to the presented work.
 Please see the tutorial on \url{Forty2.is} (specifically, section 5 and 6) for more information on parallelism in L42.
 }
@@ -176,7 +176,7 @@ L42 also allows such expression to use \Q!read! free variables as well as \Q!mut
 
 This is the main improvement on the flexibility of reference capabilities in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
-\IO[15]{programmers can} write many classes
+programmers can write many classes
 simply using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
 be able to encapsulate instances of those data structures into an \Q@imm@ or \Q@capsule@ reference.
@@ -228,7 +228,7 @@ This strategy does not restrict when exceptions can be \emph{thrown}, but only r
 Strong exception safety allows us to throw invariant failures as unchecked exceptions: if an object's reachable object graph was mutated into a broken state within a \Q@try@, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since strong exception safety guarantees that no object mutated within a \Q@try@ is visible when it catches an unchecked exception.%
 \footnote{Transactions are another way of enforcing strong exception safety, but they require specialised and costly run time support.}
 
-\IO[16]{For example:}\SS
+For example:\SS
 \begin{lstlisting}
 // unchecked and checked exception types
 class MyUnchecked extends RuntimeException { }
@@ -264,7 +264,7 @@ try {
 catch (MyUnchecked e) { ... } // ok, `p' is guaranteed to be unreachable
 \end{lstlisting}
 
-Similarly to Java, L42 distinguishes between checked and unchecked exceptions\IO[2.3]{,} strong exception safety is only enforced for unchecked exceptions\IO[2.4]{, and so}
+Similarly to Java, L42 distinguishes between checked and unchecked exceptions, strong exception safety is only enforced for unchecked exceptions, and so
 \Q@try-catch@es over checked exceptions impose no limits on object mutation during the \Q@try@.
 %Similarly to what happens in Java, the L42 type system simply restricts where checked exceptions can be thrown, but does not enforce strong exception safety for checked exceptions. 
 

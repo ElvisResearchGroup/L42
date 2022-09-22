@@ -10,7 +10,7 @@ They can be presented as documentation, checked as part of static verification, 
 In our system, a class specifies its invariant by defining a method called \Q@invariant()@
 that returns a Boolean.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
-In a purely functional setting, \IO[12]{the programmer only needs to write the code for the invariant check itself, then the runtime needs to call this code} each time a value/object is created (or in the case of refinement types, converted to such a type).
+In a purely functional setting, the programmer only needs to write the code for the invariant check itself, then the runtime needs to call this code each time a value/object is created (or in the case of refinement types, converted to such a type).
 
 In an impure setting, like most OO languages, 
 operations on data structures are often implemented as complex sequences of mutations,
@@ -82,11 +82,11 @@ By using the \Q@box@ field as an extra level of indirection, we restrict the set
 
 \footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator pattern, but with a different goal.
 While in very specific situations the overhead of creating such additional box object may be unacceptable, we designed our work for environments where such fine performance differences are negligible.
-Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}
+Also note that many VMs and compilers can optimise away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}
 This is even more applicable in languages with inlined structs, like C++ or C\#.
 }
 
-With appropriate type annotations (\IO[13]{simple keywords attached to fields, method receivers, paramaters, and return types}), the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}\footnote{\IO[24]{Note that our system does not require that the \Q!min! and \Q!max! fields use primitive immutable number types, in fact, they could store complex (and possibly cyclic) mutable data; our system will ensure that this data can only be mutated within the \Q!Range.set! method (or other similar methods within the enclosing \Q!Range!). We would like to keep the language as minimal as possible, and so we have opted to not add a separate concept of immutable \emph{classes}.}}
+With appropriate type annotations (simple keywords attached to fields, method receivers, paramaters, and return types), the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.\footnote{Note that our system does not require that the \Q!min! and \Q!max! fields use primitive immutable number types, in fact, they could store complex (and possibly cyclic) mutable data; our system will ensure that this data can only be mutated within the \Q!Range.set! method (or other similar methods within the enclosing \Q!Range!). We would like to keep the language as minimal as possible, and so we have opted to not add a separate concept of immutable \emph{classes}.}
 
 %In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
 %No, I looked again at this text, it is just broken.
@@ -97,7 +97,7 @@ Invariant protocols allow for objects to make necessary changes that might make 
 In visible state semantics any object that has an active method call anywhere on the call stacks is potentially invalid;
 arguably not a very useful guarantee as observed by
 Gopinathan \etal's work~\cite{Gopinathan:2008:RMO:1483018.1483028},
-\IO[10]{which used runtime instrumentation to determine if a memory update has violated the invariant of any live object, even if it is not reachable from the current stack frame}.
+which used runtime instrumentation to determine if a memory update has violated the invariant of any live object, even if it is not reachable from the current stack frame.
 Approaches such as \textit{pack/unpack}~\cite{DBLP:journals/jot/BarnettDFLS04} 
 represent potentially invalid objects in the type system; this
 encumbers the type system and the syntax with features whose only purpose is to distinguish objects with broken invariants. %, while (at least in the case of Spec\#) still not soundly supporting I/O and exceptions.
