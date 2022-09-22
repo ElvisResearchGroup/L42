@@ -91,7 +91,7 @@ Here \Q@SafeMovable.overlap@ is a static method that simply checks that the boun
 
 
 As shown in the figure below, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
-$4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
+$4$ (grey) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 This set up is not overly complicated, the maximum nesting level of \Q@Widget@s is $5$.
 Our main method automatically presses each of the $16$ buttons once. In L42, using our invariant protocol, this resulted in $77$ calls to \Q@SafeMovable@'s invariant. 
 
@@ -221,6 +221,6 @@ Consider for example the Spec\# pre-condition on \Q@SafeMovable@'s constructor: 
 an additional variable in a nested scope.
 This is needed to delineate scopes for promotions.
 Based on these results, we believe our system is significantly simpler and easier to use
-in comparision with Spec\#, that is more verbose but supports a wider range of verification applications.
+in comparison with Spec\#, that is more verbose but supports a wider range of verification applications.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 

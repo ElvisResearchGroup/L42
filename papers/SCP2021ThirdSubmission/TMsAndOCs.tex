@@ -255,7 +255,7 @@ try {
 	...
 	try { if (p.x != p.y) { throw new MyUnchecked(); } }
 	catch (MyUnchecked e) { // Ok:
-		// try body can be typed where `p' is seen as final and read
+		// the try part can be typed where `p' is seen as final and read
 		// we can be sure the value of `p' has not changed
 		// but we can change it here
 		p = new Point(...) // or p.x+1;

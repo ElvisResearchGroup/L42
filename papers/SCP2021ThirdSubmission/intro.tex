@@ -86,7 +86,7 @@ Also note that many VMs and compilers can optimize away wrapper objects in many 
 This is even more applicable in languages with inlined structs, like C++ or C\#.
 }
 
-With appropriate type annotations (\IO[13]{namely, reference capabilities on fields, method receivers, paramaters, and return types}), the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}\footnote{\IO[24]{Note that our system does not require that the \Q!min! and \Q!max! fields use primitive immutable number types, in fact, they could store complex (and possibly cyclic) mutable data; our system will ensure that this data can only be mutated within the \Q!Range.set! method (or other similar methods within the enclosing \Q!Range!). We would like to keep the language as minimal as possible, and so we have opted to add simple restrictions over pre-existing type systems.}}
+With appropriate type annotations (\IO[13]{simple keywords attached to fields, method receivers, paramaters, and return types}), the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution. \IO[1]{In particular, our system ensures that the \Q!Range.set! method cannot pass \Q!this!, or an alias to \Q!this!, to the \Q!box.set! method.}\footnote{\IO[24]{Note that our system does not require that the \Q!min! and \Q!max! fields use primitive immutable number types, in fact, they could store complex (and possibly cyclic) mutable data; our system will ensure that this data can only be mutated within the \Q!Range.set! method (or other similar methods within the enclosing \Q!Range!). We would like to keep the language as minimal as possible, and so we have opted to not add a separate concept of immutable \emph{classes}.}}
 
 %In particular, this has the advantage of clearly delineating when the \Q!Range! invariant needs to hold: after every method modifying the \Q!box!. In contrast, the \Q!BoxRange! cannot see the enclosing \Q!Range!, thus its code cannot assume that the invariant holds.
 %No, I looked again at this text, it is just broken.
@@ -123,7 +123,7 @@ Our sound solution only requires
 that all code is well-typed. Our approach works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.
 
 We formalise and prove our approach sound, and have fully implemented our protocol in L42\footnote{
-Our implementation is implemented by checking that a given class conforms to our protocol, and injecting invariant checks in the appropriate places.
+Our implementation works by checking that a given class conforms to our protocol, and injecting invariant checks in the appropriate places.
 An anonymised version of L42, supporting the protocol described in this paper, together with the full code of our case studies, is available at \url{http://l42.is/InvariantArtifact.zip}. %We believe it would be easy to port our work on Pony and Gordon \etal's language.
 }, and used it to run our various case studies.
 It is important to note that unlike most prior work, we soundly handle catching of invariant failures and I/O.

@@ -109,7 +109,7 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 \item \IO[31.1]{Upon calling a method (a.k.a a function/subprogram), the invariant of each parameter (and part/field of a parameter) must be shown to hold;
 upon returning from a method, the invariant of each parameter (and their parts) must still hold, and the invariant of the return value (and their parts) must hold~\cite{ACSL,WhyML}. As a relaxation, one approach only requires such invariants to hold if the method is declared within the scope of the invariant's declaration, but visible outside of it~\cite{Ada}. To enable encapsulation of invariants, for any method call located within the scope of an invariant, but calling a method outside this scope, the invariants of each of the call's arguments (and their parts) must be shown to hold~\cite{Spark}.}
 
-\item \IO{The same as above, but an invariant may optionally be declared `strong', requiring that it must hold for every variable/paramater (and their parts) at every well-defined step of execution (a `sequence point')~\cite{ACSL}.}
+\item \IO{The same as above, but an invariant may optionally be declared `strong', requiring that it must hold for every variable/parameter (and their parts) at every well-defined step of execution (a `sequence point')~\cite{ACSL}.}
 
 %\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
 %constantly maintained when the object is \textit{closed};
@@ -152,7 +152,7 @@ Thus, static verification proceeds like a mathematical proof: a program is valid
 %}{2}{[is this correct?] verification of reference %monitors, gradual typing, and contracts have been %explored for longer}
 To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
 consider a verified core and a runtime verified boundary.
-One can see our approach as an extremely modularized	version of such a system: every class is its
+One can see our approach as an extremely modularised	version of such a system: every class is its
 own verified core, and the rest of the code could have Byzantine behaviour. Our proofs show that every class that compiles/type checks is 
 soundly handled by our protocol, independently of the behaviour of code that uses such a class or any other surrounding code.
 
@@ -203,7 +203,7 @@ Most runtime verification systems, such as ours, use a metacircular approach: sp
 Ensuring determinism in a non-functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} `\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
 	of functions. The first approach is not scalable, the second overly restrictive and
 	the third unsound}'.
-	They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
+	They recognise that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
 Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:\lstset{morekeywords={assert, bool}}
 %\saveSpace\saveSpace\begin{lstlisting}
 \Q![Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}!\\*

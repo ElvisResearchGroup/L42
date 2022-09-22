@@ -64,7 +64,7 @@ a similar level of control:
 relying on powerful aspect-oriented support, they detect any field update in the whole reachable object graph of any object, and check all the invariants that such update may have violated.
 We agree with their criticism of visible state semantics, where  methods still have to assume that any object may be broken; in such case calling any public method would trigger an error, but while the object is just passed around (and for example stored in collections), the broken state will not be detected; Gopinathan \etal says ``\emph{there are many instances where $o$'s invariant is violated by the programmer inadvertently changing the state of $p$ when $o$ is in a steady state. Typically, $o$ and $p$ are objects exposed by the API, and the programmer (who is the user of the API), unaware of the dependency between $o$ and $p$, calls a method of $p$ in such a way that $o$'s invariant is violated. The fact that the violation occurred is detected much later, when a method of $o$ is called again, and it is difficult to determine exactly where such violations occur.}''
 
-However, their approach addresses neither exceptions nor non-determinism caused by I/O, so their soundess guarantee does not scale to programs using such features.
+However, their approach addresses neither exceptions nor non-determinism caused by I/O, so their soundness guarantee does not scale to programs using such features.
 % if those aspects are taken into consideration.
 
 Their approach is very computationally intensive, but we think it is powerful enough that it could even be used to roll back the very field update that caused the invariant to fail, making the object valid again.
