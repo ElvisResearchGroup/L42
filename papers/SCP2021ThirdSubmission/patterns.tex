@@ -311,12 +311,16 @@ read method Void connectWith(read Node other,mut Graph g){
 	Int i1=g.getNodes().indexOf(this);
 	Int i2=g.getNodes().indexOf(other);
 	if(i1==-1 || i2==-1){throw /*error nodes not in g*/;}
-	g.transform(ns->{
+	g.transform(ns->
+	{
 		mut Node n1=ns.get(i1);
 		mut Node n2=ns.get(i2);
 		n1.directConnections().add(n2);
 	});
 }
+\end{lstlisting}
+\begin{lstlisting}
+\clerpage
 capsule method read MyNode addToGraph(mut Graph g){
 	return g.transform(ns->{
 	mut MyNode n1=this;//single use of capsule `this'

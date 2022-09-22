@@ -595,7 +595,7 @@ modify the object, but not observe it; only after that moment, the object may be
 			
 			Since $l \neq l'$, $l'$ can't have been \RCN. Thus, by \thm{Rep Field Soundness}, $l'$ was \HNO, and so $\EV[\mdf\,l\D f\equals v]$ is of form $\EV'[\M{l'}{e''}{e'''}]$:
 			\begin{itemize}
-				\item As the \rog of $l'$ has just been mutated, and since $e'''$ was must have come from the reduction of $\invariant{l'''}$, if follows from \thm{Determinism}, that we cannot currently be inside $e'''$.
+				\item As the \rog of $l'$ has just been mutated, and since $e'''$ must have come from the reduction of $\invariant{l'''}$, if follows from \thm{Determinism}, that we cannot currently be inside $e'''$.
 				\item Thus, $\EV = \EV'[\M{l'}{\EV''}{e'''}]$, where $\EV''[\mdf\,l\D f\equals v] = e''$.
 				
 				\item Suppose that $l'$ was not \reach in $e''$, then clearly $l' \notin e''$, since $l' \neq l$, it follows that $l' \notin \EV''[e']$, and so $l'$ is \mony.
