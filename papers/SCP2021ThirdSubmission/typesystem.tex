@@ -199,9 +199,9 @@ Finally, we define a notation to mean that two expressions are identical, except
 	\indent $\forall C_0, m$ if $C_0.m = \method{\mdf_0}Tm{\trange{\mdf}Cx}e$,
 	we require:
 	\begin{iitemize}
-		\item $\ty[\emptyset][{\Kw{this}\mapsto\mdf_0\,C_0,\trange x{\!\mapsto\mdf}C}]eT$\SS
+		\item $\ty[\emptyset][{\Kw{this}\mapsto\mdf_0\,C_0,\trange x{\!\mapsto\mdf}C}]eT$, and\SS
 		\item $\forall i \in [1, n]$, if $\mdf_i = \Kw{capsule}$, then $\forall\E$
-		with $e = \E[x]$, $x\notin \E$
+		with $e = \E[x]$, $x\notin \E$.
 	\end{iitemize}
 	
 	\LS
@@ -212,7 +212,7 @@ Finally, we define a notation to mean that two expressions are identical, except
 		\item $\s(l_0) = C_0\{\range l\}$,\SS
 		\item we have $\clazz{C_0}{\_}{\Fs}{\_}$,\SS
 		\item $\Fs = \drangex{\_\,C}{\_}$, and\SS
-		\item $\C{l_1} \leq C_1,\ldots,\C{l_n} \leq C_n$
+		\item $\C{l_1} \leq C_1,\ldots,\C{l_n} \leq C_n$.
 	\end{iitemize}
 	Thus $\vdash \s$ ensures that there are no dangling pointers, each object has a proper class (and not an interface),
 	they have the appropriate number of fields, and each field value has an appropriate class. Note that $\vdash \s$ doesn't require the field kinds are respected, this is ensured by the below proofs of our type system requirements.
@@ -831,7 +831,7 @@ over expressions typed under a $\demut{\G}$.
 			$\Kw{mut}\,l'\in e$ or $\Kw{capsule}\,l'\in e$.
 			Thus we must have $\muty(\s,e,l)$, a contradiction.
 
-		\item Suppose that the $\textsc{new/new true}$ rule was
+		\item Suppose the $\textsc{new/new true}$ rule was
 		applied, i.e. we have some $\EV$ with $e = \EV[\new C{\drange{\mdf}l}]$,
 		$\s' = \s,l'\mapsto C\{\range l\}$, and $e'\in\{\EV[\M{l'}{\Kw{mut}\,l'}{\invariant{l'}}],\,\EV[\Kw{mut}\,l']\}$.
 			Since no preexisting part of $\s$ is modified, we must have that
@@ -913,6 +913,7 @@ Similar to \thm{Stronger Mut Consistency}, we prove a stronger version of \thm{N
 Now the hardest requirements to prove: $\thm{Imm Consistency}$ and $\thm{Capsule Consistency}$.
 We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $\Kw{imm}$ is expected, and our $\textsc{TAsCapsule}$ typing rule allows the use of $\Kw{imm}$ local variables.
 
+\clearpage
 \SS\begin{theorem}[Imm--Capsule Consistency]\ \\	
 	\indent If $\VS(\s,e)$, then $\forall l$:
 	\begin{ienumerate}
@@ -1035,8 +1036,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 				have made $l$ $\immut$, a contradiction.
 		\end{itemize}
 	
-	\item Now we show that \thm{Capsule Consistency} holds.
-		Suppose $e = \E[\Kw{capsule}\,l]$, for some $\E$, and $\encap(\s,\E,l)$
+	\item Now we show that \thm{Capsule Consistency} holds, by assuming it does not, and then showing a contradiction. Thus we suppose that $e = \E[\Kw{capsule}\,l]$, for some $\E$ where $\encap(\s,\E,l)$
 		doesn't hold.
 		\LSenum
 		
@@ -1175,7 +1175,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 				\item Suppose $\E = \EV$, and so $\mdf'\,l'' = \Kw{capsule}\,l$. This part of the proof is the most complex, as we need to use that fact that $\mdf\,l''$ is the result of reducing an expression that was originally typed under $\demut{\G}$. Thus we need to reason over the entire reduction sequence starting from when the $\Kw{as}$ was initially introduced into the main expression, moreover, the $\demut{\G}$ typing does not actually prevent the $\Kw{as}$ from originally containing $\Kw{mut}$ references, rather it only restricts how the body of the $\Kw{as}$ can \emph{use} them.
 				\begin{itemize}
 					\item Let $\s_0$ and $e_0$ be such that $\s_0|\EV[\cas{e_0}]$
-					is the earliest state in our reduction sequence where $\s_0|e_0\rightarrow^*\s|\cas{\mdf\,l}$.
+					is the earliest state in our reduction where $\s_0|e_0\rightarrow^*\s|\cas{\mdf\,l}$.
 					Thus, $\s_0|\cas{e_0}$ is the state our $\cas{\mdf\,l}$ expression
 					was in before its body began reduction.
 					By definition of $\VS$ and our reduction rules we must have had that
@@ -1184,9 +1184,8 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 					
 					\item
 					%We will show that $\tyr[\s_0]{\demut{e_0}}{\Kw{mut}\,C}$ holds for some $C$:
-						Thus there is some $\s'_0$, $m$, and $\range[,][0]l$, where $\s'_0|\call{
-							\_\,l_0}m{\range{\_\,l}}\rightarrow\s'_0|\E_1[\cas{e_0}]\rightarrow^*\s_0|\EV'[\cas{e_0}]$,
-						where $\EV' \in \EV$.
+						Thus there is some $\s'_0$, $m$, $\range[,][0]l$, and $\EV'$, where  $\EV' \in \EV$ and we have a reduction sequence $\s'_0|\call{
+							\_\,l_0}m{\range{\_\,l}}\rightarrow\s'_0|\E_1[\cas{e_0}]\rightarrow^*\s_0|\EV'[\cas{e_0}]$.
 						By our $\textsc{call}$ and $\textsc{call mutator}$
 						reduction rules, this $\cas{e_0}$ expression must have come from
 						the method body.
@@ -1194,7 +1193,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 						some $e'_0$ and $\E_2$ with:\\
 						\null\quad $C_0.m = \method{\mdf_0}{\_}m{\trange{\mdf}Cx}{\E_2[\cas{e'_0}]}$, and\\
 						\null\quad $e'_0[\trange[,][0]x{\!\coloneqq\mdf}l] = e_0$.\\
-						By our well-formedness rules on method bodies and $\thm{Nested Type}$
+						By our well-formedness rules on method bodies and the $\thm{Nested Type}$ lemma,
 						we have $\tye[\emptyset]{\cas{e'_0}}{\Kw{capsule}\,C}$,
 						where $\G = \trange[,][0]{\mdf}C{\!\mapsto x}$, for some $C$.
 						\LSiiitem
@@ -1234,7 +1233,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 						Thus we have not $\muty(\s_0,\demut{e_0},l_2)$.
 						Clearly $e_0\sim\demut{e_0}$, and since $\s_0|e_0\rightarrow^*\s|\mdf\,l$,
 						by $\thm{Bisimulation}$, there is some $\mdf''$ such that $\s_0|\demut{e_0}\rightarrow^*\s|\mdf''\,l$.
-						Then, since not $\muty(\s_0,\demut{e_0},l_2)$, 
+						Then, since we don't have $\muty(\s_0,\demut{e_0},l_2)$, 
 						and since $\vdash \s_0$ and $\tyr{\demut{e_0}}{\Kw{mut}\,C}$,
 						by $\thm{Stronger Non-Mutating}$,
 						we have $\s(l_2) = \s_0(l_2)$.
@@ -1245,7 +1244,7 @@ We need to prove these simultaneously as a $\Kw{capsule}$ can be used where an $
 						Since $tyr[\s_0]{\demut{e_0}}{\Kw{mut}\,C}$,
 						by $\thm{Type Preservation}$ it follows
 						that $\mdf'' \leq \Kw{mut}$ and hence $\muty(\s,\mdf''\,l,l_2)$.
-						But $\s_0|\demut{e_0}\rightarrow^*\s|\mdf''\,l$ and we had not $\muty(\s_0,\demut{e_0},l_2)$,
+						But $\s_0|\demut{e_0}\rightarrow^*\s|\mdf''\,l$ and not $\muty(\s_0,\demut{e_0},l_2)$,
 						so by $\thm{Stronger Mut Consistency}$ we have not $\muty(\s,\mdf''\,l,l_2)$,
 						a contradiction.
 						\LSiiitem
@@ -1416,8 +1415,8 @@ Finally, we prove \thm{Strong Exception Safety}, in a manner similar to how we p
 	some $\E''$, $l'$, and $l''$, with $l'\in\rog(\s,l)$, $e_0 = \E''[\Kw{capsule}\,l'']$,
 	and $l'\in\mrog(\s,l'')$.
 		Clearly we also have $\muty(\s,\EV[\trys{\s}{e_0}{e'_0}],l)$,
-		and since $\VS(\s,\EV[\trys{\s}{e_0}{e'_0}])$, by $\thm{Capsule Consistency}$,
-		not $\reach(\s,\EV[\trys{\s}{\E}{e'_0}],l)$.
+		and since $\VS(\s,\EV[\trys{\s}{e_0}{e'_0}])$, it follows from $\thm{Capsule Consistency}$,
+		that we do not have $\reach(\s,\EV[\trys{\s}{\E}{e'_0}],l)$.
 		But this implies not $\reach(\s,\EV,l)$, and since $e'_0 = e'$,
 		not $\reach(\s,e',l)$ holds. Thus we have not $\reach(\s,\EV[e'_0])$,
 		a contradiction.

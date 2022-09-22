@@ -245,7 +245,7 @@ class Point {
 try {
 	mut Point p = new Point(1, 2)
 	try {
-		p.add(someNumber); // could throw a MyChecked, or any kind of unchecked exception
+		p.add(someNumber); // could throw a MyChecked, or any unchecked exception
 		if (...) { p = new Point(...); } // update a local variable
 	} 
 	catch (MyChecked e) { ... }// Ok

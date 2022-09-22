@@ -29,10 +29,11 @@ class Person { .. // Same as before
     this.name = name; // check after field update
     if (!this.invariant()) { throw new Error(...); }
   }
+
   Person(String name) {
     this.name = name; // check at end of constructor
     if (!this.invariant()) { throw new Error(...); }
-    }
+  }
 }
 \end{lstlisting}
 %Programmers often manually check for invariants by placing assertions in the same places we did in this example. % ISAAC: Deleted because unnecesary, and makes the next sentence misunderstandable
@@ -42,8 +43,9 @@ We now show how if we were to relax (as in Rust), or even eliminate (as in Java)
 Consider this use of person; where \Q@myPerson.invariant()@ may randomly return \Q!false!:
 \begin{lstlisting}[morekeywords={assert}]
 class EvilString extends String {//INVALID EXAMPLE
-  @Override read method Bool isEmpty() { return new Random().bool(); }
-}//Creates a new object capability out of thin air
+  @Override read method Bool isEmpty() {
+  	//Creates a new object capability out of thin air
+  	return new Random().bool(); }}
 ...
 method mut Person createPersons(String name) {
   // we can not be sure that name is not an EvilString

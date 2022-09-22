@@ -2,7 +2,6 @@
  
 Suppose we have a \Q@Cage@ class which contains a \Q@Hamster@; the \Q@Cage@ will move its \Q@Hamster@ along a path. We would like to ensure that the \Q@Hamster@ does not deviate from the path. We can express this as the invariant of \Q@Cage@: the position of the \Q@Cage@'s \Q@Hamster@ must be within the path (stored as a field of \Q@Cage@).
 This example is interesting since it relies on \Q@List@s and \Q@Point@s that are not designed with \Q@Hamster/Cage@s in mind.
-
 %We show a detailed analysis on our Spec\# implementation, showing all the effort we put in trying to find better solutions.
 
 %
@@ -11,13 +10,14 @@ This example is interesting since it relies on \Q@List@s and \Q@Point@s that are
 % 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
 %  }
 \begin{lstlisting}
-class Point { Double x; Double y; Point(Double x, Double y) {..}
+class Point {
+  Double x; Double y; Point(Double x, Double y) {..}
   @Override read method Bool equals(read Object that) {
     if (!(that instanceof Point)) { return false; }
     Point p = (Point)that;
-    return this.x == p.x && this.y == p.y;
-  }
-}
+    return this.x == p.x && this.y == p.y; }}
+\end{lstlisting}
+\begin{lstlisting}
 class Hamster { Point pos; Hamster(Point pos) {..} }//pos is imm by default
 class Cage {
   rep Hamster h;

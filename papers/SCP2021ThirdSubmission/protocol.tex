@@ -183,10 +183,11 @@ The following example illustrates these properties of rep mutators:
 \begin{lstlisting}
 class Foo {
 	rep Point p;
-
 	read method Bool invariant() {
 		return this.p.x < this.p.y;
 	}
+\end{lstlisting}
+\begin{lstlisting}
 	read method read Point getP() {
 		return this.p; // ok, not a rep mutator
 	}

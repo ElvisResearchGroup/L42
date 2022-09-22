@@ -267,7 +267,7 @@ This ensures that the body of a \Q!try! block will only be an $\error$ if there 
 The rest of our grammar is standard and follows Java, except that types ($T$) contain a reference capability ($\mdf$), and fields ($F$) contain a field kind ($\fmdf$).
 
 \subheading{Reference Capability Operations}
-We define the following properties of our reference capabilities and field kinds:
+We define the following properties of our reference capabilities and field kinds:\SS
 \begin{itemize}
 	\item $\mdf \leq \mdf'$ indicates that a reference of capability $\mdf$ can be used whenever 
     one of capability $\mdf'$ is expected. This defines a partial order:\\
@@ -276,13 +276,13 @@ We define the following properties of our reference capabilities and field kinds
 	\item $\Kw{imm} \leq \Kw{read}$\SS
 	\item $\Kw{mut} \leq \Kw{read}$\SS
 	\item $\Kw{capsule} \leq \Kw{mut}$, $\Kw{capsule} \leq \Kw{imm}$, and $\Kw{capsule} \leq \Kw{read}$
-	\end{iitemize}
+	\end{iitemize}\SS
 	
 	\item $\derep{\fmdf}$ denotes the reference capability that a field with kind $\fmdf$ requires when initialised/updated:\\
 	\SS[1]\begin{iitemize}
 	\item $\derep{\Kw{rep}} = \Kw{capsule}$\SS
 	\item $\derep{\fmdf} = \fmdf$, otherwise (in which case $\fmdf$ is also of form $\mdf$)
-	\end{iitemize}
+	\end{iitemize}\SS
 	
 	\item $\rmdf{\mdf}{\fmdf}$ denotes the reference capability that is returned when accessing a field with kind $\fmdf$, on a receiver with capability $\mdf$:\\
 	\SS[1]\begin{iitemize}
@@ -293,9 +293,85 @@ We define the following properties of our reference capabilities and field kinds
 
 The $\leq$ notation and $\derep{\fmdf}$ notations are used later in \autoref{s:proof} and \autoref{s:typesystem}.
 
+\newcommand{\rowSpace}{\\\vspace{2.5ex}}%
+\begin{figure}
+	$$\!\!\!\!\!\begin{array}{l}
+		\smash{
+			\rrule{new}
+			{\s}{\new{C}{\range{\_\,l}}}
+			{\s,l_0\mapsto C\{\range{l}\}}{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}}
+			\text{, where:}}
+		\\\qquad l_0 = \fr(\s)\text{ and }C \neq \Kw{True}
+		\\\rowSpace\smash{
+			\rrule{new true}
+			{\s}{\new{\Kw{True}}{}}
+			{\s,l_0\mapsto \Kw{True}\{\}}{\Kw{mut}\,l_0}
+			\text{, where:}}
+		\\[-2.5ex]\qquad l_0 = \fr(\s)
+		\\\rowSpace\smash{
+			\rrule{access}
+			{\s}{\mdf\,l\D f}
+			{\s}{\mdf'\,l'}
+			\text{, where:}}
+		\\[-2.5ex]\qquad
+		\C{l}.f = \field{\fmdf}{\_}{f}
+		\text{, }\mdf' = \rmdf{\mdf}{\fmdf}
+		\text{, and }l' = \s[l.f]
+		\\\rowSpace\smash{
+			\rrule{update}
+			{\s}{\_\,l\D f\equals\_\,l'}
+			{\s[l.f=l']}{\M{l}{\Kw{mut}\,l}{\invariant{l}}}
+		}
+		\\[0ex]\smash{
+			\rrule{call}
+			{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
+			{\s}{\as{e'}{\mdf'}}
+			\text{, where:}}
+		\\\qquad\begin{array}{l}
+			\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e}\\*
+			e' = e[\Kw{this}\coloneqq\mdf_0\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]\\*
+			\text{if }\mdf_0 = \Kw{mut}\text{ then there are no }f\text{ and }\E \text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]
+		\end{array} % because otherwise there seems to be too much space between this and as
+		\\\rowSpace\smash{
+			\rrule{call mutator}
+			{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
+			{\s}{\M{l_0}{\as{e}{\mdf'}}{\invariant{l_0}}}
+			\text{, where:}}
+		\\[-2.5ex]\qquad\begin{array}{l}
+			\C{l_0}.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{\E[\Kw{this}\D f]}\\*
+			\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\\*
+			e = \E[\Kw{this}\D f][\Kw{this}\coloneqq\Kw{mut}\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]
+		\end{array}\vspace{-0.5ex} % because otherwise there seems to be too much space between this and as
+		\\\rowSpace\smash{
+			\rrule{as}
+			{\s}{\as{\_\,l}{\mdf}}
+			{\s}{\mdf\,l}}
+		\\\smash{
+			\rrule{try enter}
+			{\s}{\try{e}{e'}}
+			{\s}{\trys{\s}{e}{e'}}}
+		\\\rowSpace\smash{
+			\rrule{try ok}
+			{\s}{\trys{\s'}{v}{\_}}
+			{\s}{v}}
+		\\\smash{
+			\rrule{try error}
+			{\s}{\trys{\s'}{e}{e'}}
+			{\s}{e'}
+			\text{, where } \error(\s,e)}
+		\\\rowSpace\smash{
+			\rrule{monitor exit}
+			{\s}{\M{l}{v}{\mdf\,l'}}
+			{\s}{v}
+			\text{, where } \C{l'} = \Kw{True}
+		}
+		\vspace{-2.5ex}
+	\end{array}$$
+	\caption{Reduction rules}\label{f:reductions}
+\end{figure}%
 \subheading{Well-Formedness Criteria}
 %\subheading{Reduction Rules}
-We additionally restrict the grammar with the following well-formedness criteria:
+We additionally restrict the grammar with the following well-formedness criteria:\SS
 \begin{itemize}
 	\item \Q@invariant()@ methods must follow the requirements of \autoref{s:protocol}, except that for simplicity method calls on \Q!this! are not allowed.\footnote{Such method calls could be inlined or rewritten to take the field values themselves as parameters.} This means that for every non-interface class $C$, $C.\Kw{invariant} = \method{\Kw{read}}{\Kw{imm}\,\Kw{Bool}}{\Kw{invariant}}{}e$, where $e$ can only use \Q!this! as the receiver of an \Q!imm! or \Q!rep! field access. Formally, this means that for all $\E$ where $e = \E[\Kw{this}]$, we have:
 	\begin{iitemize}
@@ -333,82 +409,6 @@ Formally, this means that for any $C$, $m$, and $f$, if $C.f = \field{\Kw{rep}}{
 \end{itemize}
 
 \subheading{Reduction Rules}
-\newcommand{\rowSpace}{\\\vspace{2.5ex}}%
-\begin{figure}
-	\!\!$\!\!\!\!\!\begin{array}{l}
-	\smash{
-		\rrule{new}
-		{\s}{\new{C}{\range{\_\,l}}}
-		{\s,l_0\mapsto C\{\range{l}\}}{\M{l_0}{\Kw{mut}\,l_0}{\invariant{l_0}}}
-		\text{, where:}}
-	\\\qquad l_0 = \fr(\s)\text{ and }C \neq \Kw{True}
-	\\\rowSpace\smash{
-		\rrule{new true}
-		{\s}{\new{\Kw{True}}{}}
-		{\s,l_0\mapsto \Kw{True}\{\}}{\Kw{mut}\,l_0}
-		\text{, where:}}
-	\\[-2.5ex]\qquad l_0 = \fr(\s)
-	\\\rowSpace\smash{
-		\rrule{access}
-		{\s}{\mdf\,l\D f}
-		{\s}{\mdf'\,l'}
-		\text{, where:}}
-	\\[-2.5ex]\qquad
-		\C{l}.f = \field{\fmdf}{\_}{f}
-		\text{, }\mdf' = \rmdf{\mdf}{\fmdf}
-		\text{, and }l' = \s[l.f]
-	\\\rowSpace\smash{
-		\rrule{update}
-		{\s}{\_\,l\D f\equals\_\,l'}
-		{\s[l.f=l']}{\M{l}{\Kw{mut}\,l}{\invariant{l}}}
-	}
-	\\[0ex]\smash{
-		\rrule{call}
-		{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
-		{\s}{\as{e'}{\mdf'}}
-		\text{, where:}}
-	\\\qquad\begin{array}{l}
-		\C{l_0}.m = \method{\mdf_0}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{e}\\*
-		e' = e[\Kw{this}\coloneqq\mdf_0\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]\\*
-		\text{if }\mdf_0 = \Kw{mut}\text{ then there are no }f\text{ and }\E \text{ with }\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\text{ and }e = \E[\Kw{this}\D f]
-	\end{array} % because otherwise there seems to be too much space between this and as
-	\\\rowSpace\smash{
-		\rrule{call mutator}
-		{\s}{\call{\_\,l_0}{m}{\range{\_\,l}}}
-		{\s}{\M{l_0}{\as{e}{\mdf'}}{\invariant{l_0}}}
-		\text{, where:}}
-	\\[-2.5ex]\qquad\begin{array}{l}
-		\C{l_0}.m = \method{\Kw{mut}}{\mdf'\,\_}{m}{\drange{\mdf}{\_\,x}}{\E[\Kw{this}\D f]}\\*
-		\C{l_0}.f = \field{\Kw{rep}}{\_}{f}\\*
-		e = \E[\Kw{this}\D f][\Kw{this}\coloneqq\Kw{mut}\,l_0,\trange{x}{\!\coloneqq\mdf}{l}]
-	\end{array}\vspace{-0.5ex} % because otherwise there seems to be too much space between this and as
-	\\\rowSpace\smash{
-		\rrule{as}
-		{\s}{\as{\_\,l}{\mdf}}
-		{\s}{\mdf\,l}}
-	\\\smash{
-		\rrule{try enter}
-		{\s}{\try{e}{e'}}
-		{\s}{\trys{\s}{e}{e'}}}
-	\\\rowSpace\smash{
-		\rrule{try ok}
-		{\s}{\trys{\s'}{v}{\_}}
-		{\s}{v}}
-	\\\smash{
-		\rrule{try error}
-		{\s}{\trys{\s'}{e}{e'}}
-		{\s}{e'}
-		\text{, where } \error(\s,e)}
-	\\\rowSpace\smash{
-		\rrule{monitor exit}
-		{\s}{\M{l}{v}{\mdf\,l'}}
-		{\s}{v}
-		\text{, where } \C{l'} = \Kw{True}
-		}
-	\vspace{-2.5ex}
-	\end{array}$
-\caption{Reduction rules}\label{f:reductions}
-\end{figure}%
 Our reduction rules are defined in \autoref{f:reductions}. We use the function $\fr(\s)$ to return an arbitrary $l$ such that $l \notin \dom(\s)$.
 The rules use $\EV$ to ensure that the sub-expression to be reduced is the left-most unevaluated one:
 \begin{itemize}
@@ -462,8 +462,6 @@ We define a deterministic reduction arrow to mean that exactly one reduction is 
 %Set style definition:\\
 %\indent$\s|e \Rightarrow \s'|e'$ iff $\{\s'|e'\} = \{\s''|e'' \text{ where } \s|e \rightarrow \s''|e''\}$
 %Ok, I'm leaving the forall definition, not sure what is better.
-
-\LS
 
 \noindent We say that an object is \valid when calling its \Q@invariant()@ method would
 deterministically produce an $\Kw{imm}\,\Kw{True}$ in a finite number of steps, i.e. assuming the type system is sound, this means it does not evaluate to a non-$\Kw{True}$ reference, fail to terminate, or produce an \error.

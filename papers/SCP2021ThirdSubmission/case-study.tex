@@ -75,21 +75,19 @@ read method Bool invariant() {
 }
 \end{lstlisting}
 
-Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!rep! fields.
-
-\subheading{Our Experiment}
-
 \newlength{\imglength}%
 \setlength{\imglength}{0.44\textwidth}%
 \columnsep=0.5em%
 \begin{wrapfigure}{r}{\imglength}%
 	\setbox0=\hbox{\strut}%
-	\vspace{1\ht0}%
+	\vspace{-0.25\ht0}%
 	\includegraphics[width=\imglength]{GuiImg}%
 	\vspace{-2\ht0}%
 \end{wrapfigure}% 
 
+Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!rep! fields.
 
+\subheading{Our Experiment}
 As shown in the figure below, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (grey) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 This set up is not overly complicated, the maximum nesting level of \Q@Widget@s is $5$.
@@ -223,4 +221,3 @@ This is needed to delineate scopes for promotions.
 Based on these results, we believe our system is significantly simpler and easier to use
 in comparison with Spec\#, that is more verbose but supports a wider range of verification applications.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
-

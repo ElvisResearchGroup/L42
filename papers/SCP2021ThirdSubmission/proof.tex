@@ -27,8 +27,7 @@ We define the \mrog of an $l$ to be the locations reachable from $l$ by traversi
 \end{iitemize}
 Thus the \mrog of $l$ are the objects that could be mutated via a reference to $l$.
 
-\LS
-\noindent We define what it means for an $l$ to be \reach from an expression or context:
+We define what it means for an $l$ to be \reach from an expression or context:
 \begin{iitemize}
 \item $\reach(\s, e, l)$ iff $\exists l' \in e$ such that $l \in \rog(\s, l')$\SS
 \item $\reach(\s, \E, l)$ iff $\exists l' \in \E$ such that $l \in \rog(\s, l')$
@@ -46,9 +45,9 @@ We now define what it means for an object to be \immut: it is in the \rog of an 
 Now we can define what it means for an $l$ to be \muty\footnote{We use the term \muty and not `\emph{mutable}' as an object might be neither \muty nor im\emph{mutable}, e.g. if there are only \Q!read! references to it.} by an expression $e$: something reachable from $l$ can also be reached by using a \Q!mut! or \Q!capsule! reference in $e$, and traversing through any number of \Q!mut! or \Q!rep! fields:\\
 \indent $\muty(\s, e, l)$ iff $\exists l', l''$ such that:
 \begin{iitemize}
-	\item $l' \in \rog(\s,l)$\SS
-	\item $\mdf\,l'' \in e$ with $\mdf \in \{\Kw{mut}, \Kw{capsule}\}$\SS
-	\item $l' \in \mrog(\s,l'')$
+	\item $l' \in \rog(\s,l)$,\SS
+	\item $\mdf\,l'' \in e$ with $\mdf \in \{\Kw{mut}, \Kw{capsule}\}$, and\SS
+	\item $l' \in \mrog(\s,l'')$.
 \end{iitemize}
 \noindent The idea is that $e$ could mutate something reachable from $l$: by using $l''$ to get a \Q!mut! reference to $l'$, and then performing a field update on it; the new field value for $l'$ would then be observable through $l$. In particular, we will require the type system to ensure that $e$ can only mutate state observable from $l$ if $l$ is \muty.
 
@@ -73,21 +72,21 @@ First we require that fields and methods are only given values with the correct 
 \begin{ienumerate}
 	\item If $\VS(\E[\new{C}{\drangex{\mdf}{\_}}])$, then:
 	\begin{nitemize}
-		\item there is a $\clazz{C}{\_}{\Fs}{\_}$
-		\item $\Fs = \drangex{\fmdf}{\_\,\_}$
-		\item $\drange[\text{, }]{\mdf}{\!\leq \derep{\fmdf}}$
+		\item there is a $\clazz{C}{\_}{\Fs}{\_}$,
+		\item $\Fs = \drangex{\fmdf}{\_\,\_}$, and
+		\item $\drange[\text{, }]{\mdf}{\!\leq \derep{\fmdf}}$.
 	\end{nitemize}
 
 	\item If $\VS(\E[\_\,l\D f \equals \mdf\,\_])$, then:
 	\begin{nitemize}
-		\item $\C{l}.f = \field{\fmdf}{\_}{f}$\SS[0.15]
-		\item $\mdf \leq \derep{\fmdf}$
+		\item $\C{l}.f = \field{\fmdf}{\_}{f}$, and\SS[0.15]
+		\item $\mdf \leq \derep{\fmdf}$.
 	\end{nitemize}
 
 	\item If $\VS(\E[\call{\mdf_0\,l}{m}{\drangex{\mdf}{\_}}])$, then:
 	\begin{nitemize}
-		\item $\C{l}.m = \method{\mdf'_0}{\_}{m}{\drangex{\mdf'}{\_\,\_}}{\_}$\SS[0.15]
-		\item $\drange[\text{, }][0]{\mdf}{\!\leq\mdf'}$
+		\item $\C{l}.m = \method{\mdf'_0}{\_}{m}{\drangex{\mdf'}{\_\,\_}}{\_}$, and\SS[0.15]
+		\item $\drange[\text{, }][0]{\mdf}{\!\leq\mdf'}$.
 	\end{nitemize}
 \end{ienumerate}
 \end{restatable}%
@@ -172,8 +171,8 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 \SS\begin{Lemma}[No Dangling]\ \\
 		\indent If $\VS(\s, e)$ then:
 		\begin{iitemize}
-			\item $\forall l \in e$, $l \in \dom(\s)$\SS
-			\item $\forall l \in \dom(\s)$, if $\s(l) = C\{\ls\}$ then $\{\ls\} \subseteq \dom(\s)$
+			\item $\forall l \in e$, $l \in \dom(\s)$, and\SS
+			\item $\forall l \in \dom(\s)$, if $\s(l) = C\{\ls\}$ then $\{\ls\} \subseteq \dom(\s).$
 		\end{iitemize}
 	\end{Lemma}\SS
 	\begin{proof}
@@ -189,14 +188,16 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	Similarly, we show that once an $l$ becomes un-\reach, it remains that way:
 	
 \SS\begin{Lemma}[Lost Forever]\ \\
-		\indent If $\VS(\s, \E[e])$, and $\s|e \rightarrow^* \s'|e'$, then $\forall l \in \dom(\s)$, if not $\reach(\s, e, l)$, then not $\reach(\s', e', l)$.
+		\indent If $\VS(\s, \E[e])$, and $\s|e \rightarrow^* \s'|e'$, then\\
+		\indent\indent$\forall l \in \dom(\s)$, if not $\reach(\s, e, l)$, then not $\reach(\s', e', l)$.
 	\end{Lemma}\SS
 	\begin{proof}
 		The proof follows from the definition of \VS and induction on the number of reductions since the initial memory and main-expression, and the fact that each reduction either does not introduce an $l$ into the main expression or heap,
 		or only introduces $l$s that were already \reach (in the case of \textsc{update} and \textsc{access}), or only introduces an $l \notin \dom(\s)$ (in the case of \textsc{new/new true}).
 	\qed\end{proof}
 	\LS
-	
+
+	\clearpage
 	\noindent We show that a sub-expression can mutate an object only if it is \muty:
 	
 	\SS\begin{Lemma}[Non-Mutating]\ \\
@@ -214,8 +215,8 @@ Note that as our reduction rules never modify the body of a \Q!catch!, it follow
 	\indent If $\VS(\s, \E[\invariant{l}])$ and $\s|\invariant{l} \rightarrow^{n} \s'|e'$, for some $n \geq 0$, then:
 	\begin{iitemize}
 		%\item $\forall l' \in \dom(\s)$, not $\muty(\s', e', l')$
-		\item $\s \subseteq \s'$\SS
-		\item $\s|\invariant{l} \Rightarrow^{n} \s'|e'$
+		\item $\s \subseteq \s'$, and\SS
+		\item $\s|\invariant{l} \Rightarrow^{n} \s'|e'$.
 	\end{iitemize}
 	\end{Lemma}\SS
 	\begin{proof}
@@ -271,13 +272,13 @@ To simplify the notation, we define the \rf of an $l$ to be the set of \Q!rep! f
 \end{iitemize}
 
 \LS 
-
+\clearpage
 \noindent Now we formally state the core properties of our \Q!rep! fields (informally described in \autoref{s:protocol}):%
 \SS\begin{theorem}[Rep Field Soundness]\ \\
 	\indent If $\VS(\s, e)$ then $\forall l$ with $\reach(\s, e, l)$, we have:
 	\begin{iitemize}
 		\item not $\RCR(\s, l, f)$, and\SS
-		\item one of the following holds:
+		\item either:
 		\begin{iitemize}
 			\item $\RCN(\s, l)$ and not $\RM(\s, e, l)$, or\SS[0.15]
 			\item $\HNO(\s, e, l)$.
@@ -295,8 +296,8 @@ In the inductive case, where $m > 0$, we have $\drange[\rightarrow][0][m - 1]{\s
 Our inductive hypothesis is then that the conclusion of our theorem holds for each $\s_i|e_i$, for $i \in [0, m - 1]$.
 We then proceed by cases on the reduction rule applied, and prove the theorems conclusion for $\s|e$:
 \begin{ienumerate}
-	\item $\rrule{new/new true}{\s'}{\new{C}{\drange{\mdf}{l}}}{\s}{e'}$, 
-	\\where $\s = \s',l_0\mapsto C\{\range{l}\}$; by \thm{Type Cosnsistency}, we have $\clazz{C}{\_}{\drange{\fmdf}{\_\,f}}$.
+	\item $\rrule{new/new true}{\s'}{\new{C}{\drange{\mdf}{l}}}{\s}{e'}$, where $\s = \s',l_0\mapsto C\{\range{l}\}$,\\
+	and by \thm{Type Cosnsistency}, we have $\clazz{C}{\_}{\drange{\fmdf}{\_\,f}}$.
 	\begin{enumerate}
 		\item We have that $l_0$ is not \RCR:
 			by \thm{No Dangling}, we have that $\forall l' \in \dom(\s')$, $\rog(\s', l') \subseteq \dom(\s')$.
@@ -342,7 +343,7 @@ We then proceed by cases on the reduction rule applied, and prove the theorems c
 			\item If $\fmdf = \Kw{rep}$, since $l'$ was not \RM, this field access can't have been inside a rep mutator (or else we would be inside a monitor).
 			As fields are instance private, we have $\mdf \neq \Kw{mut}$, or else the field access would have come from a rep mutator.
 			
-			If $\mdf = \Kw{capsule}$, then by \thm{Capsule Consistency} and \RCR, $l$ is not \reach from $\EV[\rmdf{\mdf}{\fmdf}\,\s[l.f]]$, so it is irrelevant if $l$ is no longer \RCN.
+			If $\mdf = \Kw{capsule}$, then by \thm{Capsule Consistency} and the definition of \RCR, $l$ is not \reach from $\EV[\rmdf{\mdf}{\fmdf}\,\s[l.f]]$, so it is irrelevant if $l$ is no longer \RCN.
 			Otherwise, since $\mdf \notin \{Kw{capsule}, \Kw{mut}\}$, we have $\rmdf{\mdf}{\fmdf} \nleq \Kw{mut}$, so $l.f$ is still \CN.
 			By the above case for $\fmdf \neq \Kw{rep}$, every other $f' \in \rf(\s,l)$ is \CN.
 
@@ -496,7 +497,7 @@ We then proceed by cases on the reduction rule applied, and prove the theorems c
 			\item We must not have had that $l$ was \HNO, since $e'$ would contain $l$ as the receiver of a method call. Thus, by our inductive hypothesis, in state $i$, $l$ was \RCN and not \RM.
 		
 			
-			\item As with the above case for \thm{try error}, by the inductive hypothesis, $l$ must have been \HNO, and so the monitor must have been introduced by \textsc{call mutator}.
+			\item As with the above case for \thm{try error}, it follows from the inductive hypothesis that $l$ must have been \HNO, and so the monitor must have been introduced by \textsc{call mutator}.
 			\item Thus, we were previously in a state $\s_i|e_i$ where $i \in [1, m - 1]$, $e_i$ is of form $\EV[e']$, and the next state was obtained by said application of the \textsc{call mutator} rule to $e'$.
 			\item Thus, by the inductive hypothesis, in state $i$, $l$ must have been \RCN and not \RM.
 			
@@ -594,7 +595,7 @@ modify the object, but not observe it; only after that moment, the object may be
 			
 			Since $l \neq l'$, $l'$ can't have been \RCN. Thus, by \thm{Rep Field Soundness}, $l'$ was \HNO, and so $\EV[\mdf\,l\D f\equals v]$ is of form $\EV'[\M{l'}{e''}{e'''}]$:
 			\begin{itemize}
-				\item As the \rog of $l'$ has just been mutated, and since $e'''$ must have started off as $\invariant{l'''}$, if follows from \thm{Determinism}, that we cannot currently be inside $e'''$.
+				\item As the \rog of $l'$ has just been mutated, and since $e'''$ was must have come from the reduction of $\invariant{l'''}$, if follows from \thm{Determinism}, that we cannot currently be inside $e'''$.
 				\item Thus, $\EV = \EV'[\M{l'}{\EV''}{e'''}]$, where $\EV''[\mdf\,l\D f\equals v] = e''$.
 				
 				\item Suppose that $l'$ was not \reach in $e''$, then clearly $l' \notin e''$, since $l' \neq l$, it follows that $l' \notin \EV''[e']$, and so $l'$ is \mony.
