@@ -1,0 +1,72 @@
+//Slide 1
+There is a fascinating motto in the PL design community:
+
+Freedom is slavery.
+
+I will try to explain it more, hopefully you can learn about it and disseminate it too.
+
+It is highly connected with the concept of offensive programming: you code should monitor its execution and throw error as soon as anything go out of the predicted path; hopefully with a good error message explaining what is going wrong.
+
+
+//Slide 2
+Offensive programming is fundamental when working on a large project. Consider the following 3 scenarios:
+
+    One programmer for a few days with no planned maintenance; usually the customer is the single programmer.
+    A single team/company for a few months. We have an actual maintenance plan. Usually the customer is a wealthy individual or a small company.
+    A community effort for many years. In this context, maintaining is developing. For example, is 'Gimp' actively maintained or actively developed? In those cases, usually there is no clear 'customer', but a large user base.
+//Slide 3
+Programming at scale
+
+    Small scale: programming is mostly to express behavior. Here offensive programming seams to be just a waste of time.
+    Larger scale: programming is mostly to restrict behavior. Here offensive programming really pays off: code you wrote long ago, or written by another programmer is actively teaching users how to use it by checking how it gets used. Sure, there may also be documentation.. but no one actually ever read it. Offensive programming is like a form of active documentation.
+
+//Slide 4
+Programming is a competitive effort, a battle!
+
+Consider a multiplayer shooter or similar game. Today, they just released a new update: yet another kind of weapon.
+
+    Attack: cool, now I can do yet another thing; more freedom, more expressive power! – Still, I can only keep up to 4 weapons in my inventory
+    Defense: Oh, no, now the enemy can kill me in yet another way – There are many enemies and they may have any weapon at all. How to defend against all possible weapons?
+
+//Slide 5
+Consider a programming language. There is a new update: yet another kind of statement/expression/features/language-primitive.
+
+    Initial development: cool, now I can do yet another thing; more freedom, more expressive power! – Still, I can keep a few features in my head at once (finite brain).
+    Maintenance/Usability: Oh, no, now the users/coworkers can interact with my code in yet another way. – Given enough time, all possible ways to interact with my code become relevant. How to make sure my code is correct in all those scenarios?
+
+//Slide 6
+Two kinds of gameplay: Cooperative and PvP
+
+Continuing on the video-game metaphors, we can imagine two kinds of Programming environment:
+
+Cooperative: This kind of programming environment is what is commonly associated to Python or Ruby: a user of you code can always break/dismantle absolutely everything if they want, and the only documentation giving FULL information on what would happen if they start playing editing the stack trace variable values or monkey patching methods is the actual source code. This gives the user full freedom, and gives the library writer full slavery. They basically can not truly guarantee anything. That may not be too bad for small projects, we can rely on conventions and cooperation, and hope for the best. 
+
+Minecraft it is great for cooperative gaming, many builders can come together and build amazing things. In Minecraft it is easier to not step on each other feet that while programming: usually if my wall is not very stable, your house will not collapse. Still, cooperative Mincraft servers usually have a reasonable small number of players. The more the players, the more the risk of a griefer getting in.
+
+This is the same for coding. If you project is big enough, or if breaking your project is worth enough money you may not be able to get enough truly trusted programmers to work on it.
+Also.. do you know about supply chains attack? when hacker manages to inject adversarial code in your project by cooperating to some of the open source libraries you use.
+
+PvP: I assume you are now opening you eyes very wide.. what a PvP programming environment can possibly look like? PvP Mincraft servers are basically giant wastelands. How can PvP programming end up any better?
+
+
+//Slide 7
+The C model delusion
+
+There is a big lie in programming: The lie is that
+'Ultimately everything is broken', thus the best we can do is to just be sensible, practical and try to cooperate.
+
+Indeed, in the old C/Shell/Lowlevel-OS programming mindset, this is correct. Many languages are just a nice way to generate arbitrary assembler, thus in the end, everything can happen.
+
+Thankfully we are slowly moving away from it. In Java and C#, a bunch of things are actually guaranteed by the language,
+that is why Java has 'security bugs/fix': because they have a security model, some properties that they promise.
+In a C/C++ compiler there is no such thing as a security fix, not because C is more secure, but because there is nothing actually promised by the language.
+
+//Slide 8
+
+In Java it is actually possible to write good Offensive code that is actually guaranteed to work modularly: no matter how adversarial the user context is, your code will still be able to preserve internal constraints and to monitor its behavior against abuse. (Yes, I know, this is technically false, keep reading)
+
+In my language, I try to get much further then Java: In Java you can still break the JVM by loading broken C code, or (on some OS) by writing on virtual files that modify your actual memory.
+
+So... in some sense, if arbitrary adversarial code can get into your system, if we are in a real PvP scenario... you are still in the desolate wasteland.
+
+In 42, this is not the case, and even with adversarial code injected into your security critical process, you can still build a secure fort, and ensure arbitrary representation invariants. From those, you can build a strong and flexible security system where valid objects are guaranteed to only do valid actions, and objects of those classes are the one ones able to do those kinds of actions (object capabilities).
