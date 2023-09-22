@@ -1,0 +1,81 @@
+
+\documentclass[runningheads]{llncs}
+%
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+% If you use the hyperref package, please uncomment the following two lines
+% to display URLs in blue roman font according to Springer's eBook style:
+%\usepackage{color}
+%\renewcommand\UrlFont{\color{blue}\rmfamily}
+\begin{document}
+%
+\title{Using capabilities for strict runtime invariant checking}
+%
+%\titlerunning{Abbreviated paper title}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{Isaac Oscar Gariano\inst{1}\orcidID{0000-0002-4881-0999} \and\\
+Marco Servetto\inst{1}\orcidID{0000-0003-1458-2868} \and
+Alex Potanin\inst{2}\orcidID{0000-0002-4242-2725}}
+%
+
+
+
+\authorrunning{Isaac O. Gariano et al.}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{Victoria University of Wellington, Kelburn, 6012, Wellington, New Zealand 
+\email{\{isaac, marco.servetto\}@ecs.vuw.ac.nz}
+\and The Australian National University, Canberra, 2600, ACT, Australia
+\email{alex.potanin@anu.edu.au}} 
+%\institute{Princeton University, Princeton NJ 08544, USA \and
+%Springer Heidelberg, Tiergartenstr. 17, 69121 Heidelberg, Germany
+%\email{lncs@springer.com}\\
+%\url{http://www.springer.com/gp/computer-science/lncs} \and
+%ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
+%\email{\{abc,lncs\}@uni-heidelberg.de}}
+
+%
+\maketitle              % typeset the header of the contribution
+%
+\begin{abstract}
+In this paper we use pre-existing language support for both reference and object capabilities to enable sound runtime verification of representation invariants.
+Our invariant protocol is stricter than the other  protocols, since it guarantees that invariants hold for all objects involved in execution.
+Any language already offering appropriate support for reference and object capabilities can support our invariant protocol with minimal added complexity.
+In our protocol, invariants are simply specified as methods whose execution is statically guaranteed to be deterministic and to not access any externally mutable state.
+We formalise our approach and prove that our protocol is sound, in the context of a language supporting mutation, dynamic dispatch, exceptions, and non-deterministic I/O.
+We present case studies showing that our system requires a lighter annotation burden compared to Spec\#, and performs orders of magnitude less runtime invariant checks compared to the `visible state semantics' protocols of D and Eiffel.
+
+
+\keywords{reference capabilities\and
+object capabilities\and
+runtime verification\and
+class invariants.}
+
+
+\end{abstract}
+%
+%
+%
+\section{Journal first submission of Using capabilities for strict runtime invariant checking}
+
+Our paper has been published in Science of Computer Programming Volume 224, 1 December 2022, 102878, and it can be easily retreived in open access on the following url and DOI:
+\\*${}_{}$\quad\quad \url{https://www.sciencedirect.com/science/article/pii/S0167642322001113}
+\\*${}_{}$\quad\quad \url{https://doi.org/10.1016/j.scico.2022.102878}.\\
+
+\noindent The authors of our work are Isaac Oscar Gariano, Marco Servetto and Alex Potanin.
+
+On Fri, 19 May 2023, we received an email titled \textit{``Invitation to QUATIC 2023 Journal-First Track'' }
+from \textit{``Dr. Andrea Janes''}.
+The email stats that \textit{``The chairs of the tracks Verification, Validation, and Testing,
+Quality Requirements; ICT Process Improvement; Organization, and
+Governance, Quality Aspects of Digital Transformation; and Quality
+Aspects of Human-Factors in Software Engineering suggested your paper Using capabilities for strict runtime invariant checking for the journal-first track.''}
+
+We think this shows that our work is relevant for QUATIC 2023.
+As you can see from our abstract, our work is clearly well suited for the track \textit{``Verification, Validation, and Testing''}.
+We consider our work a multidisciplinary approach that merges aspects of Runtime Verification, Static verification and type systems. We think that our work could facilitate important discussions between the members of those three similar but distinct research areas.
+
+\end{document}
