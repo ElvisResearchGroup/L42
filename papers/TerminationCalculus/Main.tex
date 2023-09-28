@@ -18,7 +18,7 @@
     %numberstyle=\tiny,               % Make line numbers tiny
     showstringspaces=false,          % Don't underline spaces in strings
     %breaklines=true,                 % Break long lines
-    morekeywords={@Post,@Pre,\result,then,loop},
+    morekeywords={@Post,@Pre,result,then,loop},
     morecomment=[l][\color{magenta}]{\#}  % For preprocessor directives, if any (optional)
 }
 
@@ -41,14 +41,12 @@ Julian Mackay\inst{1}\orcidID{0000-0003-3098-3901}}
 
 
 
-\authorrunning{Jan and Marco}
+\authorrunning{Jan, Marco and Julian}
 % First names are abbreviated in the running head.
 % If there are more than two authors, 'et al.' is used.
 %
-\institute{Victoria University of Wellington, Kelburn, 6012, Wellington, New Zealand 
-\email{\{isaac, marco.servetto\}@ecs.vuw.ac.nz}
-\and The Australian National University, Canberra, 2600, ACT, Australia
-\email{alex.potanin@anu.edu.au}} 
+%\institute{Victoria University of Wellington, Kelburn, 6012, Wellington, New Zealand 
+%\email{\{isaac, marco.servetto\}@ecs.vuw.ac.nz}
 %\institute{Princeton University, Princeton NJ 08544, USA \and
 %Springer Heidelberg, Tiergartenstr. 17, 69121 Heidelberg, Germany
 %\email{lncs@springer.com}\\
@@ -60,7 +58,7 @@ Julian Mackay\inst{1}\orcidID{0000-0003-3098-3901}}
 \maketitle              % typeset the header of the contribution
 %
 \begin{abstract}
-How should a verification system work on a pure OO language, where objects are black boxes that can only answer to messagess and where there are no primitive types whose sementic is shared between the verification language and the object language?
+How should a verification system work on a pure OO language, where objects are black boxes that can only answer to messagess and where there are no primitive types whose semantic is shared between the verification language and the object language?
 We argue that termination is the only observable property in such a setting, and thus termination should be the core of such a verification system.
 \keywords{termination calculus\and
 feaderweight java\and
@@ -76,10 +74,10 @@ well founded contracts}
 
 In traditional OO verification, specifications have to be well founded.
 For example, consider the following postcondition:
-\Q!@Post \result.size()>this.size()!
+\Q!@Post result.size()>this.size()!
 Most sound traditional OO verification language would require the method size() to be total and pure: that is, it must always terminate, be deterministic and not mutate the state or do I/O.
 While the requirements of purity seems clearly needed to use that behaviour as specification, the totality requirement seems to be overly restrictive:
-We could, for example, conservatively say that such a postcondition is false if the call \Q!\result.size()! would not terminate.
+We could, for example, conservatively say that such a postcondition is false if the call \Q!result.size()! would not terminate.
 
 We experimented with this idea: an OO setting where non termination means false. We discovered that all of the sources of falseness we encountered in our experiments could be encoded by non termination: we could simply make a function that loops if the parameter is not of the expected value.
 
@@ -94,16 +92,19 @@ Objects are black boxes, and we can only observe them by calling methods, but th
 The only observable event seems to be `\emph{termination}'. \footnote{Non termination, on the other hand, can not be observed.}
 
 It is tempting to allow the specification language to express properties that are not visible in the execution. This often happens in traditional oo specification languages, where the specification lifts values out of the OO world and interprets them as mathematical objects that can be specified with operations that are not part of the language semantic.
+One such approach is reasoning based on bisimilarity, where the bisimiliarity relation is clearly not part of the expressions available in the programming language.
 
 We believe this is the root of many difficulties in OO verification.
 \footnote{ Arguably true for verification of other paradigms too.}
 For example, consider a method returning an instance of an interface \Q@Foo@.
 This method may return concrete instances of \Q@Foo@, but it would not make sense for the specification to restrict what those instances should be.
 For example, from the perspective of the specification, a concrete foo \Q@CFoo@ should be indistinguishable from a wrapped \Q@D(CFoo)@, if they behave the same for all possible observations.
+Making those observations can easily require an infinite amount of method calls and thus the specification of equivalence can simply not be part of the object language.
 
-A similar situation happens in foundational math when we want to talk about properties of natural numbers without being able to investigate if they are incarnated as von Neumann numbers or with the church encoding.
+%A similar situation happens in foundational math when we want to talk about properties of natural numbers without being able to investigate if they are incarnated as von Neumann numbers or with the church encoding.
 
-Primitive types, instanceof checks and pointer equalities break this intuition, and that is why they are often considered not pure OO operations.
+When pushing equality back into the language, we end up with "stopping points" such as primitive types, instanceof checks and pointer equalities.
+Those break not just the infinite possibilities to go on with bisimilar steps, but they also break the paradigm as they are not pure OO operations.
 However, traditional verification is built around those operations; as described below,  traditional OO verification specifies the abstract behaviour of an operation, by describing its concrete implementation. This requires specifiable software to abandon OO principles.
 
 
@@ -114,18 +115,17 @@ We call this paradigm `\emph{Structural specification of the result}'
 Our approach naturally encourages a different specification paradigm, that we call 
 `\emph{Behavioural description of result}'; where we just specify that objects behave correctly in certain situations, without reference to the concrete representation of the object.
 This paper shows how this can be achieved by simply checking termination on well crafted observations, and that verified programs are able to employ useful object oriented principles and patterns.
-
 \section{The two main observations}
 There are two independent observations at play here:
 \begin{enumerate}
-\item We can use termination to prove arbitrary decidable properties.
+\item We can use termination to encode arbitrary propositional properties.
 \item We argue that the only thing we should be allowed to observe in a pure OO language is termination.
 \end{enumerate}
 
-\subsection{We can use termination to prove arbitrary decidable properties}
+\subsection{We can use termination to encode arbitrary propositional properties}
 
 That is, we can express interesting properties about specific programs without the need to rely on dependent types. Usually, without dependent types we can only express general properties holding for all well typed programs.
-Consider for example the trivial extension of simply typed lambda calculus with conditionals natural numbers, booleans, their operations and a call by value fixpoint (intrinsically enabling a looping expression).
+Consider for example the trivial extension of simply typed lambda calculus with conditionals, natural numbers, booleans, their operations and a call by value fixpoint (intrinsically enabling a looping expression).
 
 In context $\Gamma = $ \Q@{ a:Num,b:Num,c:Num }@ the term
 \begin{lstlisting}
@@ -151,7 +151,7 @@ $Q(M, X)$ reduces to $T$ implies $P([|M|], [|X|]) = [|T|]$
 
 \item Now construct $F$ where $F(Y)$ reduces to some value $V$ if $Y$ reduces to $T$ and $F(Y)$ diverges otherwise.
 \item Show that for all closed well-typed values $X$ there exists $V$, s.t. $F(Q(M, X))$ reduces to $V$.
-\item From the properties of $F$ conclude that for all those $X$, $Q(M, X)$ reduces to $T$ and from soundness (4) conclude that $Q(M, X)$ reduces to $T$ closes the proof.
+\item From the properties of $F$ conclude that for all those $X$, $Q(M, X)$ reduces to $T$ and from soundness (4) conclude that this closes the proof.
 
 \end{enumerate}
 
